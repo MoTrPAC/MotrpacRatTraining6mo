@@ -1,0 +1,13 @@
+# R related
+**.Rproj.user
+**.Rhistory
+**.RData
+**.Ruserdata
+**.Rapp.history
+**.Rprofile
+**.Rproj
+
+# Mac OS
+**.DS_Store
+
+.Rproj.user
