@@ -2,3 +2,4 @@ Package: MotrpacRatTraining6mo
 Type: Package
 Title: Analysis of the MoTrPAC endurance exercise training data in 6-month-old rats
 Version: 1.0.0
+RoxygenNote: 7.1.2
