@@ -1,108 +1,49 @@
-#' Retrieve phenotypic data 
-#' 
-#' Download and format phenotypic data from the endurance exercise training study in 6-month-old rats.
-#' Codes are replaced with human-readable strings. 
-#' Note that this currently does not handle variables that are recorded multiple times. 
-#' 
-#' @param scratch directory in which to download files  
-#' @param gsutil_path path to \code{gsutil} binary. If you aren't sure where this is, run \code{which gsutil} in the Terminal and copy the result. 
-#' @param parallel whether or not to re-download the file from GCP if it already exists locally 
-#' 
-#' @return data.frame with formatted phenotypic data; row names are sample identifiers (vial labels)
-#' 
-#' @export
-#' @import data.table
-#' 
-#' @examples 
-#' dl_format_pheno("~/Documents/motrpac_data", "/usr/local/bin/google-cloud-sdk/bin/gsutil")
-#' dl_format_pheno("~/Documents/motrpac_data", "/usr/local/bin/google-cloud-sdk/bin/gsutil", parallel = FALSE)
-#' 
-dl_format_pheno = function(scratch, gsutil_path, parallel=TRUE){
-  dmaqc_metadata = 'gs://motrpac-data-freeze-pass/pass1b-06/v1.0/results/phenotype/pass1b_6m_viallabel_data.txt'
-  dmaqc_dict = 'gs://motrpac-data-freeze-pass/pass1b-06/v1.0/results/phenotype/merged_dictionary.txt'
-  
-  # download and format phenotypic data 
-  dmaqc_metadata = dl_read_gcp(dmaqc_metadata, tmpdir = scratch, GSUTIL_PATH = gsutil_path, check_first = parallel)
-  cols = dl_read_gcp(dmaqc_dict, tmpdir = scratch, GSUTIL_PATH = gsutil_path, check_first = parallel)
-  old_cols = colnames(dmaqc_metadata)
-  new_cols = tolower(cols[match(old_cols, BICUniqueID), FullName]) 
-  colnames(dmaqc_metadata) = new_cols # this isn't perfect, but we don't care about the columns it doesn't work for for now 
-  
-  # make some variables human-readable
-  # create new variables "protocol", "agegroup", "intervention", "sacrificetime", "sex" with readable strings 
-  for (var in c('key.protocol','key.agegroup','key.intervention','key.sacrificetime','registration.sex')){
-    d = cols[Field.Name == gsub('.*\\.','',var)]
-    keys=unname(unlist(strsplit(d[,Categorical.Values],'\\|')))
-    values=tolower(unname(unlist(strsplit(d[,Categorical.Definitions],'\\|'))))
-    names(values) = keys
-    # match keys to values; create new column 
-    new_var = gsub(".*\\.","",var)
-    dmaqc_metadata[,(new_var) := unname(values)[match(get(var), names(values))]]
-  }
-  dmaqc_metadata[,time_to_freeze := calculated.variables.frozetime_after_train - calculated.variables.deathtime_after_train]
-  
-  # clean up "sacrificetime"
-  dmaqc_metadata[,sacrificetime := sapply(sacrificetime, function(x) gsub(' week.*','w',x))]
-  
-  # clean up 'intervention'
-  dmaqc_metadata[grepl('training',intervention), intervention := 'training']
-  
-  # make "group" - "1w", "2w", "4w", "8w", "control"
-  dmaqc_metadata[,group := sacrificetime]
-  dmaqc_metadata[intervention == 'control', group := 'control']
-  
-  # make tech ID a string
-  dmaqc_metadata[,specimen.processing.techid := paste0('tech',specimen.processing.techid)]
-  
-  # make viallabel char
-  dmaqc_metadata[,viallabel := as.character(viallabel)]
-  
-  # convert to data.frame
-  dmaqc_metadata_df = as.data.frame(dmaqc_metadata)
-  rownames(dmaqc_metadata_df) = dmaqc_metadata_df$viallabel
-  
-  return(dmaqc_metadata)
-}
-
-
 #' Title
+#' 
+#' Description
 #'
-#' @param TISSUE_CODE 
-#' @param SEX 
-#' @param gsutil_path 
-#' @param scratch 
-#' @param outliers 
-#' @param parallel 
+#' @param tissue character, tissue abbreviation, one of [TISSUE_ABBREV], excluding "PLASMA"
+#' @param sex character, "male", "female", or "all"
+#' @param outliers optional, vector of vial labels to exclude 
 #'
 #' @return
 #' @export
+#' 
+#' @import data.table
+#' @import MotrpacRatTraining6moData
 #'
 #' @examples
 #' TODO
 #' 
-preprocess_pass1b_rnaseq_gcp = function(TISSUE_CODE, SEX, gsutil_path='~/google-cloud-sdk/bin/gsutil', scratch='/oak/stanford/groups/smontgom/nicolerg/tmp', outliers=NULL, parallel=F){
+prep_data_TRNSCRPT = function(tissue, sex, outliers = NULL){
   
-  if(!SEX %in% c('male','female','all')){
-    stop('"SEX" must take on one of the following values:\n  "male","female","all"\n')
+  if(!sex %in% c('male','female','all')){
+    stop('"sex" must be one of the following values:\n  "male","female","all"\n')
   }
   
-  # fix some things
-  if(TISSUE_CODE == 't54-hypothalmus'){
-    TISSUE_CODE = 't54-hypothalamus'
+  if(!tissue %in% MotrpacRatTraining6moData::TISSUE_ABBREV){
+    stop(sprintf('"tissue" must be one of the following values:\n  %s\n',
+                 paste0(MotrpacRatTraining6moData::TISSUE_ABBREV, collapse=", ")))
   }
   
-  dmaqc_metadata = dl_format_pheno(scratch, gsutil_path, parallel=parallel)
+  dmaqc_metadata = as.data.table(MotrpacRatTraining6moData::PHENO)
   
   # load counts 
-  counts = dl_read_gcp(sprintf('gs://motrpac-data-freeze-pass/pass1b-06/v1.0/results/transcriptomics/%s/transcript-rna-seq/motrpac_pass1b-06_%s_transcript-rna-seq_rsem-genes-count.txt', TISSUE_CODE, TISSUE_CODE), 
-                       tmpdir = scratch, 
-                       GSUTIL_PATH = gsutil_path,
-                       check_first = parallel)
-  if(is.null(counts)){return()}
-  counts = as.data.frame(counts)
-  rownames(counts) = counts$gene_id
-  counts$gene_id = NULL
+  # will return error if data doesn't exist
+  counts = get(sprintf("TRNSCRPT_%s_RAW_COUNTS", gsub("-","",tissue)))
   raw_counts = counts
+  
+  # get normalized data
+  tmm = MotrpacRatTraining6moData::TRNSCRPT_SAMPLE_DATA
+  # select this tissue
+  tmm = tmm[grepl(sprintf("TRNSCRPT;%s", tissue), tmm$feature),]
+  # convert PID to viallabel 
+  
+  
+  # filter genes
+  # TODO
+  
+  # get nor
   
   # filter by genes in normalized data 
   tmm = dl_read_gcp(sprintf('gs://motrpac-data-freeze-pass/pass1b-06/v1.0/analysis/transcriptomics/transcript-rna-seq/normalized-data/motrpac_pass1b-06_%s_transcript-rna-seq_normalized-log-cpm.txt', TISSUE_CODE), 
