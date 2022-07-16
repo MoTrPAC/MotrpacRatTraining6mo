@@ -1,5 +1,5 @@
 # MotrpacRatTraining6mo
-MoTrPAC lanscape paper.
+Analysis R package for PASS1B-06 landscape paper. Also see [MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData).
 
 # NOTES FOR DEVELOPMENT:
 
