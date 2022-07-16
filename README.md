@@ -1,4 +1,4 @@
-# motrpac-rat-training-6m
+# MotrpacRatTraining6mo
 MoTrPAC lanscape paper.
 
 # NOTES FOR DEVELOPMENT:
@@ -6,7 +6,7 @@ MoTrPAC lanscape paper.
 ## Load the "package" in development mode
 Set the working directory to this repository:  
 ```r
-setwd("~/src/MOTRPAC/motrpac-rat-training-6m")
+setwd("~/src/MOTRPAC/MotrpacRatTraining6mo")
 library(devtools)
 ```
 Load all of the functions defined in `./R`:  
