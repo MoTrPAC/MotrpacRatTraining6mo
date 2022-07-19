@@ -6,7 +6,7 @@
 #' @param new_clusters a character vector, contains the clustering solution of the sites in yall
 #' 
 #' @return A new DGEList object that represents the clusters
-#' @import edgeR,MotrpacRatTraining6moData
+#' @import edgeR,limma,MotrpacRatTraining6moData
 #' 
 #' @details The yall object has a metadata framework yall$genes. This data frame has either a Locus field or 
 #'          a pair of fields (LocStart,LocEnd). Assuming that there are no clusters that merge sites across different
@@ -15,7 +15,7 @@
 #'          The new genomic features contain the sum of counts of their sites, and the merged metadata of the sites
 #'          (e.g., a comma separated character with all gene symbols associated with the cluster)
 #'
-#' @examples TODO
+#' @examples See example of the full RRBS reads preprocessing pipeline in analyze_tile.
 merge_sites_by_clusters<-function(yall,new_clusters){
   if (!"LocStart" %in% colnames(yall$genes)){
     cl_start = tapply(yall$genes$Locus,new_clusters,min)
@@ -81,19 +81,27 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 
 #' A wrapper function that analyzes a tile of loci in the genome to obtain correlated clusters.
 #' 
-#' @param tile_name
-#' @param tile_l
-#' @param M
-#' @param min_cor
-#' @param inflations
-#' @param plotcorr
+#' @param tile_name A character. The name of the current window for analysis.
+#' @param tile_l A named list. tile_name must be an item in the list. Each entry contains the M matrix row indices of the loci of the window.
+#' @param M A numeric matrix. Contains the "M" methylation values. Rows are loci, columns are samples.
+#' @param min_cor A number. The minimal correlation to be considered for connecting a pair of loci.
+#' @param inflations A numeric vector. Internal parameters of the MCL algorithm, see Details.
+#' @param plotcorr A logical. TRUE: plot the correlation matrix of the window (useful for analysis of specific windows).
 #' 
-#' @return 
+#' @return A character vector. Names are loci (M matrix rows), entries are the names of the loci clusters.
 #' 
-#' @import MotrpacRatTraining6moData, MCL
+#' @import MotrpacRatTraining6moData, MCL, limma, edgeR, corrplot
 #' 
 #' @details 
-#'        MCL(Markov clustering) details: from: https://www.micans.org/mcl/intro.html
+#'        This function implements clustering analysis of a specific window in the genome. 
+#'        We observed that often adjacent loci in RRBS data may manifest low correlations. This
+#'        function can be used for identified a set of highly correlated loci within a window, which
+#'        can then be used to extract new genomic features for downstream analysis. 
+#'        RRBS data have two columns per sample: "Un" (unmethylated) and "Me"(methylated). This function
+#'        takes the "M matrix" which contains the integrated values of these columns (see examples). This matrix
+#'        is used for computing the correlations of the loci, and then we use the Markov Clustering algorithm (MCL)
+#'        for identifying homogeneous clusters within a window. 
+#'        MCL(Markov clustering) details from: https://www.micans.org/mcl/intro.html
 #'        MCL: Expansion coincides with taking the power of a stochastic matrix
 #'        using the normal matrix product (i.e. matrix squaring). 
 #'        Inflation corresponds with taking the Hadamard power of a matrix 
@@ -102,9 +110,9 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #'        Inflation parameter: strengthen intra-region connections and promote cluster homogeneity.
 #' 
 #' @examples 
-#' # load the RData file from the cloud
-#' system("wget xxx")
-#' yall = get(load(xxx))
+#' # Raw data in RData file is available at: 
+#' https://drive.google.com/drive/folders/1_vkqPc8uULIiCTHDW8nuNHZW4jzzLHxy?usp=sharing
+#' yall = get(load("motrpac_pass1b-06_t55-gastrocnemius_epigen-rrbs_bismark-cov.RData"))
 #' # remove control samples
 #' is_sample = grepl("^9",colnames(yall),perl=T)
 #' yall = yall[,is_sample]
@@ -118,11 +126,8 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' keep[!grepl("chr",Chr) ] <- FALSE
 #' # remove M chromosome (otherwise we get error when assigning annotation below)
 #' keep[Chr=="chrM"] <- FALSE
-#' print(paste("Data from tissue",tissue,"was loaded into session"))
-#' print(paste("how many sites were removed (unassembled+chrM)?",sum(!keep)))
 #' # keep.lib.sizes=FALSE causes the library sizes to be recomputed
 #' yall <- yall[keep,, keep.lib.sizes=FALSE]
-#' # fix the levels and order by chromosome
 #' # rat genome chromosomes:
 #' ChrNames <- paste0("chr",c(1:20,"X","Y"))
 #' yall$genes$Chr <- factor(yall$genes$Chr, levels=ChrNames)
@@ -138,7 +143,7 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' # As a conservative rule of thumb, we require a site to have a total count
 #' # (both methylated and unmethylated) of at least 8 in every sample.
 #' Coverage <- yall$counts[,grepl("-Me",colnames(yall$counts))] + 
-#' yall$counts[, grepl("-Un",colnames(yall$counts))]
+#'      yall$counts[, grepl("-Un",colnames(yall$counts))]
 #' min_count_coverage = 10
 #' min_per_samples = 1
 #' # see description of min_count_coverage and min_per_samples above
@@ -149,7 +154,7 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' print(dim(yall))
 #' 
 #' # get locations, gene ids, etc
-#' TSS <- nearestTSS(yall$genes$Chr, yall$genes$Locus, species="Rn")
+#' TSS <- edgeR::nearestTSS(yall$genes$Chr, yall$genes$Locus, species="Rn")
 #' yall$genes$EntrezID <- TSS$gene_id
 #' yall$genes$Symbol <- TSS$symbol
 #' yall$genes$Strand <- TSS$strand
@@ -170,10 +175,9 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' # step 3: analyze each tile
 #' tile_l = split(1:nrow(M),tiles)
 #' tile_l = tile_l[unique(tiles)] # keep the genome order
-#' # single core
-#' #tile_clusters = lapply(names(tile_l),analyze_tile,tile_l=tile_l,M=M)
 #' # parallel comp
-#' tile_clusters = copy(tiles)
+#' library(parallel)
+#' tile_clusters = data.table::copy(tiles)
 #' for(chr in unique(chrs)){
 #'   print(chr)
 #'   curr_chr_inds = grepl(paste0(chr,"-"),tiles)
@@ -196,8 +200,7 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' # We set the library sizes for each sample to be the average of the total read counts for 
 #' # the methylated and unmethylated libraries.
 #' # Other normalization methods developed for RNA-seq data, such as TMM, are not required for BS-seq data.
-#' TotalLibSize <- yall$samples$lib.size[grepl("-Me",colnames(yall$counts))] +
-#'     +       yall$samples$lib.size[grepl("-Un",colnames(yall$counts))]
+#' TotalLibSize <- yall$samples$lib.size[grepl("-Me",colnames(yall$counts))] + yall$samples$lib.size[grepl("-Un",colnames(yall$counts))]
 #' yall$samples$lib.size <- rep(TotalLibSize, each=2)
 analyze_tile<-function(tile_name,tile_l,M,min_cor=0.7,
                        inflations = c(3,2.5,2,1.5),plotcorr=F){
@@ -232,4 +235,302 @@ analyze_tile<-function(tile_name,tile_l,M,min_cor=0.7,
   tile_clusters = paste0(tile_name,"_cluster",tile_clusters)
   names(tile_clusters) = rownames(tile_M)
   return(tile_clusters)
+}
+
+
+#' Differential analysis wrapper for RRBS data
+#' 
+#' @param yall A DGEList object. 
+#'  yall$genes is a metadata data frame with the locus coordinates (see details), and these fields at minimum:
+#'  Chr, EntrezID, Symbol, and Strand
+#' @param PHENO A data frame with a row per sample. Can be retreived using data(PHENO).
+#' Contains at least the following columns: sex, group
+#' @param METHYL_META A data frame with a row per sample. Can be retreived using data(METHYL_META).
+#' Contains the RRBS pipeline QA/QC scores. Contains at least the following columns: pct_Unaligned.
+#' @param verbose A logical. TRUE: comments about the pipeline progress are printed.
+#' @param samples_to_remove A character vector. Contains the ids of the samples that should be removed
+#' (e.g., identified outliers or failed samples).
+#' @param edger_tol A number. An internal parameter of edgeR. Default is 1e-05. Consider increasing if the algorithm takes too long.
+#' @param dataset_name A character. The name of the current dataset. Will be added to the output.
+#' 
+#' @return A list.First item is called timewise and will contain the contrast-specific differential analysis results.
+#' Second item is called training and contains the overall training-level significance per locus.
+#' 
+#' @import metap, edgeR, limma
+#'  
+#' @examples
+#' library(MotrpacRatTraining6moData)
+#' data(PHENO)
+#' data(METHYL_META)
+#' 
+#' # Raw data in RData file is available at: 
+#' https://drive.google.com/drive/folders/1_vkqPc8uULIiCTHDW8nuNHZW4jzzLHxy?usp=sharing
+#' yall = get(load("motrpac_pass1b-06_t55-gastrocnemius_epigen-rrbs_bismark-cov.RData"))
+#' 
+#' # Alternatively, you can use the processed datasets
+#' (TBD)
+#' 
+#' # for the simplicity of this example, we subset the data to 5000 loci
+#' y = yall[1:5000,]
+#' dea_res = rrbs_differential_analysis(y,PHENO,METHYL_META)
+#' head(dea_res$timewise)
+#' head(dea_res$training)
+rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
+      verbose=T,
+      samples_to_remove=NULL,edger_tol=1e-05,dataset_name=""){
+  #remove outlier samples before DEA
+  s_me=paste(samples_to_remove, "Me", sep="-")
+  s_un=paste(samples_to_remove, "Un", sep="-")
+  y_input_samples = sapply(colnames(y),function(x)strsplit(x,split="-")[[1]][1])
+  y <- y[ , ! colnames(y) %in% c(s_me,s_un)]
+  curr_samps = sapply(colnames(y),function(x)strsplit(x,split="-")[[1]][1])
+  outlier_samples = setdiff(y_input_samples,curr_samps)
+  if (length(outlier_samples) == 0){
+    remove_samples = ""
+  } else{
+    remove_samples = paste(outlier_samples,collapse=",")
+  }
+  
+  # Parse the covariates
+  PHENO$timepoint = PHENO$group
+  PHENO$is_control = PHENO$group=="control"
+  rownames(METHYL_META) = as.character(METHYL_META$vial_label)
+  covs = data.frame(
+    sample = as.factor(curr_samps),
+    Me = grepl("Me",colnames(y)),
+    sex = PHENO[curr_samps,"sex"],
+    timepoint = PHENO[curr_samps,"timepoint"],
+    is_control = PHENO[curr_samps,"is_control"],
+    pct_unaligned_1 = poly(METHYL_META[curr_samps,"pct_Unaligned"],1)[,1],
+    pct_unaligned_2 = poly(METHYL_META[curr_samps,"pct_Unaligned"],2)[,2]
+  )
+  rownames(covs) = colnames(y)
+  tmptp = covs$timepoint
+  tmptp[tmptp=="control"] = "8"
+  tmptp = gsub("w","",tmptp)
+  covs$group_tp=factor(
+    paste(tmptp,as.numeric(covs$is_control),sep="_")
+  )
+  
+  #split covariates to males and females
+  covs_males = covs[covs$sex == "male", ] 
+  covs_females = covs[covs$sex == "female", ]
+  samples_males=rownames(covs_males)
+  samples_females=rownames(covs_females)
+  
+  # subset y into males and females
+  y_males = y[ ,samples_males]
+  y_females = y[ ,samples_females]
+  
+  #create design matrices for for males and females separately
+  # refactor the samples to have the correct levels
+  covs_males$sample = as.factor(as.character(covs_males$sample))
+  covs_females$sample = as.factor(as.character(covs_females$sample))
+  
+  # create design matrices for time-wise and F tests
+  # (see https://support.bioconductor.org/p/12119/ and the limma guide) 
+  #design matrix for males  
+  samples_mat_male = model.matrix(~0+sample,data=covs_males)
+  tp_mat_male = model.matrix(~0+group_tp,data=covs_males)
+  #tp_mat_male = model.matrix(~0+group_tp+pct_unaligned_1+pct_unaligned_2,data=covs_males)
+  tp_mat_male[!covs_males$Me,] = 0
+  des_males = cbind(samples_mat_male,tp_mat_male)
+  #make sure the rows of design matrix and columns of counts are identical
+  if(sum(!row.names(des_males) == colnames(y_males$counts))>0){
+    stop(paste("ERROR in dataset",dataset_name,"check sample order before moving on"))
+  }
+  
+  #design matrix for females
+  samples_mat_female = model.matrix(~0+sample,data=covs_females)
+  tp_mat_female = model.matrix(~0+group_tp,data=covs_females)
+  #tp_mat_female = model.matrix(~0+group_tp+pct_unaligned_1+pct_unaligned_2,data=covs_females)
+  tp_mat_female[!covs_females$Me,] = 0
+  des_females = cbind(samples_mat_female,tp_mat_female)
+  if(sum(!row.names(des_females) == colnames(y_females$counts))>0){
+    stop(paste("ERROR in dataset",dataset_name,"check sample order before moving on"))
+  }
+  
+  full_model_str = "~0+sample+1me+group_me"
+  null_model_str = "~0+sample+1me"
+  
+  # define the contrasts for males and females the analyses below
+  C_ttests_female = makeContrasts(
+    group_tp1_0 - group_tp8_1,group_tp2_0 - group_tp8_1,
+    group_tp4_0 - group_tp8_1,group_tp8_0 - group_tp8_1,
+    levels = des_females
+  )
+  
+  C_ttests_male = makeContrasts(
+    group_tp1_0 - group_tp8_1,group_tp2_0 - group_tp8_1,
+    group_tp4_0 - group_tp8_1,group_tp8_0 - group_tp8_1,
+    levels = des_males
+  )
+  
+  #Estimate dispersions for males and females separately
+  print("Estimating dispersion for the male design matrix...")
+  y1_males <- estimateDisp(y_males, design=des_males,tol = edger_tol)
+  if(verbose){
+    print("Done")
+    print("Running glmQLFit...")
+  }
+  fit.ttest_males <- glmQLFit(y1_males,des_males)
+  if(verbose){print("Done")}
+  
+  print("Estimating dispersion for the female design matrix...")
+  y1_females <- estimateDisp(y_females, design=des_females,tol = edger_tol)
+  if(verbose){
+    print("Done")
+    print("Running glmQLFit...")
+  }
+  fit.ttest_females <- glmQLFit(y1_females,des_females)
+  if(verbose){print("Done")}
+  
+  # extract contrast info
+  if(verbose){print("Extracting timewise results from the contrasts...")}
+  #### male contrast
+  tissue_tp_res = c()
+  for(col in colnames(C_ttests_male)){
+    sex_str = "male"
+    curr_tp = strsplit(col,split="_")[[1]][2]
+    curr_tp = strsplit(curr_tp,split="tp")[[1]][2]
+    if(verbose){print(paste("Fitting timewise model for:",col))}
+    res <- glmQLFTest(fit.ttest_males,contrast=C_ttests_male[,col])
+    # extract the results into a table
+    edger_res <- topTags(res, n=Inf, p.value = 1,
+                         adjust.method = "BH",sort.by = "none")$table
+    # add z-scores
+    edger_res$F[edger_res$F < 0] = 1e-10
+    t.stat <- sign(edger_res$logFC) * sqrt(edger_res$F)
+    z <- zscoreT(t.stat, df=res$df.total)
+    curr_res = data.frame(
+      feature_ID = rownames(y_males),
+      edger_res[,1:4],
+      assay = "epigen-rrbs",
+      tissue = dataset_name,
+      removed_samples = remove_samples,
+      sex = sex_str,
+      #logFC_se = TBD,
+      logFC = edger_res$logFC,
+      fscore = edger_res$F,
+      zscore = z,
+      covariates = NA,
+      comparison_group = paste0(curr_tp,"w"),
+      p_value = edger_res$PValue,
+      adj_p_value = edger_res$FDR
+    )
+    # add the results
+    tissue_tp_res = rbind(tissue_tp_res,curr_res)
+  }
+  if(verbose){print("Done")}
+  ##### female contrast
+  for(col in colnames(C_ttests_female)){
+    sex_str = "female"
+    curr_tp = strsplit(col,split="_")[[1]][2]
+    curr_tp = strsplit(curr_tp,split="tp")[[1]][2]
+    if(verbose){print(paste("Fitting timewise model for:",col))}
+    res <- glmQLFTest(fit.ttest_females,contrast=C_ttests_female[,col])
+    # extract the results into a table
+    edger_res <- topTags(res, n=Inf, p.value = 1,
+                         adjust.method = "BH",sort.by = "none")$table
+    # add z-scores
+    edger_res$F[edger_res$F < 0] = 1e-10
+    t.stat <- sign(edger_res$logFC) * sqrt(edger_res$F)
+    z <- zscoreT(t.stat, df=res$df.total)
+    curr_res = data.frame(
+      feature_ID = rownames(y_females),
+      edger_res[,1:4],
+      assay = "epigen-rrbs",
+      tissue = dataset_name,
+      removed_samples = remove_samples,
+      #removed_samples = paste(samples_to_remove,collapse=","),
+      sex = sex_str,
+      #logFC_se = TBD,
+      logFC = edger_res$logFC,
+      fscore = edger_res$F,
+      zscore = z,
+      covariates = NA,
+      comparison_group = paste0(curr_tp,"w"),
+      p_value = edger_res$PValue,
+      adj_p_value = edger_res$FDR
+    )
+    # add the results
+    tissue_tp_res = rbind(tissue_tp_res,curr_res)
+  }
+  if(verbose){print("Done")}
+
+  #males
+  if(verbose){print("Fitting the model for the F-tests...")}
+  ftest_tp_mat_male = model.matrix(~1+group_tp,data=covs_males)
+  #ftest_tp_mat_male = model.matrix(~1+pct_unaligned_1+pct_unaligned_2+group_tp,data=covs_males)
+  ftest_tp_mat_male[!covs_males$Me,] = 0
+  ftest_des_males = cbind(samples_mat_male,ftest_tp_mat_male)
+  y2_males <- estimateDisp(y_males, design=ftest_des_males,tol = edger_tol)
+  fit.ftest_males <- glmQLFit(y2_males,ftest_des_males)
+  is_group_variable = grepl("group",colnames(ftest_des_males))
+  res <- glmQLFTest(fit.ftest_males,coef=colnames(ftest_des_males)[is_group_variable])
+  ftest_edger_res <- topTags(res, n=Inf, p.value = 1,
+                             adjust.method = "BH",sort.by ="none")$table
+  if(verbose){print("Done")}
+  # add the results
+  curr_f_test_res_males = data.frame(
+    feature_ID = rownames(y_males),
+    ftest_edger_res[,1:4],
+    assay = "epigen-rrbs",
+    tissue = dataset_name,
+    #sex = "male",
+    p_value_male = ftest_edger_res$PValue,
+    #adj_p_value = ftest_edger_res$FDR,
+    fscore_male = ftest_edger_res$F,
+    full_model = full_model_str,
+    reduced_model = null_model_str
+  )
+  
+  #females
+  if(verbose){print("Fitting the model for the F-tests for females...")}
+  ftest_tp_mat_female = model.matrix(~1+group_tp,data=covs_females)
+  #ftest_tp_mat_female = model.matrix(~1+pct_unaligned_1+pct_unaligned_2+group_tp,data=covs_females)
+  ftest_tp_mat_female[!covs_females$Me,] = 0
+  ftest_des_females = cbind(samples_mat_female,ftest_tp_mat_female)
+  y2_females <- estimateDisp(y_females, design=ftest_des_females,tol = edger_tol)
+  fit.ftest_females <- glmQLFit(y2_females,ftest_des_females)
+  is_group_variable = grepl("group",colnames(ftest_des_females))
+  res <- glmQLFTest(fit.ftest_females,coef=colnames(ftest_des_females)[is_group_variable])
+  ftest_edger_res <- topTags(res, n=Inf, p.value = 1,
+                             adjust.method = "BH",sort.by ="none")$table
+  if(verbose){print("Done")}
+  curr_f_test_res_females = data.frame(
+    feature_ID = rownames(y_females),
+    ftest_edger_res[,1:4],
+    assay = "epigen-rrbs",
+    tissue = dataset_name,
+    #sex = "female",
+    p_value_female = ftest_edger_res$PValue,
+    #adj_p_value = ftest_edger_res$FDR,
+    fscore_female = ftest_edger_res$F,
+    full_model = full_model_str,
+    reduced_model = null_model_str
+  )
+  
+  ###combine curr_f_test_res from males and females
+  if(nrow(curr_f_test_res_females)!=nrow(curr_f_test_res_males)){
+    stop(paste("ERROR in dataset",dataset_name,"male and female ftest tables have different nrow"))
+  }
+  if(any(curr_f_test_res_females$feature_ID != curr_f_test_res_males$feature_ID)){
+    stop(paste("ERROR in dataset",dataset_name,"male and female ftest tables have different row names"))
+  }
+  common_col_names <- intersect(names(curr_f_test_res_males), names(curr_f_test_res_females))
+  curr_f_test_res_combined = merge(curr_f_test_res_males,curr_f_test_res_females,
+                                   by=common_col_names, all=TRUE)
+  
+  #Add sumlog p-value
+  curr_f_test_res_combined$p_value = 
+    apply(curr_f_test_res_combined[,c("p_value_male","p_value_female")],1,function(x)metap::sumlog(x)$p)
+  
+  # Add removed samples column
+  curr_f_test_res_combined$removed_samples = remove_samples
+  
+  return(list(
+    timewise = tissue_tp_res,
+    training = curr_f_test_res_combined
+  ))
 }
