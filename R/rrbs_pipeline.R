@@ -252,6 +252,7 @@ analyze_tile<-function(tile_name,tile_l,M,min_cor=0.7,
 #' (e.g., identified outliers or failed samples).
 #' @param edger_tol A number. An internal parameter of edgeR. Default is 1e-05. Consider increasing if the algorithm takes too long.
 #' @param dataset_name A character. The name of the current dataset. Will be added to the output.
+#' @param adj_pct_unaligned A logical. TRUE: adjust for percent unaligned reads. Default is FALSE.
 #' 
 #' @return A list.First item is called timewise and will contain the contrast-specific differential analysis results.
 #' Second item is called training and contains the overall training-level significance per locus.
@@ -272,11 +273,11 @@ analyze_tile<-function(tile_name,tile_l,M,min_cor=0.7,
 #' 
 #' # for the simplicity of this example, we subset the data to 5000 loci
 #' y = yall[1:5000,]
-#' dea_res = rrbs_differential_analysis(y,PHENO,METHYL_META)
+#' dea_res = rrbs_differential_analysis(y,PHENO,METHYL_META,adj_pct_unaligned=T)
 #' head(dea_res$timewise)
 #' head(dea_res$training)
 rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
-      verbose=T,
+      verbose=T,adj_pct_unaligned=F,
       samples_to_remove=NULL,edger_tol=1e-05,dataset_name=""){
   #remove outlier samples before DEA
   s_me=paste(samples_to_remove, "Me", sep="-")
@@ -332,7 +333,9 @@ rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
   #design matrix for males  
   samples_mat_male = model.matrix(~0+sample,data=covs_males)
   tp_mat_male = model.matrix(~0+group_tp,data=covs_males)
-  #tp_mat_male = model.matrix(~0+group_tp+pct_unaligned_1+pct_unaligned_2,data=covs_males)
+  if(adj_pct_unaligned){
+    tp_mat_male = model.matrix(~0+group_tp+pct_unaligned_1+pct_unaligned_2,data=covs_males)
+  }
   tp_mat_male[!covs_males$Me,] = 0
   des_males = cbind(samples_mat_male,tp_mat_male)
   #make sure the rows of design matrix and columns of counts are identical
@@ -343,15 +346,23 @@ rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
   #design matrix for females
   samples_mat_female = model.matrix(~0+sample,data=covs_females)
   tp_mat_female = model.matrix(~0+group_tp,data=covs_females)
-  #tp_mat_female = model.matrix(~0+group_tp+pct_unaligned_1+pct_unaligned_2,data=covs_females)
+  if(adj_pct_unaligned){
+    tp_mat_female = model.matrix(~0+group_tp+pct_unaligned_1+pct_unaligned_2,data=covs_females)
+  }
   tp_mat_female[!covs_females$Me,] = 0
   des_females = cbind(samples_mat_female,tp_mat_female)
   if(sum(!row.names(des_females) == colnames(y_females$counts))>0){
     stop(paste("ERROR in dataset",dataset_name,"check sample order before moving on"))
   }
   
-  full_model_str = "~0+sample+1me+group_me"
-  null_model_str = "~0+sample+1me"
+  if(adj_pct_unaligned){
+    full_model_str = "~0+sample+1me+group_me + poly(pct_unaligned,2)"
+    null_model_str = "~0+sample+1me + poly(pct_unaligned,2)"
+  }
+  else{
+    full_model_str = "~0+sample+1me+group_me"
+    null_model_str = "~0+sample+1me"
+  }
   
   # define the contrasts for males and females the analyses below
   C_ttests_female = makeContrasts(
@@ -461,7 +472,9 @@ rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
   #males
   if(verbose){print("Fitting the model for the F-tests...")}
   ftest_tp_mat_male = model.matrix(~1+group_tp,data=covs_males)
-  #ftest_tp_mat_male = model.matrix(~1+pct_unaligned_1+pct_unaligned_2+group_tp,data=covs_males)
+  if(adj_pct_unaligned){
+    ftest_tp_mat_male = model.matrix(~1+pct_unaligned_1+pct_unaligned_2+group_tp,data=covs_males)
+  }
   ftest_tp_mat_male[!covs_males$Me,] = 0
   ftest_des_males = cbind(samples_mat_male,ftest_tp_mat_male)
   y2_males <- estimateDisp(y_males, design=ftest_des_males,tol = edger_tol)
@@ -488,7 +501,9 @@ rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
   #females
   if(verbose){print("Fitting the model for the F-tests for females...")}
   ftest_tp_mat_female = model.matrix(~1+group_tp,data=covs_females)
-  #ftest_tp_mat_female = model.matrix(~1+pct_unaligned_1+pct_unaligned_2+group_tp,data=covs_females)
+  if(adj_pct_unaligned){
+    ftest_tp_mat_female = model.matrix(~1+pct_unaligned_1+pct_unaligned_2+group_tp,data=covs_females)
+  }
   ftest_tp_mat_female[!covs_females$Me,] = 0
   ftest_des_females = cbind(samples_mat_female,ftest_tp_mat_female)
   y2_females <- estimateDisp(y_females, design=ftest_des_females,tol = edger_tol)
