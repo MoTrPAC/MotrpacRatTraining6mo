@@ -33,7 +33,7 @@ call_pca_outliers(
 TODO
 }
 \description{
-TODO: Description
+TODO
 }
 \examples{
 TODO

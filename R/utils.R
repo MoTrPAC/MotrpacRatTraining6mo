@@ -106,3 +106,43 @@ list_available_data = function(package=NULL){
   return(obj)
 }
 
+
+#' TODO
+#' Internal function used to check arguments for differential analysis functions
+#'
+#' @param tissue tissue abbreviation, one of [MotrpacRatTraining6moData::TISSUE_ABBREV]
+#' @param outfile 
+#' @param overwrite 
+#' @param outfile_is_rdata 
+#'
+#' @return NULL
+#'
+#' @examples
+#' TODO 
+#' 
+check_dea_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
+  # check arguments 
+  if(length(tissue)>1){
+    stop("Please specify a single tissue, e.g., 'BAT' for brown adipose tissue. See 'TISSUE_ABBREV' for options.")
+  }
+  if(!is.null(rdata_outfile)){
+    if(!overwrite & file.exists(rdata_outfile)){
+      stop(sprintf("'%s' already exists and 'overwrite' = FALSE. Specify a new outfile or set 'overwrite' to TRUE to generate new results.",
+                   outfile))
+    }
+    if(outfile_is_rdata){
+      if(!any(unlist(lapply(c("\\.rda$", "\\.rdata"), function(pattern){
+        grepl(pattern, rdata_outfile, ignore.case = TRUE)
+      })))){
+        stop(sprintf("Outfile '%s' should end with '.rda' or '.RData' to indicate an RData file (not case-sensitive).", outfile))
+      }
+    }
+    # check if path is valid
+    dir = dirname(outfile)
+    if(dir != "" & !dir.exists(dir)){
+      message(sprintf("Creating directory for outfile: %s", dir))
+      dir.create(dir, recursive = TRUE) # this will throw an error if it's not a valid path/uncreatable 
+    }
+  }
+  return()
+}

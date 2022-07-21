@@ -46,7 +46,7 @@ plot_pcs = function(pcA, pcB, pcax, outliers, pca, title=NULL){
 
 #' Use PCA method to call outliers
 #' 
-#' TODO: Description
+#' TODO
 #' 
 #' @param norm filtered, normalized values 
 #' @param min_pc_ve minimum percent variance explained by a PC to check it for outliers 
@@ -154,15 +154,15 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, N=Inf, 
 
 #' Call RNA-seq outliers
 #' 
-#' Description
+#' TODO
 #' 
 #' @param tissues list of tissue abbreviations for which to call RNA-seq outliers. 
-#'     See [TISSUE_ABBREV()] for accepted values. 
+#'     See [MotrpacRatTraining6moData::TISSUE_ABBREV] for accepted values. 
 #' 
-#' @return something
+#' @return TODO
 #'
 #' @seealso [call_pca_outliers()] for workhorse function, [plot_pcs()] for plotting function, 
-#'     [TISSUE_ABBREV()] for list of accepted tissue abbrevations 
+#'     [MotrpacRatTraining6moData::TISSUE_ABBREV] for list of accepted tissue abbrevations 
 #'
 #' @examples
 #' transcript_call_outliers("SKM-GN")
@@ -171,30 +171,30 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, N=Inf, 
 #' @export
 #' @import MotrpacBicQC
 #' @import data.table
+#' @import MotrpacRatTraining6moData
 #'
 transcript_call_outliers = function(tissues){
   pca_outliers_list = list()
-  for(tissue in tissues){
+  for(.tissue in tissues){
     
-    data = preprocess_pass1b_rnaseq_gcp(tissue_code, 'all', gsutil_path = gsutil)
-    if(is.null(data)){next}
-    meta = data$meta
+    data = transcript_prep_data(.tissue, covariates = NULL, outliers = NULL)
+    meta = data.table(data$metadata)
     counts = data$counts
-    tmm = data$norm
+    tmm = data$norm_data
     meta[,sex_group := paste0(sex, ';', group)]
     
-    tmm_pca_1k = call_pca_outliers(tmm, 0.05, plot=T, verbose=T, iqr_coef=5, N=1000, TITLE=tissue_code)
+    tmm_pca_1k = call_pca_outliers(tmm, 0.05, plot=T, verbose=T, iqr_coef=5, N=1000, TITLE=.tissue)
     
     if(length(tmm_pca_1k$pca_outliers)>0){
       rep = as.data.table(tmm_pca_1k$pc_outliers_report)
-      rep[,tissue := tissue_code]
-      pca_outliers_list[[tissue_code]] = rep
+      rep[,tissue := .tissue]
+      pca_outliers_list[[.tissue]] = rep
     }
     
   }
   pca_outliers = rbindlist(pca_outliers_list)
   pca_outliers
-  out = pca_outliers[,list(dataset=tissue_code,
+  out = pca_outliers[,list(dataset=.tissue,
                            reason=paste0(PC, collapse=',')),
                      by=viallabel]
   out=unique(out)

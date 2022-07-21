@@ -8,13 +8,13 @@ transcript_call_outliers(tissues)
 }
 \arguments{
 \item{tissues}{list of tissue abbreviations for which to call RNA-seq outliers.
-See \code{\link[=TISSUE_ABBREV]{TISSUE_ABBREV()}} for accepted values.}
+See \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV} for accepted values.}
 }
 \value{
-something
+TODO
 }
 \description{
-Description
+TODO
 }
 \examples{
 transcript_call_outliers("SKM-GN")
@@ -23,5 +23,5 @@ transcript_call_outliers(c("SKM-GN","BLOOD"))
 }
 \seealso{
 \code{\link[=call_pca_outliers]{call_pca_outliers()}} for workhorse function, \code{\link[=plot_pcs]{plot_pcs()}} for plotting function,
-\code{\link[=TISSUE_ABBREV]{TISSUE_ABBREV()}} for list of accepted tissue abbrevations
+\link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV} for list of accepted tissue abbrevations
 }

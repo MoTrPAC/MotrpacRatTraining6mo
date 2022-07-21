@@ -1,16 +1,18 @@
-#' Handle missing values in covariates for differential analysis
+#' Format covariates for differential analysis
 #' 
 #' If fewer than 5% of values are missing from a continuous covariate, replace 
 #' missing values with the mean in \code{meta}. Otherwise, remove the covariate from \code{covar}. 
 #' If values are missing from a factor covariate, remove the covariate from \code{covar}. 
+#' If a covariate has constant values, remove it from \code{covar}. 
 #' Note that covariates are only removed from \code{covar}, not \code{meta}.
 #'
 #' @param covar string or character vector of covariate names that correspond to column names of \code{meta}
 #' @param meta sample by variable data frame of metadata
+#' @param center_scale boolean, whether to center and scale continuous variables
 #'
 #' @return named list of two items: 
 #' \describe{
-#'   \item{\code{meta}}{data frame input \code{meta} with covariates imputed as necessary}
+#'   \item{\code{meta}}{data frame input \code{meta} with covariates imputed and/or centered and scaled as necessary}
 #'   \item{\code{covariates}}{character vector input \code{covar} after removing covariates as necessary}
 #' }
 #' @export
@@ -23,8 +25,9 @@
 #'                   V2 = c(rnorm(12), rep(NA, 8)))
 #' covar = c("V1","V2")
 #' result = fix_covariates(covar, meta)
+#' result = fix_covariates(covar, meta, center_scale = TRUE)
 #' 
-fix_covariates = function(covar, meta){
+fix_covariates = function(covar, meta, center_scale = FALSE){
   meta = data.table(meta)
   # make sure there are no missing values in covariates
   for(cov in covar){
@@ -47,45 +50,88 @@ fix_covariates = function(covar, meta){
       }
     }
   }
+  
+  # center and scale continuous variables 
+  for (cov in covar){
+    # remove if constant
+    if(length(unique(meta[,get(cov)])) == 1){
+      message(sprintf("Covariate %s is constant. Removing.", cov))
+      covar = covar[covar != cov]
+    }else{
+      # center and scale
+      if(is.numeric(meta[,get(cov)])){
+        meta[,(cov) := scale(meta[,get(cov)], center = center_scale, scale = center_scale)]
+      }
+    }
+  }
+  
   meta = as.data.frame(meta)
   return(list(meta=meta, covariates=covar))
 }
 
 
 #' Preprocess RNA-seq data 
+#' 
+#' Collect filtered raw counts, normalized sample-level data, phenotypic data, RNA-seq metadata, 
+#' covariates, and outliers associated with a given tissue. 
 #'
 #' @param tissue character, tissue abbreviation, one of [TISSUE_ABBREV]
 #' @param sex NULL to return data from both sexes or one of "male" or "female" to return data from the specified sex
 #' @param covariates character vector of covariates that correspond to column names of [TRNSCRPT_META].
 #'   Defaults to covariates that were used for the manuscript. 
-#' @param outliers vector of viallabels to exclude during differential analysis. Defaults
+#' @param outliers vector of viallabels to exclude from the returned data. Defaults
 #'   to \code{OUTLIERS$viallabel[OUTLIERS$assay == "TRNSCRPT"]}
+#' @param adjust_covariates boolean, whether to adjust covariates using [fix_covariates()]. 
+#'   Only applies if \code{covariates} is not NULL. 
+#' @param center_scale boolean, whether to center and scale continuous covariates within [fix_covariates()]. 
+#'   Only applies if \code{adjust_covariates} is also TRUE. 
 #'
 #' @return named list of five items: 
 #' \describe{
-#'   \item{\code{metadata}}{TODO}
-#'   \item{\code{covariates}}TODO
-#'   \item{\code{filt_counts}}{TODO}
-#'   \item{\code{norm_data}}{TODO}
-#'   \item{\code{outliers}}{TODO}
+#'   \item{\code{metadata}}{data frame of combined [PHENO] and [TRNSCRPT_META], filtered to samples in \code{tissue}.
+#'     If \code{adjust_covariates = TRUE}, missing values in \code{covariates} are imputed. 
+#'     If also \code{center_scale = TRUE}, continuous variables named by \code{covariates} are centered and scaled.}
+#'   \item{\code{covariates}}{character vector of covariates to adjust for during differential analysis. For all tissues except VENACV,
+#'     this vector is a (sub)set of the input list of covariates. Covariates are removed from this vector if there are too
+#'     many missing values or if all values are constant. See [fix_covariates()] for more details.
+#'     If \code{tissue = "VENACV"}, the Ensembl ID for Ucp1 is also added as a covariate.}
+#'   \item{\code{counts}}{data frame of raw counts with Ensembl IDs (which are also TRNSCRPT \code{feature_ID}s) 
+#'     as row names and vial labels as column names. See [TRNSCRPT_RAW_COUNTS] for details.}
+#'   \item{\code{norm_data}}{data frame of TMM-normalized data with Ensembl IDs (which are also TRNSCRPT 
+#'     \code{feature_ID}s) as row names and vial labels as column names. See [TRNSCRPT_NORM_DATA] for details.}
+#'   \item{\code{outliers}}{subset of \code{outliers} in input removed from the data}
 #' }
 #' 
-#' @seealso [OUTLIERS]
+#' @seealso [OUTLIERS], [fix_covariates()], [PHENO], [TRNSCRPT_META], [TRNSCRPT_RAW_COUNTS], [TRNSCRPT_NORM_DATA]
 #' 
 #' @export
 #' @import data.table
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples
-#' gastroc_data = transcript_prep_data("SKM-GN")
-#' gastroc_data = transcript_prep_data("SKM-GN", outliers = NULL)
-#' gastroc_data = transcript_prep_data("SKM-GN", covariates = NULL, outliers = NULL)
-#' gastroc_data = transcript_prep_data("SKM-GN", covariates = NULL, outliers = NULL, sex = "male")
+#' # Process gastrocnemius RNA-seq data with default parameters, i.e., return data from both 
+#' # sexes, remove established outliers, impute missing values in default covariates 
+#' gastroc_data1 = transcript_prep_data("SKM-GN")
+#' 
+#' # Same as above but do not remove outliers if they exist 
+#' gastroc_data2 = transcript_prep_data("SKM-GN", outliers = NULL)
+#' 
+#' # Same as above but do not adjust existing variables in the metadata  
+#' gastroc_data3 = transcript_prep_data("SKM-GN", covariates = NULL, outliers = NULL)
+#' 
+#' # Same as above but only return data from male samples
+#' gastroc_data4 = transcript_prep_data("SKM-GN", covariates = NULL, outliers = NULL, sex = "male")
+#' 
+#' # Same as gastroc_data2 but also center and scale default continuous covariates in the returned metadata,
+#' # which is also done within [run_deseq()] (called by [transcript_timewise_dea()]) 
+#' gastroc_data4 = transcript_prep_data("SKM-GN", outliers = NULL, center_scale = TRUE)
 #' 
 transcript_prep_data = function(tissue, 
                                 sex = NULL, 
                                 covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
-                                outliers = OUTLIERS$viallabel[OUTLIERS$assay == "TRNSCRPT"]){
+                                outliers = OUTLIERS$viallabel[OUTLIERS$assay == "TRNSCRPT"],
+                                adjust_covariates = TRUE,
+                                center_scale = FALSE){
   # data.table workaround
   .tissue = tissue
   .sex = sex
@@ -146,16 +192,11 @@ transcript_prep_data = function(tissue,
     covariates = c(covariates, 'ucp1')
   }
   
-  # impute missing values
-  new = fix_covariates(covariates, meta)
-  covariates = new$covariates
-  meta = data.table(new$meta)
-  
-  # center and scale continuous covariates
-  for (cov in covariates){
-    if(is.numeric(meta[,get(cov)])){
-      meta[,(cov) := scale(meta[,get(cov)], center = T, scale = T)]
-    }
+  # impute missing values and filter covariates
+  if(adjust_covariates & !is.null(covariates)){
+    new = fix_covariates(covariates, meta, center_scale)
+    covariates = new$covariates
+    meta = data.table(new$meta)
   }
   
   meta[,sex_group := paste0(sex, ';', group)]
