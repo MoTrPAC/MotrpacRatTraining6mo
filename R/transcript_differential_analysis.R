@@ -1,90 +1,9 @@
-#' Title
+#' TODO
+#' RNA-seq timewise differential analysis 
 #'
 #' @param tissue_code 
-#' @param meta 
-#' @param counts 
-#' @param tmm 
 #' @param covariates 
 #' @param outliers 
-#' @param gsutil_path 
-#' @param parallel 
-#'
-#' @return TODO
-#' 
-#' @export
-#' @import data.table
-#'
-#' @examples
-#' TODO
-#' 
-transcript_prep_data = function(tissue_code, 
-                                meta, 
-                                counts, 
-                                tmm,
-                                covariates=c('pct_globin', 'rin', 'pct_umi_dup', 'median_5_3_bias'), 
-                                outliers=NULL, 
-                                gsutil_path='~/google-cloud-sdk/bin/gsutil',
-                                parallel=F){
-  
-  if(tissue_code %in% c("t31-plasma", "t57-tibia")){return(NULL)}
-  
-  # fix some inconsistencies 
-  if(tissue_code == 't54-hypothalmus'){
-    tissue_code = 't54-hypothalamus'
-  }
-  
-  # load outliers
-  if(is.null(outliers)){
-    rna_outliers = dl_read_gcp('gs://mawg-data/pass1b-06/transcript-rna-seq/dea/pass1b-06_transcript-rna-seq_removed-outliers_20201028.txt', sep='\t', check_first=parallel)
-    outliers = as.character(rna_outliers[,viallabel])
-  }
-  
-  cat(tissue_code, sep = '\n')
-  
-  # remove outliers 
-  curr_outliers = outliers[outliers %in% as.character(meta[,viallabel])]
-  if(length(curr_outliers)>0){
-    meta = meta[,viallabel := as.character(viallabel)]
-    meta = meta[!viallabel %in% outliers]
-    counts = counts[meta[,viallabel]]
-    tmm = tmm[meta[,viallabel]]
-  }
-  if(tissue_code == 't65-aorta'){
-    # add Ucp1 as a covariate
-    ucp1 = data.table(viallabel = colnames(counts), ucp1 = unname(unlist(counts['ENSRNOG00000003580',])))
-    meta = merge(meta, ucp1, by = 'viallabel')
-    covariates = c(covariates, 'ucp1')
-  }
-  
-  # impute missing values
-  new = fix_missing(covariates, meta)
-  covariates = new$covariates
-  meta = new$meta
-  
-  # center and scale continuous covariates
-  for (cov in covariates){
-    if(is.numeric(meta[,get(cov)])){
-      meta[,(cov) := scale(meta[,get(cov)], center = T, scale = T)]
-    }
-  }
-  
-  meta[,sex_group := paste0(sex, ';', group)]
-  
-  return(list(fixed_meta = meta, 
-              fixed_covariates = covariates, 
-              fixed_counts = counts,
-              fixed_tmm = tmm, 
-              curr_outliers = curr_outliers))
-}
-
-
-#' Title
-#'
-#' @param tissue_code 
-#' @param meta 
-#' @param counts 
-#' @param covariates 
-#' @param curr_outliers 
 #' @param date 
 #' @param save_rdata 
 #' @param write 
@@ -97,7 +16,7 @@ transcript_prep_data = function(tissue_code,
 #' @examples
 #' TODO
 #' 
-transcript_timewise_dea_each_sex = function(tissue_code, meta, counts, covariates, curr_outliers, date, save_rdata=T, write=T){
+transcript_timewise_dea = function(tissue, covariates, outliers, date=NULL, save_rdata=T, write=T){
   
   # fix some inconsistencies 
   if(tissue_code == 't54-hypothalmus'){
@@ -227,6 +146,7 @@ transcript_timewise_dea_each_sex = function(tissue_code, meta, counts, covariate
 }
 
 
+#' TODO
 #' Title
 #'
 #' @param tissue_code 

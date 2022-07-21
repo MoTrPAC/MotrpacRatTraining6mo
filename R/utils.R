@@ -84,3 +84,25 @@ load_dropbox_rdata = function(target, tmpdir, redownload = FALSE){
   return(get(obj_name))
 }
 
+
+#' List available data
+#' 
+#' List available data, including lazily-loaded data. Useful to gather
+#' split data frames.
+#'
+#' @param package optional string to specify a package 
+#'
+#' @return character vector of names of data objects available to load
+#' @export
+#'
+#' @examples
+#' list_available_data()
+#' list_available_data("MotrpacBicQC")
+list_available_data = function(package=NULL){
+  res = data(package=package)
+  obj = res$results[,3]
+  # remove objects that can't be called directly
+  obj = obj[!grepl("\\(", obj)]
+  return(obj)
+}
+

@@ -2,7 +2,8 @@
 % Please edit documentation in R/transcript_differential_analysis.R
 \name{transcript_training_dea_each_sex}
 \alias{transcript_training_dea_each_sex}
-\title{Title}
+\title{TODO
+Title}
 \usage{
 transcript_training_dea_each_sex(
   tissue_code,
@@ -33,6 +34,7 @@ transcript_training_dea_each_sex(
 TODO
 }
 \description{
+TODO
 Title
 }
 \examples{

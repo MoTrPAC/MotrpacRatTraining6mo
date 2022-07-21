@@ -7,8 +7,8 @@
 tissue_abbreviations(alphabetical_order = TRUE)
 }
 \arguments{
-\item{alphabetical_order}{bool, whether to alphabetize the tissue abbreviations. 
-\code{TRUE} by default. If \code{FALSE}, return them in the biological order they 
+\item{alphabetical_order}{bool, whether to alphabetize the tissue abbreviations.
+\code{TRUE} by default. If \code{FALSE}, return them in the biological order they
 appear in manuscript figures.}
 }
 \value{

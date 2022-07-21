@@ -1,109 +1,174 @@
-#' Title
+#' Handle missing values in covariates for differential analysis
 #' 
-#' Description
+#' If fewer than 5% of values are missing from a continuous covariate, replace 
+#' missing values with the mean in \code{meta}. Otherwise, remove the covariate from \code{covar}. 
+#' If values are missing from a factor covariate, remove the covariate from \code{covar}. 
+#' Note that covariates are only removed from \code{covar}, not \code{meta}.
 #'
-#' @param tissue character, tissue abbreviation, one of [TISSUE_ABBREV], excluding "PLASMA"
-#' @param sex character, "male", "female", or "all"
-#' @param outliers optional, vector of vial labels to exclude 
+#' @param covar string or character vector of covariate names that correspond to column names of \code{meta}
+#' @param meta sample by variable data frame of metadata
 #'
-#' @return
+#' @return named list of two items: 
+#' \describe{
+#'   \item{\code{meta}}{data frame input \code{meta} with covariates imputed as necessary}
+#'   \item{\code{covariates}}{character vector input \code{covar} after removing covariates as necessary}
+#' }
 #' @export
+#' @import data.table
 #' 
+#' @seealso [transcript_prep_data()]
+#'
+#' @examples
+#' meta = data.frame(V1 = c(rnorm(19), NA),
+#'                   V2 = c(rnorm(12), rep(NA, 8)))
+#' covar = c("V1","V2")
+#' result = fix_covariates(covar, meta)
+#' 
+fix_covariates = function(covar, meta){
+  meta = data.table(meta)
+  # make sure there are no missing values in covariates
+  for(cov in covar){
+    if(any(is.na(meta[,get(cov)]))){
+      num_missing = nrow(meta[is.na(get(cov))])
+      if(is.character(meta[,get(cov)]) | is.factor(meta[,get(cov)])){
+        # don't know how to handle missing values for factor. remove.
+        warning(sprintf("Categorical variable of interest %s has %s missing values. Removing.\n", cov, num_missing))
+        covar = covar[covar != cov]
+      }else{
+        # if continuous 
+        # remove if missing for >5% of samples
+        if(num_missing/nrow(meta) > 0.05){
+          warning(sprintf("Numeric variable of interest %s has %s missing values. Removing.\n", cov, num_missing))
+          covar = covar[covar != cov]
+        }else{
+          warning(sprintf("Numeric variable of interest %s has %s missing values. Replacing missing values with mean.\n", cov, num_missing))
+          meta[is.na(get(cov)), (cov) := mean(meta[,get(cov)], na.rm=T)]
+        }
+      }
+    }
+  }
+  meta = as.data.frame(meta)
+  return(list(meta=meta, covariates=covar))
+}
+
+
+#' Preprocess RNA-seq data 
+#'
+#' @param tissue character, tissue abbreviation, one of [TISSUE_ABBREV]
+#' @param sex NULL to return data from both sexes or one of "male" or "female" to return data from the specified sex
+#' @param covariates character vector of covariates that correspond to column names of [TRNSCRPT_META].
+#'   Defaults to covariates that were used for the manuscript. 
+#' @param outliers vector of viallabels to exclude during differential analysis. Defaults
+#'   to \code{OUTLIERS$viallabel[OUTLIERS$assay == "TRNSCRPT"]}
+#'
+#' @return named list of five items: 
+#' \describe{
+#'   \item{\code{metadata}}{TODO}
+#'   \item{\code{covariates}}TODO
+#'   \item{\code{filt_counts}}{TODO}
+#'   \item{\code{norm_data}}{TODO}
+#'   \item{\code{outliers}}{TODO}
+#' }
+#' 
+#' @seealso [OUTLIERS]
+#' 
+#' @export
 #' @import data.table
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples
-#' TODO
+#' gastroc_data = transcript_prep_data("SKM-GN")
+#' gastroc_data = transcript_prep_data("SKM-GN", outliers = NULL)
+#' gastroc_data = transcript_prep_data("SKM-GN", covariates = NULL, outliers = NULL)
+#' gastroc_data = transcript_prep_data("SKM-GN", covariates = NULL, outliers = NULL, sex = "male")
 #' 
-prep_data_TRNSCRPT = function(tissue, sex, outliers = NULL){
+transcript_prep_data = function(tissue, 
+                                sex = NULL, 
+                                covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
+                                outliers = OUTLIERS$viallabel[OUTLIERS$assay == "TRNSCRPT"]){
+  # data.table workaround
+  .tissue = tissue
+  .sex = sex
   
-  if(!sex %in% c('male','female','all')){
-    stop('"sex" must be one of the following values:\n  "male","female","all"\n')
+  if(!is.null(.sex)){
+    if(!.sex %in% c('male','female',NULL)){
+      stop("'sex' must be one of the following values:\n  'male', 'female', NULL")
+    }
   }
   
-  if(!tissue %in% MotrpacRatTraining6moData::TISSUE_ABBREV){
-    stop(sprintf('"tissue" must be one of the following values:\n  %s\n',
-                 paste0(MotrpacRatTraining6moData::TISSUE_ABBREV, collapse=", ")))
+  accepted_tissues = TISSUE_ABBREV[!TISSUE_ABBREV == "PLASMA"]
+  if(!tissue %in% accepted_tissues){
+    warning(sprintf("'%s' is not an accepted tissue abbreviation. TRNSCRPT data is available for the following tissues:\n  %s",
+                    .tissue,
+                    paste0(accepted_tissues, collapse=", ")))
+    return()
   }
   
-  dmaqc_metadata = as.data.table(MotrpacRatTraining6moData::PHENO)
+  # load data
+  counts = get(sprintf("TRNSCRPT_%s_RAW_COUNTS", gsub("-","",.tissue)))
+  tmm = get(sprintf("TRNSCRPT_%s_NORM_DATA", gsub("-","",.tissue)))
+  rownames(tmm) = tmm$feature_ID
+  tmm$feature_ID = NULL
   
-  # load counts 
-  # will return error if data doesn't exist
-  counts = get(sprintf("TRNSCRPT_%s_RAW_COUNTS", gsub("-","",tissue)))
-  raw_counts = counts
+  # filter counts by genes in normalized data 
+  counts = counts[rownames(tmm),]
   
-  # get normalized data
-  tmm = MotrpacRatTraining6moData::TRNSCRPT_SAMPLE_DATA
-  # select this tissue
-  tmm = tmm[grepl(sprintf("TRNSCRPT;%s", tissue), tmm$feature),]
-  # convert PID to viallabel 
+  # format metadata
+  pheno = as.data.table(PHENO)
+  meta = as.data.table(TRNSCRPT_META)
+  meta[,viallabel := as.character(vial_label)] 
+  meta = merge(pheno, meta, by="viallabel")
   
+  # filter by tissue
+  meta = meta[tissue == .tissue]
   
-  # filter genes
-  # TODO
-  
-  # get nor
-  
-  # filter by genes in normalized data 
-  tmm = dl_read_gcp(sprintf('gs://motrpac-data-freeze-pass/pass1b-06/v1.0/analysis/transcriptomics/transcript-rna-seq/normalized-data/motrpac_pass1b-06_%s_transcript-rna-seq_normalized-log-cpm.txt', TISSUE_CODE), 
-                    tmpdir = scratch, 
-                    GSUTIL_PATH = gsutil_path,
-                    check_first = parallel)
-  # remove pid and bid rows
-  tmm = tmm[3:nrow(tmm)]
-  counts = counts[tmm[,viallabel],]
-  
-  # convert tmm to data.frame
-  tmm = as.data.frame(tmm)
-  rownames(tmm) = tmm$viallabel
-  tmm$viallabel = NULL
-  
-  # subset metadata 
-  meta_data = dmaqc_metadata[as.character(viallabel) %in% colnames(tmm)]
-  # remove reference standards from counts 
-  counts = counts[,as.character(meta_data[,viallabel])]
-  
-  # coerce counts to integer (RSEM has fractional values for counts sometimes)
-  counts_round = as.data.frame(apply(counts, c(1,2), as.integer)) 
-  raw_counts_round = as.data.frame(apply(raw_counts, c(1,2), as.integer)) 
-  
-  # RNA-seq metadata 
-  qa_qc = dl_read_gcp('gs://motrpac-data-freeze-pass/pass1b-06/v1.0/results/transcriptomics/qa-qc/motrpac_pass1b-06_transcript-rna-seq_qa-qc-metrics.csv', 
-                      sep=',', 
-                      tmpdir = scratch, 
-                      GSUTIL_PATH = gsutil_path,
-                      check_first = parallel)
-  # adjust column names
-  colnames(qa_qc) = tolower(gsub(' .*','',colnames(qa_qc)))
-  # remove duplicate columns
-  qa_qc[,c('pid','bid') := NULL]
-  meta_data[,viallabel := as.character(viallabel)]
-  qa_qc[,vial_label := as.character(vial_label)]
-  meta = merge(meta_data, qa_qc, by.x = 'viallabel', by.y = 'vial_label')
-  
-  if(SEX != 'all'){
-    # subset to sex 
-    meta = meta[sex == SEX]
-    tmm = tmm[as.character(meta[,viallabel])]
-    counts_round = counts_round[as.character(meta[,viallabel])]
+  # filter by sex
+  if(!is.null(.sex)){
+    meta = meta[sex == .sex]
   }
-  
+
   # remove outliers 
+  curr_outliers = c()
   if(!is.null(outliers)){
-    meta = meta[,viallabel := as.character(viallabel)]
+    outliers = as.character(outliers)
+    curr_outliers = outliers[outliers %in% meta[,viallabel]]
     meta = meta[!viallabel %in% outliers]
-    tmm = tmm[meta[,viallabel]]
-    counts_round = counts_round[meta[,viallabel]]
   }
   
-  return(list(meta = meta,
-              raw_counts = raw_counts_round, 
-              counts = counts_round,
-              norm = tmm))
+  # subset columns
+  counts = counts[meta[,viallabel]]
+  tmm = tmm[meta[,viallabel]]
+  
+  if(.tissue == 'VENACV'){
+    # add Ucp1 as a covariate
+    ucp1 = data.table(viallabel = colnames(counts), ucp1 = unname(unlist(counts['ENSRNOG00000003580',])))
+    meta = merge(meta, ucp1, by = 'viallabel')
+    covariates = c(covariates, 'ucp1')
+  }
+  
+  # impute missing values
+  new = fix_covariates(covariates, meta)
+  covariates = new$covariates
+  meta = data.table(new$meta)
+  
+  # center and scale continuous covariates
+  for (cov in covariates){
+    if(is.numeric(meta[,get(cov)])){
+      meta[,(cov) := scale(meta[,get(cov)], center = T, scale = T)]
+    }
+  }
+  
+  meta[,sex_group := paste0(sex, ';', group)]
+  
+  return(list(metadata = meta, 
+              covariates = covariates, 
+              filt_counts = counts,
+              norm_data = tmm, 
+              outliers = curr_outliers))
 }
 
 
+#' TODO
 #' Prepare ATAC-seq dataset
 #' 
 #' Retrieve and format ATAC-seq sample-level data and metadata for a given tissue. 

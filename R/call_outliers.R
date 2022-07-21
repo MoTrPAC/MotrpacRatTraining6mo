@@ -56,7 +56,7 @@ plot_pcs = function(pcA, pcB, pcax, outliers, pca, title=NULL){
 #' @param N integer, select N most variable features
 #' @param TITLE string, substring to include in PC plot titles 
 #' 
-#' @return something 
+#' @return TODO 
 #'
 #' @examples
 #' TODO
@@ -157,30 +157,24 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, N=Inf, 
 #' Description
 #' 
 #' @param tissues list of tissue abbreviations for which to call RNA-seq outliers. 
-#'     See [tissue_abbreviations()] for accepted values. 
+#'     See [TISSUE_ABBREV()] for accepted values. 
 #' 
 #' @return something
 #'
 #' @seealso [call_pca_outliers()] for workhorse function, [plot_pcs()] for plotting function, 
-#'     [tissue_abbreviations()] for list of accepted tissue abbrevations 
+#'     [TISSUE_ABBREV()] for list of accepted tissue abbrevations 
 #'
 #' @examples
-#' call_transcript_outliers("t55-gastrocnemius")
-#' call_transcript_outliers(c("t55-gastrocnemius","t56-vastus-lateralis"))
+#' transcript_call_outliers("SKM-GN")
+#' transcript_call_outliers(c("SKM-GN","BLOOD"))
 #'
 #' @export
 #' @import MotrpacBicQC
 #' @import data.table
 #'
-call_transcript_outliers = function(tissue_codes){
+transcript_call_outliers = function(tissues){
   pca_outliers_list = list()
-  for(tissue_code in tissue_codes){
-    if(tissue_code %in% c("t31-plasma", "t57-tibia")){next}
-    
-    # fix some inconsistencies 
-    if(tissue_code == 't54-hypothalmus'){
-      tissue_code = 't54-hypothalamus'
-    }
+  for(tissue in tissues){
     
     data = preprocess_pass1b_rnaseq_gcp(tissue_code, 'all', gsutil_path = gsutil)
     if(is.null(data)){next}

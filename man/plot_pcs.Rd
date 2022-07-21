@@ -31,5 +31,5 @@ TODO
 
 }
 \seealso{
-[call_pca_outliers()]
+\code{\link[=call_pca_outliers]{call_pca_outliers()}}
 }

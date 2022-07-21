@@ -2,7 +2,8 @@
 % Please edit documentation in R/prepare_datasets.R
 \name{preprocess_pass1b_atacseq_gcp}
 \alias{preprocess_pass1b_atacseq_gcp}
-\title{Prepare ATAC-seq dataset}
+\title{TODO
+Prepare ATAC-seq dataset}
 \usage{
 preprocess_pass1b_atacseq_gcp(
   TISSUE_CODE,
