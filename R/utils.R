@@ -107,32 +107,33 @@ list_available_data = function(package=NULL){
 }
 
 
-#' TODO
+#' Check arguments for DEA functions 
+#' 
 #' Internal function used to check arguments for differential analysis functions
 #'
-#' @param tissue tissue abbreviation, one of [MotrpacRatTraining6moData::TISSUE_ABBREV]
-#' @param outfile 
-#' @param overwrite 
-#' @param outfile_is_rdata 
+#' @param tissue @eval tissue()
+#' @param outfile character, output file 
+#' @param overwrite bool, whether to overwrite \code{outfile} if it exists
+#' @param outfile_is_rdata bool, whether \code{outfile} is intended to save RData
 #'
 #' @return NULL
 #'
 #' @examples
-#' TODO 
+#' check_dea_args("BAT", "~/Desktop/bat.rda", overwrite = FALSE) 
 #' 
 check_dea_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
   # check arguments 
   if(length(tissue)>1){
     stop("Please specify a single tissue, e.g., 'BAT' for brown adipose tissue. See 'TISSUE_ABBREV' for options.")
   }
-  if(!is.null(rdata_outfile)){
-    if(!overwrite & file.exists(rdata_outfile)){
+  if(!is.null(outfile)){
+    if(!overwrite & file.exists(outfile)){
       stop(sprintf("'%s' already exists and 'overwrite' = FALSE. Specify a new outfile or set 'overwrite' to TRUE to generate new results.",
                    outfile))
     }
     if(outfile_is_rdata){
       if(!any(unlist(lapply(c("\\.rda$", "\\.rdata"), function(pattern){
-        grepl(pattern, rdata_outfile, ignore.case = TRUE)
+        grepl(pattern, outfile, ignore.case = TRUE)
       })))){
         stop(sprintf("Outfile '%s' should end with '.rda' or '.RData' to indicate an RData file (not case-sensitive).", outfile))
       }

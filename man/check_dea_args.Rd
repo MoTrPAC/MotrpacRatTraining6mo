@@ -2,25 +2,23 @@
 % Please edit documentation in R/utils.R
 \name{check_dea_args}
 \alias{check_dea_args}
-\title{TODO
-Internal function used to check arguments for differential analysis functions}
+\title{Check arguments for DEA functions}
 \usage{
 check_dea_args(tissue, outfile, overwrite, outfile_is_rdata = TRUE)
 }
 \arguments{
-\item{tissue}{tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
+\item{tissue}{@eval tissue()}
 
-\item{outfile}{}
+\item{outfile}{character, output file}
 
-\item{overwrite}{}
+\item{overwrite}{bool, whether to overwrite \code{outfile} if it exists}
 
-\item{outfile_is_rdata}{}
+\item{outfile_is_rdata}{bool, whether \code{outfile} is intended to save RData}
 }
 \description{
-TODO
 Internal function used to check arguments for differential analysis functions
 }
 \examples{
-TODO 
+check_dea_args("BAT", "~/Desktop/bat.rda", overwrite = FALSE) 
 
 }

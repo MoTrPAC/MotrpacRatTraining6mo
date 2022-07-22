@@ -8,8 +8,8 @@ transcript_timewise_dea(
   tissue,
   covariates = c("pct_globin", "RIN", "pct_umi_dup", "median_5_3_bias"),
  
-    outliers = MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay
-    == "TRNSCRPT"],
+    outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay
+    == "TRNSCRPT"]),
   add_shrunk_logfc = TRUE,
   rdata_outfile = NULL,
   overwrite = FALSE,
@@ -23,7 +23,7 @@ transcript_timewise_dea(
 Defaults to covariates that were used for the manuscript.}
 
 \item{outliers}{vector of viallabels to exclude during differential analysis. Defaults
-to \code{MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "TRNSCRPT"]}}
+to \code{[MotrpacRatTraining6moData::OUTLIERS\$viallabel[[MotrpacRatTraining6moData::OUTLIERS]$assay == "TRNSCRPT"]}}
 
 \item{add_shrunk_logfc}{boolean, whether to calculate shrunk log fold-changes in addition to standard log fold-changes}
 
@@ -75,6 +75,6 @@ dea = transcript_timewise_dea("BAT")
 dea = transcript_timewise_dea("BAT", add_shrunk_logfc = FALSE)
 
 # Same as the first example but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
-dea = transcript_timewise_dea("BAT", rdata_outfile = "~/test/BAT_TRNSCRIPT_DA.RData", overwrite = TRUE)
+dea = transcript_timewise_dea("BAT", rdata_outfile = "~/test/BAT_RNA_DA.RData", overwrite = TRUE)
 
 }

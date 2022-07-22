@@ -10,7 +10,8 @@ run_deseq(
   covar,
   outcome_of_interest,
   contrasts,
-  shrink = TRUE,
+  dds = NULL,
+  shrink = FALSE,
   verbose = FALSE
 )
 }
@@ -18,28 +19,51 @@ run_deseq(
 \item{counts}{data frame of raw filtered RNA-seq counts. Row names are gene IDs and
 column names are sample IDs. Column names must correspond to values in \code{meta$viallabel}}
 
-\item{meta}{data frame of metadata with columns \code{\param{outcome_of_interest}, \param{covar}, 'viallabel'} at a minimum.
-\param{counts} are subset to \code{meta$viallabel}}
+\item{meta}{data frame of metadata with columns \code{c(outcome_of_interest, covar, 'viallabel')} at a minimum.
+\code{counts} are subset to \code{meta$viallabel}.}
 
-\item{covar}{adjustment variables to include in the DESeq model}
+\item{covar}{character vector, adjustment variables to include in the DESeq model}
 
-\item{outcome_of_interest}{outcome of interest to include in the model;
-levels provided in \param{contrasts}}
+\item{outcome_of_interest}{character, outcome of interest to include in the model.
+\code{meta} must include this variable as column.
+\code{contrasts} must include levels in this variable.}
+
+\item{dds}{optional \link[DESeq2:DESeqResults]{DESeq2::DESeqResults} object if it was previously generated}
 
 \item{shrink}{bool, whether to apply \code{lfcShrink()}}
 
 \item{verbose}{bool, whether to print the design string}
 
 \item{constrasts}{list of vectors, where each vector is in the form
-\code(c(outcome_of_interest, numerator, denominator)), e.g. \code{c('sex_group','female.1w','female.control')}}
+\code{c(outcome_of_interest, numerator, denominator)}, e.g. \code{c('sex_group','female.1w','female.control')}}
 }
 \value{
-TODO
+named list of two items:
+\describe{
+\item{\code{res}}{data frame of results}
+\item{\code{dds}}{\link[DESeq2:DESeqResults]{DESeq2::DESeqResults} object}
+}
 }
 \description{
-TODO
+Wrapper to perform multiple pairwise contrasts with DESeq2
 }
 \examples{
-TODO
-
+# Get 1- and 2- week training effects in female gastrocnemius
+data = transcript_prep_data("SKM-GN", sex = "female")
+deseq_res = run_deseq(data$filt_counts, 
+                      data$metadata,
+                      data$covariates,
+                      "group",
+                      list(c("group","1w","control"), c("group","2w","control")))
+head(deseq_res$res)
+                      
+# Get shrunken effects using the DESeqResults objects generated in the previous step
+deseq_res_shrunk = run_deseq(data$filt_counts, 
+                            data$metadata,
+                            data$covariates,
+                            "group",
+                            list(c("group","1w","control"), c("group","2w","control")),
+                            dds = deseq_res$dds,
+                            shrink = TRUE)
+                            
 }

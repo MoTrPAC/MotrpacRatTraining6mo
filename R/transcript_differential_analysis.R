@@ -1,20 +1,26 @@
 #' Wrapper for [DESeq2::DESeq()]
 #' 
-#' TODO
+#' Wrapper to perform multiple pairwise contrasts with DESeq2 
 #' 
 #' @param counts data frame of raw filtered RNA-seq counts. Row names are gene IDs and 
 #'   column names are sample IDs. Column names must correspond to values in \code{meta$viallabel}
-#' @param meta data frame of metadata with columns \code{\param{outcome_of_interest}, \param{covar}, 'viallabel'} at a minimum. 
-#'   \param{counts} are subset to \code{meta$viallabel}
-#' @param covar adjustment variables to include in the DESeq model
-#' @param outcome_of_interest outcome of interest to include in the model; 
-#'   levels provided in \param{contrasts}
+#' @param meta data frame of metadata with columns \code{c(outcome_of_interest, covar, 'viallabel')} at a minimum. 
+#'   \code{counts} are subset to \code{meta$viallabel}.
+#' @param covar character vector, adjustment variables to include in the DESeq model
+#' @param outcome_of_interest character, outcome of interest to include in the model. 
+#'   \code{meta} must include this variable as column. 
+#'   \code{contrasts} must include levels in this variable. 
 #' @param constrasts list of vectors, where each vector is in the form 
-#'   \code(c(outcome_of_interest, numerator, denominator)), e.g. \code{c('sex_group','female.1w','female.control')}
+#'   \code{c(outcome_of_interest, numerator, denominator)}, e.g. \code{c('sex_group','female.1w','female.control')}
+#' @param dds optional [DESeq2::DESeqResults] object if it was previously generated
 #' @param shrink bool, whether to apply \code{lfcShrink()}
 #' @param verbose bool, whether to print the design string 
 #' 
-#' @return TODO
+#' @return named list of two items: 
+#' \describe{
+#'   \item{\code{res}}{data frame of results}
+#'   \item{\code{dds}}{[DESeq2::DESeqResults] object}
+#' }
 #' 
 #' @export 
 #' @import data.table
@@ -22,9 +28,25 @@
 #' @import ashr
 #' 
 #' @examples 
-#' TODO
-#' 
-run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, shrink=TRUE, verbose=FALSE){
+#' # Get 1- and 2- week training effects in female gastrocnemius
+#' data = transcript_prep_data("SKM-GN", sex = "female")
+#' deseq_res = run_deseq(data$filt_counts, 
+#'                       data$metadata,
+#'                       data$covariates,
+#'                       "group",
+#'                       list(c("group","1w","control"), c("group","2w","control")))
+#' head(deseq_res$res)
+#'                       
+#' # Get shrunken effects using the DESeqResults objects generated in the previous step
+#' deseq_res_shrunk = run_deseq(data$filt_counts, 
+#'                             data$metadata,
+#'                             data$covariates,
+#'                             "group",
+#'                             list(c("group","1w","control"), c("group","2w","control")),
+#'                             dds = deseq_res$dds,
+#'                             shrink = TRUE)
+#'                             
+run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NULL, shrink=FALSE, verbose=FALSE){
   
   meta = as.data.table(meta)
   meta[,(outcome_of_interest) := as.factor(get(outcome_of_interest))]
@@ -42,11 +64,13 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, shrink
   contrast = paste0('~', paste0(c(outcome_of_interest, covar), collapse=' + '))
   if(verbose) message(contrast)
   
-  # run DESeq
-  dds = DESeqDataSetFromMatrix(countData = counts,
-                               colData = meta,
-                               design = eval(parse(text=contrast)))
-  dds = DESeq(dds, quiet = T)
+  if(is.null(dds)){
+    # run DESeq
+    dds = DESeqDataSetFromMatrix(countData = counts,
+                                 colData = meta,
+                                 design = eval(parse(text=contrast)))
+    dds = DESeq(dds, quiet = T)
+  }
   
   # get results for each contrast 
   res_list = list()
@@ -85,7 +109,7 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, shrink
 #' @param covariates character vector of covariates that correspond to column names of [MotrpacRatTraining6moData::TRNSCRPT_META].
 #'   Defaults to covariates that were used for the manuscript. 
 #' @param outliers vector of viallabels to exclude during differential analysis. Defaults
-#'   to \code{MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "TRNSCRPT"]}
+#'   to \code{[MotrpacRatTraining6moData::OUTLIERS\$viallabel[[MotrpacRatTraining6moData::OUTLIERS]$assay == "TRNSCRPT"]}
 #' @param add_shrunk_logfc boolean, whether to calculate shrunk log fold-changes in addition to standard log fold-changes
 #' @param rdata_outfile NULL or path in which to save DESeq2 objects in an RData file 
 #' @param overwrite boolean, whether to overwrite the file if \code{rdata_outfile} exists
@@ -131,11 +155,11 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, shrink
 #' dea = transcript_timewise_dea("BAT", add_shrunk_logfc = FALSE)
 #' 
 #' # Same as the first example but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
-#' dea = transcript_timewise_dea("BAT", rdata_outfile = "~/test/BAT_TRNSCRIPT_DA.RData", overwrite = TRUE)
+#' dea = transcript_timewise_dea("BAT", rdata_outfile = "~/test/BAT_RNA_DA.RData", overwrite = TRUE)
 #' 
 transcript_timewise_dea = function(tissue, 
                                    covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
-                                   outliers = MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "TRNSCRPT"],
+                                   outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "TRNSCRPT"]),
                                    add_shrunk_logfc = TRUE, 
                                    rdata_outfile = NULL,
                                    overwrite = FALSE,
@@ -168,6 +192,7 @@ transcript_timewise_dea = function(tissue,
       i = i+1
     }
 
+    message("Calculating standard fold-changes...")
     # standard results 
     deseq_res = run_deseq(curr_counts, # filtered counts
                           curr_meta, # metadata
@@ -179,13 +204,15 @@ transcript_timewise_dea = function(tissue,
     
     # shrunk results 
     if(add_shrunk_logfc){
+      message("Calculating shrunk fold-changes...")
       deseq_res_shrunk = run_deseq(curr_counts, # filtered counts
                                    curr_meta, # metadata
                                    covariates, # covariates
                                    outcome_of_interest = 'group', # outcome of interest
                                    contrasts = contrasts, # list of contrasts in format c(outcome_of_interest, numerator_level, denominator_level)
                                    shrink = TRUE,
-                                   verbose = verbose)
+                                   verbose = verbose,
+                                   dds = deseq_res$dds)
     }
 
     # save DESeq2 RData
@@ -217,7 +244,7 @@ transcript_timewise_dea = function(tissue,
     
     # add some columns
     res[,sex := SEX]
-    res[,removed_samples := paste0(curr_outliers, collapse=',')]
+    res[,removed_samples := paste0(outliers, collapse=',')]
     # res[,covariates := paste0(covariates, collapse=',')] added within run_deseq()
     
     # add average intensities 
@@ -251,6 +278,7 @@ transcript_timewise_dea = function(tissue,
   
   # add columns
   dt[,tissue := .tissue]
+  dt[,tissue_code := TISSUE_ABBREV_TO_CODE[[.tissue]]]
   dt[,assay_code := 'transcript-rna-seq']
   dt[,assay := 'TRNSCRPT']
   dt[,feature := sprintf("TRNSCRPT;%s;%s", .tissue, feature_ID)]
@@ -305,19 +333,41 @@ transcript_timewise_dea = function(tissue,
 }
 
 
-#' TODO
-#' Title
+#' RNA-seq training differential analysis 
+#' 
+#' Use DESeq2 to perform a likelihood ratio test to test the effect of training
+#' across time points. Analysis is performed separately for males and females. 
 #'
 #' @param tissue character, tissue abbreviation, one of [MotrpacRatTraining6moData::TISSUE_ABBREV]
 #' @param covariates character vector of covariates that correspond to column names of [MotrpacRatTraining6moData::TRNSCRPT_META].
 #'   Defaults to covariates that were used for the manuscript. 
 #' @param outliers vector of viallabels to exclude during differential analysis. Defaults
-#'   to \code{MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "TRNSCRPT"]}
+#'   to \code{[MotrpacRatTraining6moData::OUTLIERS]$viallabel[[MotrpacRatTraining6moData::OUTLIERS]$assay == "TRNSCRPT"]}
 #' @param rdata_outfile NULL or path in which to save DESeq2 objects in an RData file 
 #' @param overwrite boolean, whether to overwrite the file if \code{rdata_outfile} exists
 #' @param verbose boolean, whether to print the DESeq2 design string
 #'
-#' @return TODO
+#' @return a data frame with one row per gene:
+#' \describe{
+#'   \item{\code{feature}}{unique gene identifier in the format \code{[ASSAY_ABBREV];[TISSUE_ABBREV];[feature_ID]}}
+#'   \item{\code{feature_ID}}{Ensembl gene ID}
+#'   \item{\code{sex}}{one of "male" or "female"}
+#'   \item{\code{assay}}{assay abbreviation, one of [MotrpacRatTraining6moData::ASSAY_ABBREV]}
+#'   \item{\code{assay_code}}{MoTrPAC assay or "ome" code. "transcript-rna-seq" for RNA-seq datasets.}
+#'   \item{\code{tissue}}{tissue abbreviation, one of [MotrpacRatTraining6moData::TISSUE_ABBREV]}
+#'   \item{\code{tissue_code}}{MoTrPAC tissue release code. See [MotrpacBicQC::bic_animal_tissue_code] for details.}
+#'   \item{\code{removed_samples_male}}{comma-separated list of male outliers (vial labels) removed from differential analysis}
+#'   \item{\code{removed_samples_female}}{comma-separated list of female outliers (vial labels) removed from differential analysis}
+#'   \item{\code{lrt_male}}{likelihood ratio test statistic for males}
+#'   \item{\code{lrt_female}}{likelihood ratio test statistic for females}
+#'   \item{\code{p_value_male}}{nominal LRT p-value for males}
+#'   \item{\code{p_value_female}}{nominal LRT p-value for females}
+#'   \item{\code{full_model_male}}{full model used in LRT for males}
+#'   \item{\code{full_model_female}}{full model used in LRT for females}
+#'   \item{\code{reduced_model_male}}{reduced model used in LRT for males}
+#'   \item{\code{reduced_model_female}}{reduced model used in LRT for females}
+#'   \item{\code{p_value}}{combined male and female nominal p-value using the sum of logs}
+#' }
 #' 
 #' @export
 #' @import metap
@@ -326,11 +376,16 @@ transcript_timewise_dea = function(tissue,
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples
-#' TODO
+#' # Perform differential analysis for expressed genes in brown adipose tissue with default parameters, 
+#' # i.e., outliers and covariates used for the manuscript
+#' dea = transcript_training_dea("BAT")
+#' 
+#' # Same as above but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
+#' dea = transcript_training_dea("BAT", rdata_outfile = "~/test/BAT_RNA_training-dea.RData", overwrite = TRUE)
 #' 
 transcript_training_dea = function(tissue, 
                                    covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
-                                   outliers = MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "TRNSCRPT"],
+                                   outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "TRNSCRPT"]),
                                    rdata_outfile = NULL,
                                    overwrite = FALSE,
                                    verbose = FALSE){
@@ -349,13 +404,17 @@ transcript_training_dea = function(tissue,
   sex_res = list()
   for(SEX in unique(meta[,sex])){
     
+    message(sprintf("Performing LRTs for %s %ss...", .tissue, SEX))
+    
     # subset counts and meta
     curr_samples = meta[sex == SEX, viallabel]
     curr_meta = meta[sex == SEX]
     curr_counts = counts[,curr_samples]
+    curr_outliers = outliers[outliers %in% curr_samples]
+    curr_meta[,group := as.factor(group)]
     
-    full = paste0('~', paste0(c(curr_cov, 'group'), collapse=' + '))
-    reduced = paste0('~', paste0(curr_cov, collapse=' + '))
+    full = paste0('~', paste0(c(covariates, 'group'), collapse=' + '))
+    reduced = paste0('~', paste0(covariates, collapse=' + '))
     
     dds = DESeqDataSetFromMatrix(countData = curr_counts,
                                  colData = curr_meta,
@@ -368,7 +427,6 @@ transcript_training_dea = function(tissue,
     res_dt = data.table(feature_ID = rownames(res), 
                         lrt = res$stat,
                         p_value = res$pvalue,
-                        tissue = tissue_code,
                         removed_samples = paste0(curr_outliers, collapse=','),
                         full_model=gsub(' ','',full),
                         reduced_model=gsub(' ','',reduced))
@@ -399,7 +457,7 @@ transcript_training_dea = function(tissue,
   if(length(sex_res) > 1){
     male = sex_res[['male']]
     female = sex_res[['female']]
-    merged = merge(male, female, by=c('feature_ID','assay','tissue','removed_samples'),
+    merged = merge(male, female, by=c('feature','feature_ID','assay','assay_code','tissue','tissue_code'),
                    suffixes=c("_male","_female"), all=T)
     missing = merged[is.na(p_value_male) | is.na(p_value_female)]
     complete = merged[!is.na(p_value_male) & !is.na(p_value_female)]
@@ -408,7 +466,11 @@ transcript_training_dea = function(tissue,
     res_dt = rbindlist(list(complete, missing))
   }else{
     res_dt = sex_res[[1]]
+    cols = c('removed_samples','lrt','p_value','full_model','reduced_model')
+    setnames(res_dt, old=cols, new=paste0(cols, "_", names(sex_res)[1]))
+    res_dt[,p_value := get(sprintf("p_value_%s", names(sex_res)[1]))]
   }
   
+  message("Done.")
   return(as.data.frame(res_dt))
 }

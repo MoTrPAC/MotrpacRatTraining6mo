@@ -2,7 +2,7 @@
 % Please edit documentation in R/call_outliers.R
 \name{call_pca_outliers}
 \alias{call_pca_outliers}
-\title{Use PCA method to call outliers}
+\title{Call PCA outliers}
 \usage{
 call_pca_outliers(
   norm,
@@ -10,32 +10,40 @@ call_pca_outliers(
   plot,
   verbose,
   iqr_coef = 3,
-  N = Inf,
-  TITLE = NULL
+  M = Inf,
+  title = NULL
 )
 }
 \arguments{
-\item{norm}{filtered, normalized values}
+\item{norm}{feature by sample data frame of normalized data}
 
-\item{min_pc_ve}{minimum percent variance explained by a PC to check it for outliers}
+\item{min_pc_ve}{numeric, minimum percent variance explained by a PC to check it for outliers}
 
-\item{plot}{bool, whether or not to print plots}
+\item{plot}{bool, whether to print PC plots before and after removing outliers}
 
-\item{verbose}{bool, whether or not to print descriptive strings}
+\item{verbose}{bool, whether to print descriptive strings}
 
 \item{iqr_coef}{numeric, flag PC outliers if they are outside of IQR * \code{iqr_coef}}
 
-\item{N}{integer, select N most variable features}
+\item{M}{integer, select M most variable features}
 
-\item{TITLE}{string, substring to include in PC plot titles}
+\item{title}{character, substring to include in PC plot titles}
 }
 \value{
-TODO
+named list of four items:
+\describe{
+\item{\code{pca_outliers}}{character vector of viallabels identified as outliers}
+\item{\code{prcomp_obj}}{result returned by \code{prcomp()} from PCA of normalized data without outliers removed}
+\item{\code{num_pcs}}{integer, number of PCs checked for outliers}
+\item{\code{pc_outliers_report}}{matrix of results with one row per outlier}
+}
 }
 \description{
-TODO
+Identify samples that fall outside of the specified range for principal
+components that explain some minimum variance.
 }
 \examples{
-TODO
+bat_rna_data = transcript_prep_data("BAT", covariates = NULL, outliers = NULL)
+bat_rna_outliers = call_pca_outliers(bat_rna_data$norm_data, min_pc_ve=0.05, plot=T, verbose=T, iqr_coef=5, M=1000, title="Brown Adipose")
 
 }

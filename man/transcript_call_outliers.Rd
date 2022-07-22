@@ -7,14 +7,21 @@
 transcript_call_outliers(tissues)
 }
 \arguments{
-\item{tissues}{list of tissue abbreviations for which to call RNA-seq outliers.
+\item{tissues}{character vector of tissue abbreviations for which to call RNA-seq outliers.
 See \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV} for accepted values.}
 }
 \value{
-TODO
+NULL if there are no outliers, or a data frame with three columns and one row per outlier:
+\describe{
+\item{\code{viallabel}}{character, @eval viallabel()}
+\item{\code{tissue}}{@eval tissue()}
+\item{\code{reason}}{character, PC(s) in which the sample was flagged}
+}
 }
 \description{
-TODO
+Identify samples that are outside of 5 times the interquartile range of principal
+components that explain at least 5\% of variance in each tissue. Use only the 1000 most variable genes.
+This specifies RNA-seq outliers excluded from differential analysis by MoTrPAC.
 }
 \examples{
 transcript_call_outliers("SKM-GN")
@@ -23,5 +30,5 @@ transcript_call_outliers(c("SKM-GN","BLOOD"))
 }
 \seealso{
 \code{\link[=call_pca_outliers]{call_pca_outliers()}} for workhorse function, \code{\link[=plot_pcs]{plot_pcs()}} for plotting function,
-\link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV} for list of accepted tissue abbrevations
+\link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV} for tissue abbrevations
 }
