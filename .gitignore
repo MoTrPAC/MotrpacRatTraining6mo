@@ -12,3 +12,5 @@
 
 .Rproj.user
 inst/doc
+
+setup.R
