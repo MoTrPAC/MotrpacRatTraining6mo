@@ -113,6 +113,9 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' # Raw data in RData file is available at: 
 #' https://drive.google.com/drive/folders/1_vkqPc8uULIiCTHDW8nuNHZW4jzzLHxy?usp=sharing
 #' yall = get(load("motrpac_pass1b-06_t55-gastrocnemius_epigen-rrbs_bismark-cov.RData"))
+#' 
+#' # TODO: add links to the data using GCP URLs
+#' 
 #' # remove control samples
 #' is_sample = grepl("^9",colnames(yall),perl=T)
 #' yall = yall[,is_sample]
