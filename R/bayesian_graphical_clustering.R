@@ -16,7 +16,39 @@
 #' An edge represents interaction among two adjacent time point. For example, it can represent features that are up-regulated in week 1 in both males and females, and null in both male and females by week 2.
 #' min_analyte_posterior_thr is used to make sure that features without any reasonable fit in the clustering solution will be discarded, whereas min_prior_for_config removes clusters with extremely low prior (i.e., do not have any associated features).
 #' 
-#' @return A named list with two items: (1) node sets, and (2) edge sets.
+#' @return A named list with three items: (1) node sets, (2) edge sets, and (3) the repfdr EM solution.
+#' 
+#' #' @examples 
+#' ### Example 1: Simulate data with a single cluster
+#' zcolnames = c(
+#' paste("female",c("1w","2w","4w","8w"),sep="_"),
+#' paste("male",c("1w","2w","4w","8w"),sep="_")
+#' )
+#' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
+#' repfdr_results = repfdr_wrapper(zscores)
+#' # in this example all configurations are null, thus the  posteriors of the null cluster (all zeroes) are very high:
+#' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"])
+#' # now add a cluster with a strong signal and rerun
+#' zscores[1:500,1:4] = zscores[1:500,1:4] + 5
+#' repfdr_results = repfdr_wrapper(zscores)
+#' # look at the null cluster after adding the signal above
+#' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"],probs=c(0.05,0.1,0.5))
+#' # now the posteriors of the first 500 rows, with respect to the "planted" cluster should have high posteriors:
+#' quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
+#' 
+#' 
+#' # run the clustering solution wrapper
+#' clustering_sol = bayesian_graphical_clustering(zscores)
+#' # check if the clustering solution correctly assigns the first 500 rows (with high prob) to the right nodes
+#' length(intersect(1:500,clustering_sol$node_sets$`1w_F1_M0`))/500 > 0.95
+#' length(intersect(1:500,clustering_sol$node_sets$`2w_F1_M0`))/500 > 0.95
+#' length(intersect(1:500,clustering_sol$node_sets$`4w_F1_M0`))/500 > 0.95
+#' length(intersect(1:500,clustering_sol$node_sets$`8w_F1_M0`))/500 > 0.95
+#' 
+#' # examine the node set sizes
+#' sapply(clustering_sol$node_sets,length)
+#' # examine the edge set sizes
+#' sapply(clustering_sol$edge_sets,length)
 bayesian_graphical_clustering<-function(zscores,
       min_analyte_posterior_thr=0.5,min_prior_for_config=0.001,
       naive_edge_sets=T){
@@ -115,7 +147,7 @@ bayesian_graphical_clustering<-function(zscores,
     edge_sets = edge_sets2
   }
   return(list(
-    node_sets=node_sets,edge_sets=edge_sets
+    node_sets=node_sets,edge_sets=edge_sets,repfdr_results=repfdr_results
   ))
 }
 
@@ -128,13 +160,36 @@ bayesian_graphical_clustering<-function(zscores,
 #' @param min_prior_for_config A number. The minimal prior probability on the configuration priors.
 #' 
 #' @return A named list with two objects: (1) a binary matrix representation of the clusters, and (2) a matrix with the cluster posteriors.
+#' 
+#' @details 
+#' This wrapper runs inference for the two groups model in each column of zscores, and then run repfdr's EM process.
+#' To extract the fuzzy clustering solution, we exclude configurations whose prior probability is lower than min_prior_for_config.
+#' 
+#' @examples 
+#' # Simulate data with a single cluster
+#' zcolnames = c(
+#' paste("male",c("1w","2w","4w","8w"),sep="_"),
+#' paste("female",c("1w","2w","4w","8w"),sep="_")
+#' )
+#' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
+#' repfdr_results = repfdr_wrapper(zscores)
+#' # in this example all configurations are null, thus the  posteriors of the null cluster (all zeroes) are very high:
+#' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"])
+#' # now add a cluster with a strong signal and rerun
+#' zscores[1:500,1:4] = zscores[1:500,1:4] + 5
+#' repfdr_results = repfdr_wrapper(zscores)
+#' # look at the null cluster after adding the signal above
+#' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"],probs=c(0.05,0.1,0.5))
+#' # now the posteriors of the first 500 rows, with respect to the "planted" cluster should have high posteriors:
+#' quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
 repfdr_wrapper<-function(zscores,min_prior_for_config = 0.001){
   # Step 1 in repfdr: discretize the z-scores and estimate the probabilities 
   # in each bin.
   # In our work we examined the diagnostic plots manually. The results look reasonable,
   # especially for the qqplots, so we decided to use the current estimation with df=20
-  ztobins_res = ztobins(zscores,df=20,type=1,n.bins=150,central.prop = 0.25,
-                        plot.diagnostics = F)
+  nbins = round(min(150,sqrt(nrow(zscores))-1))
+  ztobins_res = ztobins(zscores,df=20,type=1,n.bins=nbins,central.prop = 0.25,
+                        plot.diagnostics = F,force.bin.number = T)
   # Step 2 in repfdr: estimate the repfdr model using the EM algorithm
   repfdr_res = repfdr(ztobins_res$pdf.binned.z,
                       ztobins_res$binned.z.mat,non.null = 'replication',
@@ -165,6 +220,13 @@ repfdr_wrapper<-function(zscores,min_prior_for_config = 0.001){
   # the graphical analysis
   # this object keeps the configurations h in a matrix
   repfdr_clusters = t(repfdr_posteriors[,1:ncol(zscores)])
+  if(length(hvec_inds)<2){
+    repfdr_cluster_posteriors = rep(1,nrow(zscores))
+    repfdr_cluster_posteriors = matrix(repfdr_cluster_posteriors,ncol=1)
+    colnames(repfdr_cluster_posteriors) = names(hvec_inds)
+    return(list(repfdr_clusters=repfdr_clusters,
+                repfdr_cluster_posteriors=repfdr_cluster_posteriors))
+  }
   # this is a simple string representation of the configs
   repfdr_clusters_str = apply(repfdr_clusters,2,paste,collapse="")
   # here we keep P(h) the prior distribution of the configs
