@@ -16,26 +16,23 @@
 #' An edge represents interaction among two adjacent time point. For example, it can represent features that are up-regulated in week 1 in both males and females, and null in both male and females by week 2.
 #' min_analyte_posterior_thr is used to make sure that features without any reasonable fit in the clustering solution will be discarded, whereas min_prior_for_config removes clusters with extremely low prior (i.e., do not have any associated features).
 #' 
+#' Naming format for the output:
+#' Node set names: {week}_F{differential regulation status}_M{differential regulation status}.
+#' Example 1: 1w_F1_M0 means up-regulation in females week 1 and null (zero effect) in males in week 1.
+#' Example 2: 1w_F1_M-1 means up-regulation in females week 1 and down-regulation in males in week 1.
+#' The edge set object is a named list of string vectors. The name of an edge is node_id---node_id.
+#' 
 #' @return A named list with three items: (1) node sets, (2) edge sets, and (3) the repfdr EM solution.
 #' 
-#' #' @examples 
+#' @examples 
 #' ### Example 1: Simulate data with a single cluster
 #' zcolnames = c(
 #' paste("female",c("1w","2w","4w","8w"),sep="_"),
 #' paste("male",c("1w","2w","4w","8w"),sep="_")
 #' )
 #' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
-#' repfdr_results = repfdr_wrapper(zscores)
-#' # in this example all configurations are null, thus the  posteriors of the null cluster (all zeroes) are very high:
-#' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"])
 #' # now add a cluster with a strong signal and rerun
-#' zscores[1:500,1:4] = zscores[1:500,1:4] + 5
-#' repfdr_results = repfdr_wrapper(zscores)
-#' # look at the null cluster after adding the signal above
-#' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"],probs=c(0.05,0.1,0.5))
-#' # now the posteriors of the first 500 rows, with respect to the "planted" cluster should have high posteriors:
-#' quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
-#' 
+#' zscores[1:500,1:4] = zscores[1:500,1:4] + 5 
 #' 
 #' # run the clustering solution wrapper
 #' clustering_sol = bayesian_graphical_clustering(zscores)
@@ -49,6 +46,10 @@
 #' sapply(clustering_sol$node_sets,length)
 #' # examine the edge set sizes
 #' sapply(clustering_sol$edge_sets,length)
+#' 
+#' # extract the top full trajectories in the data; these should be the clusters with at least 10 features
+#' min_cluster_size=10
+#' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
 bayesian_graphical_clustering<-function(zscores,
       min_analyte_posterior_thr=0.5,min_prior_for_config=0.001,
       naive_edge_sets=T){
@@ -243,31 +244,32 @@ repfdr_wrapper<-function(zscores,min_prior_for_config = 0.001){
 }
 
 
-# set our own layout using ggraph
-# see http://blog.schochastics.net/post/ggraph-tricks-for-common-problems/
-
-# when using source, this will fail if one of the libraries was not installed
-library(ggraph)
-library(scatterpie)
-library(grid)
-library(networkD3)
-library(repfdr)
-library(data.table)
-library(igraph)
-
 #' An auxiliary function for reducing a list of sets by a regex.
 #' Useful for filtering DEA analyte sets by tissues or omes.
 #' 
-#' @params l a named list of character vectors
-#' @params regs a character vector of regular expressions
-limit_sets_by_regex<-function(sets,regs){
+#' @params sets A named list of character vectors
+#' @params regs A character vector of regular expressions
+#' @param append_semicol A logical. If TRUE (the default): append ';' as the suffix of each regex.
+#' 
+#' @details 
+#' This function was added for helping with managing the output of the Bayesian clustering in real data.
+#' It takes a list of analyte (e.g., gene ids) sets and removes items that do not match the regular expressions in regs.
+#' 
+#' @examples
+#' sets = list(
+#'   "cluster1" = c("muscle;g1","heart;g1","muscle;g2"),
+#'     "cluster2" = c("muscle;g11","heart;g11","muscle;g12")
+#' )
+#' # remove non muscle analytes from the clustering solution above:
+#' limit_sets_by_regex(sets,"muscle")
+limit_sets_by_regex<-function(sets,regs,append_semicol = T){
   if(is.null(regs) || length(regs)==0){return(sets)}
   l = list()
   for(nn in names(sets)){
     v = sets[[nn]]
     newv = c()
     for(r in regs){
-      r = paste0(r,";")
+      if(append_semicol){r = paste0(r,";")}
       newv = union(newv,v[grepl(r,v)])
     }
     l[[nn]] = newv
@@ -275,8 +277,9 @@ limit_sets_by_regex<-function(sets,regs){
   return(l)
 }
 
-#' Auxiliary function to get the largest paths in a graph.
+#' Auxiliary function for getting the largest paths in a graphical solution.
 #' 
+#' @details
 #' This is implemented using a dynamic programming approach where
 #' we iteratively add the data of the next edge.
 #' 
@@ -296,13 +299,36 @@ limit_sets_by_regex<-function(sets,regs){
 #' However, this parameter has to be considered with care, as specifying a number
 #' that is too high will result in no paths in the output.
 #' 
-#' @param edge_sets a named list of string vectors. The name of an edge is node_id---node_id
+#' @param edge_sets A named list of string vectors. The name of an edge is node_id---node_id
 #'        edges with no analytes have a NULL set (a set of size zero, but are still represented),
 #'        node ids are time_points_Fx_My where x and y represent the up/down state in each sex.
-#' @param min_size a number, specifying the minimal path size to be considered
+#' @param min_size A number. specifying the minimal path size to be considered
 #' @return NULL if no paths of size of at least min_size were found, otherwise
 #'         return a data frame that represents all paths of size min_size or greater,
 #'         ranked from the largest path to the smallest one.
+#'         
+#' @examples 
+#' ### Example: Simulate data with a single cluster
+#' zcolnames = c(
+#' paste("female",c("1w","2w","4w","8w"),sep="_"),
+#' paste("male",c("1w","2w","4w","8w"),sep="_")
+#' )
+#' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
+#' # now add a cluster with a strong signal and rerun
+#' zscores[1:500,1:4] = zscores[1:500,1:4] + 5
+#' 
+#' # run the clustering solution wrapper
+#' clustering_sol = bayesian_graphical_clustering(zscores)
+#' 
+#' # extract the top full trajectories in the data; these should be the clusters with at least 10 features
+#' min_cluster_size=10
+#' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
+#' 
+#' # extract the edges of the top two full trjectories
+#' # this step "cleans" the edge sets by removing edges of trajectories with very few features
+#' top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets,topk = 2,min_path_size = 10)
+#' # examine the new edge set sizes, excluded edges should have zero size
+#' sapply(top2traj_edge_sets,length)
 get_trajectory_sizes_from_edge_sets<-function(edge_sets,min_size=10){
   node_names = unique(unlist(strsplit(names(edge_sets),split="---")))
   node_weeks = sapply(node_names,function(x)strsplit(x,split="_")[[1]][1])
@@ -360,7 +386,43 @@ get_trajectory_sizes_from_edge_sets<-function(edge_sets,min_size=10){
   return(trajectories)
 }
 
-#' Keep the edges of the top trajectories of an edge set
+
+#' Keep the edges of the top trajectories of an edge set of a graphical solution.
+#' 
+#' @param edge_sets A named list of string vectors. The name of an edge is node_id---node_id
+#'        edges with no analytes have a NULL set (a set of size zero, but are still represented),
+#'        node ids are time_points_Fx_My where x and y represent the up/down state in each sex.
+#' @param topk A number. The maximal number of full trajectories to include in the new solution.
+#' @param min_size A number. specifying the minimal path size to be considered.
+#' 
+#' @return 
+#' A named list of edge sets. All possible edges in our 9x4 grid will appear in the solution.
+#' Edges that are removed will have no features/analytes in their entry.
+#' 
+#' @examples
+#' ### Example: Simulate data with a single cluster
+#' zcolnames = c(
+#' paste("female",c("1w","2w","4w","8w"),sep="_"),
+#' paste("male",c("1w","2w","4w","8w"),sep="_")
+#' )
+#' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
+#' # now add a cluster with a strong signal and rerun
+#' zscores[1:500,1:4] = zscores[1:500,1:4] + 5
+#' 
+#' # run the clustering solution wrapper
+#' clustering_sol = bayesian_graphical_clustering(zscores)
+#' 
+#' # extract the top full trajectories in the data; these should be the clusters with at least 10 features
+#' min_cluster_size=10
+#' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
+#' 
+#' # extract the edges of the top two full trjectories
+#' # this step "cleans" the edge sets by removing edges of trajectories with very few features
+#' top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets,topk = 2,min_path_size = 10)
+#' # examine the new edge set sizes, excluded edges should have zero size
+#' sapply(top2traj_edge_sets,length)
+#' # for comparison examine the edge sets of the Bayesian clustering solution:
+#' sapply(clustering_sol$edge_sets,length)
 filter_edge_sets_by_trajectories<-function(edge_sets,topk=5,min_path_size=5){
   
   traj = get_trajectory_sizes_from_edge_sets(edge_sets,min_size = min_path_size)
@@ -403,6 +465,7 @@ filter_edge_sets_by_trajectories<-function(edge_sets,topk=5,min_path_size=5){
 #' @param highlight_subset a character string or NULL. If not NULL then it specifies the name of a 
 #'        node, edge, or path to highlight in the tree. 
 #' 
+#' @import igraph,ggraph,grid,data.table,scatterpie
 #' 
 #' @details 
 #'         The function filters the input set to include analytes from the given tissues
@@ -412,7 +475,11 @@ filter_edge_sets_by_trajectories<-function(edge_sets,topk=5,min_path_size=5){
 #'         Analyte names are in the ome;tissue;feature_id format.
 #'         Node set names are are in the week_number(1,2,4,8)'w'_F{-1,0,1}_M{-1,0,1} format
 #'         for example: 1w_F-1_M0
-#'         Edge set names are in the node_a---node_b format, e.g., 4w_F0_M0---8w_F0_M1 
+#'         Edge set names are in the node_a---node_b format, e.g., 4w_F0_M0---8w_F0_M1
+#' 
+#' 
+#' @examples 
+#' TBD
 get_tree_plot_for_tissue<-function(
   tissues,
   omes = NULL,
@@ -869,12 +936,13 @@ extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
 #' @param tissues string vector, optional. tissue subset. all tissues by default
 #' @param omes string vector, optional. ome subset. all omes by default
 #' 
+#' @import MotrpacBicQC
+#' 
 #' @return named list with one element per trajectories. members are features in the path 
 get_all_trajectories = function(edge_sets, 
                                 node_sets, 
                                 tissues = unique(unname(MotrpacBicQC::tissue_abbr)),
                                 omes = unique(unname(MotrpacBicQC::assay_abbr))){
-  require("MotrpacBicQC")
   
   l = list()
   tissue_node_sets = limit_sets_by_regex(node_sets,tissues)
