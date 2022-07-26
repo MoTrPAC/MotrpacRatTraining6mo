@@ -78,6 +78,7 @@ min_cluster_size=10
 get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
 
 ### Example 2: real data
+library(MotrpacRatTraining6moData)
 data(REPFDR_INPUTS)
 zscores = REPFDR_INPUTS$zs_smoothed
 rat_data_clustering_sol = bayesian_graphical_clustering(zscores)

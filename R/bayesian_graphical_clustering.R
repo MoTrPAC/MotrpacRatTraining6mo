@@ -62,6 +62,7 @@
 #' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
 #' 
 #' ### Example 2: real data
+#' library(MotrpacRatTraining6moData)
 #' data(REPFDR_INPUTS)
 #' zscores = REPFDR_INPUTS$zs_smoothed
 #' rat_data_clustering_sol = bayesian_graphical_clustering(zscores)
@@ -211,8 +212,16 @@ repfdr_wrapper<-function(zscores,min_prior_for_config = 0.001){
   # In our work we examined the diagnostic plots manually. The results look reasonable,
   # especially for the qqplots, so we decided to use the current estimation with df=20
   nbins = round(min(150,sqrt(nrow(zscores))-1))
-  ztobins_res = ztobins(zscores,df=20,type=1,n.bins=nbins,central.prop = 0.25,
-                        plot.diagnostics = F,force.bin.number = T)
+  if(nrow(zscores) > 20000){
+    # use the paper config only in very large datasets
+    ztobins_res = ztobins(zscores,df=20,type=1,n.bins=nbins,central.prop = 0.25,
+        plot.diagnostics = F,force.bin.number = T)
+  }
+  else{
+    # for med to small data sizes use the default with increased df
+    ztobins_res = ztobins(zscores,df=20,n.bins=nbins)
+  }
+  
   # Step 2 in repfdr: estimate the repfdr model using the EM algorithm
   repfdr_res = repfdr(ztobins_res$pdf.binned.z,
                       ztobins_res$binned.z.mat,non.null = 'replication',
@@ -247,6 +256,7 @@ repfdr_wrapper<-function(zscores,min_prior_for_config = 0.001){
     repfdr_cluster_posteriors = rep(1,nrow(zscores))
     repfdr_cluster_posteriors = matrix(repfdr_cluster_posteriors,ncol=1)
     colnames(repfdr_cluster_posteriors) = names(hvec_inds)
+    rownames(repfdr_cluster_posteriors) = rownames(zscores)
     return(list(repfdr_clusters=repfdr_clusters,
                 repfdr_cluster_posteriors=repfdr_cluster_posteriors))
   }
