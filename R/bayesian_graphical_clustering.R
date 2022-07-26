@@ -1,6 +1,7 @@
 #' Perform Bayesian graphical clustering of the differential analysis results using repfdr
 #' 
 #' @import repfdr
+#' @import MotrpacRatTraining6moData
 #' 
 #' @param zscores A numeric matrix. Rows are analytes, columns are conditions (e.g., male week 1). Entries are z-scores.
 #' @param min_analyte_posterior_thr A number. The minimal value of sum of posteriors for including an analyte.
@@ -15,6 +16,15 @@
 #' A node is a time-point specific state. It can represent null features (z-score around zero, no effect), up-regulated features (positive z-score), or down regulated features (negative z-scores).
 #' An edge represents interaction among two adjacent time point. For example, it can represent features that are up-regulated in week 1 in both males and females, and null in both male and females by week 2.
 #' min_analyte_posterior_thr is used to make sure that features without any reasonable fit in the clustering solution will be discarded, whereas min_prior_for_config removes clusters with extremely low prior (i.e., do not have any associated features).
+#' 
+#' Formally, let zscores be the timewise nxm matrix of z-scores over n analytes and m conditions, where m is even and has the same time points for males and females. 
+#' Each z-score corresponds to the effect of training compared to untrained baseline. We assume that z-scores have a latent configuration in {-1,0,1}, with -1 denotes down-regulation, 0 denotes null (no change), and 1 denotes up-regulation. 
+#' Let h denote the latent configuration of an analyte over all m conditions. We use the expectation-maximization (EM) process of the repfdr algorithm (Heller and Yekutieli, 2014) to estimate the prior π(h) and posterior Pr(h|z_i), for every analyte i. 
+#' Once the algorithm converges, we discard configurations h with π(h) < min_analyte_posterior_thr and normalize Pr(h|zi) to sum to 1 (i.e., all posteriors given the same zi). The new posteriors that can be interpreted as a soft clustering solution, where the greater the value is, the more likely it is for analyte i to participate in cluster h. 
+#' 
+#' Given the posteriors Pr(h|zi), we assign analytes to nine possible states in each time point (male or females x time points 1w, 2w,4w, and 8w). Analyte i belongs to a state if the sum of posteriors that are consistent with that state is > min_analyte_posterior_thr.
+#' For every pair of states from adjacent time points j and j+1 we define their edge set as the set of analytes whose differential expression pattern is consistent with the two nodes.. 
+#' Thus, the node and edge sets explained above together define a tree structure that represent different differential patterns over sex and time.
 #' 
 #' Naming format for the output:
 #' Node set names: {week}_F{differential regulation status}_M{differential regulation status}.
@@ -50,6 +60,17 @@
 #' # extract the top full trajectories in the data; these should be the clusters with at least 10 features
 #' min_cluster_size=10
 #' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
+#' 
+#' ### Example 2: real data
+#' data(REPFDR_INPUTS)
+#' zscores = REPFDR_INPUTS$zs_smoothed
+#' rat_data_clustering_sol = bayesian_graphical_clustering(zscores)
+#' # extract the largest trajectories
+#' get_trajectory_sizes_from_edge_sets(rat_data_clustering_sol$edge_sets,min_size = 50)
+#' # plot the top trajectories of the muscle tissues, color edges by tissue
+#' get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),omes="TRNSCRPT",
+#' node_sets=rat_data_clustering_sol$node_sets,edge_sets=rat_data_clustering_sol$edge_sets,min_size = 20,
+#' parallel_edges_by_tissue = T,max_trajectories = 3)
 bayesian_graphical_clustering<-function(zscores,
       min_analyte_posterior_thr=0.5,min_prior_for_config=0.001,
       naive_edge_sets=T){
@@ -155,7 +176,8 @@ bayesian_graphical_clustering<-function(zscores,
 
 #' A general wrapper for running repfdr on a matrix of z-scores
 #' 
-#' @import repfdr,MotrpacRatTraining6moData
+#' @import repfdr
+#' @import MotrpacRatTraining6moData
 #' 
 #' @param zscores A numeric matrix. Rows are analytes, columns are conditions (e.g., male week 1). Entries are z-scores.
 #' @param min_prior_for_config A number. The minimal prior probability on the configuration priors.
@@ -245,10 +267,12 @@ repfdr_wrapper<-function(zscores,min_prior_for_config = 0.001){
 
 
 #' An auxiliary function for reducing a list of sets by a regex.
+#' 
+#' @description 
 #' Useful for filtering DEA analyte sets by tissues or omes.
 #' 
-#' @params sets A named list of character vectors
-#' @params regs A character vector of regular expressions
+#' @param sets A named list of character vectors
+#' @param regs A character vector of regular expressions
 #' @param append_semicol A logical. If TRUE (the default): append ';' as the suffix of each regex.
 #' 
 #' @details 
@@ -299,10 +323,12 @@ limit_sets_by_regex<-function(sets,regs,append_semicol = T){
 #' However, this parameter has to be considered with care, as specifying a number
 #' that is too high will result in no paths in the output.
 #' 
+#' See bayesian_graphical_clustering for more details about the graphical analysis.
+#' 
 #' @param edge_sets A named list of string vectors. The name of an edge is node_id---node_id
 #'        edges with no analytes have a NULL set (a set of size zero, but are still represented),
 #'        node ids are time_points_Fx_My where x and y represent the up/down state in each sex.
-#' @param min_size A number. specifying the minimal path size to be considered
+#' @param min_size A number. Specifying the minimal path size to be considered.
 #' @return NULL if no paths of size of at least min_size were found, otherwise
 #'         return a data frame that represents all paths of size min_size or greater,
 #'         ranked from the largest path to the smallest one.
@@ -448,38 +474,53 @@ filter_edge_sets_by_trajectories<-function(edge_sets,topk=5,min_path_size=5){
 #' The main function for obtaining a graphical (tree) representation of the differential
 #' analysis results.
 #' 
-#' @param tissues acharacter vector. The set of tissues to take for the analysis. If null take all.
-#' @param omes acharacter vector. The set of omes to take for the analysis. If null take all.
-#' @param node_sets a named list with the node (state) sets of analyte, see details for analyte name convention.
-#' @param edge_sets a named list with the edge (state) sets of analyte, see details for analyte name convention.
-#' @param min_size a numeric, a threshold on the set sizes to be considered
-#' @param parallel_edges_by_ome a logical. TRUE means that we want to added parallel edges for the different omes.
-#' @param parallel_edges_by_tissue a logical. TRUE means that we want to added parallel edges for the different tissues.
-#' @param edge_width_range a numeric vector of size 2, a parameter for ggraph
-#' @param edge_alpha_range a numeric vector of size 2, a parameter for ggraph
-#' @param color_nodes_by_states a logical. If TRUE, nodes are colored by states. 
-#'        Red for up-reg, blue for down-reg, green for a discrepancy between the sexes.
-#' @param max_trajectories a numeric or NULL. If not NULL then it specifies the number of pathways
-#'        to keep when looking into the edge sets after filtering by omes and tissues. If 
-#'        parallel_edges_by_tissue = TRUE then take the top trajectories in each tissue.
-#' @param highlight_subset a character string or NULL. If not NULL then it specifies the name of a 
-#'        node, edge, or path to highlight in the tree. 
+#' @param tissues A character vector. The set of tissues to take for the analysis. If null take all.
+#' @param omes A character vector. The set of omes to take for the analysis. If null take all.
+#' @param node_sets A named list with the node (state) sets of analytes/features, see details for analyte name convention.
+#' @param edge_sets A named list with the edge (state) sets of analytes/features, see details for analyte name convention.
+#' @param min_size A numeric. The threshold on the set sizes to be considered.
+#' @param parallel_edges_by_ome A logical. TRUE means that we want to added parallel edges for the different omes.
+#' @param parallel_edges_by_tissue A logical. TRUE means that we want to added parallel edges for the different tissues.
+#' @param edge_width_range A numeric vector of size 2, a parameter for ggraph
+#' @param edge_alpha_range A numeric vector of size 2, a parameter for ggraph
+#' @param color_nodes_by_states A logical. If TRUE, nodes are colored by states. Red for up-reg, blue for down-reg, green for a discrepancy between the sexes.
+#' @param max_trajectories A numeric or NULL. If not NULL then it specifies the number of pathways to keep when looking into the edge sets after filtering by omes and tissues. If  parallel_edges_by_tissue = TRUE then take the top trajectories in each tissue.
+#' @param highlight_subset A character string or NULL. If not NULL then it specifies the name of a node, edge, or path to highlight in the tree. 
 #' 
-#' @import igraph,ggraph,grid,data.table,scatterpie
+#' @import igraph
+#' @import ggraph
+#' @import grid
+#' @import data.table
+#' @import scatterpie
+#' @import MotrpacRatTraining6moData
 #' 
 #' @details 
-#'         The function filters the input set to include analytes from the given tissues
-#'         and omes (if tissues/omes are not null).
-#'         If parallel edges are requested then the relevant edge sizes are computed internally
-#'         and are used within ggraph for the output plot.
-#'         Analyte names are in the ome;tissue;feature_id format.
-#'         Node set names are are in the week_number(1,2,4,8)'w'_F{-1,0,1}_M{-1,0,1} format
-#'         for example: 1w_F-1_M0
-#'         Edge set names are in the node_a---node_b format, e.g., 4w_F0_M0---8w_F0_M1
+#' The function filters the input set to include analytes from the given tissues and omes (if tissues/omes are not null).
+#' If parallel edges are requested then the relevant edge sizes are computed internally and are used within ggraph for the output plot.
+#' Analyte names are in the ome;tissue;feature_id format.
+#' Node set names are are in the week_number(1,2,4,8)'w'_F{-1,0,1}_M{-1,0,1} format for example: 1w_F-1_M0.
+#' Edge set names are in the node_a---node_b format, e.g., 4w_F0_M0---8w_F0_M1.
 #' 
+#' See bayesian_graphical_clustering for more details about the graphical analysis.
 #' 
-#' @examples 
-#' TBD
+#' @examples
+#' 
+#' ### Example 1: redo the analysis using the rat data differential analysis results (z-scores)
+#' data(REPFDR_INPUTS)
+#' zscores = REPFDR_INPUTS$zs_smoothed
+#' rat_data_clustering_sol = bayesian_graphical_clustering(zscores)
+#' # extract the largest trajectories
+#' get_trajectory_sizes_from_edge_sets(rat_data_clustering_sol$edge_sets,min_size = 50)
+#' # plot the top trajectories of the muscle tissues, color edges by tissue
+#' get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),omes="TRNSCRPT",
+#' node_sets=rat_data_clustering_sol$node_sets,edge_sets=rat_data_clustering_sol$edge_sets,min_size = 20,
+#' parallel_edges_by_tissue = T,max_trajectories = 3)
+#' 
+#' ### Example 2: load the graphical solutions from MotrpacRatTraining6moData and plot without rerunning the algorithm
+#' data(GRAPH_COMPONENTS)
+#' get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),omes="TRNSCRPT",
+#' node_sets=GRAPH_COMPONENTS$node_sets,edge_sets=GRAPH_COMPONENTS$edge_sets,min_size = 20,
+#' parallel_edges_by_tissue = T,max_trajectories = 3)
 get_tree_plot_for_tissue<-function(
   tissues,
   omes = NULL,
@@ -607,11 +648,7 @@ get_tree_plot_for_tissue<-function(
       colnames(edge_info)[ncol(edge_info)] = o
     }
     # always use the same assay colors
-    edge_colors = define_assay_cols() # defined in cluster_viz_fx.R
-    # require(RColorBrewer)
-    # o = c("METAB","TRNSCRPT","PROT","ACETYL","PHOSPHO","UBIQ","ATAC","METHYL","IMMUNO")
-    # edge_colors = brewer.pal(length(o), 'Set1')
-    # names(edge_colors) = o
+    edge_colors = MotrpacRatTraining6moData::ASSAY_COLORS
   }
   # if parallel_edges_by_tissue = TRUE then:
   # if we do not need to filter the top trajectories then we can simply count
@@ -626,7 +663,7 @@ get_tree_plot_for_tissue<-function(
       colnames(edge_info)[ncol(edge_info)] = tissue
     }
     # always use the same assay colors
-    edge_colors = MotrpacBicQC::tissue_cols
+    edge_colors = MotrpacRatTraining6moData::TISSUE_COLORS
   }
   # if parallel_edges_by_tissue = TRUE then:
   # if we are asked to filter by the top trajectories then we need to 
@@ -880,7 +917,39 @@ get_tree_plot_for_tissue<-function(
 }
 
 
-#' An auxiliary function for getting the top analyte sets for a set of tissues
+#' An auxiliary function for getting the top analyte sets for a set of tissues.
+#' 
+#' @param tissues A character vector. The names of the tissues (one or more) to be considered.
+#' @param node_sets A named list with the node (state) sets of analytes/features.
+#' @param edge_sets A named list with the edge (state) sets of analytes/features.
+#' @param k An integer. How many node/edge/trajectory sets to extract. See details.
+#' @param add_week8 A logical. TRUE (default): add all week 8 nodes to the node set.
+#' @param omes A character vector (optional). The names of the omes (one or more) to be considered.
+#' 
+#' @return A named list. Names correspond to set names (can correspond to a node, edge, or a trajectory).
+#' 
+#' @details 
+#' This function is useful for extracting the largest sets for a specific set of tissues and omes. 
+#' Thus, it is a useful step before running enrichment analysis on sets of analytes identified by the graphical clustering analysis.
+#' 
+#' By specifying k the user can control how many sets to include. The default is three, which means that the top largest node sets, edge sets, and full trajectories will be extracted (three each).
+#' 
+#' Naming format:
+#' Analyte names are in the ome;tissue;feature_id format.
+#' Node set names: {week}_F{differential regulation status}_M{differential regulation status}.
+#' Example 1: 1w_F1_M0 means up-regulation in females week 1 and null (zero effect) in males in week 1.
+#' Example 2: 1w_F1_M-1 means up-regulation in females week 1 and down-regulation in males in week 1.
+#' The edge set object is a named list of string vectors. The name of an edge is node_id---node_id.
+#' A full trajectory is annotated by node_id->node_id->node_id->node_id. For example: 1w_F-1_M-1->2w_F-1_M-1->4w_F-1_M-1->8w_F-1_M-1.
+#' 
+#' See bayesian_graphical_clustering for more details about the graphical analysis.
+#' 
+#' @examples
+#' data(GRAPH_COMPONENTS)
+#' filtered_solution = extract_tissue_sets(
+#'    tissues = c("HEART","SKM-VL","SKM-GN"),
+#'    node_sets=GRAPH_COMPONENTS$node_sets,edge_sets=GRAPH_COMPONENTS$edge_sets
+#'  )
 extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
                               min_size=20,add_week8=T,omes=NULL){
   
@@ -929,20 +998,20 @@ extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
 }
 
 
-#' Pull out all non-empty trajectories 
+#' Remove all non-empty trajectories 
 #' 
 #' @param node_sets use `load_graph_vis_data()$node_sets`
 #' @param edge_sets use `load_graph_vis_data()$edge_sets`
 #' @param tissues string vector, optional. tissue subset. all tissues by default
 #' @param omes string vector, optional. ome subset. all omes by default
 #' 
-#' @import MotrpacBicQC
+#' @import MotrpacRatTraining6moData
 #' 
 #' @return named list with one element per trajectories. members are features in the path 
 get_all_trajectories = function(edge_sets, 
                                 node_sets, 
-                                tissues = unique(unname(MotrpacBicQC::tissue_abbr)),
-                                omes = unique(unname(MotrpacBicQC::assay_abbr))){
+                                tissues = MotrpacRatTraining6moData::TISSUE_ABBREV,
+                                omes = MotrpacRatTraining6moData::ASSAY_ABBREV){
   
   l = list()
   tissue_node_sets = limit_sets_by_regex(node_sets,tissues)
