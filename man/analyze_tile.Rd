@@ -34,20 +34,20 @@ A wrapper function that analyzes a tile of loci in the genome to obtain correlat
 }
 \details{
 This function implements clustering analysis of a specific window in the genome. 
-       We observed that often adjacent loci in RRBS data may manifest low correlations. This
-       function can be used for identified a set of highly correlated loci within a window, which
-       can then be used to extract new genomic features for downstream analysis. 
-       RRBS data have two columns per sample: "Un" (unmethylated) and "Me"(methylated). This function
-       takes the "M matrix" which contains the integrated values of these columns (see examples). This matrix
-       is used for computing the correlations of the loci, and then we use the Markov Clustering algorithm (MCL)
-       for identifying homogeneous clusters within a window. 
-       MCL(Markov clustering) details from: https://www.micans.org/mcl/intro.html
-       MCL: Expansion coincides with taking the power of a stochastic matrix
-       using the normal matrix product (i.e. matrix squaring). 
-       Inflation corresponds with taking the Hadamard power of a matrix 
-       (taking powers entrywise), followed by a scaling step, such that the resulting matrix is stochastic again, 
-       i.e. the matrix elements (on each column) correspond to probability values.
-       Inflation parameter: strengthen intra-region connections and promote cluster homogeneity.
+We observed that often adjacent loci in RRBS data may manifest low correlations. This
+function can be used for identified a set of highly correlated loci within a window, which
+can then be used to extract new genomic features for downstream analysis. 
+RRBS data have two columns per sample: "Un" (unmethylated) and "Me"(methylated). This function
+takes the "M matrix" which contains the integrated values of these columns (see examples). This matrix
+is used for computing the correlations of the loci, and then we use the Markov Clustering algorithm (MCL)
+for identifying homogeneous clusters within a window. 
+MCL(Markov clustering) details from: https://www.micans.org/mcl/intro.html
+MCL: Expansion coincides with taking the power of a stochastic matrix
+using the normal matrix product (i.e. matrix squaring). 
+Inflation corresponds with taking the Hadamard power of a matrix 
+(taking powers entrywise), followed by a scaling step, such that the resulting matrix is stochastic again, 
+i.e. the matrix elements (on each column) correspond to probability values.
+Inflation parameter: strengthen intra-region connections and promote cluster homogeneity.
 }
 \examples{
 # Raw data in RData file is available at: 

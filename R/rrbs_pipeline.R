@@ -1,19 +1,21 @@
 #' Merge an edgeR DGEList object using a clustering of the sites
 #' 
-#' @param yall a DGEList object. 
-#'        yall$genes is a metadata data frame with the locus coordinates (see details), and these fields at minimum:
-#'        Chr, EntrezID, Symbol, and Strand
-#' @param new_clusters a character vector, contains the clustering solution of the sites in yall
+#' @param yall A DGEList object, where yall$genes is a metadata data frame with the locus coordinates (see details), and these fields at minimum: Chr, EntrezID, Symbol, and Strand.
+#' @param new_clusters A character vector. Contains the clustering solution of the sites in yall.
 #' 
 #' @return A new DGEList object that represents the clusters
-#' @import edgeR,limma,MotrpacRatTraining6moData
 #' 
-#' @details The yall object has a metadata framework yall$genes. This data frame has either a Locus field or 
-#'          a pair of fields (LocStart,LocEnd). Assuming that there are no clusters that merge sites across different
-#'          chromosomes and that clusters represent a continuous window in the genome, the function goes over the
-#'          clustering solutions in new_clusters and merges the sites from the same cluster.
-#'          The new genomic features contain the sum of counts of their sites, and the merged metadata of the sites
-#'          (e.g., a comma separated character with all gene symbols associated with the cluster)
+#' @import edgeR
+#' @import limma
+#' @import MotrpacRatTraining6moData
+#' 
+#' @details 
+#' The yall object has a metadata framework yall$genes. This data frame has either a Locus field or 
+#' a pair of fields (LocStart,LocEnd). Assuming that there are no clusters that merge sites across different
+#' chromosomes and that clusters represent a continuous window in the genome, the function goes over the
+#' clustering solutions in new_clusters and merges the sites from the same cluster.
+#' The new genomic features contain the sum of counts of their sites, and the merged metadata of the sites
+#' (e.g., a comma separated character with all gene symbols associated with the cluster).
 #'
 #' @examples See example of the full RRBS reads preprocessing pipeline in analyze_tile.
 merge_sites_by_clusters<-function(yall,new_clusters){
@@ -90,24 +92,28 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' 
 #' @return A character vector. Names are loci (M matrix rows), entries are the names of the loci clusters.
 #' 
-#' @import MotrpacRatTraining6moData, MCL, limma, edgeR, corrplot
+#' @import MotrpacRatTraining6moData
+#' @import MCL
+#' @import limma
+#' @import edgeR
+#' @import corrplot
 #' 
 #' @details 
-#'        This function implements clustering analysis of a specific window in the genome. 
-#'        We observed that often adjacent loci in RRBS data may manifest low correlations. This
-#'        function can be used for identified a set of highly correlated loci within a window, which
-#'        can then be used to extract new genomic features for downstream analysis. 
-#'        RRBS data have two columns per sample: "Un" (unmethylated) and "Me"(methylated). This function
-#'        takes the "M matrix" which contains the integrated values of these columns (see examples). This matrix
-#'        is used for computing the correlations of the loci, and then we use the Markov Clustering algorithm (MCL)
-#'        for identifying homogeneous clusters within a window. 
-#'        MCL(Markov clustering) details from: https://www.micans.org/mcl/intro.html
-#'        MCL: Expansion coincides with taking the power of a stochastic matrix
-#'        using the normal matrix product (i.e. matrix squaring). 
-#'        Inflation corresponds with taking the Hadamard power of a matrix 
-#'        (taking powers entrywise), followed by a scaling step, such that the resulting matrix is stochastic again, 
-#'        i.e. the matrix elements (on each column) correspond to probability values.
-#'        Inflation parameter: strengthen intra-region connections and promote cluster homogeneity.
+#' This function implements clustering analysis of a specific window in the genome. 
+#' We observed that often adjacent loci in RRBS data may manifest low correlations. This
+#' function can be used for identified a set of highly correlated loci within a window, which
+#' can then be used to extract new genomic features for downstream analysis. 
+#' RRBS data have two columns per sample: "Un" (unmethylated) and "Me"(methylated). This function
+#' takes the "M matrix" which contains the integrated values of these columns (see examples). This matrix
+#' is used for computing the correlations of the loci, and then we use the Markov Clustering algorithm (MCL)
+#' for identifying homogeneous clusters within a window. 
+#' MCL(Markov clustering) details from: https://www.micans.org/mcl/intro.html
+#' MCL: Expansion coincides with taking the power of a stochastic matrix
+#' using the normal matrix product (i.e. matrix squaring). 
+#' Inflation corresponds with taking the Hadamard power of a matrix 
+#' (taking powers entrywise), followed by a scaling step, such that the resulting matrix is stochastic again, 
+#' i.e. the matrix elements (on each column) correspond to probability values.
+#' Inflation parameter: strengthen intra-region connections and promote cluster homogeneity.
 #' 
 #' @examples 
 #' # Raw data in RData file is available at: 
@@ -260,7 +266,9 @@ analyze_tile<-function(tile_name,tile_l,M,min_cor=0.7,
 #' @return A list.First item is called timewise and will contain the contrast-specific differential analysis results.
 #' Second item is called training and contains the overall training-level significance per locus.
 #' 
-#' @import metap, edgeR, limma
+#' @import metap
+#' @import edgeR
+#' @import limma
 #'  
 #' @examples
 #' library(MotrpacRatTraining6moData)

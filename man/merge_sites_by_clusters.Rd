@@ -7,11 +7,9 @@
 merge_sites_by_clusters(yall, new_clusters)
 }
 \arguments{
-\item{yall}{a DGEList object. 
-yall$genes is a metadata data frame with the locus coordinates (see details), and these fields at minimum:
-Chr, EntrezID, Symbol, and Strand}
+\item{yall}{A DGEList object, where yall$genes is a metadata data frame with the locus coordinates (see details), and these fields at minimum: Chr, EntrezID, Symbol, and Strand.}
 
-\item{new_clusters}{a character vector, contains the clustering solution of the sites in yall}
+\item{new_clusters}{A character vector. Contains the clustering solution of the sites in yall.}
 }
 \value{
 A new DGEList object that represents the clusters
@@ -21,11 +19,11 @@ Merge an edgeR DGEList object using a clustering of the sites
 }
 \details{
 The yall object has a metadata framework yall$genes. This data frame has either a Locus field or 
-         a pair of fields (LocStart,LocEnd). Assuming that there are no clusters that merge sites across different
-         chromosomes and that clusters represent a continuous window in the genome, the function goes over the
-         clustering solutions in new_clusters and merges the sites from the same cluster.
-         The new genomic features contain the sum of counts of their sites, and the merged metadata of the sites
-         (e.g., a comma separated character with all gene symbols associated with the cluster)
+a pair of fields (LocStart,LocEnd). Assuming that there are no clusters that merge sites across different
+chromosomes and that clusters represent a continuous window in the genome, the function goes over the
+clustering solutions in new_clusters and merges the sites from the same cluster.
+The new genomic features contain the sum of counts of their sites, and the merged metadata of the sites
+(e.g., a comma separated character with all gene symbols associated with the cluster).
 }
 \examples{
 See example of the full RRBS reads preprocessing pipeline in analyze_tile.
