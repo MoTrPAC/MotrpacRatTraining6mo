@@ -9,27 +9,23 @@ plot_pcs(pcA, pcB, pcax, outliers, pca, title = NULL)
 \arguments{
 \item{pcax}{e.g., \code{prcomp(data)$x}}
 
-\item{outliers}{list of viallabels corresponding to PC outliers}
+\item{outliers}{vector of viallabels corresponding to PC outliers}
 
 \item{pca}{result returned by \code{prcomp()}}
 
-\item{title}{optional plot title}
+\item{title}{optional character, plot title}
 
-\item{pcaA}{string of PC for x-axis, e.g. "PC1"; also a column name in \code{pcax}}
+\item{pcaA}{character, PC for x-axis, e.g. "PC1"; also a column name in \code{pcax}}
 
-\item{pcaB}{string of PC for y-axis, e.g. "PC2"; also a column name in \code{pcax}}
+\item{pcaB}{character, PC for y-axis, e.g. "PC2"; also a column name in \code{pcax}}
 }
 \value{
 ggplot object
 }
 \description{
-Internal function to plot pairs of principal components and highlight indicated outliers.
+Plot pairs of principal components and highlight indicated outliers.
 Each point is a sample.
 }
-\examples{
-TODO
-
-}
 \seealso{
-[call_pca_outliers()]
+\code{\link[=call_pca_outliers]{call_pca_outliers()}}
 }
