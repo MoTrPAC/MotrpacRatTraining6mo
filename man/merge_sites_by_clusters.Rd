@@ -26,5 +26,9 @@ The new genomic features contain the sum of counts of their sites, and the merge
 (e.g., a comma separated character with all gene symbols associated with the cluster).
 }
 \examples{
-See example of the full RRBS reads preprocessing pipeline in analyze_tile.
+See example of the full RRBS read count data pre-processing pipeline in analyze_tile.
+
+}
+\seealso{
+analyze_tile
 }
