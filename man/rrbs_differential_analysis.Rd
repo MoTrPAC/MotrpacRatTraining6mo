@@ -49,11 +49,26 @@ library(MotrpacRatTraining6moData)
 data(PHENO)
 data(METHYL_META)
 
-# Raw data in RData file is available at: 
-https://drive.google.com/drive/folders/1_vkqPc8uULIiCTHDW8nuNHZW4jzzLHxy?usp=sharing
-yall = get(load("motrpac_pass1b-06_t55-gastrocnemius_epigen-rrbs_bismark-cov.RData"))
+# Raw data in RData file is available through Google Cloud.  
+# The main URL is https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS
+# The files that are available through this URL are by tissue:
+# Brown adipose: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData
+# Heart: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HEART_raw.RData
+# Hippocampus: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HIPPOC_raw.RData
+# Kidney: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/KIDNEY_raw.RData
+# Lung: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LUNG_raw.RData
+# Liver: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LIVER_raw.RData
+# Gastrocnemius: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData
+# White adipose: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/WATSC_raw.RData
 
-# Alternatively, you can use the processed datasets
+# Example: download the gastrocnemius data and load the data object into this session
+system("wget https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData")
+yall = get(load("SKMGN_raw.RData"))
+
+# Alternatively, you can use the processed datasets.
+# These are also available through the Google Cloud directory:
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/
+# File formats are 
 (TBD)
 
 # for the simplicity of this example, we subset the data to 5000 loci
