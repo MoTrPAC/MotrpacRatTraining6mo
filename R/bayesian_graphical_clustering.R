@@ -3,6 +3,8 @@
 #' @import repfdr
 #' @import MotrpacRatTraining6moData
 #' 
+#' @export
+#' 
 #' @param zscores A numeric matrix. Rows are analytes, columns are conditions (e.g., male week 1). Entries are z-scores.
 #' @param min_analyte_posterior_thr A number. The minimal value of sum of posteriors for including an analyte.
 #' @param min_prior_for_config A number. The minimal prior probability on the configuration priors.
@@ -180,6 +182,8 @@ bayesian_graphical_clustering<-function(zscores,
 #' @import repfdr
 #' @import MotrpacRatTraining6moData
 #' 
+#' @export
+#' 
 #' @param zscores A numeric matrix. Rows are analytes, columns are conditions (e.g., male week 1). Entries are z-scores.
 #' @param min_prior_for_config A number. The minimal prior probability on the configuration priors.
 #' 
@@ -289,6 +293,8 @@ repfdr_wrapper<-function(zscores,min_prior_for_config = 0.001){
 #' This function was added for helping with managing the output of the Bayesian clustering in real data.
 #' It takes a list of analyte (e.g., gene ids) sets and removes items that do not match the regular expressions in regs.
 #' 
+#' @export
+#' 
 #' @examples
 #' sets = list(
 #'   "cluster1" = c("muscle;g1","heart;g1","muscle;g2"),
@@ -343,6 +349,8 @@ limit_sets_by_regex<-function(sets,regs,append_semicol = T){
 #'         return a data frame that represents all paths of size min_size or greater,
 #'         ranked from the largest path to the smallest one.
 #'         
+#' @export
+#' 
 #' @examples 
 #' ### Example: Simulate data with a single cluster
 #' zcolnames = c(
@@ -431,6 +439,8 @@ get_trajectory_sizes_from_edge_sets<-function(edge_sets,min_size=10){
 #' @param topk A number. The maximal number of full trajectories to include in the new solution.
 #' @param min_size A number. specifying the minimal path size to be considered.
 #' 
+#' @export
+#' 
 #' @return 
 #' A named list of edge sets. All possible edges in our 9x4 grid will appear in the solution.
 #' Edges that are removed will have no features/analytes in their entry.
@@ -503,6 +513,8 @@ filter_edge_sets_by_trajectories<-function(edge_sets,topk=5,min_path_size=5){
 #' @import data.table
 #' @import scatterpie
 #' @import MotrpacRatTraining6moData
+#' 
+#' @export
 #' 
 #' @details 
 #' The function filters the input set to include analytes from the given tissues and omes (if tissues/omes are not null).
@@ -938,6 +950,8 @@ get_tree_plot_for_tissue<-function(
 #' 
 #' @return A named list. Names correspond to set names (can correspond to a node, edge, or a trajectory).
 #' 
+#' @export
+#' 
 #' @details 
 #' This function is useful for extracting the largest sets for a specific set of tissues and omes. 
 #' Thus, it is a useful step before running enrichment analysis on sets of analytes identified by the graphical clustering analysis.
@@ -1014,6 +1028,8 @@ extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
 #' @param edge_sets use `load_graph_vis_data()$edge_sets`
 #' @param tissues string vector, optional. tissue subset. all tissues by default
 #' @param omes string vector, optional. ome subset. all omes by default
+#' 
+#' @export
 #' 
 #' @import MotrpacRatTraining6moData
 #' 
