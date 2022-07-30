@@ -1056,7 +1056,7 @@ get_all_trajectories = function(edge_sets,
     }
     if(length(curr_set) != tissue_top_trajs[path_i,6]){
       warning("Computed trajectory set size is different from the precomputed size, 
-                  this happns if edge sets are not simple intersections of node sets")
+                  this happens if edge sets are not simple intersections of node sets")
     }
     l[[paste(tissue_top_trajs[path_i,2:5],collapse="->")]] = curr_set
   }
