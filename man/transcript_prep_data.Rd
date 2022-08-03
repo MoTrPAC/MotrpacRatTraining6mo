@@ -16,9 +16,9 @@ transcript_prep_data(
 )
 }
 \arguments{
-\item{tissue}{character, tissue abbreviation, one of \link{TISSUE_ABBREV}}
+\item{tissue}{@eval tissue()}
 
-\item{sex}{NULL to return data from both sexes or one of "male" or "female" to return data from the specified sex}
+\item{sex}{@eval sex()}
 
 \item{covariates}{character vector of covariates that correspond to column names of \link{TRNSCRPT_META}.
 Defaults to covariates that were used for the manuscript.}
@@ -73,5 +73,10 @@ gastroc_data4 = transcript_prep_data("SKM-GN", outliers = NULL, center_scale = T
 
 }
 \seealso{
-\link{OUTLIERS}, \code{\link[=fix_covariates]{fix_covariates()}}, \link{PHENO}, \link{TRNSCRPT_META}, \link{TRNSCRPT_RAW_COUNTS}, \link{TRNSCRPT_NORM_DATA}
+\link[MotrpacRatTraining6moData:OUTLIERS]{MotrpacRatTraining6moData::OUTLIERS},
+\code{\link[=fix_covariates]{fix_covariates()}},
+\link[MotrpacRatTraining6moData:PHENO]{MotrpacRatTraining6moData::PHENO},
+\link[MotrpacRatTraining6moData:TRNSCRPT_META]{MotrpacRatTraining6moData::TRNSCRPT_META},
+\link[MotrpacRatTraining6moData:TRNSCRPT_RAW_COUNTS]{MotrpacRatTraining6moData::TRNSCRPT_RAW_COUNTS},
+\link[MotrpacRatTraining6moData:TRNSCRPT_NORM_DATA]{MotrpacRatTraining6moData::TRNSCRPT_NORM_DATA}
 }

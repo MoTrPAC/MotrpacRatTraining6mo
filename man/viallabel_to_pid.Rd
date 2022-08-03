@@ -14,7 +14,7 @@ named list where names are vial labels and values are PIDs
 }
 \description{
 Map sample identifiers (vial labels) to participant IDs (PIDs).
-Vial labels are unique per sample; PIDs are unique per animal. 
+Vial labels are unique per sample; PIDs are unique per animal.
 Multiple vial labels correspond to different aliquots of the same tissue sample.
 }
 \examples{

@@ -33,7 +33,7 @@ Contains the RRBS pipeline QA/QC scores. Contains at least the following columns
 
 \item{dataset_name}{A character. The name of the current dataset. Will be added to the output.}
 
-\item{yall}{A DGEList object. 
+\item{yall}{A DGEList object.
 yall$genes is a metadata data frame with the locus coordinates (see details), and these fields at minimum:
 Chr, EntrezID, Symbol, and Strand}
 }

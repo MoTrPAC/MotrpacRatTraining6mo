@@ -57,7 +57,7 @@ deseq_res = run_deseq(data$filt_counts,
                       list(c("group","1w","control"), c("group","2w","control")))
 head(deseq_res$res)
                       
-# Get shrunken effects using the DESeqResults objects generated in the previous step
+# Get shrunken effects using the `DESeqResults` objects generated in the previous step
 deseq_res_shrunk = run_deseq(data$filt_counts, 
                             data$metadata,
                             data$covariates,

@@ -17,7 +17,7 @@ transcript_timewise_dea(
 )
 }
 \arguments{
-\item{tissue}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
+\item{tissue}{@eval tissue()}
 
 \item{covariates}{character vector of covariates that correspond to column names of \link[MotrpacRatTraining6moData:TRNSCRPT_META]{MotrpacRatTraining6moData::TRNSCRPT_META}.
 Defaults to covariates that were used for the manuscript.}
@@ -36,29 +36,25 @@ to \code{[MotrpacRatTraining6moData::OUTLIERS\$viallabel[[MotrpacRatTraining6moD
 \value{
 a data frame with one row per gene per contrast (usually 8 rows per gene):
 \describe{
-\item{\code{feature}}{unique gene identifier in the format \code{[ASSAY_ABBREV];[TISSUE_ABBREV];[feature_ID]}}
-\item{\code{feature_ID}}{Ensembl gene ID}
-\item{\code{sex}}{one of "male" or "female"}
-\item{\code{comparison_group}}{time point compared to the sex-matched
-sedentary control animals, one of "1w", "2w", "4w", "8w"}
-\item{\code{assay}}{assay abbreviation, one of \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV}}
-\item{\code{assay_code}}{MoTrPAC assay or "ome" code. "transcript-rna-seq" for RNA-seq datasets.}
-\item{\code{tissue}}{tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
-\item{\code{tissue_code}}{MoTrPAC tissue release code. See \link[MotrpacBicQC:bic_animal_tissue_code]{MotrpacBicQC::bic_animal_tissue_code} for details.}
+\item{\code{feature_ID}}{@eval feature_ID()}
+\item{\code{sex}}{@eval sex()}
+\item{\code{comparison_group}}{@eval comparison_group()}
+\item{\code{assay}}{@eval assay()}
+\item{\code{assay_code}}{@eval assay_code()}
+\item{\code{tissue}}{@eval tissue()}
+\item{\code{tissue_code}}{@eval tissue_code()}
 \item{\code{covariates}}{comma-separated list of adjustment variables}
 \item{\code{removed_samples}}{comma-separated list of outliers (vial labels) removed from differential analysis}
-\item{\code{logFC}}{log fold-change of the training group specified by \code{sex} and \code{comparison_group} (e.g., 1-week females)
-relative to the sex-matched sedentary controls}
-\item{\code{logFC_se}}{standard error of \code{logFC}}
+\item{\code{logFC}}{@eval logFC()}
+\item{\code{logFC_se}}{@eval logFC_se()}
 \item{\code{shrunk_logFC}}{log fold-change shrunk with \code{type = 'ashr'} and \code{optmethod = 'mixSQP'}, only if \code{add_shrunk_logfc = TRUE}}
 \item{\code{shrunk_logFC_se}}{standard error of \code{shrunk_logFC}, only if \code{add_shrunk_logfc = TRUE}}
 \item{\code{zscore}}{Wald statistic}
-\item{\code{p_value}}{nominal p-value corresponding to the contrast between the training group
-(e.g., 1-week females) and the sex-matched sedentary controls}
-\item{\code{comparison_average_intensity}}{average normalized RNA-seq counts for samples in the training group (e.g., 1-week females)}
-\item{\code{comparison_average_intensity_se}}{standard error of \code{comparison_average_intensity}}
-\item{\code{reference_average_intensity}}{average normalized RNA-seq counts for sex-matched sedentary control samples}
-\item{\code{reference_average_intensity_se}}{standard error of \code{reference_average_intensity}}
+\item{\code{p_value}}{@eval p_value_da()}
+\item{\code{comparison_average_intensity}}{@eval comparison_average_intensity()}
+\item{\code{comparison_average_intensity_se}}{@eval comparison_average_intensity_se()}
+\item{\code{reference_average_intensity}}{@eval reference_average_intensity()}
+\item{\code{reference_average_intensity_se}}{@eval reference_average_intensity_se()}
 }
 }
 \description{

@@ -16,7 +16,7 @@ transcript_training_dea(
 )
 }
 \arguments{
-\item{tissue}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
+\item{tissue}{@eval tissue()}
 
 \item{covariates}{character vector of covariates that correspond to column names of \link[MotrpacRatTraining6moData:TRNSCRPT_META]{MotrpacRatTraining6moData::TRNSCRPT_META}.
 Defaults to covariates that were used for the manuscript.}
@@ -33,13 +33,12 @@ to \code{[MotrpacRatTraining6moData::OUTLIERS]$viallabel[[MotrpacRatTraining6moD
 \value{
 a data frame with one row per gene:
 \describe{
-\item{\code{feature}}{unique gene identifier in the format \code{[ASSAY_ABBREV];[TISSUE_ABBREV];[feature_ID]}}
-\item{\code{feature_ID}}{Ensembl gene ID}
-\item{\code{sex}}{one of "male" or "female"}
-\item{\code{assay}}{assay abbreviation, one of \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV}}
-\item{\code{assay_code}}{MoTrPAC assay or "ome" code. "transcript-rna-seq" for RNA-seq datasets.}
-\item{\code{tissue}}{tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
-\item{\code{tissue_code}}{MoTrPAC tissue release code. See \link[MotrpacBicQC:bic_animal_tissue_code]{MotrpacBicQC::bic_animal_tissue_code} for details.}
+\item{\code{feature_ID}}{@eval feature_ID()}
+\item{\code{sex}}{@eval sex()}
+\item{\code{assay}}{@eval assay()}
+\item{\code{assay_code}}{@eval assay_code()}
+\item{\code{tissue}}{@eval tissue()}
+\item{\code{tissue_code}}{@eval tissue_code()}
 \item{\code{removed_samples_male}}{comma-separated list of male outliers (vial labels) removed from differential analysis}
 \item{\code{removed_samples_female}}{comma-separated list of female outliers (vial labels) removed from differential analysis}
 \item{\code{lrt_male}}{likelihood ratio test statistic for males}
