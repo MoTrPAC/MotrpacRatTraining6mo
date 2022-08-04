@@ -41,12 +41,12 @@
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples
-#' # Perform differential analysis for expressed genes in brown adipose tissue with default parameters, 
+#' # Perform differential analysis for chromatin accessibility peaks in brown adipose tissue with default parameters, 
 #' # i.e., outliers and covariates used for the manuscript
-#' dea = transcript_training_dea("BAT")
+#' dea = atac_training_dea("BAT")
 #' 
-#' # Same as above but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
-#' dea = transcript_training_dea("BAT", rdata_outfile = "~/test/BAT_RNA_training-dea.RData", overwrite = TRUE)
+#' # Same as above but save the [limma::eBayes] MArrayLM objects in an RData file 
+#' dea = atac_training_dea("BAT", rdata_outfile = "~/test/BAT_ATAC_training-dea.RData", overwrite = TRUE)
 #' 
 atac_training_dea = function(tissue, 
                              covariates = c("Sample_batch", "peak_enrich.frac_reads_in_peaks.macs2.frip"), 
