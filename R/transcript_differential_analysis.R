@@ -116,7 +116,7 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' @param add_shrunk_logfc boolean, whether to calculate shrunk log fold-changes in addition to standard log fold-changes
 #' @param rdata_outfile NULL or path in which to save DESeq2 objects in an RData file 
 #' @param overwrite boolean, whether to overwrite the file if \code{rdata_outfile} exists
-#' @param verbose boolean, whether to print the DESeq2 design string
+#' @param verbose boolean, whether to print messages 
 #'
 #' @return a data frame with one row per gene per contrast (usually 8 rows per gene):
 #' \describe{
@@ -127,13 +127,14 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #'   \item{\code{assay_code}}{@eval assay_code()}
 #'   \item{\code{tissue}}{@eval tissue()}
 #'   \item{\code{tissue_code}}{@eval tissue_code()}
-#'   \item{\code{covariates}}{comma-separated list of adjustment variables}
-#'   \item{\code{removed_samples}}{comma-separated list of outliers (vial labels) removed from differential analysis}
+#'   \item{\code{covariates}}{character, comma-separated list of adjustment variables}
+#'   \item{\code{removed_samples}}{character, comma-separated list of outliers (vial labels) removed from differential analysis}
 #'   \item{\code{logFC}}{@eval logFC()}
 #'   \item{\code{logFC_se}}{@eval logFC_se()}
-#'   \item{\code{shrunk_logFC}}{log fold-change shrunk with \code{type = 'ashr'} and \code{optmethod = 'mixSQP'}, only if \code{add_shrunk_logfc = TRUE}}
-#'   \item{\code{shrunk_logFC_se}}{standard error of \code{shrunk_logFC}, only if \code{add_shrunk_logfc = TRUE}}
-#'   \item{\code{zscore}}{Wald statistic}
+#'   \item{\code{shrunk_logFC}}{double, log fold-change shrunk with \code{type = 'ashr'} and \code{optmethod = 'mixSQP'}, 
+#'     only if \code{add_shrunk_logfc = TRUE}}
+#'   \item{\code{shrunk_logFC_se}}{double, standard error of \code{shrunk_logFC}, only if \code{add_shrunk_logfc = TRUE}}
+#'   \item{\code{zscore}}{double, Wald statistic}
 #'   \item{\code{p_value}}{@eval p_value_da()}
 #'   \item{\code{comparison_average_intensity}}{@eval comparison_average_intensity()}
 #'   \item{\code{comparison_average_intensity_se}}{@eval comparison_average_intensity_se()}
@@ -158,7 +159,7 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' 
 transcript_timewise_dea = function(tissue, 
                                    covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
-                                   outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "TRNSCRPT"]),
+                                   outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
                                    add_shrunk_logfc = TRUE, 
                                    rdata_outfile = NULL,
                                    overwrite = FALSE,
@@ -167,7 +168,7 @@ transcript_timewise_dea = function(tissue,
   
   check_dea_args(.tissue, rdata_outfile, overwrite)
   
-  message("Loading data...")
+  if(verbose) message("Loading data...")
   data = transcript_prep_data(tissue, covariates = covariates, outliers = outliers, center_scale = TRUE, adjust_covariates = TRUE)
   meta = as.data.table(data$metadata)
   counts = data$filt_counts
@@ -177,7 +178,7 @@ transcript_timewise_dea = function(tissue,
   sex_res = list()
   for(SEX in unique(meta[,sex])){
     
-    message(sprintf("Performing differential expression analysis for %s %ss...", .tissue, SEX))
+    if(verbose) message(sprintf("Performing differential expression analysis for %s %ss...", .tissue, SEX))
     
     # subset counts and meta
     curr_samples = meta[sex == SEX, viallabel]
@@ -191,7 +192,7 @@ transcript_timewise_dea = function(tissue,
       i = i+1
     }
 
-    message("Calculating standard fold-changes...")
+    if(verbose) message("Calculating standard fold-changes...")
     # standard results 
     deseq_res = run_deseq(curr_counts, # filtered counts
                           curr_meta, # metadata
@@ -203,7 +204,7 @@ transcript_timewise_dea = function(tissue,
     
     # shrunk results 
     if(add_shrunk_logfc){
-      message("Calculating shrunk fold-changes...")
+      if(verbose) message("Calculating shrunk fold-changes...")
       deseq_res_shrunk = run_deseq(curr_counts, # filtered counts
                                    curr_meta, # metadata
                                    covariates, # covariates
@@ -218,10 +219,10 @@ transcript_timewise_dea = function(tissue,
     if(!is.null(rdata_outfile)){
       if(add_shrunk_logfc){
         save(deseq_res, deseq_res_shrunk, file=rdata_outfile)
-        message(sprintf("'deseq_res', 'deseq_res_shrunk' saved in 'rdata_outfile': %s", rdata_outfile))
+        if(verbose) message(sprintf("'deseq_res', 'deseq_res_shrunk' saved in 'rdata_outfile': %s", rdata_outfile))
       }else{
         save(deseq_res, file=rdata_outfile)
-        message(sprintf("'deseq_res' saved in 'rdata_outfile': %s", rdata_outfile))
+        if(verbose) message(sprintf("'deseq_res' saved in 'rdata_outfile': %s", rdata_outfile))
       }
     }
     
@@ -324,7 +325,7 @@ transcript_timewise_dea = function(tissue,
       reference_average_intensity_se
     )]
   }
-  message("Done.")
+  if(verbose) message("Done.")
   return(as.data.frame(dt))
 }
 
@@ -338,30 +339,29 @@ transcript_timewise_dea = function(tissue,
 #' @param covariates character vector of covariates that correspond to column names of [MotrpacRatTraining6moData::TRNSCRPT_META].
 #'   Defaults to covariates that were used for the manuscript. 
 #' @param outliers vector of viallabels to exclude during differential analysis. Defaults
-#'   to \code{[MotrpacRatTraining6moData::OUTLIERS]$viallabel[[MotrpacRatTraining6moData::OUTLIERS]$assay == "TRNSCRPT"]}
+#'   to \code{[MotrpacRatTraining6moData::OUTLIERS]$viallabel}
 #' @param rdata_outfile NULL or path in which to save DESeq2 objects in an RData file 
 #' @param overwrite boolean, whether to overwrite the file if \code{rdata_outfile} exists
-#' @param verbose boolean, whether to print the DESeq2 design string
+#' @param verbose boolean, whether to print messages
 #'
 #' @return a data frame with one row per gene:
 #' \describe{
 #'   \item{\code{feature_ID}}{@eval feature_ID()}
-#'   \item{\code{sex}}{@eval sex()}
 #'   \item{\code{assay}}{@eval assay()}
 #'   \item{\code{assay_code}}{@eval assay_code()}
 #'   \item{\code{tissue}}{@eval tissue()}
 #'   \item{\code{tissue_code}}{@eval tissue_code()}
-#'   \item{\code{removed_samples_male}}{comma-separated list of male outliers (vial labels) removed from differential analysis}
-#'   \item{\code{removed_samples_female}}{comma-separated list of female outliers (vial labels) removed from differential analysis}
-#'   \item{\code{lrt_male}}{likelihood ratio test statistic for males}
-#'   \item{\code{lrt_female}}{likelihood ratio test statistic for females}
-#'   \item{\code{p_value_male}}{nominal LRT p-value for males}
-#'   \item{\code{p_value_female}}{nominal LRT p-value for females}
-#'   \item{\code{full_model_male}}{full model used in LRT for males}
-#'   \item{\code{full_model_female}}{full model used in LRT for females}
-#'   \item{\code{reduced_model_male}}{reduced model used in LRT for males}
-#'   \item{\code{reduced_model_female}}{reduced model used in LRT for females}
-#'   \item{\code{p_value}}{combined male and female nominal p-value using the sum of logs}
+#'   \item{\code{removed_samples_male}}{character, comma-separated list of male outliers (vial labels) removed from differential analysis}
+#'   \item{\code{removed_samples_female}}{character, comma-separated list of female outliers (vial labels) removed from differential analysis}
+#'   \item{\code{lrt_male}}{double, likelihood ratio test statistic for males}
+#'   \item{\code{lrt_female}}{double, likelihood ratio test statistic for females}
+#'   \item{\code{p_value_male}}{double, nominal LRT p-value for males}
+#'   \item{\code{p_value_female}}{double, nominal LRT p-value for females}
+#'   \item{\code{full_model_male}}{character, full model used in LRT for males}
+#'   \item{\code{full_model_female}}{character, full model used in LRT for females}
+#'   \item{\code{reduced_model_male}}{character, reduced model used in LRT for males}
+#'   \item{\code{reduced_model_female}}{character, reduced model used in LRT for females}
+#'   \item{\code{p_value}}{double, combined male and female nominal p-value using the sum of logs}
 #' }
 #' 
 #' @export
@@ -380,7 +380,7 @@ transcript_timewise_dea = function(tissue,
 #' 
 transcript_training_dea = function(tissue, 
                                    covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
-                                   outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "TRNSCRPT"]),
+                                   outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
                                    rdata_outfile = NULL,
                                    overwrite = FALSE,
                                    verbose = FALSE){
@@ -389,7 +389,7 @@ transcript_training_dea = function(tissue,
   
   check_dea_args(.tissue, rdata_outfile, overwrite)
   
-  message("Loading data...")
+  if(verbose) message("Loading data...")
   data = transcript_prep_data(tissue, covariates = covariates, outliers = outliers, center_scale = TRUE, adjust_covariates = TRUE)
   meta = as.data.table(data$metadata)
   counts = data$filt_counts
@@ -400,9 +400,10 @@ transcript_training_dea = function(tissue,
   meta[,group := factor(group, levels=c("control","1w","2w","4w","8w"))]
   
   sex_res = list()
+  dds_list = list()
   for(SEX in unique(meta[,sex])){
     
-    message(sprintf("Performing LRTs for %s %ss...", .tissue, SEX))
+    if(verbose) message(sprintf("Performing LRTs for %s %ss...", .tissue, SEX))
     
     # subset counts and meta
     curr_samples = meta[sex == SEX, viallabel]
@@ -420,6 +421,7 @@ transcript_training_dea = function(tissue,
     dds = estimateSizeFactors(dds)
     dds = estimateDispersions(dds)
     dds = nbinomLRT(dds, reduced=eval(parse(text=reduced)), maxit=500)
+    dds_list[[SEX]] = dds
     
     res = results(dds)
     res_dt = data.table(feature_ID = rownames(res), 
@@ -450,6 +452,13 @@ transcript_training_dea = function(tissue,
     sex_res[[SEX]] = res_dt
   }
   
+  if(!is.null(rdata_outfile)){
+    if(overwrite | (!overwrite & !file.exists(rdata_outfile))){
+      save(dds_list, file=rdata_outfile)
+      if(verbose) message(sprintf("'dds_list' saved in 'rdata_outfile': %s", rdata_outfile))
+    }
+  }
+  
   if(length(sex_res) > 1){
     male = sex_res[['male']]
     female = sex_res[['female']]
@@ -467,6 +476,6 @@ transcript_training_dea = function(tissue,
     res_dt[,p_value := get(sprintf("p_value_%s", names(sex_res)[1]))]
   }
   
-  message("Done.")
+  if(verbose) message("Done.")
   return(as.data.frame(res_dt))
 }

@@ -229,6 +229,8 @@ fix_covariates = function(covar, meta, center_scale = FALSE){
 #' @param outliers vector of viallabels to exclude from the returned data. Defaults
 #'   to \code{[MotrpacRatTraining6moData::OUTLIERS]$viallabel}
 #' @param nrows integer, number of rows to return. Defaults to Inf. Useful to return a subset of a large data frame for tests. 
+#' @param filter_counts bool, whether to return filtered raw counts
+#' @param return_normalized_data bool, whether to also return normalized data 
 #'
 #' @return named list of five items: 
 #' \describe{
@@ -259,6 +261,8 @@ fix_covariates = function(covar, meta, center_scale = FALSE){
 atac_prep_data = function(tissue, 
                           sex = NULL, 
                           covariates = c("Sample_batch", "peak_enrich.frac_reads_in_peaks.macs2.frip"), 
+                          filter_counts = FALSE,
+                          return_normalized_data = FALSE, 
                           scratchdir = ".", 
                           outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "ATAC"]),
                           nrows = Inf){
@@ -291,17 +295,6 @@ atac_prep_data = function(tissue,
   rownames(counts) = counts$feature_ID
   counts[,c("feature","feature_ID","tissue","assay")] = NULL
   
-  # load normalized data 
-  norm = load_sample_data(tissue = tissue, 
-                          assay = "ATAC", 
-                          normalized = TRUE, 
-                          training_regulated_only = FALSE, 
-                          scratchdir = scratchdir,
-                          exclude_outliers = FALSE,
-                          nrows = nrows)
-  rownames(norm) = norm$feature_ID
-  norm[,c("feature","feature_ID","tissue","assay")] = NULL
-  
   # filter by tissue
   meta = meta[tissue == .tissue]
   
@@ -320,14 +313,44 @@ atac_prep_data = function(tissue,
     meta = meta[!viallabel %in% as.character(curr_outliers)]
   }
   counts = counts[,meta[,viallabel]]
-  norm = norm[,meta[,viallabel]]
   
   meta = as.data.frame(meta)
   rownames(meta) = meta$viallabel
-
+  
+  # normalized data
+  norm = NULL
+  if(return_normalized_data){
+    # load normalized data 
+    norm = load_sample_data(tissue = tissue, 
+                            assay = "ATAC", 
+                            normalized = TRUE, 
+                            training_regulated_only = FALSE, 
+                            scratchdir = scratchdir,
+                            exclude_outliers = FALSE,
+                            nrows = nrows)
+    rownames(norm) = norm$feature_ID
+    norm[,c("feature","feature_ID","tissue","assay")] = NULL
+    norm = norm[,meta[,viallabel]]
+  }
+  
+  # filter counts
+  if(filter_counts){
+    if(is.null(norm)){
+      n_samples = 4
+      min_count = 10
+      # remove non-auto peaks
+      counts = counts[grepl("^chr[0-9]|^chrY|^chrX", rownames(counts)),]
+      # exclude low count peaks in the current dataset
+      # at least min_count counts in n_samples samples
+      counts = counts[rowSums(data.frame(lapply(counts, function(x) as.numeric(x >= min_count)), check.names=F)) >= n_samples,]
+    }else{
+      counts = counts[rownames(norm),]
+    }
+  }
+  
   return(list(metadata = meta, 
               covariates = covariates, 
-              raw_counts = counts,
+              counts = counts,
               norm_data = norm, 
               outliers = curr_outliers))
 }
