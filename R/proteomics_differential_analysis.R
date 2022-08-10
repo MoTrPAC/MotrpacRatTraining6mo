@@ -16,9 +16,7 @@ limma_res_extract_se<-function(limma_res,
   effects = limma_res[[effect_col]]
   ts = limma_res[[t_col]]
   ses1 = effects/ts
-  if(is.null(colname)){
-    return(ses1)
-  }
+  return(ses1)
 }
 
 
@@ -42,13 +40,13 @@ limma_res_extract_se<-function(limma_res,
 #'   \item{\code{tissue}}{`r tissue()`}
 #'   \item{\code{tissue_code}}{`r tissue_code()`}
 #'   \item{\code{covariates}}{character, comma-separated list of adjustment variables}
-#'   \item{\code{removed_samples}}{character, comma-separated list of outliers (vial labels) removed from differential analysis}
 #'   \item{\code{logFC}}{`r logFC()`}
 #'   \item{\code{logFC_se}}{`r logFC_se()`}
 #'   \item{\code{tscore}}{double, t statistic}
 #'   \item{\code{p_value}}{`r p_value_da()`}
 #'   \item{\code{comparison_average_intensity}}{`r comparison_average_intensity()`}
 #'   \item{\code{reference_average_intensity}}{`r reference_average_intensity()`}
+#'   \item{\code{numNAs}}{`r numNAs()`}
 #' }
 #' 
 #' @import MotrpacRatTraining6moData
@@ -63,7 +61,6 @@ limma_res_extract_se<-function(limma_res,
 proteomics_timewise_da  = function(assay, tissue){
   
   tpDA_split_sex = c() # keep the timewise results
-  
   
   #Extract current dataset and metadata
   x = 
@@ -159,7 +156,23 @@ proteomics_timewise_da  = function(assay, tissue){
   }
   
   # add some columns and reorder
-  
+  tpDA_split_sex$assay_code = ASSAY_ABBREV_TO_CODE[[assay]]
+  tpDA_split_sex$tissue_code = TISSUE_ABBREV_TO_CODE[[tissue]]
+  tpDA_split_sex = tpDA_split_sex[,c('feature_ID',
+                                     'sex',
+                                     'comparison_group',
+                                     'assay',
+                                     'assay_code',
+                                     'tissue',
+                                     'tissue_code',
+                                     'covariates',
+                                     'logFC',
+                                     'logFC_se',
+                                     'tscore',
+                                     'p_value',
+                                     'comparison_average_intensity',
+                                     'reference_average_intensity',
+                                     'numNAs')]
   
   return(tpDA_split_sex)
 }
@@ -187,6 +200,7 @@ proteomics_timewise_da  = function(assay, tissue){
 #' 
 #' @import MotrpacRatTraining6moData
 #' @import dplyr
+#' @import tibble
 #' @import limma
 #' @import metap
 #' @import data.table

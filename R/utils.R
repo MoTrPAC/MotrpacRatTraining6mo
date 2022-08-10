@@ -47,7 +47,7 @@ list_available_data = function(package=NULL){
 }
 
 
-#' Check arguments for DEA functions 
+#' Check arguments for DA functions 
 #' 
 #' Internal function used to check arguments for differential analysis functions
 #'
@@ -59,9 +59,9 @@ list_available_data = function(package=NULL){
 #' @return NULL
 #'
 #' @examples
-#' check_dea_args("BAT", "~/Desktop/bat.rda", overwrite = FALSE) 
+#' check_da_args("BAT", "~/Desktop/bat.rda", overwrite = FALSE) 
 #' 
-check_dea_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
+check_da_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
   # check arguments 
   if(length(tissue)>1){
     stop("Please specify a single tissue, e.g., 'BAT' for brown adipose tissue. See 'TISSUE_ABBREV' for options.")
