@@ -23,9 +23,9 @@
 #' }
 #' 
 #' @export 
-#' @import data.table
-#' @import DESeq2
-#' @import ashr
+#' @importFrom data.table data.table merge rbindlist
+#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq lfcShrink
+#' @importFrom ashr ash
 #' 
 #' @examples 
 #' # Get 1- and 2- week training effects in female gastrocnemius
@@ -143,7 +143,7 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' }
 #' 
 #' @export 
-#' @import data.table
+#' @importFrom data.table data.table merge
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples
@@ -365,9 +365,9 @@ transcript_timewise_da = function(tissue,
 #' }
 #' 
 #' @export
-#' @import metap
-#' @import DESeq2
-#' @import data.table
+#' @importFrom metap sumlog
+#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq estimateSizeFactors estimateDispersions nbinomLRT
+#' @importFrom data.table data.table merge rbindlist
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples

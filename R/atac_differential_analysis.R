@@ -36,7 +36,7 @@
 #' 
 #' @export
 #' @importFrom metap sumlog
-#' @import limma
+#' @importFrom limma voom lmFit eBayes topTable
 #' @import data.table
 #' @import MotrpacRatTraining6moData
 #'

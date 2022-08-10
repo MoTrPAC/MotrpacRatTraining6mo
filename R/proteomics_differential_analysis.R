@@ -8,11 +8,10 @@
 #' @return A vector of standard errors for effect sizes
 #' @export
 #'
-limma_res_extract_se<-function(limma_res,
+limma_res_extract_se = function(limma_res,
                                e_fit,
                                effect_col="logFC",
                                t_col="t"){
-  # First approach
   effects = limma_res[[effect_col]]
   ts = limma_res[[t_col]]
   ses1 = effects/ts
@@ -56,10 +55,14 @@ limma_res_extract_se<-function(limma_res,
 #' }
 #' 
 #' @import MotrpacRatTraining6moData
-#' @import dplyr
-#' @import tibble
-#' @import limma
-#' @import data.table
+#' @importFrom dplyr select filter transmute
+#' @importFrom tibble column_to_rownames
+#' @importFrom purrr map2_dbl
+#' @importFrom tidyr replace_na
+#' @importFrom limma lmFit eBayes topTable makeContrasts contrasts.fit
+#' @importFrom metap sumlog
+#' @importFrom magrittr %>%
+#' @importFrom data.table data.table
 #' @export
 #'
 #' @examples
@@ -222,17 +225,19 @@ proteomics_timewise_da  = function(assay, tissue){
 #' }
 #' 
 #' @import MotrpacRatTraining6moData
-#' @import dplyr
-#' @import tidyverse
-#' @import tibble
-#' @import limma
+#' @importFrom dplyr select filter transmute
+#' @importFrom tibble column_to_rownames
+#' @importFrom purrr map2_dbl
+#' @importFrom tidyr replace_na
+#' @importFrom limma lmFit eBayes topTable
 #' @importFrom metap sumlog
-#' @import data.table
+#' @importFrom magrittr %>%
+#' @importFrom data.table data.table
 #' @export
 #'
 #' @examples
 #' proteomics_training_da("PROT","HEART")
-proteomics_training_da  <- function(assay, tissue){
+proteomics_training_da = function(assay, tissue){
   
   ftest_res_split_sex = c() # keeps all ftest results
   
@@ -303,7 +308,7 @@ proteomics_training_da  <- function(assay, tissue){
            p_value_female = tidyr::replace_na(p_value_female,1)) %>%
     mutate(p_value = purrr::map2_dbl(p_value_male,p_value_female,function(x,y){metap::sumlog(c(x,y))$p}))
   
-  ftest_res_split_sex <- rbind(ftest_res_split_sex,merged)
+  ftest_res_split_sex <- base::rbind(ftest_res_split_sex,merged)
   
   # add columns and change order
   ftest_res_split_sex$tissue_code = TISSUE_ABBREV_TO_CODE[[tissue]]

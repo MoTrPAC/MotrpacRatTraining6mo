@@ -371,7 +371,7 @@ atac_prep_data = function(tissue,
 #'   Google Cloud Storage. Current working directory by default. Only applies if \code{assay} is ATAC or METHYL. 
 #' @param nrows integer, number of rows to return. Defaults to Inf. Useful to return a subset of a large data frame for tests. 
 #'
-#' @return
+#' @return a data.frame where features are in rows and numeric columns correspond to sample identifiers (vial labels)
 #' @export
 #' @import data.table
 #' @import MotrpacRatTraining6moData
