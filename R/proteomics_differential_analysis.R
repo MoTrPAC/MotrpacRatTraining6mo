@@ -24,7 +24,13 @@ limma_res_extract_se<-function(limma_res,
 
 ## Proteomics Timewise DA ------------------------------------------------------------------
 
-#' Differential abundance analysis of proteomics, phosphoproteomics, acetylome, ubiquitylome
+
+#' Proteomics timewise differential analysis
+#' 
+#' Timewise differential analysis for the proteome, phosphoproteome, acetylome, and ubiquitylome. 
+#' Use limma to perform pairwise contrasts between each group of trained animals
+#' and the sex-matched control group for a single tissue and proteomics assay. 
+#' Analysis is performed separately for males and females. 
 #'
 #' @param assay character, abbreviation for proteomics assay to be analyzed as defined by [MotrpacRatTraining6moData::ASSAY_ABBREV]. 
 #'   One of the following: PROT, PHOSPHO, ACETYL, UBIQ
@@ -188,37 +194,53 @@ proteomics_timewise_da  = function(assay, tissue){
 
 ## Proteomics Training DA ------------------------------------------------------------------
 
-#' Title
-#'
-#' @param assay_abbrev Abbreviation for proteomics assay to be analyzed as defined by ASSAY_ABBREV. 
-#' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#' Proteomics training differential analysis 
 #' 
-#' @param tissue_abbrev Abbreviation for proteomics tissue to be analyzed as defined by TISSUE_ABBREV. 
-#' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#' Training differential analysis for the proteome, phosphoproteome, acetylome, and ubiquitylome.
+#' Use limma to perform an F-test to test the effect of training
+#' across time points. Analysis is performed separately for males and females. 
+#'
+#' @param assay character, abbreviation for proteomics assay to be analyzed as defined by [MotrpacRatTraining6moData::ASSAY_ABBREV]. 
+#'   One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#' @param tissue `r tissue()`
 #'
 #' @return A data frame containing differential enrichment results
+#' @return a data frame with one row per gene:
+#' \describe{
+#'   \item{\code{feature_ID}}{`r feature_ID()`}
+#'   \item{\code{assay}}{`r assay()`}
+#'   \item{\code{assay_code}}{`r assay_code()`}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{tissue_code}}{`r tissue_code()`}
+#'   \item{\code{fscore_male}}{double, F statistic for males}
+#'   \item{\code{fscore_female}}{double, F statistic for females}
+#'   \item{\code{p_value_male}}{double, nominal F-test p-value for males}
+#'   \item{\code{p_value_female}}{double, nominal F-test p-value for females}
+#'   \item{\code{full_model}}{character, full model used in F-test}
+#'   \item{\code{reduced_model}}{character, reduced model used in F-test}
+#'   \item{\code{p_value}}{double, combined male and female nominal p-value using the sum of logs}
+#' }
 #' 
 #' @import MotrpacRatTraining6moData
 #' @import dplyr
+#' @import tidyverse
 #' @import tibble
 #' @import limma
-#' @import metap
+#' @importFrom metap sumlog
 #' @import data.table
 #' @export
 #'
 #' @examples
 #' proteomics_training_da("PROT","HEART")
-proteomics_training_da  <- function(assay_abbrev, tissue_abbrev){
+proteomics_training_da  <- function(assay, tissue){
   
-  assay = assay_abbrev
-  tissue = tissue_abbrev
   ftest_res_split_sex = c() # keeps all ftest results
-  
   
   #Extract current dataset and metadata
   x = 
     get(sprintf("%s_%s_NORM_DATA", assay,gsub("-","",tissue))) %>%
     column_to_rownames(var = "feature_ID") %>%
+    select(-c("feature","tissue","assay")) %>%
     as.matrix()
   
   #Specify covariates
@@ -277,10 +299,29 @@ proteomics_training_da  <- function(assay_abbrev, tissue_abbrev){
   merged = data.frame(merge(sex_res[['M']], sex_res[['F']], 
                             by=c("tissue","assay","feature_ID","full_model","reduced_model"), 
                             suffixes=c('_male','_female'))) %>%
-    mutate(p_value_male = replace_na(p_value_male,1),
-           p_value_female = replace_na(p_value_female,1)) %>%
-    mutate(p_value = map2_dbl(p_value_male,p_value_female,function(x,y){sumlog(c(x,y))$p}))
+    mutate(p_value_male = tidyr::replace_na(p_value_male,1),
+           p_value_female = tidyr::replace_na(p_value_female,1)) %>%
+    mutate(p_value = purrr::map2_dbl(p_value_male,p_value_female,function(x,y){metap::sumlog(c(x,y))$p}))
   
   ftest_res_split_sex <- rbind(ftest_res_split_sex,merged)
+  
+  # add columns and change order
+  ftest_res_split_sex$tissue_code = TISSUE_ABBREV_TO_CODE[[tissue]]
+  ftest_res_split_sex$assay_code = ASSAY_ABBREV_TO_CODE[[assay]]
+  ftest_res_split_sex = ftest_res_split_sex[,c(
+    "feature_ID",
+    "assay",
+    "assay_code",
+    "tissue",
+    "tissue_code",
+    "fscore_male",
+    "fscore_female",
+    "p_value_male",
+    "p_value_female",
+    "full_model",
+    "reduced_model",
+    "p_value"
+  )]
+  
   return(ftest_res_split_sex)
 }
