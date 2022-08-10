@@ -51,7 +51,7 @@ list_available_data = function(package=NULL){
 #' 
 #' Internal function used to check arguments for differential analysis functions
 #'
-#' @param tissue @eval tissue()
+#' @param tissue `r tissue()`
 #' @param outfile character, output file 
 #' @param overwrite bool, whether to overwrite \code{outfile} if it exists
 #' @param outfile_is_rdata bool, whether \code{outfile} is intended to save RData

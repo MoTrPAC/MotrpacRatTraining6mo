@@ -3,7 +3,7 @@
 #' Use limma to perform an F-test to test the effect of training
 #' across time points. Analysis is performed separately for males and females. 
 #'
-#' @param tissue @eval tissue()
+#' @param tissue `r tissue()`
 #' @param covariates character vector of covariates that correspond to column names of [MotrpacRatTraining6moData::ATAC_META].
 #'   Defaults to covariates that were used for the manuscript. 
 #' @param outliers vector of viallabels to exclude during differential analysis. Defaults
@@ -16,11 +16,11 @@
 #'
 #' @return data frame with one row per feature:
 #' \describe{
-#'   \item{\code{feature_ID}}{@eval feature_ID()}
-#'   \item{\code{assay}}{@eval assay()}
-#'   \item{\code{assay_code}}{@eval assay_code()}
-#'   \item{\code{tissue}}{@eval tissue()}
-#'   \item{\code{tissue_code}}{@eval tissue_code()}
+#'   \item{\code{feature_ID}}{`r feature_ID()`}
+#'   \item{\code{assay}}{`r assay()`}
+#'   \item{\code{assay_code}}{`r assay_code()`}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{tissue_code}}{`r tissue_code()`}
 #'   \item{\code{removed_samples_male}}{character, comma-separated list of male outliers (vial labels) removed from differential analysis}
 #'   \item{\code{removed_samples_female}}{character, comma-separated list of female outliers (vial labels) removed from differential analysis}
 #'   \item{\code{fscore_male}}{double, F statistic for males}
@@ -35,7 +35,7 @@
 #' }
 #' 
 #' @export
-#' @import metap
+#' @importFrom metap sumlog
 #' @import limma
 #' @import data.table
 #' @import MotrpacRatTraining6moData
@@ -43,12 +43,12 @@
 #' @examples
 #' # Perform differential analysis for chromatin accessibility peaks in brown adipose tissue with default parameters, 
 #' # i.e., outliers and covariates used for the manuscript
-#' dea = atac_training_dea("BAT")
+#' da = atac_training_da("BAT")
 #' 
 #' # Same as above but save the [limma::eBayes] MArrayLM objects in an RData file 
-#' dea = atac_training_dea("BAT", rdata_outfile = "~/test/BAT_ATAC_training-dea.RData", overwrite = TRUE)
+#' da = atac_training_da("BAT", rdata_outfile = "~/test/BAT_ATAC_training-da.RData", overwrite = TRUE)
 #' 
-atac_training_dea = function(tissue, 
+atac_training_da = function(tissue, 
                              covariates = c("Sample_batch", "peak_enrich.frac_reads_in_peaks.macs2.frip"), 
                              outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "ATAC"]),
                              scratchdir = ".",
@@ -70,10 +70,7 @@ atac_training_dea = function(tissue,
     meta_df[,which] = factor(meta_df[,which])
   }
   meta_df$group = factor(meta_df$group, levels=c('control','1w','2w','4w','8w')) # IMPORTANT
-  
-  #### FOR TESTING
-  filt_counts = data$counts 
-  filt_counts = filt_counts[1:1000,]
+  filt_counts = data$raw_counts
   
   # split by sex 
   sex_res = list()
@@ -166,22 +163,35 @@ atac_training_dea = function(tissue,
 
 
 # TODO
-atac_timewise_dea_each_sex = function(filt_counts, meta, covariates, curr_outliers=c(), label=NULL){
+atac_timewise_da = function(tissue, 
+                             covariates = c("Sample_batch", "peak_enrich.frac_reads_in_peaks.macs2.frip"), 
+                             outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "ATAC"]),
+                             scratchdir = ".",
+                             rdata_outfile = NULL,
+                             overwrite = FALSE,
+                             verbose = FALSE){
   
-  meta_df = as.data.frame(meta, check.names=F)
+  if(verbose) message("Loading data...")
+  data = atac_prep_data(tissue, 
+                        covariates = covariates,
+                        filter_counts = FALSE,
+                        return_normalized_data = FALSE, 
+                        scratchdir = scratchdir, 
+                        outliers = outliers)
+  
+  meta_df = as.data.frame(data$metadata)
   if("sample_batch" %in% tolower(covariates)){
     which = covariates[grepl("sample_batch", covariates, ignore.case=T)]
     meta_df[,which] = factor(meta_df[,which])
   }
-  # remove outliers 
-  if(length(curr_outliers) > 0){
-    meta_df = meta_df[!as.character(meta_df$viallabel) %in% as.character(curr_outliers),]
-  }
-  filt_counts = filt_counts[,as.character(meta_df$viallabel)]
+  filt_counts = data$raw_counts
   
   # split by sex 
   sex_res = list()
+  ebayes_list = list()
   for(SEX in c('male','female')){
+    
+    if(verbose) message(sprintf("Performing differential analysis for %s %ss...", tissue, SEX))
     
     curr_meta = meta_df[meta_df$sex==SEX,]
     curr_counts = filt_counts[,curr_meta$viallabel]
@@ -218,8 +228,9 @@ atac_timewise_dea_each_sex = function(filt_counts, meta, covariates, curr_outlie
     
     fit2=contrasts.fit(fit,cont.matrix)
     e=eBayes(fit2)
+    ebayes_list[[SEX]] = e
     
-    dea_list = list()
+    da_list = list()
     for(tp in c('1W','2W','4W','8W')){
       res = topTable(e, number=nrow(e), coef=tp, confint=TRUE)
       dt = data.table(assay='epigen-atac-seq',
@@ -234,12 +245,26 @@ atac_timewise_dea_each_sex = function(filt_counts, meta, covariates, curr_outlie
                       p_value = res$P.Value,
                       removed_samples=paste0(curr_outliers, collapse=','),
                       covariates=paste0(curr_cov, collapse=','))
-      
-      dea_list[[tp]] = dt
+      dt = data.table(
+        feature_ID = rownames(res),
+        sex = SEX, 
+        comparison_group = tolower(tp),
+        assay = "ATAC",
+        assay_code = "epigen-atac-seq",
+        tissue = tissue, 
+        tissue_code = TISSUE_ABBREV_TO_CODE[[tissue]],
+        covariates=paste0(curr_cov, collapse=','),
+        removed_samples = "TODO",
+        logFC = res$logFC,
+        logFC_se = (res$CI.R - res$CI.L)/3.92,
+        tscore = res$t,
+        p_value = res$P.Value
+      )
+      da_list[[tp]] = dt
     }
-    sex_res[[SEX]] = rbindlist(dea_list)
+    sex_res[[SEX]] = rbindlist(da_list)
+    
   }
   res = rbindlist(sex_res)
-  res[,adj_p_value := p.adjust(p_value, method='BY')]
   return(res)
 }

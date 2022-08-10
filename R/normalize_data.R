@@ -2,7 +2,7 @@
 #' 
 #' Get raw counts and return the filtered and normalized data. 
 #'
-#' @param tissue @eval tissue()
+#' @param tissue `r tissue()`
 #' @param min_cpm double, retain genes with more than \code{min_cpm} counts per million in at least \code{min_num_samples} samples
 #' @param min_num_samples double, retain genes with more than \code{min_cpm} counts per million in at least \code{min_num_samples} samples
 #' @param norm_method character, one of \code{c("TMM","TMMwsp","RLE","upperquartile","none")}. "TMM" by default.
@@ -41,7 +41,7 @@ transcript_normalize_counts = function(tissue, min_cpm = 0.5, min_num_samples = 
 #' Download raw counts from Google Cloud Storage and return the filtered and 
 #' quantile-normalized data. 
 #'
-#' @param tissue @eval tissue()
+#' @param tissue `r tissue()`
 #' @param scratchdir character, local directory in which to download data from 
 #'   Google Cloud Storage. Current working directory by default. 
 #' @param n_samples integer, retain features with at least \code{min_count} counts in at least \code{n_samples} samples 

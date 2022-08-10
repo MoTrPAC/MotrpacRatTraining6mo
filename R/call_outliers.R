@@ -174,8 +174,8 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
 #' 
 #' @return NULL if there are no outliers, or a data frame with three columns and one row per outlier:
 #' \describe{
-#'   \item{\code{viallabel}}{character, @eval viallabel()}
-#'   \item{\code{tissue}}{@eval tissue()}
+#'   \item{\code{viallabel}}{character, `r viallabel()`}
+#'   \item{\code{tissue}}{`r tissue()`}
 #'   \item{\code{reason}}{character, PC(s) in which the sample was flagged}
 #' }
 #'

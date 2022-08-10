@@ -24,31 +24,44 @@ limma_res_extract_se<-function(limma_res,
 
 
 
-## Proteomics Timewise DEA ------------------------------------------------------------------
+## Proteomics Timewise DA ------------------------------------------------------------------
 
 #' Differential abundance analysis of proteomics, phosphoproteomics, acetylome, ubiquitylome
 #'
-#' @param assay_abbrev Abbreviation for proteomics assay to be analyzed as defined by ASSAY_ABBREV. 
-#' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
-#' 
-#' @param tissue_abbrev Abbreviation for proteomics tissue to be analyzed as defined by TISSUE_ABBREV. 
-#' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#' @param assay character, abbreviation for proteomics assay to be analyzed as defined by [MotrpacRatTraining6moData::ASSAY_ABBREV]. 
+#'   One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#' @param tissue `r tissue()`
 #'
-#' @return A data frame containing differential enrichment results
+#' @return a data frame with one row per proteomics feature per contrast (usually 8 rows per gene):
+#' \describe{
+#'   \item{\code{feature_ID}}{`r feature_ID()`}
+#'   \item{\code{sex}}{`r sex()`}
+#'   \item{\code{comparison_group}}{`r comparison_group()`}
+#'   \item{\code{assay}}{`r assay()`}
+#'   \item{\code{assay_code}}{`r assay_code()`}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{tissue_code}}{`r tissue_code()`}
+#'   \item{\code{covariates}}{character, comma-separated list of adjustment variables}
+#'   \item{\code{removed_samples}}{character, comma-separated list of outliers (vial labels) removed from differential analysis}
+#'   \item{\code{logFC}}{`r logFC()`}
+#'   \item{\code{logFC_se}}{`r logFC_se()`}
+#'   \item{\code{tscore}}{double, t statistic}
+#'   \item{\code{p_value}}{`r p_value_da()`}
+#'   \item{\code{comparison_average_intensity}}{`r comparison_average_intensity()`}
+#'   \item{\code{reference_average_intensity}}{`r reference_average_intensity()`}
+#' }
 #' 
 #' @import MotrpacRatTraining6moData
 #' @import dplyr
+#' @import tibble
 #' @import limma
-#' @import metap
 #' @import data.table
 #' @export
 #'
 #' @examples
-#' proteomics_timewise_dea("PROT","HEART")
-proteomics_timewise_dea  = function(assay_abbrev, tissue_abbrev){
+#' proteomics_timewise_da("PROT","HEART")
+proteomics_timewise_da  = function(assay, tissue){
   
-  assay = assay_abbrev
-  tissue = tissue_abbrev
   tpDA_split_sex = c() # keep the timewise results
   
   
@@ -56,6 +69,7 @@ proteomics_timewise_dea  = function(assay_abbrev, tissue_abbrev){
   x = 
     get(sprintf("%s_%s_NORM_DATA", assay,gsub("-","",tissue))) %>%
     column_to_rownames(var = "feature_ID") %>%
+    select(-c("feature","tissue","assay")) %>%
     as.matrix()
   
   #Specify covariates
@@ -144,6 +158,9 @@ proteomics_timewise_dea  = function(assay_abbrev, tissue_abbrev){
     }
   }
   
+  # add some columns and reorder
+  
+  
   return(tpDA_split_sex)
 }
 
@@ -156,7 +173,7 @@ proteomics_timewise_dea  = function(assay_abbrev, tissue_abbrev){
 
 
 
-## Proteomics Training DEA ------------------------------------------------------------------
+## Proteomics Training DA ------------------------------------------------------------------
 
 #' Title
 #'
@@ -176,8 +193,8 @@ proteomics_timewise_dea  = function(assay_abbrev, tissue_abbrev){
 #' @export
 #'
 #' @examples
-#' proteomics_training_dea("PROT","HEART")
-proteomics_training_dea  <- function(assay_abbrev, tissue_abbrev){
+#' proteomics_training_da("PROT","HEART")
+proteomics_training_da  <- function(assay_abbrev, tissue_abbrev){
   
   assay = assay_abbrev
   tissue = tissue_abbrev
@@ -219,7 +236,7 @@ proteomics_training_dea  <- function(assay_abbrev, tissue_abbrev){
     curr_counts = x[,rownames(curr_meta)]
     
     ###################################################################
-    # F-test analysis - training-dea table
+    # F-test analysis - training-da table
     
     #Extract treatment covariate
     tr <- curr_meta$tr

@@ -3,8 +3,8 @@
 #' Collect filtered raw counts, normalized sample-level data, phenotypic data, RNA-seq metadata, 
 #' covariates, and outliers associated with a given tissue. 
 #'
-#' @param tissue @eval tissue()
-#' @param sex @eval sex()
+#' @param tissue`r tissue()`
+#' @param sex `r sex()`
 #' @param covariates character vector of covariates that correspond to column names of [MotrpacRatTraining6moData::TRNSCRPT_META].
 #'   Defaults to covariates that were used for the manuscript. 
 #' @param outliers vector of viallabels to exclude from the returned data. Defaults
@@ -220,10 +220,10 @@ fix_covariates = function(covar, meta, center_scale = FALSE){
 #' 
 #' Retrieve and format ATAC-seq sample-level data and metadata for a given tissue. 
 #'
-#' @param tissue @eval tissue()
+#' @param tissue `r tissue()`
 #' @param scratchdir character, local directory in which to download data from 
 #'   Google Cloud Storage. Current working directory by default. 
-#' @param sex @eval sex()
+#' @param sex `r sex()`
 #' @param covariates character vector of covariates that correspond to column names of [MotrpacRatTraining6moData::ATAC_META].
 #'   Defaults to covariates that were used for the manuscript. 
 #' @param outliers vector of viallabels to exclude from the returned data. Defaults
@@ -235,7 +235,7 @@ fix_covariates = function(covar, meta, center_scale = FALSE){
 #' @return named list of five items: 
 #' \describe{
 #'   \item{\code{metadata}}{data frame of combined [MotrpacRatTraining6moData::PHENO] and 
-#'     [MotrpacRatTraining6moData::ATAC_META], filtered to samples in \code{tissue}.
+#'     [MotrpacRatTraining6moData::ATAC_META], filtered to samples in \code{tissue}.}
 #'   \item{\code{covariates}}{character vector of covariates to adjust for during differential analysis, same as input}
 #'   \item{\code{raw_counts}}{data frame of raw counts with feature IDs
 #'     as row names and vial labels as column names. See [MotrpacRatTraining6moData::ATAC_RAW_COUNTS] for details.}
@@ -362,8 +362,8 @@ atac_prep_data = function(tissue,
 #' For epigenetic data (ATAC and METHYL), if \code{training_regulated_only = FALSE}, sample-level data
 #' is downloaded from Google Cloud Storage. 
 #'
-#' @param tissue @eval tissue()
-#' @param assay @eval assay()
+#' @param tissue `r tissue()`
+#' @param assay `r assay()`
 #' @param normalized bool, whether to return normalized data. If \code{FALSE}, return raw counts. 
 #' @param training_regulated_only bool, whether to filter features down to those training-regulated at 5% FDR
 #' @param exclude_outliers bool, whether to remove sample outliers specified by [MotrpacRatTraining6moData::OUTLIERS]
@@ -377,6 +377,7 @@ atac_prep_data = function(tissue,
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples
+#' print("TODO")
 load_sample_data = function(tissue, 
                             assay, 
                             normalized = TRUE, 
@@ -450,7 +451,7 @@ load_sample_data = function(tissue,
 
 #' Load raw METHYL data
 #'
-#' @param tissue @eval tissue()
+#' @param tissue `r tissue()`
 #' @param scratchdir character, local directory in which to download data from 
 #'   Google Cloud Storage. Current working directory by default.
 #'
@@ -498,8 +499,8 @@ load_methyl_feature_annotation = function(scratchdir = "."){
 #' epigenetic data from Google Cloud Storage but can be used for any public URL
 #' that points to an RData file.
 #'
-#' @param tissue @eval tissue(). Only used if \code{url} is NULL. 
-#' @param assay @eval assay(). Only used if \code{url} is NULL. 
+#' @param tissue `r tissue()`. Only used if \code{url} is NULL. 
+#' @param assay `r assay()`. Only used if \code{url} is NULL. 
 #' @param suffix character, object suffix. Only used if \code{url} is NULL. 
 #' @param scratchdir character, local directory in which to download data from 
 #'   the web. Current working directory by default.

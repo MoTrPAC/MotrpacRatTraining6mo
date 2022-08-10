@@ -108,7 +108,7 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' and the sex-matched control group for a single tissue. Analysis is performed separately for males and 
 #' females. 
 #'
-#' @param tissue @eval tissue()
+#' @param tissue `r tissue()`
 #' @param covariates character vector of covariates that correspond to column names of [MotrpacRatTraining6moData::TRNSCRPT_META].
 #'   Defaults to covariates that were used for the manuscript. 
 #' @param outliers vector of viallabels to exclude during differential analysis. Defaults
@@ -120,26 +120,26 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #'
 #' @return a data frame with one row per gene per contrast (usually 8 rows per gene):
 #' \describe{
-#'   \item{\code{feature_ID}}{@eval feature_ID()}
-#'   \item{\code{sex}}{@eval sex()}
-#'   \item{\code{comparison_group}}{@eval comparison_group()}
-#'   \item{\code{assay}}{@eval assay()}
-#'   \item{\code{assay_code}}{@eval assay_code()}
-#'   \item{\code{tissue}}{@eval tissue()}
-#'   \item{\code{tissue_code}}{@eval tissue_code()}
+#'   \item{\code{feature_ID}}{`r feature_ID()`}
+#'   \item{\code{sex}}{`r sex()`}
+#'   \item{\code{comparison_group}}{`r comparison_group()`}
+#'   \item{\code{assay}}{`r assay()`}
+#'   \item{\code{assay_code}}{`r assay_code()`}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{tissue_code}}{`r tissue_code()`}
 #'   \item{\code{covariates}}{character, comma-separated list of adjustment variables}
 #'   \item{\code{removed_samples}}{character, comma-separated list of outliers (vial labels) removed from differential analysis}
-#'   \item{\code{logFC}}{@eval logFC()}
-#'   \item{\code{logFC_se}}{@eval logFC_se()}
+#'   \item{\code{logFC}}{`r logFC()`}
+#'   \item{\code{logFC_se}}{`r logFC_se()`}
 #'   \item{\code{shrunk_logFC}}{double, log fold-change shrunk with \code{type = 'ashr'} and \code{optmethod = 'mixSQP'}, 
 #'     only if \code{add_shrunk_logfc = TRUE}}
 #'   \item{\code{shrunk_logFC_se}}{double, standard error of \code{shrunk_logFC}, only if \code{add_shrunk_logfc = TRUE}}
 #'   \item{\code{zscore}}{double, Wald statistic}
-#'   \item{\code{p_value}}{@eval p_value_da()}
-#'   \item{\code{comparison_average_intensity}}{@eval comparison_average_intensity()}
-#'   \item{\code{comparison_average_intensity_se}}{@eval comparison_average_intensity_se()}
-#'   \item{\code{reference_average_intensity}}{@eval reference_average_intensity()}
-#'   \item{\code{reference_average_intensity_se}}{@eval reference_average_intensity_se()}
+#'   \item{\code{p_value}}{`r p_value_da()`}
+#'   \item{\code{comparison_average_intensity}}{`r comparison_average_intensity()`}
+#'   \item{\code{comparison_average_intensity_se}}{`r comparison_average_intensity_se()`}
+#'   \item{\code{reference_average_intensity}}{`r reference_average_intensity()`}
+#'   \item{\code{reference_average_intensity_se}}{`r reference_average_intensity_se()`}
 #' }
 #' 
 #' @export 
@@ -149,15 +149,15 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' @examples
 #' # Perform differential analysis for expressed genes in brown adipose tissue with default parameters, 
 #' # i.e., outliers and covariates used for the manuscript; calculate both standard and shrunk log fold-changes
-#' dea = transcript_timewise_dea("BAT")
+#' da = transcript_timewise_da("BAT")
 #' 
 #' # Same as above but don't calculate shrunk log fold-changes
-#' dea = transcript_timewise_dea("BAT", add_shrunk_logfc = FALSE)
+#' da = transcript_timewise_da("BAT", add_shrunk_logfc = FALSE)
 #' 
 #' # Same as the first example but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
-#' dea = transcript_timewise_dea("BAT", rdata_outfile = "~/test/BAT_RNA_DA.RData", overwrite = TRUE)
+#' da = transcript_timewise_da("BAT", rdata_outfile = "~/test/BAT_RNA_DA.RData", overwrite = TRUE)
 #' 
-transcript_timewise_dea = function(tissue, 
+transcript_timewise_da = function(tissue, 
                                    covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
                                    outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
                                    add_shrunk_logfc = TRUE, 
@@ -166,7 +166,7 @@ transcript_timewise_dea = function(tissue,
                                    verbose = FALSE){
   .tissue = tissue # data.table workaround
   
-  check_dea_args(.tissue, rdata_outfile, overwrite)
+  check_da_args(.tissue, rdata_outfile, overwrite)
   
   if(verbose) message("Loading data...")
   data = transcript_prep_data(tissue, covariates = covariates, outliers = outliers, center_scale = TRUE, adjust_covariates = TRUE)
@@ -335,7 +335,7 @@ transcript_timewise_dea = function(tissue,
 #' Use DESeq2 to perform a likelihood ratio test to test the effect of training
 #' across time points. Analysis is performed separately for males and females. 
 #'
-#' @param tissue @eval tissue()
+#' @param tissue `r tissue()`
 #' @param covariates character vector of covariates that correspond to column names of [MotrpacRatTraining6moData::TRNSCRPT_META].
 #'   Defaults to covariates that were used for the manuscript. 
 #' @param outliers vector of viallabels to exclude during differential analysis. Defaults
@@ -346,11 +346,11 @@ transcript_timewise_dea = function(tissue,
 #'
 #' @return a data frame with one row per gene:
 #' \describe{
-#'   \item{\code{feature_ID}}{@eval feature_ID()}
-#'   \item{\code{assay}}{@eval assay()}
-#'   \item{\code{assay_code}}{@eval assay_code()}
-#'   \item{\code{tissue}}{@eval tissue()}
-#'   \item{\code{tissue_code}}{@eval tissue_code()}
+#'   \item{\code{feature_ID}}{`r feature_ID()`}
+#'   \item{\code{assay}}{`r assay()`}
+#'   \item{\code{assay_code}}{`r assay_code()`}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{tissue_code}}{`r tissue_code()`}
 #'   \item{\code{removed_samples_male}}{character, comma-separated list of male outliers (vial labels) removed from differential analysis}
 #'   \item{\code{removed_samples_female}}{character, comma-separated list of female outliers (vial labels) removed from differential analysis}
 #'   \item{\code{lrt_male}}{double, likelihood ratio test statistic for males}
@@ -373,12 +373,12 @@ transcript_timewise_dea = function(tissue,
 #' @examples
 #' # Perform differential analysis for expressed genes in brown adipose tissue with default parameters, 
 #' # i.e., outliers and covariates used for the manuscript
-#' dea = transcript_training_dea("BAT")
+#' da = transcript_training_da("BAT")
 #' 
 #' # Same as above but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
-#' dea = transcript_training_dea("BAT", rdata_outfile = "~/test/BAT_RNA_training-dea.RData", overwrite = TRUE)
+#' da = transcript_training_da("BAT", rdata_outfile = "~/test/BAT_RNA_training-da.RData", overwrite = TRUE)
 #' 
-transcript_training_dea = function(tissue, 
+transcript_training_da = function(tissue, 
                                    covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
                                    outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
                                    rdata_outfile = NULL,
@@ -387,7 +387,7 @@ transcript_training_dea = function(tissue,
   
   .tissue = tissue # data.table workaround
   
-  check_dea_args(.tissue, rdata_outfile, overwrite)
+  check_da_args(.tissue, rdata_outfile, overwrite)
   
   if(verbose) message("Loading data...")
   data = transcript_prep_data(tissue, covariates = covariates, outliers = outliers, center_scale = TRUE, adjust_covariates = TRUE)
