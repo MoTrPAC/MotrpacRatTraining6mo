@@ -8,41 +8,61 @@
 #' @param zscores A numeric matrix. Rows are analytes, columns are conditions (e.g., male week 1). Entries are z-scores.
 #' @param min_analyte_posterior_thr A number. The minimal value of sum of posteriors for including an analyte.
 #' @param min_prior_for_config A number. The minimal prior probability on the configuration priors.
-#' @param naive_edge_sets A logical. TRUE: edge sets are extracted by taking simple intersection of nodes. FALSE: edge sets are extracted from the repfdr solution.
+#' @param naive_edge_sets A logical. TRUE: edge sets are extracted by taking simple intersection of nodes. 
+#'   FALSE: edge sets are extracted from the repfdr solution.
 #' 
 #' @details 
-#' This function is highly specialized for the motrpac data. It assumes that the input zscore matrix has eight columns.
-#' Four columns for male z-scores (weeks 1,2,4,8), and four for females. No NA values in the input matrix.
-#' The function first runs the Bayesian clustering using repfdr (see repfdr_wrapper) and then extracts the node and edge sets of the graphical solution.
+#' This function is highly specialized for the MoTrPAC data. It assumes that the input zscore matrix has eight columns.
+#' Four columns for male z-scores (weeks 1, 2, 4, 8), and four for females. No NA values in the input matrix.
+#' The function first runs the Bayesian clustering using \code{repfdr} (see [repfdr_wrapper]) and then extracts the node and 
+#' edge sets of the graphical solution.
 #' 
-#' A node is a time-point specific state. It can represent null features (z-score around zero, no effect), up-regulated features (positive z-score), or down regulated features (negative z-scores).
-#' An edge represents interaction among two adjacent time point. For example, it can represent features that are up-regulated in week 1 in both males and females, and null in both male and females by week 2.
-#' min_analyte_posterior_thr is used to make sure that features without any reasonable fit in the clustering solution will be discarded, whereas min_prior_for_config removes clusters with extremely low prior (i.e., do not have any associated features).
+#' A node is a time-point specific state. It can represent null features (z-score around zero, no effect), up-regulated 
+#' features (positive z-score), or down regulated features (negative z-scores).
+#' An edge represents interaction among two adjacent time point. For example, it can represent features that are up-regulated 
+#' in week 1 in both males and females, and null in both male and females by week 2.
+#' \code{min_analyte_posterior_thr} is used to make sure that features without any reasonable fit in the clustering solution will be discarded, 
+#' whereas \code{min_prior_for_config} removes clusters with extremely low prior (i.e., do not have any associated features).
 #' 
-#' Formally, let zscores be the timewise nxm matrix of z-scores over n analytes and m conditions, where m is even and has the same time points for males and females. 
-#' Each z-score corresponds to the effect of training compared to untrained baseline. We assume that z-scores have a latent configuration in {-1,0,1}, with -1 denotes down-regulation, 0 denotes null (no change), and 1 denotes up-regulation. 
-#' Let h denote the latent configuration of an analyte over all m conditions. We use the expectation-maximization (EM) process of the repfdr algorithm (Heller and Yekutieli, 2014) to estimate the prior π(h) and posterior Pr(h|z_i), for every analyte i. 
-#' Once the algorithm converges, we discard configurations h with π(h) < min_analyte_posterior_thr and normalize Pr(h|zi) to sum to 1 (i.e., all posteriors given the same zi). The new posteriors that can be interpreted as a soft clustering solution, where the greater the value is, the more likely it is for analyte i to participate in cluster h. 
+#' Formally, let zscores be the timewise nxm matrix of z-scores over n analytes and m conditions, where m is even 
+#' and has the same time points for males and females. 
+#' Each z-score corresponds to the effect of training compared to untrained baseline. 
+#' We assume that z-scores have a latent configuration in {-1,0,1}, with -1 denotes down-regulation, 
+#' 0 denotes null (no change), and 1 denotes up-regulation. 
+#' Let h denote the latent configuration of an analyte over all m conditions. 
+#' We use the expectation-maximization (EM) process of the repfdr algorithm (Heller and Yekutieli, 2014) 
+#' to estimate the prior π(h) and posterior Pr(h|z_i), for every analyte i. 
+#' Once the algorithm converges, we discard configurations h with π(h) < min_analyte_posterior_thr and normalize Pr(h|zi) 
+#' to sum to 1 (i.e., all posteriors given the same zi). The new posteriors that can be interpreted as a soft clustering solution, 
+#' where the greater the value is, the more likely it is for analyte i to participate in cluster h. 
 #' 
-#' Given the posteriors Pr(h|zi), we assign analytes to nine possible states in each time point (male or females x time points 1w, 2w,4w, and 8w). Analyte i belongs to a state if the sum of posteriors that are consistent with that state is > min_analyte_posterior_thr.
-#' For every pair of states from adjacent time points j and j+1 we define their edge set as the set of analytes whose differential expression pattern is consistent with the two nodes.. 
+#' Given the posteriors Pr(h|zi), we assign analytes to nine possible states in each time point (male or females x time points 1w, 2w,4w, and 8w). 
+#' Analyte i belongs to a state if the sum of posteriors that are consistent with that state is > min_analyte_posterior_thr.
+#' For every pair of states from adjacent time points j and j+1 we define their edge set as the set of analytes whose 
+#' differential expression pattern is consistent with the two nodes.. 
 #' Thus, the node and edge sets explained above together define a tree structure that represent different differential patterns over sex and time.
 #' 
 #' Naming format for the output:
-#' Node set names: {week}_F{differential regulation status}_M{differential regulation status}.
-#' Example 1: 1w_F1_M0 means up-regulation in females week 1 and null (zero effect) in males in week 1.
-#' Example 2: 1w_F1_M-1 means up-regulation in females week 1 and down-regulation in males in week 1.
-#' The edge set object is a named list of string vectors. The name of an edge is node_id---node_id.
+#' Node set names: \code{{week}_F{differential regulation status}_M{differential regulation status}}.
+#' Example 1: \code{1w_F1_M0} means up-regulation in females week 1 and null (zero effect) in males in week 1.
+#' Example 2: \code{1w_F1_M-1} means up-regulation in females week 1 and down-regulation in males in week 1.
+#' The edge set object is a named list of string vectors. The name of an edge is \code{[node_id]---[node_id]}.
 #' 
-#' @return A named list with three items: (1) node sets, (2) edge sets, and (3) the repfdr EM solution.
+#' @return A named list with three items: 
+#' \describe{
+#'   \item{\code{node_sets}}{named list of node sets}
+#'   \item{\code{edge_sets}}{named list of edge sets}
+#'   \item{\code{repfdr_results}}{repfdr EM solution}
+#' }
 #' 
 #' @examples 
+#' \dontrun{
 #' ### Example 1: Simulate data with a single cluster
 #' zcolnames = c(
-#' paste("female",c("1w","2w","4w","8w"),sep="_"),
-#' paste("male",c("1w","2w","4w","8w"),sep="_")
+#'   paste("female",c("1w","2w","4w","8w"),sep="_"),
+#'   paste("male",c("1w","2w","4w","8w"),sep="_")
 #' )
-#' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
+#' zscores = matrix(rnorm(80000), ncol=8, dimnames = list(1:10000,zcolnames))
 #' # now add a cluster with a strong signal and rerun
 #' zscores[1:500,1:4] = zscores[1:500,1:4] + 5 
 #' 
@@ -60,7 +80,7 @@
 #' sapply(clustering_sol$edge_sets,length)
 #' 
 #' # extract the top full trajectories in the data; these should be the clusters with at least 10 features
-#' min_cluster_size=10
+#' min_cluster_size = 10
 #' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
 #' 
 #' ### Example 2: real data
@@ -69,14 +89,20 @@
 #' zscores = REPFDR_INPUTS$zs_smoothed
 #' rat_data_clustering_sol = bayesian_graphical_clustering(zscores)
 #' # extract the largest trajectories
-#' get_trajectory_sizes_from_edge_sets(rat_data_clustering_sol$edge_sets,min_size = 50)
+#' get_trajectory_sizes_from_edge_sets(rat_data_clustering_sol$edge_sets, min_size = 50)
 #' # plot the top trajectories of the muscle tissues, color edges by tissue
-#' get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),omes="TRNSCRPT",
-#' node_sets=rat_data_clustering_sol$node_sets,edge_sets=rat_data_clustering_sol$edge_sets,min_size = 20,
-#' parallel_edges_by_tissue = T,max_trajectories = 3)
-bayesian_graphical_clustering<-function(zscores,
-      min_analyte_posterior_thr=0.5,min_prior_for_config=0.001,
-      naive_edge_sets=T){
+#' get_tree_plot_for_tissue(tissues = c("SKM-GN","HEART","SKM-VL"), 
+#'                          omes = "TRNSCRPT",
+#'                          node_sets = rat_data_clustering_sol$node_sets,
+#'                          edge_sets=rat_data_clustering_sol$edge_sets,
+#'                          min_size = 20,
+#'                          parallel_edges_by_tissue = T,
+#'                          max_trajectories = 3)
+#' }
+bayesian_graphical_clustering <- function(zscores, 
+                                          min_analyte_posterior_thr=0.5,
+                                          min_prior_for_config=0.001,
+                                          naive_edge_sets=TRUE){
   
   if(is.null(dim(zscores))||nrow(zscores)<5 || ncol(zscores)!=8){
     stop("Input zscore matrix does not fit the required input. See documentation for details.")
@@ -172,12 +198,16 @@ bayesian_graphical_clustering<-function(zscores,
     edge_sets = edge_sets2
   }
   return(list(
-    node_sets=node_sets,edge_sets=edge_sets,repfdr_results=repfdr_results
+    node_sets=node_sets,
+    edge_sets=edge_sets,
+    repfdr_results=repfdr_results
   ))
 }
 
 
-#' A general wrapper for running repfdr on a matrix of z-scores
+#' \code{repfdr} wrapper
+#' 
+#' A general wrapper for running \code{repfdr} on a matrix of z-scores.
 #' 
 #' @import repfdr
 #' @import MotrpacRatTraining6moData
@@ -187,17 +217,22 @@ bayesian_graphical_clustering<-function(zscores,
 #' @param zscores A numeric matrix. Rows are analytes, columns are conditions (e.g., male week 1). Entries are z-scores.
 #' @param min_prior_for_config A number. The minimal prior probability on the configuration priors.
 #' 
-#' @return A named list with two objects: (1) a binary matrix representation of the clusters, and (2) a matrix with the cluster posteriors.
+#' @return A named list with two objects:
+#' \describe{
+#'   \item{\code{repfdr_clusters}}{a binary matrix representation of the clusters}
+#'   \item{\code{repfdr_cluster_posteriors}}{a matrix with the cluster posteriors}
+#' }
 #' 
 #' @details 
 #' This wrapper runs inference for the two groups model in each column of zscores, and then run repfdr's EM process.
 #' To extract the fuzzy clustering solution, we exclude configurations whose prior probability is lower than min_prior_for_config.
 #' 
 #' @examples 
+#' \dontrun{
 #' # Simulate data with a single cluster
 #' zcolnames = c(
-#' paste("male",c("1w","2w","4w","8w"),sep="_"),
-#' paste("female",c("1w","2w","4w","8w"),sep="_")
+#'   paste("male",c("1w","2w","4w","8w"),sep="_"),
+#'   paste("female",c("1w","2w","4w","8w"),sep="_")
 #' )
 #' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
 #' repfdr_results = repfdr_wrapper(zscores)
@@ -210,7 +245,8 @@ bayesian_graphical_clustering<-function(zscores,
 #' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"],probs=c(0.05,0.1,0.5))
 #' # now the posteriors of the first 500 rows, with respect to the "planted" cluster should have high posteriors:
 #' quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
-repfdr_wrapper<-function(zscores,min_prior_for_config = 0.001){
+#' }
+repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
   # Step 1 in repfdr: discretize the z-scores and estimate the probabilities 
   # in each bin.
   # In our work we examined the diagnostic plots manually. The results look reasonable,
@@ -280,10 +316,9 @@ repfdr_wrapper<-function(zscores,min_prior_for_config = 0.001){
 }
 
 
-#' An auxiliary function for reducing a list of sets by a regex.
+#' Reduce a list of sets by a regex
 #' 
-#' @description 
-#' Useful for filtering DEA analyte sets by tissues or omes.
+#' An auxiliary function useful for filtering differential analyte sets by tissues or omes.
 #' 
 #' @param sets A named list of character vectors
 #' @param regs A character vector of regular expressions
@@ -295,14 +330,16 @@ repfdr_wrapper<-function(zscores,min_prior_for_config = 0.001){
 #' 
 #' @export
 #' 
+#' @return named list of filtered sets
+#' 
 #' @examples
 #' sets = list(
 #'   "cluster1" = c("muscle;g1","heart;g1","muscle;g2"),
-#'     "cluster2" = c("muscle;g11","heart;g11","muscle;g12")
+#'   "cluster2" = c("muscle;g11","heart;g11","muscle;g12")
 #' )
 #' # remove non muscle analytes from the clustering solution above:
 #' limit_sets_by_regex(sets,"muscle")
-limit_sets_by_regex<-function(sets,regs,append_semicol = T){
+limit_sets_by_regex <- function(sets, regs, append_semicol = T){
   if(is.null(regs) || length(regs)==0){return(sets)}
   l = list()
   for(nn in names(sets)){
@@ -317,6 +354,8 @@ limit_sets_by_regex<-function(sets,regs,append_semicol = T){
   return(l)
 }
 
+#' Get trajectory sizes
+#' 
 #' Auxiliary function for getting the largest paths in a graphical solution.
 #' 
 #' @details
@@ -341,21 +380,22 @@ limit_sets_by_regex<-function(sets,regs,append_semicol = T){
 #' 
 #' See bayesian_graphical_clustering for more details about the graphical analysis.
 #' 
-#' @param edge_sets A named list of string vectors. The name of an edge is node_id---node_id
+#' @param edge_sets A named list of string vectors. The name of an edge is \code{[node_id]---[node_id]}
 #'        edges with no analytes have a NULL set (a set of size zero, but are still represented),
-#'        node ids are time_points_Fx_My where x and y represent the up/down state in each sex.
+#'        node ids are \code{[timepoint]_F[x]_M[y]} where \code{x} and \code{y} represent the up/down state in each sex.
 #' @param min_size A number. Specifying the minimal path size to be considered.
-#' @return NULL if no paths of size of at least min_size were found, otherwise
+#' @return NULL if no paths of size of at least \code{min_size} were found, otherwise
 #'         return a data frame that represents all paths of size min_size or greater,
 #'         ranked from the largest path to the smallest one.
 #'         
 #' @export
 #' 
 #' @examples 
-#' ### Example: Simulate data with a single cluster
+#' \dontrun{
+#' ### Example 1: Simulate data with a single cluster
 #' zcolnames = c(
-#' paste("female",c("1w","2w","4w","8w"),sep="_"),
-#' paste("male",c("1w","2w","4w","8w"),sep="_")
+#'   paste("female",c("1w","2w","4w","8w"),sep="_"),
+#'   paste("male",c("1w","2w","4w","8w"),sep="_")
 #' )
 #' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
 #' # now add a cluster with a strong signal and rerun
@@ -366,14 +406,18 @@ limit_sets_by_regex<-function(sets,regs,append_semicol = T){
 #' 
 #' # extract the top full trajectories in the data; these should be the clusters with at least 10 features
 #' min_cluster_size=10
-#' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
+#' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets, min_size = min_cluster_size)
 #' 
-#' # extract the edges of the top two full trjectories
+#' # extract the edges of the top two full trajectories
 #' # this step "cleans" the edge sets by removing edges of trajectories with very few features
-#' top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets,topk = 2,min_path_size = 10)
+#' top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets, topk = 2, min_path_size = 10)
 #' # examine the new edge set sizes, excluded edges should have zero size
 #' sapply(top2traj_edge_sets,length)
-get_trajectory_sizes_from_edge_sets<-function(edge_sets,min_size=10){
+#' }
+#' 
+#' ### Example 2: Use published data 
+#' get_trajectory_sizes_from_edge_sets(GRAPH_COMPONENTS$edge_sets)
+get_trajectory_sizes_from_edge_sets <- function(edge_sets, min_size=10){
   node_names = unique(unlist(strsplit(names(edge_sets),split="---")))
   node_weeks = sapply(node_names,function(x)strsplit(x,split="_")[[1]][1])
   full_path_size = length(unique(node_weeks))
@@ -431,6 +475,8 @@ get_trajectory_sizes_from_edge_sets<-function(edge_sets,min_size=10){
 }
 
 
+#' Filter edge sets to largest trajectories
+#' 
 #' Keep the edges of the top trajectories of an edge set of a graphical solution.
 #' 
 #' @param edge_sets A named list of string vectors. The name of an edge is node_id---node_id
@@ -446,10 +492,11 @@ get_trajectory_sizes_from_edge_sets<-function(edge_sets,min_size=10){
 #' Edges that are removed will have no features/analytes in their entry.
 #' 
 #' @examples
-#' ### Example: Simulate data with a single cluster
+#' \dontrun{
+#' ### Example 1: Simulate data with a single cluster
 #' zcolnames = c(
-#' paste("female",c("1w","2w","4w","8w"),sep="_"),
-#' paste("male",c("1w","2w","4w","8w"),sep="_")
+#'   paste("female",c("1w","2w","4w","8w"),sep="_"),
+#'   paste("male",c("1w","2w","4w","8w"),sep="_")
 #' )
 #' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
 #' # now add a cluster with a strong signal and rerun
@@ -469,7 +516,13 @@ get_trajectory_sizes_from_edge_sets<-function(edge_sets,min_size=10){
 #' sapply(top2traj_edge_sets,length)
 #' # for comparison examine the edge sets of the Bayesian clustering solution:
 #' sapply(clustering_sol$edge_sets,length)
-filter_edge_sets_by_trajectories<-function(edge_sets,topk=5,min_path_size=5){
+#' }
+#' 
+#' ### Example 2: Use published data
+#' # Get edges corresponding to 5 largest tracjectories in the liver
+#' tissue_edge_sets = limit_sets_by_regex(GRAPH_COMPONENTS$edge_sets,"LIVER")
+#' filter_edge_sets_by_trajectories(tissue_edge_sets)
+filter_edge_sets_by_trajectories <- function(edge_sets, topk=5, min_path_size=5){
   
   traj = get_trajectory_sizes_from_edge_sets(edge_sets,min_size = min_path_size)
   edges_to_keep = c()
@@ -491,11 +544,15 @@ filter_edge_sets_by_trajectories<-function(edge_sets,topk=5,min_path_size=5){
   return(e_copy)
 }
 
+#' Make graph
+#' 
 #' The main function for obtaining a graphical (tree) representation of the differential
 #' analysis results.
 #' 
-#' @param tissues A character vector. The set of tissues to take for the analysis. If null take all.
-#' @param omes A character vector. The set of omes to take for the analysis. If null take all.
+#' @param tissues A character vector where values are in [MotrpacRatTraining6moData::TISSUE_ABBREV]. 
+#'   The set of tissues to take for the analysis. If NULL take all.
+#' @param omes A character vector where values are in [MotrpacRatTraining6moData::ASSAY_ABBREV].
+#'   The set of omes to take for the analysis. If NULL take all.
 #' @param node_sets A named list with the node (state) sets of analytes/features, see details for analyte name convention.
 #' @param edge_sets A named list with the edge (state) sets of analytes/features, see details for analyte name convention.
 #' @param min_size A numeric. The threshold on the set sizes to be considered.
@@ -506,12 +563,14 @@ filter_edge_sets_by_trajectories<-function(edge_sets,topk=5,min_path_size=5){
 #' @param color_nodes_by_states A logical. If TRUE, nodes are colored by states. Red for up-reg, blue for down-reg, green for a discrepancy between the sexes.
 #' @param max_trajectories A numeric or NULL. If not NULL then it specifies the number of pathways to keep when looking into the edge sets after filtering by omes and tissues. If  parallel_edges_by_tissue = TRUE then take the top trajectories in each tissue.
 #' @param highlight_subset A character string or NULL. If not NULL then it specifies the name of a node, edge, or path to highlight in the tree. 
+#' @param curvature A number between 0 and 1, where larger values yield more curved edges. 
 #' 
-#' @import igraph
-#' @import ggraph
+#' @return a graph object
+#' 
+#' @importFrom igraph graph_from_data_frame edge_attr V E
+#' @importFrom ggraph create_layout ggraph geom_edge_fan0 scale_edge_color_manual geom_edge_arc scale_edge_colour_identity scale_edge_width scale_edge_alpha geom_node_point
+#' @importFrom ggplot2 guides scale_size theme annotate
 #' @import grid
-#' @import data.table
-#' @import scatterpie
 #' @import MotrpacRatTraining6moData
 #' 
 #' @export
@@ -519,14 +578,14 @@ filter_edge_sets_by_trajectories<-function(edge_sets,topk=5,min_path_size=5){
 #' @details 
 #' The function filters the input set to include analytes from the given tissues and omes (if tissues/omes are not null).
 #' If parallel edges are requested then the relevant edge sizes are computed internally and are used within ggraph for the output plot.
-#' Analyte names are in the ome;tissue;feature_id format.
-#' Node set names are are in the week_number(1,2,4,8)'w'_F{-1,0,1}_M{-1,0,1} format for example: 1w_F-1_M0.
-#' Edge set names are in the node_a---node_b format, e.g., 4w_F0_M0---8w_F0_M1.
+#' Analyte names are in the \code{\link[MotrpacRatTraining6moData]{ASSAY_ABBREV};\link[MotrpacRatTraining6moData]{TISSUE_ABBREV};[feature_ID]} format.
+#' Node set names are are in the \code{[{1,2,4,8}]w_F[{-1,0,1}]_M[{-1,0,1}]} format for example: \code{1w_F-1_M0}.
+#' Edge set names are in the \code{[node_a]---[node_b]} format, e.g., \code{4w_F0_M0---8w_F0_M1}.
 #' 
-#' See bayesian_graphical_clustering for more details about the graphical analysis.
+#' @seealso [bayesian_graphical_clustering()] for more details about the graphical analysis.
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' ### Example 1: redo the analysis using the rat data differential analysis results (z-scores)
 #' data(REPFDR_INPUTS)
 #' zscores = REPFDR_INPUTS$zs_smoothed
@@ -534,16 +593,26 @@ filter_edge_sets_by_trajectories<-function(edge_sets,topk=5,min_path_size=5){
 #' # extract the largest trajectories
 #' get_trajectory_sizes_from_edge_sets(rat_data_clustering_sol$edge_sets,min_size = 50)
 #' # plot the top trajectories of the muscle tissues, color edges by tissue
-#' get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),omes="TRNSCRPT",
-#' node_sets=rat_data_clustering_sol$node_sets,edge_sets=rat_data_clustering_sol$edge_sets,min_size = 20,
-#' parallel_edges_by_tissue = T,max_trajectories = 3)
+#' get_tree_plot_for_tissue(tissues = c("SKM-GN","HEART","SKM-VL"),
+#'                          omes = "TRNSCRPT",
+#'                          node_sets = rat_data_clustering_sol$node_sets, 
+#'                          edge_sets = rat_data_clustering_sol$edge_sets, 
+#'                          min_size = 20,
+#'                          parallel_edges_by_tissue = TRUE,
+#'                          max_trajectories = 3)
+#' }
 #' 
 #' ### Example 2: load the graphical solutions from MotrpacRatTraining6moData and plot without rerunning the algorithm
 #' data(GRAPH_COMPONENTS)
-#' get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),omes="TRNSCRPT",
-#' node_sets=GRAPH_COMPONENTS$node_sets,edge_sets=GRAPH_COMPONENTS$edge_sets,min_size = 20,
-#' parallel_edges_by_tissue = T,max_trajectories = 3)
-get_tree_plot_for_tissue<-function(
+#' get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),
+#'                          omes="TRNSCRPT",
+#'                          node_sets = GRAPH_COMPONENTS$node_sets,
+#'                          edge_sets = GRAPH_COMPONENTS$edge_sets,
+#'                          min_size = 20,
+#'                          parallel_edges_by_tissue = TRUE,
+#'                          max_trajectories = 3)
+#'
+get_tree_plot_for_tissue <- function(
   tissues,
   omes = NULL,
   node_sets,
@@ -703,7 +772,7 @@ get_tree_plot_for_tissue<-function(
       colnames(edge_info)[ncol(edge_info)] = tissue
     }
     # always use the same assay colors
-    edge_colors = MotrpacBicQC::tissue_cols
+    edge_colors = MotrpacRatTraining6moData::TISSUE_COLORS
   }
   
   # transform the initial node/edge info matrices to data frames
@@ -873,7 +942,8 @@ get_tree_plot_for_tissue<-function(
         aes(width = E(d_g)$edge_size,
             alpha=E(d_g)$edge_size,
             colour = E(d_g)$type),
-        lineend = "round",strength = curvature) +
+        lineend = "round",
+        strength = curvature) +
       scale_edge_color_manual(values=edge_colors, name="", limits=names(edge_colors)[names(edge_colors) %in% c(tissues, omes)]) +
       guides(edge_color=guide_legend(override.aes = list(edge_width=3)))
   }else if(!is.null(highlight_subset)){
@@ -927,14 +997,6 @@ get_tree_plot_for_tissue<-function(
                               label=w,fontface = "bold")
   }
   
-  # added above
-  # # change colors and legend edge size
-  # if(parallel_edges_by_ome | parallel_edges_by_tissue){
-  #   p = p +
-  #     scale_edge_color_manual(values=edge_colors, name="") +
-  #     guides(edge_color=guide_legend(override.aes = list(edge_width=3)))
-  # }
-  
   return(p)
 }
 
@@ -972,8 +1034,9 @@ get_tree_plot_for_tissue<-function(
 #' data(GRAPH_COMPONENTS)
 #' filtered_solution = extract_tissue_sets(
 #'    tissues = c("HEART","SKM-VL","SKM-GN"),
-#'    node_sets=GRAPH_COMPONENTS$node_sets,edge_sets=GRAPH_COMPONENTS$edge_sets
-#'  )
+#'    node_sets=GRAPH_COMPONENTS$node_sets,
+#'    edge_sets=GRAPH_COMPONENTS$edge_sets
+#' )
 extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
                               min_size=20,add_week8=T,omes=NULL){
   
@@ -1034,6 +1097,13 @@ extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
 #' @import MotrpacRatTraining6moData
 #' 
 #' @return named list with one element per trajectories. members are features in the path 
+#' 
+#' @examples
+#' # Get lists of features belonging to all trajectories in the liver
+#' get_all_trajectories(GRAPH_COMPONENTS$edge_sets,
+#'                      GRAPH_COMPONENTS$node_sets,
+#'                      tissues = "LIVER")
+#'
 get_all_trajectories = function(edge_sets, 
                                 node_sets, 
                                 tissues = MotrpacRatTraining6moData::TISSUE_ABBREV,

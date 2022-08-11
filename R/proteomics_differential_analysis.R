@@ -19,11 +19,6 @@ limma_res_extract_se = function(limma_res,
 }
 
 
-
-
-## Proteomics Timewise DA ------------------------------------------------------------------
-
-
 #' Proteomics timewise differential analysis
 #' 
 #' Timewise differential analysis for the proteome, phosphoproteome, acetylome, and ubiquitylome. 
@@ -66,6 +61,7 @@ limma_res_extract_se = function(limma_res,
 #' @export
 #'
 #' @examples
+#' # Run timewise differential analysis for heart proteins
 #' proteomics_timewise_da("PROT","HEART")
 proteomics_timewise_da  = function(assay, tissue){
   
@@ -187,16 +183,6 @@ proteomics_timewise_da  = function(assay, tissue){
 }
 
 
-
-
-
-
-
-
-
-
-## Proteomics Training DA ------------------------------------------------------------------
-
 #' Proteomics training differential analysis 
 #' 
 #' Training differential analysis for the proteome, phosphoproteome, acetylome, and ubiquitylome.
@@ -207,8 +193,7 @@ proteomics_timewise_da  = function(assay, tissue){
 #'   One of the following: PROT, PHOSPHO, ACETYL, UBIQ
 #' @param tissue `r tissue()`
 #'
-#' @return A data frame containing differential enrichment results
-#' @return a data frame with one row per gene:
+#' @return a data frame with one row per proteomics feature:
 #' \describe{
 #'   \item{\code{feature_ID}}{`r feature_ID()`}
 #'   \item{\code{assay}}{`r assay()`}
@@ -236,6 +221,7 @@ proteomics_timewise_da  = function(assay, tissue){
 #' @export
 #'
 #' @examples
+#' # Run training differential analysis for heart proteins
 #' proteomics_training_da("PROT","HEART")
 proteomics_training_da = function(assay, tissue){
   

@@ -3,7 +3,7 @@
 #' Collect filtered raw counts, normalized sample-level data, phenotypic data, RNA-seq metadata, 
 #' covariates, and outliers associated with a given tissue. 
 #'
-#' @param tissue`r tissue()`
+#' @param tissue `r tissue()`
 #' @param sex `r sex()`
 #' @param covariates character vector of covariates that correspond to column names of [MotrpacRatTraining6moData::TRNSCRPT_META].
 #'   Defaults to covariates that were used for the manuscript. 
@@ -38,7 +38,7 @@
 #'   [MotrpacRatTraining6moData::TRNSCRPT_NORM_DATA]
 #' 
 #' @export
-#' @import data.table
+#' @importFrom data.table data.table 
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples
@@ -244,17 +244,18 @@ fix_covariates = function(covar, meta, center_scale = FALSE){
 #'   \item{\code{outliers}}{subset of \code{outliers} in input removed from the data}
 #' }
 #' @export
-#' @import data.table
+#' @importFrom data.table data.table as.data.table
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples
+#' \dontrun{
 #' # Process gastrocnemius ATAC-seq data with default parameters, i.e., return data from both 
 #' # sexes, remove established outliers, download data to current working directory
 #' gastroc_data1 = atac_prep_data("SKM-GN")
 #' 
 #' # Same as above but do not remove outliers if they exist 
 #' gastroc_data2 = atac_prep_data("SKM-GN", outliers = NULL)
-#' 
+#' }
 #' # Same as above but only return data from male samples
 #' gastroc_data3 = atac_prep_data("SKM-GN", outliers = NULL, sex = "male")
 #' 
@@ -309,7 +310,7 @@ atac_prep_data = function(tissue,
   # remove outliers
   curr_outliers = c()
   if(!is.null(outliers)){
-    curr_outliers = curr_outliers[curr_outliers %in% meta[,viallabel]]
+    curr_outliers = outliers[outliers %in% meta[,viallabel]]
     meta = meta[!viallabel %in% as.character(curr_outliers)]
   }
   counts = counts[,meta[,viallabel]]
@@ -372,18 +373,31 @@ atac_prep_data = function(tissue,
 #' @param nrows integer, number of rows to return. Defaults to Inf. Useful to return a subset of a large data frame for tests. 
 #'
 #' @return a data.frame where features are in rows and numeric columns correspond to sample identifiers (vial labels)
+#' 
 #' @export
-#' @import data.table
+#' @importFrom data.table data.table
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples
-#' print("TODO")
+#' # Load RNA-seq raw counts for liver
+#' data = load_sample_data("LIVER", "TRNSCRPT", normalized = FALSE)
+#' 
+#' # Load normalized metabolomics data for gastrocnemius
+#' data = load_sample_data("SKM-GN", "METAB")
+#' 
+#' # Load normalized protein abundance data for heart
+#' data = load_sample_data("HEART", "PROT")
+#' 
+#' \dontrun{
+#' # Load ATAC-seq raw counts for hippocampus, excluding outliers 
+#' data = load_sample_data("HIPPOC", "ATAC", exclude_outliers = TRUE, normalized = FALSE, scratchdir = "/tmp")
+#' }
 load_sample_data = function(tissue, 
                             assay, 
                             normalized = TRUE, 
                             training_regulated_only = FALSE, 
                             exclude_outliers = FALSE, 
-                            scratchdir = NULL, 
+                            scratchdir = ".", 
                             nrows = Inf){
   
   # check inputs 
@@ -404,6 +418,13 @@ load_sample_data = function(tissue,
         # download from GCS
         data = get_rdata_from_url(tissue=tissue, assay=assay, suffix="NORM_DATA", scratchdir=scratchdir, nrows=nrows)
       }
+    }else if(assay == "METAB"){
+      # get combined sample-level data
+      data = METAB_NORM_DATA_FLAT
+      # filter to this tissue
+      data = data[data$tissue == tissue,]
+      # remove all-NA columns 
+      data[,names(colSums(is.na(data))[colSums(is.na(data)) == nrow(data)])] = NULL
     }else{
       obj_name = sprintf("%s_%s_NORM_DATA", assay, gsub("-","",tissue))
       data = get(obj_name)
@@ -435,7 +456,7 @@ load_sample_data = function(tissue,
   if(exclude_outliers){
     outliers = data.table(MotrpacRatTraining6moData::OUTLIERS)
     .assay = assay
-    .tissue = .tissue
+    .tissue = tissue
     curr_outliers = na.omit(outliers[assay == .assay & tissue == .tissue, viallabel])
     if(.tissue == "VENACV"){
       curr_outliers = c(curr_outliers, na.omit(outliers[tissue == .tissue, viallabel]))
@@ -464,9 +485,10 @@ load_sample_data = function(tissue,
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' # Load raw METHYL data for gastrocnemius 
 #' data = load_methyl_raw_data("SKM-GN", "/tmp")
-#' 
+#' }
 load_methyl_raw_data = function(tissue, scratchdir = "."){
   url = sprintf("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/%s_raw.RData", tissue)
   data = get_rdata_from_url(url = url, scratchdir = scratchdir)
@@ -483,7 +505,9 @@ load_methyl_raw_data = function(tissue, scratchdir = "."){
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' feature_annot = load_methyl_feature_annotation("/tmp")
+#' }
 #' 
 #' @source <https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda> 
 load_methyl_feature_annotation = function(scratchdir = "."){
@@ -513,8 +537,10 @@ load_methyl_feature_annotation = function(scratchdir = "."){
 #' @return object saved in the RData file, optionally specified by \code{obj_name} 
 #' 
 #' @export
+#' @importFrom utils download.file 
 #' 
 #' @examples
+#' \dontrun{
 #' # return gastrocnemius chromatin accessibility differential analysis results 
 #' data = get_rdata_from_url(tissue="SKM-GN", assay="ATAC", suffix="DA", scratchdir="/tmp")
 #' 
@@ -526,7 +552,7 @@ load_methyl_feature_annotation = function(scratchdir = "."){
 #' 
 #' # return raw DNA methylation data for brown adipose
 #' data = get_rdata_from_url(url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData", scratchdir="/tmp")
-#' 
+#' }
 get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir=".", url=NULL, obj_name=NULL, nrows=Inf){
   # set option if default is low
   if(getOption("timeout") < 1e3){
@@ -579,4 +605,40 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
   }
 
   return(data)
+}
+
+
+#' Filter outliers
+#' 
+#' Filter a list of outliers to those belonging to the specified dataset. 
+#' Used to specify sex-specific outliers within differential analysis functions. 
+#'
+#' @param TISSUE optional `r tissue()` 
+#' @param SEX optional `r sex()` 
+#' @param outliers vector of vial labels to consider as outliers.
+#'   Defaults to vial labels in [MotrpacRatTraining6moData::OUTLIERS].
+#'
+#' @return character vector, subset of \code{outliers} that correspond to the 
+#'   specified tissue and sex
+#'
+#' @importFrom data.table as.data.table
+#' @import MotrpacRatTraining6moData 
+#'
+#' @examples
+#' curr_outliers = filter_outliers(TISSUE="HIPPOC")
+#' curr_outliers = filter_outliers(TISSUE="HIPPOC", SEX="male")
+filter_outliers = function(TISSUE=NULL, SEX=NULL, outliers=OUTLIERS$viallabel){
+  outliers = as.character(outliers)
+  if(length(outliers) == 0){
+    return(character(0))
+  }
+  pheno = as.data.table(PHENO)
+  if(!is.null(TISSUE)){
+    pheno = pheno[tissue == TISSUE]
+  }
+  if(!is.null(SEX)){
+    pheno = pheno[sex == SEX]
+  }
+  curr_outliers = pheno[viallabel %in% outliers, viallabel]
+  return(curr_outliers)
 }

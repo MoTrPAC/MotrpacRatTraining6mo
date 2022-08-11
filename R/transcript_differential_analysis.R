@@ -23,11 +23,12 @@
 #' }
 #' 
 #' @export 
-#' @importFrom data.table data.table merge rbindlist
+#' @importFrom data.table data.table rbindlist
 #' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq lfcShrink
 #' @importFrom ashr ash
 #' 
 #' @examples 
+#' \dontrun{
 #' # Get 1- and 2- week training effects in female gastrocnemius
 #' data = transcript_prep_data("SKM-GN", sex = "female")
 #' deseq_res = run_deseq(data$filt_counts, 
@@ -45,7 +46,7 @@
 #'                             list(c("group","1w","control"), c("group","2w","control")),
 #'                             dds = deseq_res$dds,
 #'                             shrink = TRUE)
-#'                             
+#' }                           
 run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NULL, shrink=FALSE, verbose=FALSE){
   
   meta = as.data.table(meta)
@@ -143,10 +144,11 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' }
 #' 
 #' @export 
-#' @importFrom data.table data.table merge
+#' @importFrom data.table data.table
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples
+#' \dontrun{
 #' # Perform differential analysis for expressed genes in brown adipose tissue with default parameters, 
 #' # i.e., outliers and covariates used for the manuscript; calculate both standard and shrunk log fold-changes
 #' da = transcript_timewise_da("BAT")
@@ -156,7 +158,7 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' 
 #' # Same as the first example but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
 #' da = transcript_timewise_da("BAT", rdata_outfile = "~/test/BAT_RNA_DA.RData", overwrite = TRUE)
-#' 
+#' }
 transcript_timewise_da = function(tissue, 
                                    covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
                                    outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
@@ -169,21 +171,25 @@ transcript_timewise_da = function(tissue,
   check_da_args(.tissue, rdata_outfile, overwrite)
   
   if(verbose) message("Loading data...")
-  data = transcript_prep_data(tissue, covariates = covariates, outliers = outliers, center_scale = TRUE, adjust_covariates = TRUE)
+  data = transcript_prep_data(tissue, 
+                              covariates = covariates, 
+                              outliers = outliers, 
+                              center_scale = TRUE, 
+                              adjust_covariates = TRUE)
   meta = as.data.table(data$metadata)
   counts = data$filt_counts
-  outliers = data$outliers
   covariates = data$covariates
   
   sex_res = list()
+  dds_list = list()
   for(SEX in unique(meta[,sex])){
     
     if(verbose) message(sprintf("Performing differential expression analysis for %s %ss...", .tissue, SEX))
     
     # subset counts and meta
-    curr_samples = meta[sex == SEX, viallabel]
     curr_meta = meta[sex == SEX]
-    curr_counts = counts[,curr_samples]
+    curr_counts = counts[,meta[,viallabel]]
+    curr_outliers = filter_outliers(TISSUE=tissue, SEX=SEX, outliers=data$outliers)
     
     contrasts = list()
     i = 1
@@ -202,6 +208,10 @@ transcript_timewise_da = function(tissue,
                           shrink = FALSE,
                           verbose = verbose)
     
+    if(!is.null(rdata_outfile)){
+      dds_list[[SEX]] = deseq_res$dds
+    }
+    
     # shrunk results 
     if(add_shrunk_logfc){
       if(verbose) message("Calculating shrunk fold-changes...")
@@ -214,17 +224,7 @@ transcript_timewise_da = function(tissue,
                                    verbose = verbose,
                                    dds = deseq_res$dds)
     }
-
-    # save DESeq2 RData
-    if(!is.null(rdata_outfile)){
-      if(add_shrunk_logfc){
-        save(deseq_res, deseq_res_shrunk, file=rdata_outfile)
-        if(verbose) message(sprintf("'deseq_res', 'deseq_res_shrunk' saved in 'rdata_outfile': %s", rdata_outfile))
-      }else{
-        save(deseq_res, file=rdata_outfile)
-        if(verbose) message(sprintf("'deseq_res' saved in 'rdata_outfile': %s", rdata_outfile))
-      }
-    }
+    
     
     # collect res
     if(add_shrunk_logfc){
@@ -238,13 +238,13 @@ transcript_timewise_da = function(tissue,
       res = data.table(deseq_res$res)
       setnames(res, c("log2FoldChange", "lfcSE", "stat"), c("logFC","logFC_se", "zscore"))
     }
-
+    
     setnames(res, c("numerator","pvalue","gene_id"), c("comparison_group","p_value","feature_ID"))
     res[,denominator := NULL]
     
     # add some columns
     res[,sex := SEX]
-    res[,removed_samples := paste0(outliers, collapse=',')]
+    res[,removed_samples = ifelse(length(curr_outliers)>0, paste0(curr_outliers, collapse=','), NA_character_)]
     # res[,covariates := paste0(covariates, collapse=',')] added within run_deseq()
     
     # add average intensities 
@@ -275,6 +275,12 @@ transcript_timewise_da = function(tissue,
   }
   
   dt = rbindlist(sex_res)
+  
+  # save DESeq2 RData
+  if(!is.null(rdata_outfile)){
+    save(dds_list, file=rdata_outfile)
+    if(verbose) message(sprintf("'dds_list' saved in 'rdata_outfile': %s", rdata_outfile))
+  }
   
   # add columns
   dt[,tissue := .tissue]
@@ -367,17 +373,18 @@ transcript_timewise_da = function(tissue,
 #' @export
 #' @importFrom metap sumlog
 #' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq estimateSizeFactors estimateDispersions nbinomLRT
-#' @importFrom data.table data.table merge rbindlist
+#' @importFrom data.table data.table rbindlist
 #' @import MotrpacRatTraining6moData
 #'
 #' @examples
+#' \dontrun{
 #' # Perform differential analysis for expressed genes in brown adipose tissue with default parameters, 
 #' # i.e., outliers and covariates used for the manuscript
 #' da = transcript_training_da("BAT")
 #' 
 #' # Same as above but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
 #' da = transcript_training_da("BAT", rdata_outfile = "~/test/BAT_RNA_training-da.RData", overwrite = TRUE)
-#' 
+#' }
 transcript_training_da = function(tissue, 
                                    covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
                                    outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
@@ -393,7 +400,6 @@ transcript_training_da = function(tissue,
   data = transcript_prep_data(tissue, covariates = covariates, outliers = outliers, center_scale = TRUE, adjust_covariates = TRUE)
   meta = as.data.table(data$metadata)
   counts = data$filt_counts
-  outliers = data$outliers
   covariates = data$covariates
   
   # refactor group
@@ -406,10 +412,9 @@ transcript_training_da = function(tissue,
     if(verbose) message(sprintf("Performing LRTs for %s %ss...", .tissue, SEX))
     
     # subset counts and meta
-    curr_samples = meta[sex == SEX, viallabel]
     curr_meta = meta[sex == SEX]
-    curr_counts = counts[,curr_samples]
-    curr_outliers = outliers[outliers %in% curr_samples]
+    curr_counts = counts[,curr_meta[,viallabel]]
+    curr_outliers = filter_outliers(TISSUE=tissue, SEX=SEX, outliers=data$outliers)
     curr_meta[,group := as.factor(group)]
     
     full = paste0('~', paste0(c(covariates, 'group'), collapse=' + '))
@@ -427,7 +432,7 @@ transcript_training_da = function(tissue,
     res_dt = data.table(feature_ID = rownames(res), 
                         lrt = res$stat,
                         p_value = res$pvalue,
-                        removed_samples = paste0(curr_outliers, collapse=','),
+                        removed_samples = ifelse(length(curr_outliers)>0, paste0(curr_outliers, collapse=','), NA_character_),
                         full_model=gsub(' ','',full),
                         reduced_model=gsub(' ','',reduced))
     # add some columns
