@@ -73,7 +73,7 @@ yall = get(load("SKMGN_raw.RData"))
 
 # for the simplicity of this example, we subset the data to 5000 loci
 y = yall[1:5000,]
-dea_res = rrbs_differential_analysis(y,PHENO,METHYL_META,adj_pct_unaligned=T)
-head(dea_res$timewise)
-head(dea_res$training)
+da_res = rrbs_differential_analysis(y,PHENO,METHYL_META,adj_pct_unaligned=T)
+head(da_res$timewise)
+head(da_res$training)
 }

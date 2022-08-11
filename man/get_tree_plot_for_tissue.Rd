@@ -2,8 +2,7 @@
 % Please edit documentation in R/bayesian_graphical_clustering.R
 \name{get_tree_plot_for_tissue}
 \alias{get_tree_plot_for_tissue}
-\title{The main function for obtaining a graphical (tree) representation of the differential
-analysis results.}
+\title{Make graph}
 \usage{
 get_tree_plot_for_tissue(
   tissues,
@@ -22,9 +21,11 @@ get_tree_plot_for_tissue(
 )
 }
 \arguments{
-\item{tissues}{A character vector. The set of tissues to take for the analysis. If null take all.}
+\item{tissues}{A character vector where values are in \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}.
+The set of tissues to take for the analysis. If NULL take all.}
 
-\item{omes}{A character vector. The set of omes to take for the analysis. If null take all.}
+\item{omes}{A character vector where values are in \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV}.
+The set of omes to take for the analysis. If NULL take all.}
 
 \item{node_sets}{A named list with the node (state) sets of analytes/features, see details for analyte name convention.}
 
@@ -45,6 +46,11 @@ get_tree_plot_for_tissue(
 \item{max_trajectories}{A numeric or NULL. If not NULL then it specifies the number of pathways to keep when looking into the edge sets after filtering by omes and tissues. If  parallel_edges_by_tissue = TRUE then take the top trajectories in each tissue.}
 
 \item{highlight_subset}{A character string or NULL. If not NULL then it specifies the name of a node, edge, or path to highlight in the tree.}
+
+\item{curvature}{A number between 0 and 1, where larger values yield more curved edges.}
+}
+\value{
+a graph object
 }
 \description{
 The main function for obtaining a graphical (tree) representation of the differential
@@ -53,14 +59,12 @@ analysis results.
 \details{
 The function filters the input set to include analytes from the given tissues and omes (if tissues/omes are not null).
 If parallel edges are requested then the relevant edge sizes are computed internally and are used within ggraph for the output plot.
-Analyte names are in the ome;tissue;feature_id format.
-Node set names are are in the week_number(1,2,4,8)'w'_F{-1,0,1}_M{-1,0,1} format for example: 1w_F-1_M0.
-Edge set names are in the node_a---node_b format, e.g., 4w_F0_M0---8w_F0_M1.
-
-See bayesian_graphical_clustering for more details about the graphical analysis.
+Analyte names are in the \code{\link[MotrpacRatTraining6moData]{ASSAY_ABBREV};\link[MotrpacRatTraining6moData]{TISSUE_ABBREV};[feature_ID]} format.
+Node set names are are in the \code{[{1,2,4,8}]w_F[{-1,0,1}]_M[{-1,0,1}]} format for example: \code{1w_F-1_M0}.
+Edge set names are in the \code{[node_a]---[node_b]} format, e.g., \code{4w_F0_M0---8w_F0_M1}.
 }
 \examples{
-
+\dontrun{
 ### Example 1: redo the analysis using the rat data differential analysis results (z-scores)
 data(REPFDR_INPUTS)
 zscores = REPFDR_INPUTS$zs_smoothed
@@ -68,13 +72,26 @@ rat_data_clustering_sol = bayesian_graphical_clustering(zscores)
 # extract the largest trajectories
 get_trajectory_sizes_from_edge_sets(rat_data_clustering_sol$edge_sets,min_size = 50)
 # plot the top trajectories of the muscle tissues, color edges by tissue
-get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),omes="TRNSCRPT",
-node_sets=rat_data_clustering_sol$node_sets,edge_sets=rat_data_clustering_sol$edge_sets,min_size = 20,
-parallel_edges_by_tissue = T,max_trajectories = 3)
+get_tree_plot_for_tissue(tissues = c("SKM-GN","HEART","SKM-VL"),
+                         omes = "TRNSCRPT",
+                         node_sets = rat_data_clustering_sol$node_sets, 
+                         edge_sets = rat_data_clustering_sol$edge_sets, 
+                         min_size = 20,
+                         parallel_edges_by_tissue = TRUE,
+                         max_trajectories = 3)
+}
 
 ### Example 2: load the graphical solutions from MotrpacRatTraining6moData and plot without rerunning the algorithm
 data(GRAPH_COMPONENTS)
-get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),omes="TRNSCRPT",
-node_sets=GRAPH_COMPONENTS$node_sets,edge_sets=GRAPH_COMPONENTS$edge_sets,min_size = 20,
-parallel_edges_by_tissue = T,max_trajectories = 3)
+get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),
+                         omes="TRNSCRPT",
+                         node_sets = GRAPH_COMPONENTS$node_sets,
+                         edge_sets = GRAPH_COMPONENTS$edge_sets,
+                         min_size = 20,
+                         parallel_edges_by_tissue = TRUE,
+                         max_trajectories = 3)
+
+}
+\seealso{
+\code{\link[=bayesian_graphical_clustering]{bayesian_graphical_clustering()}} for more details about the graphical analysis.
 }

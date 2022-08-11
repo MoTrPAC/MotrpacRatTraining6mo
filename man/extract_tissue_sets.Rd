@@ -53,6 +53,7 @@ See bayesian_graphical_clustering for more details about the graphical analysis.
 data(GRAPH_COMPONENTS)
 filtered_solution = extract_tissue_sets(
    tissues = c("HEART","SKM-VL","SKM-GN"),
-   node_sets=GRAPH_COMPONENTS$node_sets,edge_sets=GRAPH_COMPONENTS$edge_sets
- )
+   node_sets=GRAPH_COMPONENTS$node_sets,
+   edge_sets=GRAPH_COMPONENTS$edge_sets
+)
 }

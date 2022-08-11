@@ -48,6 +48,7 @@ named list of two items:
 Wrapper to perform multiple pairwise contrasts with DESeq2
 }
 \examples{
+\dontrun{
 # Get 1- and 2- week training effects in female gastrocnemius
 data = transcript_prep_data("SKM-GN", sex = "female")
 deseq_res = run_deseq(data$filt_counts, 
@@ -65,5 +66,5 @@ deseq_res_shrunk = run_deseq(data$filt_counts,
                             list(c("group","1w","control"), c("group","2w","control")),
                             dds = deseq_res$dds,
                             shrink = TRUE)
-                            
+}                           
 }

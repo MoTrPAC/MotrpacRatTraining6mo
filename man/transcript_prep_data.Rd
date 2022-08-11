@@ -8,23 +8,21 @@ transcript_prep_data(
   tissue,
   sex = NULL,
   covariates = c("pct_globin", "RIN", "pct_umi_dup", "median_5_3_bias"),
- 
-    outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay
-    == "TRNSCRPT"]),
+  outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
   adjust_covariates = TRUE,
   center_scale = FALSE
 )
 }
 \arguments{
-\item{tissue}{@eval tissue()}
+\item{tissue}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
 
-\item{sex}{@eval sex()}
+\item{sex}{character, one of 'male' or 'female'}
 
-\item{covariates}{character vector of covariates that correspond to column names of \link{TRNSCRPT_META}.
+\item{covariates}{character vector of covariates that correspond to column names of \link[MotrpacRatTraining6moData:TRNSCRPT_META]{MotrpacRatTraining6moData::TRNSCRPT_META}.
 Defaults to covariates that were used for the manuscript.}
 
 \item{outliers}{vector of viallabels to exclude from the returned data. Defaults
-to \code{OUTLIERS$viallabel[OUTLIERS$assay == "TRNSCRPT"]}}
+to \code{[MotrpacRatTraining6moData::OUTLIERS]$viallabel}}
 
 \item{adjust_covariates}{boolean, whether to adjust covariates using \code{\link[=fix_covariates]{fix_covariates()}}.
 Only applies if \code{covariates} is not NULL.}
@@ -35,7 +33,7 @@ Only applies if \code{adjust_covariates} is also TRUE.}
 \value{
 named list of five items:
 \describe{
-\item{\code{metadata}}{data frame of combined \link{PHENO} and \link{TRNSCRPT_META}, filtered to samples in \code{tissue}.
+\item{\code{metadata}}{data frame of combined \link[MotrpacRatTraining6moData:PHENO]{MotrpacRatTraining6moData::PHENO} and \link[MotrpacRatTraining6moData:TRNSCRPT_META]{MotrpacRatTraining6moData::TRNSCRPT_META}, filtered to samples in \code{tissue}.
 If \code{adjust_covariates = TRUE}, missing values in \code{covariates} are imputed.
 If also \code{center_scale = TRUE}, continuous variables named by \code{covariates} are centered and scaled.}
 \item{\code{covariates}}{character vector of covariates to adjust for during differential analysis. For all tissues except VENACV,
@@ -43,9 +41,9 @@ this vector is a (sub)set of the input list of covariates. Covariates are remove
 many missing values or if all values are constant. See \code{\link[=fix_covariates]{fix_covariates()}} for more details.
 If \code{tissue = "VENACV"}, the Ensembl ID for Ucp1 is also added as a covariate.}
 \item{\code{counts}}{data frame of raw counts with Ensembl IDs (which are also TRNSCRPT \code{feature_ID}s)
-as row names and vial labels as column names. See \link{TRNSCRPT_RAW_COUNTS} for details.}
+as row names and vial labels as column names. See \link[MotrpacRatTraining6moData:TRNSCRPT_RAW_COUNTS]{MotrpacRatTraining6moData::TRNSCRPT_RAW_COUNTS} for details.}
 \item{\code{norm_data}}{data frame of TMM-normalized data with Ensembl IDs (which are also TRNSCRPT
-\code{feature_ID}s) as row names and vial labels as column names. See \link{TRNSCRPT_NORM_DATA} for details.}
+\code{feature_ID}s) as row names and vial labels as column names. See \link[MotrpacRatTraining6moData:TRNSCRPT_NORM_DATA]{MotrpacRatTraining6moData::TRNSCRPT_NORM_DATA} for details.}
 \item{\code{outliers}}{subset of \code{outliers} in input removed from the data}
 }
 }

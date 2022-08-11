@@ -2,7 +2,7 @@
 % Please edit documentation in R/bayesian_graphical_clustering.R
 \name{filter_edge_sets_by_trajectories}
 \alias{filter_edge_sets_by_trajectories}
-\title{Keep the edges of the top trajectories of an edge set of a graphical solution.}
+\title{Filter edge sets to largest trajectories}
 \usage{
 filter_edge_sets_by_trajectories(edge_sets, topk = 5, min_path_size = 5)
 }
@@ -23,10 +23,11 @@ Edges that are removed will have no features/analytes in their entry.
 Keep the edges of the top trajectories of an edge set of a graphical solution.
 }
 \examples{
-### Example: Simulate data with a single cluster
+\dontrun{
+### Example 1: Simulate data with a single cluster
 zcolnames = c(
-paste("female",c("1w","2w","4w","8w"),sep="_"),
-paste("male",c("1w","2w","4w","8w"),sep="_")
+  paste("female",c("1w","2w","4w","8w"),sep="_"),
+  paste("male",c("1w","2w","4w","8w"),sep="_")
 )
 zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
 # now add a cluster with a strong signal and rerun
@@ -46,4 +47,10 @@ top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets,t
 sapply(top2traj_edge_sets,length)
 # for comparison examine the edge sets of the Bayesian clustering solution:
 sapply(clustering_sol$edge_sets,length)
+}
+
+### Example 2: Use published data
+# Get edges corresponding to 5 largest tracjectories in the liver
+tissue_edge_sets = limit_sets_by_regex(GRAPH_COMPONENTS$edge_sets,"LIVER")
+filter_edge_sets_by_trajectories(tissue_edge_sets)
 }

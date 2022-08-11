@@ -26,3 +26,10 @@ named list with one element per trajectories. members are features in the path
 \description{
 Remove all non-empty trajectories
 }
+\examples{
+# Get lists of features belonging to all trajectories in the liver
+get_all_trajectories(GRAPH_COMPONENTS$edge_sets,
+                     GRAPH_COMPONENTS$node_sets,
+                     tissues = "LIVER")
+
+}

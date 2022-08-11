@@ -2,19 +2,19 @@
 % Please edit documentation in R/bayesian_graphical_clustering.R
 \name{get_trajectory_sizes_from_edge_sets}
 \alias{get_trajectory_sizes_from_edge_sets}
-\title{Auxiliary function for getting the largest paths in a graphical solution.}
+\title{Get trajectory sizes}
 \usage{
 get_trajectory_sizes_from_edge_sets(edge_sets, min_size = 10)
 }
 \arguments{
-\item{edge_sets}{A named list of string vectors. The name of an edge is node_id---node_id
+\item{edge_sets}{A named list of string vectors. The name of an edge is \code{[node_id]---[node_id]}
 edges with no analytes have a NULL set (a set of size zero, but are still represented),
-node ids are time_points_Fx_My where x and y represent the up/down state in each sex.}
+node ids are \code{[timepoint]_F[x]_M[y]} where \code{x} and \code{y} represent the up/down state in each sex.}
 
 \item{min_size}{A number. Specifying the minimal path size to be considered.}
 }
 \value{
-NULL if no paths of size of at least min_size were found, otherwise
+NULL if no paths of size of at least \code{min_size} were found, otherwise
 return a data frame that represents all paths of size min_size or greater,
 ranked from the largest path to the smallest one.
 }
@@ -44,10 +44,11 @@ that is too high will result in no paths in the output.
 See bayesian_graphical_clustering for more details about the graphical analysis.
 }
 \examples{
-### Example: Simulate data with a single cluster
+\dontrun{
+### Example 1: Simulate data with a single cluster
 zcolnames = c(
-paste("female",c("1w","2w","4w","8w"),sep="_"),
-paste("male",c("1w","2w","4w","8w"),sep="_")
+  paste("female",c("1w","2w","4w","8w"),sep="_"),
+  paste("male",c("1w","2w","4w","8w"),sep="_")
 )
 zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
 # now add a cluster with a strong signal and rerun
@@ -58,11 +59,15 @@ clustering_sol = bayesian_graphical_clustering(zscores)
 
 # extract the top full trajectories in the data; these should be the clusters with at least 10 features
 min_cluster_size=10
-get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
+get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets, min_size = min_cluster_size)
 
-# extract the edges of the top two full trjectories
+# extract the edges of the top two full trajectories
 # this step "cleans" the edge sets by removing edges of trajectories with very few features
-top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets,topk = 2,min_path_size = 10)
+top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets, topk = 2, min_path_size = 10)
 # examine the new edge set sizes, excluded edges should have zero size
 sapply(top2traj_edge_sets,length)
+}
+
+### Example 2: Use published data 
+get_trajectory_sizes_from_edge_sets(GRAPH_COMPONENTS$edge_sets)
 }
