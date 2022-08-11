@@ -5,9 +5,8 @@
 #' 
 #' @return A new DGEList object that represents the clusters
 #' 
-#' @import edgeR
+#' @importFrom edgeR
 #' @import limma
-#' @import MotrpacRatTraining6moData
 #' 
 #' @export
 #' 

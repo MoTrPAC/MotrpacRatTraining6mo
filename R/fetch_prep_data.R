@@ -38,8 +38,6 @@
 #'   [MotrpacRatTraining6moData::TRNSCRPT_NORM_DATA]
 #' 
 #' @export
-#' @importFrom data.table data.table 
-#' @import MotrpacRatTraining6moData
 #'
 #' @examples
 #' # Process gastrocnemius RNA-seq data with default parameters, i.e., return data from both 
@@ -162,7 +160,6 @@ transcript_prep_data = function(tissue,
 #'   \item{\code{covariates}}{character vector input \code{covar} after removing covariates as necessary}
 #' }
 #' @export
-#' @import data.table
 #' 
 #' @seealso [transcript_prep_data()]
 #'
@@ -244,8 +241,6 @@ fix_covariates = function(covar, meta, center_scale = FALSE){
 #'   \item{\code{outliers}}{subset of \code{outliers} in input removed from the data}
 #' }
 #' @export
-#' @importFrom data.table data.table as.data.table
-#' @import MotrpacRatTraining6moData
 #'
 #' @examples
 #' \dontrun{
@@ -375,8 +370,6 @@ atac_prep_data = function(tissue,
 #' @return a data.frame where features are in rows and numeric columns correspond to sample identifiers (vial labels)
 #' 
 #' @export
-#' @importFrom data.table data.table
-#' @import MotrpacRatTraining6moData
 #'
 #' @examples
 #' # Load RNA-seq raw counts for liver
@@ -620,9 +613,6 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
 #'
 #' @return character vector, subset of \code{outliers} that correspond to the 
 #'   specified tissue and sex
-#'
-#' @importFrom data.table as.data.table
-#' @import MotrpacRatTraining6moData 
 #'
 #' @examples
 #' curr_outliers = filter_outliers(TISSUE="HIPPOC")

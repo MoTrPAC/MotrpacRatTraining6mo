@@ -38,8 +38,6 @@
 #' @export
 #' @importFrom metap sumlog
 #' @importFrom limma voom lmFit eBayes topTable
-#' @importFrom data.table data.table as.data.table rbindlist
-#' @import MotrpacRatTraining6moData
 #'
 #' @examples
 #' 
@@ -213,8 +211,6 @@ atac_training_da = function(tissue,
 #' 
 #' @export
 #' @importFrom limma voom lmFit eBayes topTable is.fullrank makeContrasts contrasts.fit
-#' @importFrom data.table data.table as.data.table rbindlist
-#' @import MotrpacRatTraining6moData
 #'
 #' @examples
 #' \dontrun{

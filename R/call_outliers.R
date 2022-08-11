@@ -15,8 +15,8 @@
 #' @seealso [call_pca_outliers()]
 #' 
 #' @export
-#' @import ggplot2 
-#' @import ggrepel
+#' @importFrom ggplot2 ggplot geom_point theme_classic labs
+#' @importFrom ggrepel geom_text_repel
 #'
 plot_pcs = function(pcA, pcB, pcax, outliers, pca, title=NULL){
   
@@ -69,7 +69,6 @@ plot_pcs = function(pcA, pcB, pcax, outliers, pca, title=NULL){
 #' bat_rna_outliers = call_pca_outliers(bat_rna_data$norm_data, min_pc_ve=0.05, plot=T, verbose=T, iqr_coef=5, M=1000, title="Brown Adipose")
 #'
 #' @export
-#' @import data.table
 #' @importFrom grDevices boxplot.stats
 #'
 call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, title=NULL){
@@ -187,9 +186,6 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
 #' transcript_call_outliers(c("SKM-GN","BLOOD"))
 #'
 #' @export
-#' @import MotrpacBicQC
-#' @import data.table
-#' @import MotrpacRatTraining6moData
 #'
 transcript_call_outliers = function(tissues){
   pca_outliers_list = list()

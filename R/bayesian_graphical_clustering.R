@@ -1,7 +1,6 @@
 #' Perform Bayesian graphical clustering of the differential analysis results using repfdr
 #' 
 #' @import repfdr
-#' @import MotrpacRatTraining6moData
 #' 
 #' @export
 #' 
@@ -210,7 +209,6 @@ bayesian_graphical_clustering <- function(zscores,
 #' A general wrapper for running \code{repfdr} on a matrix of z-scores.
 #' 
 #' @import repfdr
-#' @import MotrpacRatTraining6moData
 #' 
 #' @export
 #' 
@@ -571,7 +569,6 @@ filter_edge_sets_by_trajectories <- function(edge_sets, topk=5, min_path_size=5)
 #' @importFrom ggraph create_layout ggraph geom_edge_fan0 scale_edge_color_manual geom_edge_arc scale_edge_colour_identity scale_edge_width scale_edge_alpha geom_node_point
 #' @importFrom ggplot2 guides scale_size theme annotate
 #' @import grid
-#' @import MotrpacRatTraining6moData
 #' 
 #' @export
 #' 
@@ -1093,8 +1090,6 @@ extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
 #' @param omes string vector, optional. ome subset. all omes by default
 #' 
 #' @export
-#' 
-#' @import MotrpacRatTraining6moData
 #' 
 #' @return named list with one element per trajectories. members are features in the path 
 #' 

@@ -10,7 +10,6 @@
 #' @return data frame where row names are feature_ID and column names are viallabel 
 #' @export
 #' 
-#' @import MotrpacRatTraining6moData
 #' @importFrom edgeR calcNormFactors cpm DGEList
 #' 
 #' @seealso [MotrpacRatTraining6moData::TRNSCRPT_NORM_DATA]

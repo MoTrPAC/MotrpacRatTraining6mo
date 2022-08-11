@@ -49,15 +49,13 @@ limma_res_extract_se = function(limma_res,
 #'   \item{\code{numNAs}}{`r numNAs()`}
 #' }
 #' 
-#' @import MotrpacRatTraining6moData
 #' @importFrom dplyr select filter transmute
 #' @importFrom tibble column_to_rownames
 #' @importFrom purrr map2_dbl
 #' @importFrom tidyr replace_na
 #' @importFrom limma lmFit eBayes topTable makeContrasts contrasts.fit
 #' @importFrom metap sumlog
-#' @importFrom magrittr %>%
-#' @importFrom data.table data.table
+#' 
 #' @export
 #'
 #' @examples
@@ -209,15 +207,13 @@ proteomics_timewise_da  = function(assay, tissue){
 #'   \item{\code{p_value}}{double, combined male and female nominal p-value using the sum of logs}
 #' }
 #' 
-#' @import MotrpacRatTraining6moData
 #' @importFrom dplyr select filter transmute
 #' @importFrom tibble column_to_rownames
 #' @importFrom purrr map2_dbl
 #' @importFrom tidyr replace_na
 #' @importFrom limma lmFit eBayes topTable
 #' @importFrom metap sumlog
-#' @importFrom magrittr %>%
-#' @importFrom data.table data.table
+#' 
 #' @export
 #'
 #' @examples
