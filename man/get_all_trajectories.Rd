@@ -5,16 +5,18 @@
 \title{Remove all non-empty trajectories}
 \usage{
 get_all_trajectories(
-  edge_sets,
-  node_sets,
+  edge_sets = GRAPH_COMPONENTS$edge_sets,
+  node_sets = GRAPH_COMPONENTS$node_sets,
   tissues = MotrpacRatTraining6moData::TISSUE_ABBREV,
   omes = MotrpacRatTraining6moData::ASSAY_ABBREV
 )
 }
 \arguments{
-\item{edge_sets}{use \code{load_graph_vis_data()$edge_sets}}
+\item{edge_sets}{optional named list of edge sets if you want to use a custom input.
+Otherwise use \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets}}
 
-\item{node_sets}{use \code{load_graph_vis_data()$node_sets}}
+\item{node_sets}{optional named list of node sets if you want to use a custom input.
+Otherwise use \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets}}
 
 \item{tissues}{string vector, optional. tissue subset. all tissues by default}
 

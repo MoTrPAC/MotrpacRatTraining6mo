@@ -5,13 +5,12 @@
 #' 
 #' @return A new DGEList object that represents the clusters
 #' 
-#' @importFrom edgeR
-#' @import limma
+#' @importFrom edgeR DGEList
 #' 
 #' @export
 #' 
 #' @details 
-#' The yall object has a metadata framework yall$genes. This data frame has either a Locus field or 
+#' The \code{yall} object has a metadata framework \code{yall$genes}. This data frame has either a Locus field or 
 #' a pair of fields (LocStart,LocEnd). Assuming that there are no clusters that merge sites across different
 #' chromosomes and that clusters represent a continuous window in the genome, the function goes over the
 #' clustering solutions in new_clusters and merges the sites from the same cluster.

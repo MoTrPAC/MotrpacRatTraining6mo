@@ -1084,8 +1084,10 @@ extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
 
 #' Remove all non-empty trajectories 
 #' 
-#' @param node_sets use `load_graph_vis_data()$node_sets`
-#' @param edge_sets use `load_graph_vis_data()$edge_sets`
+#' @param node_sets optional named list of node sets if you want to use a custom input.
+#'   Otherwise use \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets}
+#' @param edge_sets optional named list of edge sets if you want to use a custom input.
+#'   Otherwise use \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets}
 #' @param tissues string vector, optional. tissue subset. all tissues by default
 #' @param omes string vector, optional. ome subset. all omes by default
 #' 
@@ -1099,8 +1101,8 @@ extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
 #'                      GRAPH_COMPONENTS$node_sets,
 #'                      tissues = "LIVER")
 #'
-get_all_trajectories = function(edge_sets, 
-                                node_sets, 
+get_all_trajectories = function(edge_sets = GRAPH_COMPONENTS$edge_sets, 
+                                node_sets = GRAPH_COMPONENTS$node_sets, 
                                 tissues = MotrpacRatTraining6moData::TISSUE_ABBREV,
                                 omes = MotrpacRatTraining6moData::ASSAY_ABBREV){
   
