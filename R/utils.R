@@ -8,15 +8,12 @@
 #'
 #' @return named list where names are vial labels and values are PIDs 
 #' @export
-#' 
-#' @import data.table 
-#' @import MotrpacRatTraining6moData
 #'
 #' @examples
 #' viallabel_to_pid(c("90416015402", "90416015403", "90416015302"))
 #' viallabel_to_pid(c(90416015402, 90416015403, 90416015302))
 viallabel_to_pid = function(viallabels){
-  pheno = as.data.table(MotrpacRatTraining6moData::PHENO)
+  pheno = data.table::as.data.table(MotrpacRatTraining6moData::PHENO)
   pheno = unique(pheno[,.(viallabel, pid)])
   pheno = pheno[viallabel %in% as.character(viallabels)]
   vl_to_pid = pheno[,pid]

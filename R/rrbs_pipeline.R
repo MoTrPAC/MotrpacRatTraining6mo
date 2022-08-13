@@ -83,6 +83,8 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 }
 
 
+#' Analyze genome tiles 
+#' 
 #' A wrapper function that analyzes a tile of loci in the genome to obtain correlated clusters.
 #' 
 #' @param tile_name A character. The name of the current window for analysis.
@@ -94,11 +96,9 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' 
 #' @return A character vector. Names are loci (M matrix rows), entries are the names of the loci clusters.
 #' 
-#' @import MotrpacRatTraining6moData
-#' @import MCL
-#' @import limma
-#' @import edgeR
-#' @import corrplot
+#' @importFrom MCL mcl
+#' @importFrom corrplot corrplot
+#' @importFrom stats cor
 #' 
 #' @export
 #' 
@@ -226,9 +226,13 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' # Other normalization methods developed for RNA-seq data, such as TMM, are not required for BS-seq data.
 #' TotalLibSize <- yall$samples$lib.size[grepl("-Me",colnames(yall$counts))] + yall$samples$lib.size[grepl("-Un",colnames(yall$counts))]
 #' yall$samples$lib.size <- rep(TotalLibSize, each=2)
-analyze_tile<-function(tile_name,tile_l,M,min_cor=0.7,
-                       inflations = c(3,2.5,2,1.5),plotcorr=F){
-  #print(tile_name)
+analyze_tile<-function(tile_name,
+                       tile_l,
+                       M,
+                       min_cor=0.7,
+                       inflations = c(3,2.5,2,1.5),
+                       plotcorr=F){
+  
   tile_inds = tile_l[[tile_name]]
   if(length(tile_inds) < 2){
     v = tile_name
@@ -236,15 +240,17 @@ analyze_tile<-function(tile_name,tile_l,M,min_cor=0.7,
     return(v)
   }
   tile_M = M[tile_inds,]
-  tile_corrs = cor(t(tile_M))
+  tile_corrs = stats::cor(t(tile_M))
   if(plotcorr){
-    corrplot(tile_corrs)
+    corrplot::corrplot(tile_corrs)
   }
   tile_clusters = NULL
   for(infl in inflations){
     tr = tryCatch({
-      tile_clusters = mcl(tile_corrs > min_cor,addLoops = T,allow1=T,
-                          inflation = infl)$Cluster
+      tile_clusters = MCL::mcl(tile_corrs > min_cor,
+                               addLoops = T,
+                               allow1=T,
+                               inflation = infl)$Cluster
     }, error = function(x){}
     )
     if(!is.null(tile_clusters)){break}
@@ -281,14 +287,15 @@ analyze_tile<-function(tile_name,tile_l,M,min_cor=0.7,
 #' @return A list.First item is called timewise and will contain the contrast-specific differential analysis results.
 #' Second item is called training and contains the overall training-level significance per locus.
 #' 
-#' @import metap
-#' @import edgeR
-#' @import limma
+#' @importFrom metap sumlog
+#' @importFrom edgeR estimateDisp glmQLFit glmQLFTest topTags
+#' @importFrom limma makeContrasts zscoreT
+#' @importFrom stats model.matrix
 #' 
 #' @export
 #'  
 #' @examples
-#' library(MotrpacRatTraining6moData)
+#' \dontrun{
 #' data(PHENO)
 #' data(METHYL_META)
 #' 
@@ -319,9 +326,15 @@ analyze_tile<-function(tile_name,tile_l,M,min_cor=0.7,
 #' da_res = rrbs_differential_analysis(y,PHENO,METHYL_META,adj_pct_unaligned=T)
 #' head(da_res$timewise)
 #' head(da_res$training)
-rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
-      verbose=T,adj_pct_unaligned=F,
-      samples_to_remove=NULL,edger_tol=1e-05,dataset_name=""){
+#' }
+rrbs_differential_analysis<-function(y,
+                                     PHENO,
+                                     METHYL_META,
+                                     verbose=T,
+                                     adj_pct_unaligned=F,
+                                     samples_to_remove=NULL,
+                                     edger_tol=1e-05,
+                                     dataset_name=""){
   #remove outlier samples before DA
   s_me=paste(samples_to_remove, "Me", sep="-")
   s_un=paste(samples_to_remove, "Un", sep="-")
@@ -374,10 +387,10 @@ rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
   # create design matrices for time-wise and F tests
   # (see https://support.bioconductor.org/p/12119/ and the limma guide) 
   #design matrix for males  
-  samples_mat_male = model.matrix(~0+sample,data=covs_males)
-  tp_mat_male = model.matrix(~0+group_tp,data=covs_males)
+  samples_mat_male = stats::model.matrix(~0+sample,data=covs_males)
+  tp_mat_male = stats::model.matrix(~0+group_tp,data=covs_males)
   if(adj_pct_unaligned){
-    tp_mat_male = model.matrix(~0+group_tp+pct_unaligned_1+pct_unaligned_2,data=covs_males)
+    tp_mat_male = stats::model.matrix(~0+group_tp+pct_unaligned_1+pct_unaligned_2,data=covs_males)
   }
   tp_mat_male[!covs_males$Me,] = 0
   des_males = cbind(samples_mat_male,tp_mat_male)
@@ -387,10 +400,10 @@ rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
   }
   
   #design matrix for females
-  samples_mat_female = model.matrix(~0+sample,data=covs_females)
-  tp_mat_female = model.matrix(~0+group_tp,data=covs_females)
+  samples_mat_female = stats::model.matrix(~0+sample,data=covs_females)
+  tp_mat_female = stats::model.matrix(~0+group_tp,data=covs_females)
   if(adj_pct_unaligned){
-    tp_mat_female = model.matrix(~0+group_tp+pct_unaligned_1+pct_unaligned_2,data=covs_females)
+    tp_mat_female = stats::model.matrix(~0+group_tp+pct_unaligned_1+pct_unaligned_2,data=covs_females)
   }
   tp_mat_female[!covs_females$Me,] = 0
   des_females = cbind(samples_mat_female,tp_mat_female)
@@ -408,13 +421,13 @@ rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
   }
   
   # define the contrasts for males and females the analyses below
-  C_ttests_female = makeContrasts(
+  C_ttests_female = limma::makeContrasts(
     group_tp1_0 - group_tp8_1,group_tp2_0 - group_tp8_1,
     group_tp4_0 - group_tp8_1,group_tp8_0 - group_tp8_1,
     levels = des_females
   )
   
-  C_ttests_male = makeContrasts(
+  C_ttests_male = limma::makeContrasts(
     group_tp1_0 - group_tp8_1,group_tp2_0 - group_tp8_1,
     group_tp4_0 - group_tp8_1,group_tp8_0 - group_tp8_1,
     levels = des_males
@@ -422,21 +435,21 @@ rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
   
   #Estimate dispersions for males and females separately
   print("Estimating dispersion for the male design matrix...")
-  y1_males <- estimateDisp(y_males, design=des_males,tol = edger_tol)
+  y1_males <- edgeR::estimateDisp(y_males, design=des_males,tol = edger_tol)
   if(verbose){
     print("Done")
     print("Running glmQLFit...")
   }
-  fit.ttest_males <- glmQLFit(y1_males,des_males)
+  fit.ttest_males <- edgeR::glmQLFit(y1_males,des_males)
   if(verbose){print("Done")}
   
   print("Estimating dispersion for the female design matrix...")
-  y1_females <- estimateDisp(y_females, design=des_females,tol = edger_tol)
+  y1_females <- edgeR::estimateDisp(y_females, design=des_females,tol = edger_tol)
   if(verbose){
     print("Done")
     print("Running glmQLFit...")
   }
-  fit.ttest_females <- glmQLFit(y1_females,des_females)
+  fit.ttest_females <- edgeR::glmQLFit(y1_females,des_females)
   if(verbose){print("Done")}
   
   # extract contrast info
@@ -448,14 +461,14 @@ rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
     curr_tp = strsplit(col,split="_")[[1]][2]
     curr_tp = strsplit(curr_tp,split="tp")[[1]][2]
     if(verbose){print(paste("Fitting timewise model for:",col))}
-    res <- glmQLFTest(fit.ttest_males,contrast=C_ttests_male[,col])
+    res <- edgeR::glmQLFTest(fit.ttest_males,contrast=C_ttests_male[,col])
     # extract the results into a table
-    edger_res <- topTags(res, n=Inf, p.value = 1,
+    edger_res <- edgeR::topTags(res, n=Inf, p.value = 1,
                          adjust.method = "BH",sort.by = "none")$table
     # add z-scores
     edger_res$F[edger_res$F < 0] = 1e-10
     t.stat <- sign(edger_res$logFC) * sqrt(edger_res$F)
-    z <- zscoreT(t.stat, df=res$df.total)
+    z <- limma::zscoreT(t.stat, df=res$df.total)
     curr_res = data.frame(
       feature_ID = rownames(y_males),
       edger_res[,1:4],
@@ -514,17 +527,17 @@ rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
 
   #males
   if(verbose){print("Fitting the model for the F-tests...")}
-  ftest_tp_mat_male = model.matrix(~1+group_tp,data=covs_males)
+  ftest_tp_mat_male = stats::model.matrix(~1+group_tp,data=covs_males)
   if(adj_pct_unaligned){
-    ftest_tp_mat_male = model.matrix(~1+pct_unaligned_1+pct_unaligned_2+group_tp,data=covs_males)
+    ftest_tp_mat_male = stats::model.matrix(~1+pct_unaligned_1+pct_unaligned_2+group_tp,data=covs_males)
   }
   ftest_tp_mat_male[!covs_males$Me,] = 0
   ftest_des_males = cbind(samples_mat_male,ftest_tp_mat_male)
-  y2_males <- estimateDisp(y_males, design=ftest_des_males,tol = edger_tol)
-  fit.ftest_males <- glmQLFit(y2_males,ftest_des_males)
+  y2_males <- edgeR::estimateDisp(y_males, design=ftest_des_males,tol = edger_tol)
+  fit.ftest_males <- edgeR::glmQLFit(y2_males,ftest_des_males)
   is_group_variable = grepl("group",colnames(ftest_des_males))
   res <- glmQLFTest(fit.ftest_males,coef=colnames(ftest_des_males)[is_group_variable])
-  ftest_edger_res <- topTags(res, n=Inf, p.value = 1,
+  ftest_edger_res <- edgeR::topTags(res, n=Inf, p.value = 1,
                              adjust.method = "BH",sort.by ="none")$table
   if(verbose){print("Done")}
   # add the results
@@ -543,17 +556,17 @@ rrbs_differential_analysis<-function(y,PHENO,METHYL_META,
   
   #females
   if(verbose){print("Fitting the model for the F-tests for females...")}
-  ftest_tp_mat_female = model.matrix(~1+group_tp,data=covs_females)
+  ftest_tp_mat_female = stats::model.matrix(~1+group_tp,data=covs_females)
   if(adj_pct_unaligned){
-    ftest_tp_mat_female = model.matrix(~1+pct_unaligned_1+pct_unaligned_2+group_tp,data=covs_females)
+    ftest_tp_mat_female = stats::model.matrix(~1+pct_unaligned_1+pct_unaligned_2+group_tp,data=covs_females)
   }
   ftest_tp_mat_female[!covs_females$Me,] = 0
   ftest_des_females = cbind(samples_mat_female,ftest_tp_mat_female)
-  y2_females <- estimateDisp(y_females, design=ftest_des_females,tol = edger_tol)
-  fit.ftest_females <- glmQLFit(y2_females,ftest_des_females)
+  y2_females <- edgeR::estimateDisp(y_females, design=ftest_des_females,tol = edger_tol)
+  fit.ftest_females <- edgeR::glmQLFit(y2_females,ftest_des_females)
   is_group_variable = grepl("group",colnames(ftest_des_females))
-  res <- glmQLFTest(fit.ftest_females,coef=colnames(ftest_des_females)[is_group_variable])
-  ftest_edger_res <- topTags(res, n=Inf, p.value = 1,
+  res <- edgeR::glmQLFTest(fit.ftest_females,coef=colnames(ftest_des_females)[is_group_variable])
+  ftest_edger_res <- edgeR::topTags(res, n=Inf, p.value = 1,
                              adjust.method = "BH",sort.by ="none")$table
   if(verbose){print("Done")}
   curr_f_test_res_females = data.frame(

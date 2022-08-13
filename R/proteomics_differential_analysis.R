@@ -51,10 +51,8 @@ limma_res_extract_se = function(limma_res,
 #' 
 #' @importFrom dplyr select filter transmute
 #' @importFrom tibble column_to_rownames
-#' @importFrom purrr map2_dbl
-#' @importFrom tidyr replace_na
 #' @importFrom limma lmFit eBayes topTable makeContrasts contrasts.fit
-#' @importFrom metap sumlog
+#' @importFrom stats model.matrix
 #' 
 #' @export
 #'
@@ -68,15 +66,15 @@ proteomics_timewise_da  = function(assay, tissue){
   #Extract current dataset and metadata
   x = 
     get(sprintf("%s_%s_NORM_DATA", assay,gsub("-","",tissue))) %>%
-    column_to_rownames(var = "feature_ID") %>%
-    select(-c("feature","tissue","assay")) %>%
+    tibble::column_to_rownames(var = "feature_ID") %>%
+    dplyr::select(-c("feature","tissue","assay")) %>%
     as.matrix()
   
   #Specify covariates
   covs <-  
-    PHENO %>%
-    filter(viallabel %in% colnames(x)) %>%
-    transmute(
+    MotrpacRatTraining6moData::PHENO %>%
+    dplyr::filter(viallabel %in% colnames(x)) %>%
+    dplyr::transmute(
       sex = if_else(sex == "male","M","F"),
       group,
       tr = factor(case_when(
@@ -97,16 +95,16 @@ proteomics_timewise_da  = function(assay, tissue){
   sex_ttest_res = list() #T-test result
   
   for(SEX in c('M','F')){
-    curr_meta = covs %>% filter(sex == SEX) 
+    curr_meta = covs %>% dplyr::filter(sex == SEX) 
     curr_counts = x[,rownames(curr_meta)]
     
     #Extract treatment covariate
     tr <- curr_meta$tr
     
-    design = model.matrix(~0+tr)
+    design = stats::model.matrix(~0+tr)
     
     #Set contrasts
-    cont.matrix = makeContrasts(
+    cont.matrix = limma::makeContrasts(
       tr1_0 - tr8_1, tr2_0 - tr8_1, tr4_0 - tr8_1, tr8_0 - tr8_1, 
       levels = design
     )
@@ -114,15 +112,15 @@ proteomics_timewise_da  = function(assay, tissue){
     colnames(cont.matrix) = c("1w","2w","4w","8w")
     
     # Fit the new model
-    limma_model2 = lmFit(curr_counts,design)
-    lmfit.cont <- contrasts.fit(limma_model2, cont.matrix)
-    lmfit.cont.ebayes <- eBayes(lmfit.cont)
+    limma_model2 = limma::lmFit(curr_counts,design)
+    lmfit.cont <- limma::contrasts.fit(limma_model2, cont.matrix)
+    lmfit.cont.ebayes <- limma::eBayes(lmfit.cont)
     
     #Extract results for each timepoint
     for(curr_tp in colnames(lmfit.cont.ebayes$t)){
       
       #Extract results
-      limma_res = topTable(lmfit.cont.ebayes,
+      limma_res = limma::topTable(lmfit.cont.ebayes,
                            coef = curr_tp,number = Inf,sort.by = "none")
       
       curr_res = data.frame(
@@ -139,13 +137,13 @@ proteomics_timewise_da  = function(assay, tissue){
       )
       # Add group average intensities
       case_samps = covs %>% 
-        filter(sex == SEX &
+        dplyr::filter(sex == SEX &
                  group == curr_tp) %>%
         rownames()
       curr_res$comparison_average_intensity = apply(x[,case_samps],1,mean,na.rm=TRUE)
       
       control_samps = covs %>% 
-        filter(sex == SEX &
+        dplyr::filter(sex == SEX &
                  group == "control") %>%
         rownames()
       curr_res$reference_average_intensity = apply(x[,control_samps],1,mean,na.rm=TRUE)
@@ -213,6 +211,7 @@ proteomics_timewise_da  = function(assay, tissue){
 #' @importFrom tidyr replace_na
 #' @importFrom limma lmFit eBayes topTable
 #' @importFrom metap sumlog
+#' @importFrom stats model.matrix
 #' 
 #' @export
 #'
@@ -226,15 +225,15 @@ proteomics_training_da = function(assay, tissue){
   #Extract current dataset and metadata
   x = 
     get(sprintf("%s_%s_NORM_DATA", assay,gsub("-","",tissue))) %>%
-    column_to_rownames(var = "feature_ID") %>%
-    select(-c("feature","tissue","assay")) %>%
+    tibble::column_to_rownames(var = "feature_ID") %>%
+    dplyr::select(-c("feature","tissue","assay")) %>%
     as.matrix()
   
   #Specify covariates
   covs <-  
-    PHENO %>%
-    filter(viallabel %in% colnames(x)) %>%
-    transmute(
+    MotrpacRatTraining6moData::PHENO %>%
+    dplyr::filter(viallabel %in% colnames(x)) %>%
+    dplyr::transmute(
       sex = if_else(sex == "male","M","F"),
       group,
       tr = factor(case_when(
@@ -255,7 +254,7 @@ proteomics_training_da = function(assay, tissue){
   sex_ttest_res = list() #T-test result
   
   for(SEX in c('M','F')){
-    curr_meta = covs %>% filter(sex == SEX) 
+    curr_meta = covs %>% dplyr::filter(sex == SEX) 
     curr_counts = x[,rownames(curr_meta)]
     
     ###################################################################
@@ -264,14 +263,14 @@ proteomics_training_da = function(assay, tissue){
     #Extract treatment covariate
     tr <- curr_meta$tr
     #Generate the experimental model
-    design <- model.matrix(~ 1+tr)
-    fit <- lmFit(curr_counts, design)
-    fit.eb <- eBayes(fit)
+    design <- stats::model.matrix(~ 1+tr)
+    fit <- limma::lmFit(curr_counts, design)
+    fit.eb <- limma::eBayes(fit)
     
     
     #Extract results
-    res = topTable(fit.eb, coef = 2:5, n=nrow(fit.eb))
-    dt = data.table(tissue=tissue,
+    res = limma::topTable(fit.eb, coef = 2:5, n=nrow(fit.eb))
+    dt = data.table::data.table(tissue=tissue,
                     assay=assay,
                     feature_ID=rownames(res),
                     fscore=res$`F`,
@@ -290,7 +289,7 @@ proteomics_training_da = function(assay, tissue){
            p_value_female = tidyr::replace_na(p_value_female,1)) %>%
     mutate(p_value = purrr::map2_dbl(p_value_male,p_value_female,function(x,y){metap::sumlog(c(x,y))$p}))
   
-  ftest_res_split_sex <- base::rbind(ftest_res_split_sex,merged)
+  ftest_res_split_sex <- rbind(ftest_res_split_sex,merged)
   
   # add columns and change order
   ftest_res_split_sex$tissue_code = TISSUE_ABBREV_TO_CODE[[tissue]]

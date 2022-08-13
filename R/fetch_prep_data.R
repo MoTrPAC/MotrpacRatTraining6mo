@@ -274,10 +274,10 @@ atac_prep_data = function(tissue,
   }
   
   # ATAC-seq meta 
-  wet = data.table(MotrpacRatTraining6moData::ATAC_META)
+  wet = data.table::data.table(MotrpacRatTraining6moData::ATAC_META)
   
   # DMAQC metadata 
-  dmaqc_meta = data.table(MotrpacRatTraining6moData::PHENO)
+  dmaqc_meta = data.table::data.table(MotrpacRatTraining6moData::PHENO)
   meta = merge(dmaqc_meta, wet, by='viallabel', all.y=T)
   
   # load raw counts 
@@ -447,10 +447,10 @@ load_sample_data = function(tissue,
     }
   }
   if(exclude_outliers){
-    outliers = data.table(MotrpacRatTraining6moData::OUTLIERS)
+    outliers = data.table::data.table(MotrpacRatTraining6moData::OUTLIERS)
     .assay = assay
     .tissue = tissue
-    curr_outliers = na.omit(outliers[assay == .assay & tissue == .tissue, viallabel])
+    curr_outliers = stats::na.omit(outliers[assay == .assay & tissue == .tissue, viallabel])
     if(.tissue == "VENACV"){
       curr_outliers = c(curr_outliers, na.omit(outliers[tissue == .tissue, viallabel]))
     }
@@ -622,7 +622,7 @@ filter_outliers = function(TISSUE=NULL, SEX=NULL, outliers=OUTLIERS$viallabel){
   if(length(outliers) == 0){
     return(character(0))
   }
-  pheno = as.data.table(PHENO)
+  pheno = as.data.table(MotrpacRatTraining6moData::PHENO)
   if(!is.null(TISSUE)){
     pheno = pheno[tissue == TISSUE]
   }

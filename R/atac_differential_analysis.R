@@ -38,6 +38,7 @@
 #' @export
 #' @importFrom metap sumlog
 #' @importFrom limma voom lmFit eBayes topTable
+#' @importFrom stats model.matrix
 #'
 #' @examples
 #' 
@@ -96,7 +97,7 @@ atac_training_da = function(tissue,
     reduced = paste0(c("~ 1", covariates), collapse=" + ")
     
     # normalize and get voom weights 
-    design = model.matrix(eval(parse(text=full)), data = curr_meta)
+    design = stats::model.matrix(eval(parse(text=full)), data = curr_meta)
     # check if full rank
     if(!is.fullrank(design)){
       if("sample_batch" %in% tolower(covariates)){
@@ -112,17 +113,17 @@ atac_training_da = function(tissue,
     }else{
       curr_cov = covariates
     }
-    curr_voom = voom(curr_counts, design=design, normalize.method="quantile")
+    curr_voom = limma::voom(curr_counts, design=design, normalize.method="quantile")
     
-    limma_model1 = lmFit(curr_voom, design)
-    eb_Ftest = eBayes(limma_model1)
+    limma_model1 = limma::lmFit(curr_voom, design)
+    eb_Ftest = limma::eBayes(limma_model1)
     ebayes_list[[SEX]] = eb_Ftest
-    res = topTable(eb_Ftest, n=Inf, coef=colnames(design)[grepl('group',colnames(design))], sort.by = "none")
-    dt = data.table(feature_ID=rownames(res),
+    res = limma::topTable(eb_Ftest, n=Inf, coef=colnames(design)[grepl('group',colnames(design))], sort.by = "none")
+    dt = data.table::data.table(feature_ID=rownames(res),
                     assay="ATAC",
                     assay_code='epigen-atac-seq',
                     tissue=tissue,
-                    tissue_code=TISSUE_ABBREV_TO_CODE[[tissue]], 
+                    tissue_code=MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[[tissue]], 
                     removed_samples=ifelse(length(curr_outliers)>0, paste0(curr_outliers, collapse=','), NA_character_),
                     fscore=res$`F`,
                     p_value = res$P.Value,
@@ -140,12 +141,12 @@ atac_training_da = function(tissue,
   }
   
   # merge 
-  merged = data.table(merge(sex_res[['male']], sex_res[['female']], 
+  merged = data.table::data.table(merge(sex_res[['male']], sex_res[['female']], 
                             by=c("feature_ID","assay","assay_code","tissue","tissue_code"), 
                             suffixes=c('_male','_female')))
   
   # get a single meta p-value per feature using the male- and female- specific p-values 
-  merged[,p_value := sumlog(c(p_value_male, p_value_female))$p, by=seq_len(nrow(merged))]
+  merged[,p_value := metap::sumlog(c(p_value_male, p_value_female))$p, by=seq_len(nrow(merged))]
 
   # reorder columns
   merged = merged[,.(
@@ -211,6 +212,7 @@ atac_training_da = function(tissue,
 #' 
 #' @export
 #' @importFrom limma voom lmFit eBayes topTable is.fullrank makeContrasts contrasts.fit
+#' @importFrom stats model.matrix
 #'
 #' @examples
 #' \dontrun{
@@ -258,15 +260,15 @@ atac_timewise_da = function(tissue,
     reduced = paste0(c("~ 0", covariates), collapse=" + ")
     
     # normalize and get voom weights 
-    design = model.matrix(eval(parse(text=full)), data = curr_meta)
+    design = stats::model.matrix(eval(parse(text=full)), data = curr_meta)
     # check if full rank
-    if(!is.fullrank(design)){
+    if(!limma::is.fullrank(design)){
       if("sample_batch" %in% tolower(covariates)){
         which = covariates[grepl("sample_batch", covariates, ignore.case=T)]
         curr_cov = covariates[!covariates == which]
         full = paste0(c("~ 0", "group", curr_cov), collapse=" + ")
         reduced = paste0(c("~ 0", curr_cov), collapse=" + ")
-        design = model.matrix(eval(parse(text=full)), data = curr_meta)
+        design = stats::model.matrix(eval(parse(text=full)), data = curr_meta)
         warning(sprintf("Sample_batch and group or sex are confounded for %s %s", tissue, SEX))
       }else{
         stop(sprintf("Model matrix with design %s is not full rank.", full))
@@ -274,24 +276,24 @@ atac_timewise_da = function(tissue,
     }else{
       curr_cov = covariates
     }
-    curr_voom = voom(curr_counts, design=design, normalize.method="quantile")
-    fit = lmFit(curr_voom,design)
+    curr_voom = limma::voom(curr_counts, design=design, normalize.method="quantile")
+    fit = limma::lmFit(curr_voom,design)
     
-    cont.matrix=makeContrasts(
+    cont.matrix = limma::makeContrasts(
       '1W'='group1w - groupcontrol',
       '2W'='group2w - groupcontrol',
       '4W'='group4w - groupcontrol',
       '8W'='group8w - groupcontrol',
       levels=design)
     
-    fit2=contrasts.fit(fit,cont.matrix)
-    e=eBayes(fit2)
+    fit2=limma::contrasts.fit(fit,cont.matrix)
+    e=limma::eBayes(fit2)
     ebayes_list[[SEX]] = e
     
     da_list = list()
     for(tp in c('1W','2W','4W','8W')){
-      res = topTable(e, number=nrow(e), coef=tp, confint=TRUE)
-      dt = data.table(
+      res = limma::topTable(e, number=nrow(e), coef=tp, confint=TRUE)
+      dt = data.table::data.table(
         feature_ID = rownames(res),
         sex = SEX, 
         comparison_group = tolower(tp),

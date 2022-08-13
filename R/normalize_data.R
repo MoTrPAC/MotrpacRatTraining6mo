@@ -24,7 +24,7 @@ transcript_normalize_counts = function(tissue, min_cpm = 0.5, min_num_samples = 
   counts[,c("feature","feature_ID","tissue","assay")] = NULL
   
   raw_dge = edgeR::DGEList(counts=counts) 
-  keep = rowSums(cpm(raw_dge) > min_cpm) >= min_num_samples
+  keep = rowSums(edgeR::cpm(raw_dge) > min_cpm) >= min_num_samples
   filt_dge = raw_dge[keep, , keep.lib.sizes=FALSE]
   
   # filt --> tmm 
@@ -75,7 +75,7 @@ atac_normalize_counts = function(tissue, scratchdir = ".", n_samples = 4, min_co
 
   # quantile normalize
   # this takes a couple of minutes given the size of the peak x sample counts matrix
-  norm_counts = voom(filt_counts,normalize.method = "quantile")
+  norm_counts = limma::voom(filt_counts,normalize.method = "quantile")
   sub_norm = round(norm_counts$E,2)
   
   return(as.data.frame(sub_norm))

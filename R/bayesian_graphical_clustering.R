@@ -1,6 +1,6 @@
-#' Perform Bayesian graphical clustering of the differential analysis results using repfdr
+#' Bayesian graphical clustering
 #' 
-#' @import repfdr
+#' Perform Bayesian graphical clustering of the differential analysis results using \code{repfdr}
 #' 
 #' @export
 #' 
@@ -208,7 +208,7 @@ bayesian_graphical_clustering <- function(zscores,
 #' 
 #' A general wrapper for running \code{repfdr} on a matrix of z-scores.
 #' 
-#' @import repfdr
+#' @importFrom repfdr em.control repfdr ztobins ldr
 #' 
 #' @export
 #' 
@@ -252,19 +252,24 @@ repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
   nbins = round(min(150,sqrt(nrow(zscores))-1))
   if(nrow(zscores) > 20000){
     # use the paper config only in very large datasets
-    ztobins_res = ztobins(zscores,df=20,type=1,n.bins=nbins,central.prop = 0.25,
-        plot.diagnostics = F,force.bin.number = T)
+    ztobins_res = repfdr::ztobins(zscores,
+                                  df=20,
+                                  type=1,
+                                  n.bins=nbins,
+                                  central.prop = 0.25,
+                                  plot.diagnostics = F,
+                                  force.bin.number = T)
   }
   else{
     # for med to small data sizes use the default with increased df
-    ztobins_res = ztobins(zscores,df=20,n.bins=nbins)
+    ztobins_res = repfdr::ztobins(zscores,df=20,n.bins=nbins)
   }
   
   # Step 2 in repfdr: estimate the repfdr model using the EM algorithm
-  repfdr_res = repfdr(ztobins_res$pdf.binned.z,
-                      ztobins_res$binned.z.mat,non.null = 'replication',
-                      control = em.control(max.iter = 500,tol=1e-06,nr.threads = 4),
-  )
+  repfdr_res = repfdr::repfdr(ztobins_res$pdf.binned.z,
+                              ztobins_res$binned.z.mat,
+                              non.null = 'replication',
+                              control = repfdr::em.control(max.iter = 500,tol=1e-06,nr.threads = 4))
   # sanity check
   configs = hconfigs(ncol(zscores))
   if(!all(configs == repfdr_res$Pi[,1:ncol(zscores)])){
@@ -282,7 +287,7 @@ repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
   # the following call returns the posterior probabilities Pr(h|v)
   # for every configuration h in our selected set of configs, and every z-scores
   # vector v in the dataset
-  repfdr_posteriors = ldr(
+  repfdr_posteriors = repfdr::ldr(
     ztobins_res$pdf.binned.z,ztobins_res$binned.z.mat,
     repfdr_res$Pi,h.vecs = hvec_inds
   )
@@ -567,8 +572,6 @@ filter_edge_sets_by_trajectories <- function(edge_sets, topk=5, min_path_size=5)
 #' 
 #' @importFrom igraph graph_from_data_frame edge_attr V E
 #' @importFrom ggraph create_layout ggraph geom_edge_fan0 scale_edge_color_manual geom_edge_arc scale_edge_colour_identity scale_edge_width scale_edge_alpha geom_node_point
-#' @importFrom ggplot2 guides scale_size theme annotate
-#' @import grid
 #' 
 #' @export
 #' 
@@ -800,20 +803,20 @@ get_tree_plot_for_tissue <- function(
     }
     newd = newd[!is.na(newd$type),]
     d_g = igraph::graph_from_data_frame(newd)
-    if(all(E(d_g)$size == 0)){
+    if(all(igraph::E(d_g)$size == 0)){
       message("No non-0 edges. Skipping.")
       return()
     }
-    E(d_g)$edge_size = edge_attr(d_g,"size")
-    d_g_auto_layout <- create_layout(d_g, layout = 'auto')
+    igraph::E(d_g)$edge_size = edge_attr(d_g,"size")
+    d_g_auto_layout <- ggraph::create_layout(d_g, layout = 'auto')
   }else{
     d_g = igraph::graph_from_data_frame(d)
-    if(all(E(d_g)$size == 0)){
+    if(all(igraph::E(d_g)$size == 0)){
       message("No non-0 edges. Skipping.")
       return()
     }
-    E(d_g)$edge_size = edge_attr(d_g,"size")
-    d_g_auto_layout <- create_layout(d_g, layout = 'auto')
+    igraph::E(d_g)$edge_size = edge_attr(d_g,"size")
+    d_g_auto_layout <- ggraph::create_layout(d_g, layout = 'auto')
   }
   
   ################
@@ -859,24 +862,24 @@ get_tree_plot_for_tissue <- function(
   # make sure that the 0w node is in the same line as of the no response
   d_g_our_layout[1,"y"] = d_g_our_layout[grepl("F0_M0",d_g_our_layout$name),"y"][1]
   # set node sizes and other features
-  V(d_g)$setsize = d_nodes[V(d_g)$name,"size"]
-  V(d_g)$setsize[V(d_g)$name == "0w"] = median(V(d_g)$setsize)
-  V(d_g)$label = sapply(V(d_g)$name,
+  igraph::V(d_g)$setsize = d_nodes[V(d_g)$name,"size"]
+  igraph::V(d_g)$setsize[V(d_g)$name == "0w"] = median(igraph::V(d_g)$setsize)
+  igraph::V(d_g)$label = sapply(V(d_g)$name,
                         function(x){a=strsplit(x,split="w_")[[1]];a[length(a)]})
-  V(d_g)$label = gsub("_","\n",V(d_g)$label)
-  V(d_g)$col = "gray"
-  V(d_g)$alt_col = "gray"
-  V(d_g)$shape = 15
+  igraph::V(d_g)$label = gsub("_","\n",igraph::V(d_g)$label)
+  igraph::V(d_g)$col = "gray"
+  igraph::V(d_g)$alt_col = "gray"
+  igraph::V(d_g)$shape = 15
   for(j in 1:length(d_g_ordered_nodes)){
     n = d_g_ordered_nodes[j]
-    V(d_g)$col[grepl(n,d_g_our_layout$name)] = d_g_ordered_cols[n]
-    V(d_g)$alt_col[grepl(n,d_g_our_layout$name)] = d_g_ordered_cols_alt[n]
-    V(d_g)$shape[grepl(n,d_g_our_layout$name)] = d_g_ordered_shapes[n]
+    igraph::V(d_g)$col[grepl(n,d_g_our_layout$name)] = d_g_ordered_cols[n]
+    igraph::V(d_g)$alt_col[grepl(n,d_g_our_layout$name)] = d_g_ordered_cols_alt[n]
+    igraph::V(d_g)$shape[grepl(n,d_g_our_layout$name)] = d_g_ordered_shapes[n]
   }
   
   # Add the set size as a field in the layout data frame
   # This will be used for controlling the node size correctly
-  d_g_our_layout["size"] = V(d_g)$setsize[d_g_our_layout$.ggraph.orig_index]
+  d_g_our_layout["size"] = igraph::V(d_g)$setsize[d_g_our_layout$.ggraph.orig_index]
   
   # for(ome in colnames(tissue_ome_data)){
   #   d_g = set_vertex_attr(d_g,ome,V(d_g),tissue_ome_data[V(d_g)$name,ome])
@@ -895,18 +898,18 @@ get_tree_plot_for_tissue <- function(
   # Set colors to highlight edge, node, path
   # Red to highlight; gray for everything else 
   if(highlight_edge){
-    V(d_g)$col = "gray"
-    V(d_g)$alt_col = "gray"
+    igraph::V(d_g)$col = "gray"
+    igraph::V(d_g)$alt_col = "gray"
     # Make edge red
     ecols = rep("gray", nrow(d))
     ecols[which(rownames(d)==highlight_cluster)] = "red"
-    E(d_g)$col = ecols
+    igraph::E(d_g)$col = ecols
   }else if(highlight_node){
-    E(d_g)$col = "gray"
-    vcols = rep("gray", length(names(V(d_g))))
-    vcols[which(names(V(d_g))==highlight_cluster)] = "red"
-    V(d_g)$col = vcols
-    V(d_g)$alt_col = vcols
+    igraph::E(d_g)$col = "gray"
+    vcols = rep("gray", length(names(igraph::V(d_g))))
+    vcols[which(names(igraph::V(d_g))==highlight_cluster)] = "red"
+    igraph::V(d_g)$col = vcols
+    igraph::V(d_g)$alt_col = vcols
   }else if(highlight_path){
     # extract nodes
     curr_nodes = c("0w",unname(unlist(strsplit(highlight_cluster, "->"))))
@@ -923,64 +926,63 @@ get_tree_plot_for_tissue <- function(
     # set colors for edges
     ecols = rep("gray", nrow(d))
     ecols[rownames(d)%in%edge_vector] = "red"
-    E(d_g)$col = ecols
+    igraph::E(d_g)$col = ecols
     # set colors for nodes
-    vcols = rep("gray", length(names(V(d_g))))
-    vcols[names(V(d_g))%in%curr_nodes] = "red"
-    V(d_g)$col = vcols
-    V(d_g)$alt_col = vcols
+    vcols = rep("gray", length(names(igraph::V(d_g))))
+    vcols[names(igraph::V(d_g))%in%curr_nodes] = "red"
+    igraph::V(d_g)$col = vcols
+    igraph::V(d_g)$alt_col = vcols
   }
   
   if(parallel_edges_by_ome || parallel_edges_by_tissue){
     # Assign NA color to 0-weight edges
-    E(d_g)$type[E(d_g)$edge_size == 0] = NA
-    p = ggraph(d_g,layout = d_g_our_layout,) +  
-      geom_edge_fan0(
-        aes(width = E(d_g)$edge_size,
+    igraph::E(d_g)$type[igraph::E(d_g)$edge_size == 0] = NA
+    p = ggraph::ggraph(d_g,layout = d_g_our_layout,) +  
+      ggraph::geom_edge_fan0(
+        ggplot2::aes(width = E(d_g)$edge_size,
             alpha=E(d_g)$edge_size,
             colour = E(d_g)$type),
         lineend = "round",
         strength = curvature) +
-      scale_edge_color_manual(values=edge_colors, name="", limits=names(edge_colors)[names(edge_colors) %in% c(tissues, omes)]) +
-      guides(edge_color=guide_legend(override.aes = list(edge_width=3)))
+      ggraph::scale_edge_color_manual(values=edge_colors, name="", limits=names(edge_colors)[names(edge_colors) %in% c(tissues, omes)]) +
+      ggplot2::guides(edge_color=ggplot2::guide_legend(override.aes = list(edge_width=3)))
   }else if(!is.null(highlight_subset)){
     # Assign NA color to 0-weight edges
-    E(d_g)$col[E(d_g)$edge_size == 0] = NA
-    p = ggraph(d_g,layout = d_g_our_layout,) +  
-      #geom_edge_link(aes(width = E(d_g)$edge_size,alpha=E(d_g)$edge_size)) + 
-      geom_edge_arc(aes(width = E(d_g)$edge_size,
-                        alpha = E(d_g)$edge_size, 
-                        color = E(d_g)$col),
+    igraph::E(d_g)$col[igraph::E(d_g)$edge_size == 0] = NA
+    p = ggraph::ggraph(d_g,layout = d_g_our_layout,) +  
+      ggraph::geom_edge_arc(ggplot2::aes(width = E(d_g)$edge_size,
+                        alpha = igraph::E(d_g)$edge_size, 
+                        color = igraph::E(d_g)$col),
                     lineend = "round",strength = curvature) +
-      scale_edge_colour_identity(guide = "none")
+      ggraph::scale_edge_colour_identity(guide = "none")
   }else{
     # Assign NA color to 0-weight edges
-    E(d_g)$col = "black"
-    E(d_g)$col[E(d_g)$edge_size == 0] = NA
-    p = ggraph(d_g,layout = d_g_our_layout,) +  
+    igraph::E(d_g)$col = "black"
+    igraph::E(d_g)$col[igraph::E(d_g)$edge_size == 0] = NA
+    p = ggraph::ggraph(d_g,layout = d_g_our_layout,) +  
       #geom_edge_link(aes(width = E(d_g)$edge_size,alpha=E(d_g)$edge_size)) + 
-      geom_edge_arc(aes(width = E(d_g)$edge_size,
-                        alpha = E(d_g)$edge_size,
-                        color = E(d_g)$col),
+      ggraph::geom_edge_arc(ggplot2::aes(width = igraph::E(d_g)$edge_size,
+                        alpha = igraph::E(d_g)$edge_size,
+                        color = igraph::E(d_g)$col),
                     lineend = "round",strength = curvature) +
-      scale_edge_color_identity(guide = "none")
+      ggraph::scale_edge_color_identity(guide = "none")
   }
   
   p = p +
-    scale_edge_width(range=edge_width_range,name="Intersect size") + 
-    scale_edge_alpha(range=edge_alpha_range,name="Intersect size") 
+    ggraph::scale_edge_width(range=edge_width_range,name="Intersect size") + 
+    ggraph::scale_edge_alpha(range=edge_alpha_range,name="Intersect size") 
   
   if(color_nodes_by_states){
-    p = p + geom_node_point(aes(size = size),alpha=1,
-                            color=V(d_g)$col,shape=V(d_g)$shape)
+    p = p + ggraph::geom_node_point(ggplot2::aes(size = size),alpha=1,
+                            color=igraph::V(d_g)$col,shape=igraph::V(d_g)$shape)
   }else{
-    p = p + geom_node_point(aes(size = size),alpha=1,
-                            color=V(d_g)$alt_col,shape=V(d_g)$shape)
+    p = p + ggraph::geom_node_point(ggplot2::aes(size = size),alpha=1,
+                            color=igraph::V(d_g)$alt_col,shape=igraph::V(d_g)$shape)
   }
   p = p +
     #geom_node_text(aes(label = V(d_g)$label), repel=F) + 
-    scale_size(range = c(2,20),name="Number of analytes") +
-    theme(panel.background = element_rect(fill="white"),
+    ggplot2::scale_size(range = c(2,20),name="Number of analytes") +
+    ggplot2::theme(panel.background = ggplot2::element_rect(fill="white"),
           legend.key.size = unit(0.4, 'cm'))
   
   names(grid_group_annotation_y) = layer_plot_names
