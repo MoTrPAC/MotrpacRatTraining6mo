@@ -65,8 +65,9 @@ gastroc_data3 = transcript_prep_data("SKM-GN", covariates = NULL, outliers = NUL
 # Same as above but only return data from male samples
 gastroc_data4 = transcript_prep_data("SKM-GN", covariates = NULL, outliers = NULL, sex = "male")
 
-# Same as gastroc_data2 but also center and scale default continuous covariates in the returned metadata,
-# which is also done within [run_deseq()] (called by [transcript_timewise_dea()]) 
+# Same as gastroc_data2 but also center and scale default continuous covariates 
+# in the returned metadata, which is also done within [run_deseq()] 
+# (called by [transcript_timewise_dea()]) 
 gastroc_data4 = transcript_prep_data("SKM-GN", outliers = NULL, center_scale = TRUE)
 
 }

@@ -36,7 +36,7 @@ viallabel_to_pid = function(viallabels){
 #' list_available_data()
 #' list_available_data("MotrpacBicQC")
 list_available_data = function(package=NULL){
-  res = data(package=package)
+  res = utils::data(package=package)
   obj = res$results[,3]
   # remove objects that can't be called directly
   obj = obj[!grepl("\\(", obj)]
@@ -54,10 +54,6 @@ list_available_data = function(package=NULL){
 #' @param outfile_is_rdata bool, whether \code{outfile} is intended to save RData
 #'
 #' @return NULL
-#'
-#' @examples
-#' check_da_args("BAT", "~/Desktop/bat.rda", overwrite = FALSE) 
-#' 
 check_da_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
   # check arguments 
   if(length(tissue)>1){
@@ -86,3 +82,21 @@ check_da_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
 }
 
 
+#' Get object from MotrpacRatTraining6moData
+#' 
+#' Using \code{get()} to retrieve data from MotrpacRatTraining6moData 
+#' within this package doesn't work, at least in tests.
+#' This function allows us to be explicit about the source package.
+#' For internal use only. Users can use \code{get()} or \code{data()} directly
+#' after loading the \code{MotrpacRatTraining6moData} package. 
+#'
+#' @param name_as_string character, name of object in \code{MotrpacRatTraining6moData}
+#'
+#' @return specified object 
+#' 
+#' @seealso [load_sample_data()]
+fetch_object = function(name_as_string){
+  do.call("data", list(as.name(name_as_string),
+                              package = "MotrpacRatTraining6moData"))
+  return(get(name_as_string))
+}

@@ -4,7 +4,11 @@
 \alias{filter_outliers}
 \title{Filter outliers}
 \usage{
-filter_outliers(TISSUE = NULL, SEX = NULL, outliers = OUTLIERS$viallabel)
+filter_outliers(
+  TISSUE = NULL,
+  SEX = NULL,
+  outliers = MotrpacRatTraining6moData::OUTLIERS$viallabel
+)
 }
 \arguments{
 \item{TISSUE}{optional character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}

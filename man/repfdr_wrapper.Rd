@@ -34,14 +34,16 @@ zcolnames = c(
 )
 zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
 repfdr_results = repfdr_wrapper(zscores)
-# in this example all configurations are null, thus the  posteriors of the null cluster (all zeroes) are very high:
+# in this example all configurations are null, 
+# thus the  posteriors of the null cluster (all zeroes) are very high:
 quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"])
 # now add a cluster with a strong signal and rerun
 zscores[1:500,1:4] = zscores[1:500,1:4] + 5
 repfdr_results = repfdr_wrapper(zscores)
 # look at the null cluster after adding the signal above
 quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"],probs=c(0.05,0.1,0.5))
-# now the posteriors of the first 500 rows, with respect to the "planted" cluster should have high posteriors:
+# now the posteriors of the first 500 rows, 
+# with respect to the "planted" cluster should have high posteriors:
 quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
 }
 }

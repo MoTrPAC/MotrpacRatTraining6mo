@@ -11,9 +11,8 @@ atac_prep_data(
   filter_counts = FALSE,
   return_normalized_data = FALSE,
   scratchdir = ".",
-  outliers =
-    na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay
-    == "ATAC"]),
+  outliers = data.table::data.table(MotrpacRatTraining6moData::OUTLIERS)[assay == "ATAC",
+    viallabel],
   nrows = Inf
 )
 }

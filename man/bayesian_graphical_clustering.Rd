@@ -2,7 +2,7 @@
 % Please edit documentation in R/bayesian_graphical_clustering.R
 \name{bayesian_graphical_clustering}
 \alias{bayesian_graphical_clustering}
-\title{Perform Bayesian graphical clustering of the differential analysis results using repfdr}
+\title{Bayesian graphical clustering}
 \usage{
 bayesian_graphical_clustering(
   zscores,
@@ -30,7 +30,7 @@ A named list with three items:
 }
 }
 \description{
-Perform Bayesian graphical clustering of the differential analysis results using repfdr
+Perform Bayesian graphical clustering of the differential analysis results using \code{repfdr}
 }
 \details{
 This function is highly specialized for the MoTrPAC data. It assumes that the input zscore matrix has eight columns.
@@ -82,7 +82,8 @@ zscores[1:500,1:4] = zscores[1:500,1:4] + 5
 
 # run the clustering solution wrapper
 clustering_sol = bayesian_graphical_clustering(zscores)
-# check if the clustering solution correctly assigns the first 500 rows (with high prob) to the right nodes
+# check if the clustering solution correctly assigns the first 500 rows 
+# (with high prob) to the right nodes
 length(intersect(1:500,clustering_sol$node_sets$`1w_F1_M0`))/500 > 0.95
 length(intersect(1:500,clustering_sol$node_sets$`2w_F1_M0`))/500 > 0.95
 length(intersect(1:500,clustering_sol$node_sets$`4w_F1_M0`))/500 > 0.95
@@ -93,13 +94,13 @@ sapply(clustering_sol$node_sets,length)
 # examine the edge set sizes
 sapply(clustering_sol$edge_sets,length)
 
-# extract the top full trajectories in the data; these should be the clusters with at least 10 features
+# extract the top full trajectories in the data
+# these should be the clusters with at least 10 features
 min_cluster_size = 10
 get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
 
 ### Example 2: real data
-library(MotrpacRatTraining6moData)
-data(REPFDR_INPUTS)
+data(REPFDR_INPUTS, package="MotrpacRatTraining6moData")
 zscores = REPFDR_INPUTS$zs_smoothed
 rat_data_clustering_sol = bayesian_graphical_clustering(zscores)
 # extract the largest trajectories
@@ -108,9 +109,9 @@ get_trajectory_sizes_from_edge_sets(rat_data_clustering_sol$edge_sets, min_size 
 get_tree_plot_for_tissue(tissues = c("SKM-GN","HEART","SKM-VL"), 
                          omes = "TRNSCRPT",
                          node_sets = rat_data_clustering_sol$node_sets,
-                         edge_sets=rat_data_clustering_sol$edge_sets,
+                         edge_sets = rat_data_clustering_sol$edge_sets,
                          min_size = 20,
-                         parallel_edges_by_tissue = T,
+                         parallel_edges_by_tissue = TRUE,
                          max_trajectories = 3)
 }
 }

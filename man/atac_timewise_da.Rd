@@ -7,9 +7,8 @@
 atac_timewise_da(
   tissue,
   covariates = c("Sample_batch", "peak_enrich.frac_reads_in_peaks.macs2.frip"),
-  outliers =
-    na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay
-    == "ATAC"]),
+  outliers = data.table::data.table(MotrpacRatTraining6moData::OUTLIERS)[assay == "ATAC",
+    viallabel],
   scratchdir = ".",
   rdata_outfile = NULL,
   overwrite = FALSE,
@@ -62,7 +61,8 @@ females.
 }
 \examples{
 \dontrun{
-# Perform timewise differential analysis for chromatin accessibility peaks measured in hippocampus with default parameters.
+# Perform timewise differential analysis for chromatin accessibility peaks 
+# measured in hippocampus with default parameters.
 hippoc_atac_da = atac_timewise_da("HIPPOC")
 }
 }

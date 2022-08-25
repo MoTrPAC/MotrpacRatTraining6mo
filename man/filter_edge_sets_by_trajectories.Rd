@@ -4,16 +4,21 @@
 \alias{filter_edge_sets_by_trajectories}
 \title{Filter edge sets to largest trajectories}
 \usage{
-filter_edge_sets_by_trajectories(edge_sets, topk = 5, min_path_size = 5)
+filter_edge_sets_by_trajectories(
+  edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets,
+  topk = 5,
+  min_path_size = 5
+)
 }
 \arguments{
 \item{edge_sets}{A named list of string vectors. The name of an edge is node_id---node_id
 edges with no analytes have a NULL set (a set of size zero, but are still represented),
-node ids are time_points_Fx_My where x and y represent the up/down state in each sex.}
+node ids are time_points_Fx_My where x and y represent the up/down state in each sex.
+\code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.}
 
 \item{topk}{A number. The maximal number of full trajectories to include in the new solution.}
 
-\item{min_size}{A number. specifying the minimal path size to be considered.}
+\item{min_path_size}{An integer specifying the minimal path size to be considered.}
 }
 \value{
 A named list of edge sets. All possible edges in our 9x4 grid will appear in the solution.
@@ -36,13 +41,16 @@ zscores[1:500,1:4] = zscores[1:500,1:4] + 5
 # run the clustering solution wrapper
 clustering_sol = bayesian_graphical_clustering(zscores)
 
-# extract the top full trajectories in the data; these should be the clusters with at least 10 features
+# extract the top full trajectories in the data
+# these should be the clusters with at least 10 features
 min_cluster_size=10
-get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
+get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets, min_size = min_cluster_size)
 
 # extract the edges of the top two full trjectories
 # this step "cleans" the edge sets by removing edges of trajectories with very few features
-top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets,topk = 2,min_path_size = 10)
+top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets,
+                                                      topk = 2,
+                                                      min_path_size = 10)
 # examine the new edge set sizes, excluded edges should have zero size
 sapply(top2traj_edge_sets,length)
 # for comparison examine the edge sets of the Bayesian clustering solution:
@@ -50,7 +58,8 @@ sapply(clustering_sol$edge_sets,length)
 }
 
 ### Example 2: Use published data
-# Get edges corresponding to 5 largest tracjectories in the liver
-tissue_edge_sets = limit_sets_by_regex(GRAPH_COMPONENTS$edge_sets,"LIVER")
+# Get edges corresponding to 5 largest trajectories in the liver
+tissue_edge_sets = limit_sets_by_regex(MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets,
+                                       "LIVER")
 filter_edge_sets_by_trajectories(tissue_edge_sets)
 }

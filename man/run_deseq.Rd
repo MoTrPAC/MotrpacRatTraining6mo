@@ -28,24 +28,24 @@ column names are sample IDs. Column names must correspond to values in \code{met
 \code{meta} must include this variable as column.
 \code{contrasts} must include levels in this variable.}
 
-\item{dds}{optional \link[DESeq2:DESeqResults]{DESeq2::DESeqResults} object if it was previously generated}
+\item{contrasts}{list of vectors, where each vector is in the form
+\code{c(outcome_of_interest, numerator, denominator)}, e.g. \code{c('sex_group','female.1w','female.control')}}
 
-\item{shrink}{bool, whether to apply \code{lfcShrink()}}
+\item{dds}{optional \code{\link[DESeq2:DESeqResults]{DESeq2::DESeqResults()}} object if it was previously generated}
+
+\item{shrink}{bool, whether to apply \code{\link[DESeq2:lfcShrink]{DESeq2::lfcShrink()}}}
 
 \item{verbose}{bool, whether to print the design string}
-
-\item{constrasts}{list of vectors, where each vector is in the form
-\code{c(outcome_of_interest, numerator, denominator)}, e.g. \code{c('sex_group','female.1w','female.control')}}
 }
 \value{
 named list of two items:
 \describe{
 \item{\code{res}}{data frame of results}
-\item{\code{dds}}{\link[DESeq2:DESeqResults]{DESeq2::DESeqResults} object}
+\item{\code{dds}}{\code{\link[DESeq2:DESeqResults]{DESeq2::DESeqResults()}} object}
 }
 }
 \description{
-Wrapper to perform multiple pairwise contrasts with DESeq2
+Wrapper to perform multiple pairwise contrasts with \code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}
 }
 \examples{
 \dontrun{
@@ -58,7 +58,7 @@ deseq_res = run_deseq(data$filt_counts,
                       list(c("group","1w","control"), c("group","2w","control")))
 head(deseq_res$res)
                       
-# Get shrunken effects using the `DESeqResults` objects generated in the previous step
+# Get shrunken effects using the DESeqResults objects generated in the previous step
 deseq_res_shrunk = run_deseq(data$filt_counts, 
                             data$metadata,
                             data$covariates,

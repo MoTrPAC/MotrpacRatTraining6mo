@@ -7,6 +7,10 @@
 plot_pcs(pcA, pcB, pcax, outliers, pca, title = NULL)
 }
 \arguments{
+\item{pcA}{character, PC for x-axis, e.g. "PC1"; also a column name in \code{pcax}}
+
+\item{pcB}{character, PC for y-axis, e.g. "PC2"; also a column name in \code{pcax}}
+
 \item{pcax}{e.g., \code{prcomp(data)$x}}
 
 \item{outliers}{vector of viallabels corresponding to PC outliers}
@@ -14,10 +18,6 @@ plot_pcs(pcA, pcB, pcax, outliers, pca, title = NULL)
 \item{pca}{result returned by \code{prcomp()}}
 
 \item{title}{optional character, plot title}
-
-\item{pcaA}{character, PC for x-axis, e.g. "PC1"; also a column name in \code{pcax}}
-
-\item{pcaB}{character, PC for y-axis, e.g. "PC2"; also a column name in \code{pcax}}
 }
 \value{
 ggplot object

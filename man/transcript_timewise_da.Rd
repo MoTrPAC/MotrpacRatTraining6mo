@@ -63,8 +63,9 @@ females.
 }
 \examples{
 \dontrun{
-# Perform differential analysis for expressed genes in brown adipose tissue with default parameters, 
-# i.e., outliers and covariates used for the manuscript; calculate both standard and shrunk log fold-changes
+# Perform differential analysis for expressed genes in brown adipose tissue 
+# with default parameters, i.e., outliers and covariates used for the manuscript; 
+# calculate both standard and shrunk log fold-changes
 da = transcript_timewise_da("BAT")
 
 # Same as above but don't calculate shrunk log fold-changes

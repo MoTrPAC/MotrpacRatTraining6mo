@@ -2,19 +2,19 @@
 % Please edit documentation in R/bayesian_graphical_clustering.R
 \name{get_tree_plot_for_tissue}
 \alias{get_tree_plot_for_tissue}
-\title{Make graph}
+\title{Graph representation of feature trajectories}
 \usage{
 get_tree_plot_for_tissue(
   tissues,
   omes = NULL,
-  node_sets,
-  edge_sets,
+  node_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$node_sets,
+  edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets,
   min_size = 20,
-  parallel_edges_by_ome = F,
-  parallel_edges_by_tissue = F,
+  parallel_edges_by_ome = FALSE,
+  parallel_edges_by_tissue = FALSE,
   edge_width_range = c(0, 10),
   edge_alpha_range = c(0, 1),
-  color_nodes_by_states = T,
+  color_nodes_by_states = TRUE,
   max_trajectories = NULL,
   highlight_subset = NULL,
   curvature = 0.1
@@ -27,9 +27,11 @@ The set of tissues to take for the analysis. If NULL take all.}
 \item{omes}{A character vector where values are in \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV}.
 The set of omes to take for the analysis. If NULL take all.}
 
-\item{node_sets}{A named list with the node (state) sets of analytes/features, see details for analyte name convention.}
+\item{node_sets}{A named list with the node (state) sets of analytes/features, see details for analyte name convention.
+\code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets} by default.}
 
-\item{edge_sets}{A named list with the edge (state) sets of analytes/features, see details for analyte name convention.}
+\item{edge_sets}{A named list with the edge (state) sets of analytes/features, see details for analyte name convention.
+\code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.}
 
 \item{min_size}{A numeric. The threshold on the set sizes to be considered.}
 
@@ -66,7 +68,7 @@ Edge set names are in the \code{[node_a]---[node_b]} format, e.g., \code{4w_F0_M
 \examples{
 \dontrun{
 ### Example 1: redo the analysis using the rat data differential analysis results (z-scores)
-data(REPFDR_INPUTS)
+data(REPFDR_INPUTS, package="MotrpacRatTraining6moData")
 zscores = REPFDR_INPUTS$zs_smoothed
 rat_data_clustering_sol = bayesian_graphical_clustering(zscores)
 # extract the largest trajectories
@@ -81,15 +83,15 @@ get_tree_plot_for_tissue(tissues = c("SKM-GN","HEART","SKM-VL"),
                          max_trajectories = 3)
 }
 
-### Example 2: load the graphical solutions from MotrpacRatTraining6moData and plot without rerunning the algorithm
-data(GRAPH_COMPONENTS)
-get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),
-                         omes="TRNSCRPT",
-                         node_sets = GRAPH_COMPONENTS$node_sets,
-                         edge_sets = GRAPH_COMPONENTS$edge_sets,
-                         min_size = 20,
-                         parallel_edges_by_tissue = TRUE,
-                         max_trajectories = 3)
+### Example 2: load the graphical solutions from MotrpacRatTraining6moData 
+### and plot without rerunning the algorithm
+get_tree_plot_for_tissue(
+  tissues=c("SKM-GN","HEART","SKM-VL"),
+  omes="TRNSCRPT",
+  min_size = 20,
+  parallel_edges_by_tissue = TRUE,
+  max_trajectories = 3
+)
 
 }
 \seealso{

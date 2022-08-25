@@ -4,10 +4,10 @@
 \alias{limit_sets_by_regex}
 \title{Reduce a list of sets by a regex}
 \usage{
-limit_sets_by_regex(sets, regs, append_semicol = T)
+limit_sets_by_regex(sets, regs, append_semicol = TRUE)
 }
 \arguments{
-\item{sets}{A named list of character vectors}
+\item{sets}{A named list of character vectors.}
 
 \item{regs}{A character vector of regular expressions}
 

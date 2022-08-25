@@ -2,67 +2,79 @@
 % Please edit documentation in R/rrbs_pipeline.R
 \name{rrbs_differential_analysis}
 \alias{rrbs_differential_analysis}
-\title{Differential analysis wrapper for RRBS data}
+\title{RRBS differential anlaysis}
 \usage{
 rrbs_differential_analysis(
   y,
-  PHENO,
-  METHYL_META,
-  verbose = T,
-  adj_pct_unaligned = F,
-  samples_to_remove = NULL,
+  PHENO = MotrpacRatTraining6moData::PHENO,
+  METHYL_META = MotrpacRatTraining6moData::METHYL_META,
+  verbose = TRUE,
+  adj_pct_unaligned = FALSE,
+  samples_to_remove = data.table::data.table(MotrpacRatTraining6moData::OUTLIERS)[assay
+    == "METHYL", viallabel],
   edger_tol = 1e-05,
   dataset_name = ""
 )
 }
 \arguments{
-\item{PHENO}{A data frame with a row per sample. Can be retreived using data(PHENO).
-Contains at least the following columns: sex, group}
+\item{y}{A \code{\link[edgeR:DGEList]{edgeR::DGEList()}} object.
+yall$genes is a metadata data frame with the locus coordinates (see details), and these fields at minimum:
+Chr, EntrezID, Symbol, and Strand}
 
-\item{METHYL_META}{A data frame with a row per sample. Can be retreived using data(METHYL_META).
-Contains the RRBS pipeline QA/QC scores. Contains at least the following columns: pct_Unaligned.}
+\item{PHENO}{A data frame with a row per sample. Contains at least the following columns: "sex", "group".
+\link[MotrpacRatTraining6moData:PHENO]{MotrpacRatTraining6moData::PHENO} by default.}
+
+\item{METHYL_META}{A data frame with a row per sample.
+Contains the RRBS pipeline QA/QC scores. Contains at least the following columns: "pct_Unaligned".
+\link[MotrpacRatTraining6moData:METHYL_META]{MotrpacRatTraining6moData::METHYL_META} by default.}
 
 \item{verbose}{A logical. TRUE: comments about the pipeline progress are printed.}
 
 \item{adj_pct_unaligned}{A logical. TRUE: adjust for percent unaligned reads. Default is FALSE.}
 
 \item{samples_to_remove}{A character vector. Contains the ids of the samples that should be removed
-(e.g., identified outliers or failed samples).}
+(e.g., identified outliers or failed samples).
+METHYL samples in \link[MotrpacRatTraining6moData:OUTLIERS]{MotrpacRatTraining6moData::OUTLIERS} by default.}
 
 \item{edger_tol}{A number. An internal parameter of edgeR. Default is 1e-05. Consider increasing if the algorithm takes too long.}
 
 \item{dataset_name}{A character. The name of the current dataset. Will be added to the output.}
-
-\item{yall}{A DGEList object.
-yall$genes is a metadata data frame with the locus coordinates (see details), and these fields at minimum:
-Chr, EntrezID, Symbol, and Strand}
 }
 \value{
 A list.First item is called timewise and will contain the contrast-specific differential analysis results.
 Second item is called training and contains the overall training-level significance per locus.
 }
 \description{
-Differential analysis wrapper for RRBS data
+Timewise and training differential analysis wrapper for RRBS data.
 }
 \examples{
-library(MotrpacRatTraining6moData)
+\dontrun{
 data(PHENO)
 data(METHYL_META)
 
 # Raw data in RData file is available through Google Cloud.  
 # The main URL is https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS
 # The files that are available through this URL are by tissue:
-# Brown adipose: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData
-# Heart: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HEART_raw.RData
-# Hippocampus: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HIPPOC_raw.RData
-# Kidney: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/KIDNEY_raw.RData
-# Lung: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LUNG_raw.RData
-# Liver: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LIVER_raw.RData
-# Gastrocnemius: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData
-# White adipose: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/WATSC_raw.RData
+# Brown adipose: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData
+# Heart: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HEART_raw.RData
+# Hippocampus: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HIPPOC_raw.RData
+# Kidney: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/KIDNEY_raw.RData
+# Lung: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LUNG_raw.RData
+# Liver: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LIVER_raw.RData
+# Gastrocnemius: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData
+# White adipose: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/WATSC_raw.RData
 
 # Example: download the gastrocnemius data and load the data object into this session
-system("wget https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData")
+f = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData"
+system(sprintf("wget \%s", f))
 yall = get(load("SKMGN_raw.RData"))
 
 # Alternatively, you can use the processed datasets.
@@ -73,7 +85,8 @@ yall = get(load("SKMGN_raw.RData"))
 
 # for the simplicity of this example, we subset the data to 5000 loci
 y = yall[1:5000,]
-da_res = rrbs_differential_analysis(y,PHENO,METHYL_META,adj_pct_unaligned=T)
+da_res = rrbs_differential_analysis(y,adj_pct_unaligned=TRUE)
 head(da_res$timewise)
 head(da_res$training)
+}
 }

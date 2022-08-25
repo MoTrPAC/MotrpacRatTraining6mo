@@ -49,7 +49,7 @@ limma_res_extract_se = function(limma_res,
 #'   \item{\code{numNAs}}{`r numNAs()`}
 #' }
 #' 
-#' @importFrom dplyr select filter transmute
+#' @importFrom dplyr select filter transmute if_else case_when
 #' @importFrom tibble column_to_rownames
 #' @importFrom limma lmFit eBayes topTable makeContrasts contrasts.fit
 #' @importFrom stats model.matrix
@@ -65,7 +65,7 @@ proteomics_timewise_da  = function(assay, tissue){
   
   #Extract current dataset and metadata
   x = 
-    get(sprintf("%s_%s_NORM_DATA", assay,gsub("-","",tissue))) %>%
+    load_sample_data(tissue, assay) %>%
     tibble::column_to_rownames(var = "feature_ID") %>%
     dplyr::select(-c("feature","tissue","assay")) %>%
     as.matrix()
@@ -75,9 +75,9 @@ proteomics_timewise_da  = function(assay, tissue){
     MotrpacRatTraining6moData::PHENO %>%
     dplyr::filter(viallabel %in% colnames(x)) %>%
     dplyr::transmute(
-      sex = if_else(sex == "male","M","F"),
+      sex = dplyr::if_else(sex == "male","M","F"),
       group,
-      tr = factor(case_when(
+      tr = factor(dplyr::case_when(
         group == "control" ~ "8_1",
         group == "1w" ~ "1_0",
         group == "2w" ~ "2_0",
@@ -127,7 +127,7 @@ proteomics_timewise_da  = function(assay, tissue){
         feature_ID = rownames(limma_res),
         tissue=tissue,
         assay=assay,
-        sex = if_else(SEX == "M","male","female"),
+        sex = dplyr::if_else(SEX == "M","male","female"),
         logFC_se = limma_res_extract_se(limma_res,lmfit.cont.ebayes),
         logFC = limma_res$logFC,
         tscore = limma_res$t,
@@ -157,8 +157,8 @@ proteomics_timewise_da  = function(assay, tissue){
   }
   
   # add some columns and reorder
-  tpDA_split_sex$assay_code = ASSAY_ABBREV_TO_CODE[[assay]]
-  tpDA_split_sex$tissue_code = TISSUE_ABBREV_TO_CODE[[tissue]]
+  tpDA_split_sex$assay_code = MotrpacRatTraining6moData::ASSAY_ABBREV_TO_CODE[[assay]]
+  tpDA_split_sex$tissue_code = MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[[tissue]]
   tpDA_split_sex = tpDA_split_sex[,c('feature_ID',
                                      'sex',
                                      'comparison_group',
@@ -205,7 +205,7 @@ proteomics_timewise_da  = function(assay, tissue){
 #'   \item{\code{p_value}}{double, combined male and female nominal p-value using the sum of logs}
 #' }
 #' 
-#' @importFrom dplyr select filter transmute
+#' @importFrom dplyr select filter transmute case_when if_else mutate
 #' @importFrom tibble column_to_rownames
 #' @importFrom purrr map2_dbl
 #' @importFrom tidyr replace_na
@@ -224,7 +224,7 @@ proteomics_training_da = function(assay, tissue){
   
   #Extract current dataset and metadata
   x = 
-    get(sprintf("%s_%s_NORM_DATA", assay,gsub("-","",tissue))) %>%
+    load_sample_data(tissue, assay) %>%
     tibble::column_to_rownames(var = "feature_ID") %>%
     dplyr::select(-c("feature","tissue","assay")) %>%
     as.matrix()
@@ -234,9 +234,9 @@ proteomics_training_da = function(assay, tissue){
     MotrpacRatTraining6moData::PHENO %>%
     dplyr::filter(viallabel %in% colnames(x)) %>%
     dplyr::transmute(
-      sex = if_else(sex == "male","M","F"),
+      sex = dplyr::if_else(sex == "male","M","F"),
       group,
-      tr = factor(case_when(
+      tr = factor(dplyr::case_when(
         group == "control" ~ "8_1",
         group == "1w" ~ "1_0",
         group == "2w" ~ "2_0",
@@ -285,15 +285,15 @@ proteomics_training_da = function(assay, tissue){
   merged = data.frame(merge(sex_res[['M']], sex_res[['F']], 
                             by=c("tissue","assay","feature_ID","full_model","reduced_model"), 
                             suffixes=c('_male','_female'))) %>%
-    mutate(p_value_male = tidyr::replace_na(p_value_male,1),
+    dplyr::mutate(p_value_male = tidyr::replace_na(p_value_male,1),
            p_value_female = tidyr::replace_na(p_value_female,1)) %>%
-    mutate(p_value = purrr::map2_dbl(p_value_male,p_value_female,function(x,y){metap::sumlog(c(x,y))$p}))
+    dplyr::mutate(p_value = purrr::map2_dbl(p_value_male,p_value_female,function(x,y){metap::sumlog(c(x,y))$p}))
   
   ftest_res_split_sex <- rbind(ftest_res_split_sex,merged)
   
   # add columns and change order
-  ftest_res_split_sex$tissue_code = TISSUE_ABBREV_TO_CODE[[tissue]]
-  ftest_res_split_sex$assay_code = ASSAY_ABBREV_TO_CODE[[assay]]
+  ftest_res_split_sex$tissue_code = MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[[tissue]]
+  ftest_res_split_sex$assay_code = MotrpacRatTraining6moData::ASSAY_ABBREV_TO_CODE[[assay]]
   ftest_res_split_sex = ftest_res_split_sex[,c(
     "feature_ID",
     "assay",

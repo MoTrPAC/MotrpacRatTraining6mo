@@ -71,7 +71,7 @@ atac_normalize_counts = function(tissue, scratchdir = ".", n_samples = 4, min_co
 
   # exclude low count peaks in the current dataset
   # at least min_count counts in n_samples samples
-  filt_counts = counts[rowSums(data.frame(lapply(counts, function(x) as.numeric(x >= min_count)), check.names=F)) >= n_samples,]
+  filt_counts = counts[rowSums(data.frame(lapply(counts, function(x) as.numeric(x >= min_count)), check.names=FALSE)) >= n_samples,]
 
   # quantile normalize
   # this takes a couple of minutes given the size of the peak x sample counts matrix

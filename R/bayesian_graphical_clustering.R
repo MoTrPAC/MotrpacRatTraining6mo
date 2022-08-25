@@ -67,7 +67,8 @@
 #' 
 #' # run the clustering solution wrapper
 #' clustering_sol = bayesian_graphical_clustering(zscores)
-#' # check if the clustering solution correctly assigns the first 500 rows (with high prob) to the right nodes
+#' # check if the clustering solution correctly assigns the first 500 rows 
+#' # (with high prob) to the right nodes
 #' length(intersect(1:500,clustering_sol$node_sets$`1w_F1_M0`))/500 > 0.95
 #' length(intersect(1:500,clustering_sol$node_sets$`2w_F1_M0`))/500 > 0.95
 #' length(intersect(1:500,clustering_sol$node_sets$`4w_F1_M0`))/500 > 0.95
@@ -78,13 +79,13 @@
 #' # examine the edge set sizes
 #' sapply(clustering_sol$edge_sets,length)
 #' 
-#' # extract the top full trajectories in the data; these should be the clusters with at least 10 features
+#' # extract the top full trajectories in the data
+#' # these should be the clusters with at least 10 features
 #' min_cluster_size = 10
 #' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
 #' 
 #' ### Example 2: real data
-#' library(MotrpacRatTraining6moData)
-#' data(REPFDR_INPUTS)
+#' data(REPFDR_INPUTS, package="MotrpacRatTraining6moData")
 #' zscores = REPFDR_INPUTS$zs_smoothed
 #' rat_data_clustering_sol = bayesian_graphical_clustering(zscores)
 #' # extract the largest trajectories
@@ -93,9 +94,9 @@
 #' get_tree_plot_for_tissue(tissues = c("SKM-GN","HEART","SKM-VL"), 
 #'                          omes = "TRNSCRPT",
 #'                          node_sets = rat_data_clustering_sol$node_sets,
-#'                          edge_sets=rat_data_clustering_sol$edge_sets,
+#'                          edge_sets = rat_data_clustering_sol$edge_sets,
 #'                          min_size = 20,
-#'                          parallel_edges_by_tissue = T,
+#'                          parallel_edges_by_tissue = TRUE,
 #'                          max_trajectories = 3)
 #' }
 bayesian_graphical_clustering <- function(zscores, 
@@ -112,7 +113,7 @@ bayesian_graphical_clustering <- function(zscores,
   repfdr_cluster_posteriors = repfdr_results$repfdr_cluster_posteriors
   
   node_sets = list()
-  post_rowsums = rowSums(repfdr_cluster_posteriors,na.rm=T)
+  post_rowsums = rowSums(repfdr_cluster_posteriors,na.rm=TRUE)
   # make sure that features without any reasonable fit in the selected
   # configs will not be included in any solution
   # we do this by simply putting a very large constant value here,
@@ -208,7 +209,7 @@ bayesian_graphical_clustering <- function(zscores,
 #' 
 #' A general wrapper for running \code{repfdr} on a matrix of z-scores.
 #' 
-#' @importFrom repfdr em.control repfdr ztobins ldr
+#' @importFrom repfdr em.control repfdr ztobins ldr hconfigs
 #' 
 #' @export
 #' 
@@ -234,14 +235,16 @@ bayesian_graphical_clustering <- function(zscores,
 #' )
 #' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
 #' repfdr_results = repfdr_wrapper(zscores)
-#' # in this example all configurations are null, thus the  posteriors of the null cluster (all zeroes) are very high:
+#' # in this example all configurations are null, 
+#' # thus the  posteriors of the null cluster (all zeroes) are very high:
 #' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"])
 #' # now add a cluster with a strong signal and rerun
 #' zscores[1:500,1:4] = zscores[1:500,1:4] + 5
 #' repfdr_results = repfdr_wrapper(zscores)
 #' # look at the null cluster after adding the signal above
 #' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"],probs=c(0.05,0.1,0.5))
-#' # now the posteriors of the first 500 rows, with respect to the "planted" cluster should have high posteriors:
+#' # now the posteriors of the first 500 rows, 
+#' # with respect to the "planted" cluster should have high posteriors:
 #' quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
 #' }
 repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
@@ -257,8 +260,8 @@ repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
                                   type=1,
                                   n.bins=nbins,
                                   central.prop = 0.25,
-                                  plot.diagnostics = F,
-                                  force.bin.number = T)
+                                  plot.diagnostics = FALSE,
+                                  force.bin.number = TRUE)
   }
   else{
     # for med to small data sizes use the default with increased df
@@ -271,7 +274,7 @@ repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
                               non.null = 'replication',
                               control = repfdr::em.control(max.iter = 500,tol=1e-06,nr.threads = 4))
   # sanity check
-  configs = hconfigs(ncol(zscores))
+  configs = repfdr::hconfigs(ncol(zscores))
   if(!all(configs == repfdr_res$Pi[,1:ncol(zscores)])){
     stop("Internal error in repfdr, try running the repfdr package using its tutorial")
   }
@@ -323,7 +326,7 @@ repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
 #' 
 #' An auxiliary function useful for filtering differential analyte sets by tissues or omes.
 #' 
-#' @param sets A named list of character vectors
+#' @param sets A named list of character vectors.
 #' @param regs A character vector of regular expressions
 #' @param append_semicol A logical. If TRUE (the default): append ';' as the suffix of each regex.
 #' 
@@ -342,7 +345,7 @@ repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
 #' )
 #' # remove non muscle analytes from the clustering solution above:
 #' limit_sets_by_regex(sets,"muscle")
-limit_sets_by_regex <- function(sets, regs, append_semicol = T){
+limit_sets_by_regex <- function(sets, regs, append_semicol = TRUE){
   if(is.null(regs) || length(regs)==0){return(sets)}
   l = list()
   for(nn in names(sets)){
@@ -386,7 +389,9 @@ limit_sets_by_regex <- function(sets, regs, append_semicol = T){
 #' @param edge_sets A named list of string vectors. The name of an edge is \code{[node_id]---[node_id]}
 #'        edges with no analytes have a NULL set (a set of size zero, but are still represented),
 #'        node ids are \code{[timepoint]_F[x]_M[y]} where \code{x} and \code{y} represent the up/down state in each sex.
-#' @param min_size A number. Specifying the minimal path size to be considered.
+#'        \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.
+#' @param min_size An integer specifying the minimal path size to be considered.
+#' 
 #' @return NULL if no paths of size of at least \code{min_size} were found, otherwise
 #'         return a data frame that represents all paths of size min_size or greater,
 #'         ranked from the largest path to the smallest one.
@@ -407,20 +412,27 @@ limit_sets_by_regex <- function(sets, regs, append_semicol = T){
 #' # run the clustering solution wrapper
 #' clustering_sol = bayesian_graphical_clustering(zscores)
 #' 
-#' # extract the top full trajectories in the data; these should be the clusters with at least 10 features
+#' # extract the top full trajectories in the data
+#' # these should be the clusters with at least 10 features
 #' min_cluster_size=10
-#' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets, min_size = min_cluster_size)
+#' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets, 
+#'                                     min_size = min_cluster_size)
 #' 
 #' # extract the edges of the top two full trajectories
 #' # this step "cleans" the edge sets by removing edges of trajectories with very few features
-#' top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets, topk = 2, min_path_size = 10)
+#' top2traj_edge_sets = filter_edge_sets_by_trajectories(
+#'   clustering_sol$edge_sets, 
+#'   topk = 2, 
+#'   min_path_size = 10
+#' )
 #' # examine the new edge set sizes, excluded edges should have zero size
 #' sapply(top2traj_edge_sets,length)
 #' }
 #' 
 #' ### Example 2: Use published data 
-#' get_trajectory_sizes_from_edge_sets(GRAPH_COMPONENTS$edge_sets)
-get_trajectory_sizes_from_edge_sets <- function(edge_sets, min_size=10){
+#' get_trajectory_sizes_from_edge_sets()
+get_trajectory_sizes_from_edge_sets <- function(edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets, 
+                                                min_size = 10){
   node_names = unique(unlist(strsplit(names(edge_sets),split="---")))
   node_weeks = sapply(node_names,function(x)strsplit(x,split="_")[[1]][1])
   full_path_size = length(unique(node_weeks))
@@ -471,9 +483,9 @@ get_trajectory_sizes_from_edge_sets <- function(edge_sets, min_size=10){
     t(sapply(l,function(x)x)),
     sapply(l_sets,length)
   )
-  trajectories = data.frame(trajectories,stringsAsFactors = F)
+  trajectories = data.frame(trajectories,stringsAsFactors = FALSE)
   trajectories[[6]] = as.numeric(trajectories[[6]])
-  trajectories = trajectories[order(trajectories[[6]],decreasing = T),]
+  trajectories = trajectories[order(trajectories[[6]],decreasing = TRUE),]
   return(trajectories)
 }
 
@@ -485,8 +497,9 @@ get_trajectory_sizes_from_edge_sets <- function(edge_sets, min_size=10){
 #' @param edge_sets A named list of string vectors. The name of an edge is node_id---node_id
 #'        edges with no analytes have a NULL set (a set of size zero, but are still represented),
 #'        node ids are time_points_Fx_My where x and y represent the up/down state in each sex.
+#'        \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.
 #' @param topk A number. The maximal number of full trajectories to include in the new solution.
-#' @param min_size A number. specifying the minimal path size to be considered.
+#' @param min_path_size An integer specifying the minimal path size to be considered.
 #' 
 #' @export
 #' 
@@ -508,13 +521,16 @@ get_trajectory_sizes_from_edge_sets <- function(edge_sets, min_size=10){
 #' # run the clustering solution wrapper
 #' clustering_sol = bayesian_graphical_clustering(zscores)
 #' 
-#' # extract the top full trajectories in the data; these should be the clusters with at least 10 features
+#' # extract the top full trajectories in the data
+#' # these should be the clusters with at least 10 features
 #' min_cluster_size=10
-#' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
+#' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets, min_size = min_cluster_size)
 #' 
 #' # extract the edges of the top two full trjectories
 #' # this step "cleans" the edge sets by removing edges of trajectories with very few features
-#' top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets,topk = 2,min_path_size = 10)
+#' top2traj_edge_sets = filter_edge_sets_by_trajectories(clustering_sol$edge_sets,
+#'                                                       topk = 2,
+#'                                                       min_path_size = 10)
 #' # examine the new edge set sizes, excluded edges should have zero size
 #' sapply(top2traj_edge_sets,length)
 #' # for comparison examine the edge sets of the Bayesian clustering solution:
@@ -522,10 +538,13 @@ get_trajectory_sizes_from_edge_sets <- function(edge_sets, min_size=10){
 #' }
 #' 
 #' ### Example 2: Use published data
-#' # Get edges corresponding to 5 largest tracjectories in the liver
-#' tissue_edge_sets = limit_sets_by_regex(GRAPH_COMPONENTS$edge_sets,"LIVER")
+#' # Get edges corresponding to 5 largest trajectories in the liver
+#' tissue_edge_sets = limit_sets_by_regex(MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets,
+#'                                        "LIVER")
 #' filter_edge_sets_by_trajectories(tissue_edge_sets)
-filter_edge_sets_by_trajectories <- function(edge_sets, topk=5, min_path_size=5){
+filter_edge_sets_by_trajectories <- function(edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets, 
+                                             topk = 5, 
+                                             min_path_size = 5){
   
   traj = get_trajectory_sizes_from_edge_sets(edge_sets,min_size = min_path_size)
   edges_to_keep = c()
@@ -538,7 +557,7 @@ filter_edge_sets_by_trajectories <- function(edge_sets, topk=5, min_path_size=5)
     }
   }
   
-  e_copy = copy(edge_sets)
+  e_copy = data.table::copy(edge_sets)
   for(e in names(e_copy)){
     if(!(e %in% edges_to_keep)){
       e_copy[[e]] = character(0) 
@@ -547,7 +566,7 @@ filter_edge_sets_by_trajectories <- function(edge_sets, topk=5, min_path_size=5)
   return(e_copy)
 }
 
-#' Make graph
+#' Graph representation of feature trajectories 
 #' 
 #' The main function for obtaining a graphical (tree) representation of the differential
 #' analysis results.
@@ -557,7 +576,9 @@ filter_edge_sets_by_trajectories <- function(edge_sets, topk=5, min_path_size=5)
 #' @param omes A character vector where values are in [MotrpacRatTraining6moData::ASSAY_ABBREV].
 #'   The set of omes to take for the analysis. If NULL take all.
 #' @param node_sets A named list with the node (state) sets of analytes/features, see details for analyte name convention.
+#'   \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets} by default.
 #' @param edge_sets A named list with the edge (state) sets of analytes/features, see details for analyte name convention.
+#'   \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.
 #' @param min_size A numeric. The threshold on the set sizes to be considered.
 #' @param parallel_edges_by_ome A logical. TRUE means that we want to added parallel edges for the different omes.
 #' @param parallel_edges_by_tissue A logical. TRUE means that we want to added parallel edges for the different tissues.
@@ -572,6 +593,7 @@ filter_edge_sets_by_trajectories <- function(edge_sets, topk=5, min_path_size=5)
 #' 
 #' @importFrom igraph graph_from_data_frame edge_attr V E
 #' @importFrom ggraph create_layout ggraph geom_edge_fan0 scale_edge_color_manual geom_edge_arc scale_edge_colour_identity scale_edge_width scale_edge_alpha geom_node_point
+#' @importFrom grid unit
 #' 
 #' @export
 #' 
@@ -587,7 +609,7 @@ filter_edge_sets_by_trajectories <- function(edge_sets, topk=5, min_path_size=5)
 #' @examples
 #' \dontrun{
 #' ### Example 1: redo the analysis using the rat data differential analysis results (z-scores)
-#' data(REPFDR_INPUTS)
+#' data(REPFDR_INPUTS, package="MotrpacRatTraining6moData")
 #' zscores = REPFDR_INPUTS$zs_smoothed
 #' rat_data_clustering_sol = bayesian_graphical_clustering(zscores)
 #' # extract the largest trajectories
@@ -602,27 +624,27 @@ filter_edge_sets_by_trajectories <- function(edge_sets, topk=5, min_path_size=5)
 #'                          max_trajectories = 3)
 #' }
 #' 
-#' ### Example 2: load the graphical solutions from MotrpacRatTraining6moData and plot without rerunning the algorithm
-#' data(GRAPH_COMPONENTS)
-#' get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART","SKM-VL"),
-#'                          omes="TRNSCRPT",
-#'                          node_sets = GRAPH_COMPONENTS$node_sets,
-#'                          edge_sets = GRAPH_COMPONENTS$edge_sets,
-#'                          min_size = 20,
-#'                          parallel_edges_by_tissue = TRUE,
-#'                          max_trajectories = 3)
+#' ### Example 2: load the graphical solutions from MotrpacRatTraining6moData 
+#' ### and plot without rerunning the algorithm
+#' get_tree_plot_for_tissue(
+#'   tissues=c("SKM-GN","HEART","SKM-VL"),
+#'   omes="TRNSCRPT",
+#'   min_size = 20,
+#'   parallel_edges_by_tissue = TRUE,
+#'   max_trajectories = 3
+#' )
 #'
 get_tree_plot_for_tissue <- function(
   tissues,
   omes = NULL,
-  node_sets,
-  edge_sets,
+  node_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$node_sets,
+  edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets,
   min_size = 20,
-  parallel_edges_by_ome = F,
-  parallel_edges_by_tissue = F,
+  parallel_edges_by_ome = FALSE,
+  parallel_edges_by_tissue = FALSE,
   edge_width_range = c(0,10),
   edge_alpha_range = c(0,1),
-  color_nodes_by_states = T,
+  color_nodes_by_states = TRUE,
   max_trajectories = NULL,
   highlight_subset = NULL,
   curvature = 0.1
@@ -644,9 +666,9 @@ get_tree_plot_for_tissue <- function(
   }
   
   # Set things up to highlight a subset of the tree
-  highlight_edge = F
-  highlight_node = F
-  highlight_path = F
+  highlight_edge = FALSE
+  highlight_node = FALSE
+  highlight_path = FALSE
   if(!is.null(highlight_subset)){
     if(grepl(":", highlight_subset)){
       # Check if it's this tissue 
@@ -668,20 +690,20 @@ get_tree_plot_for_tissue <- function(
     }
     if(!is.null(highlight_subset)){
       if(grepl("---", highlight_subset)){
-        highlight_edge = T
+        highlight_edge = TRUE
       }else if(grepl("->",highlight_subset)){
-        highlight_path = T
+        highlight_path = TRUE
       }else{
-        highlight_node = T
+        highlight_node = TRUE
       }
     }
   }
   
   if(!is.null(highlight_subset) & any(parallel_edges_by_ome, parallel_edges_by_tissue, color_nodes_by_states)){
     warning("Setting 'parallel_edges_by_ome', 'parallel_edges_by_tissue', and 'color_nodes_by_states' to FALSE because 'highlight_subset' is TRUE.")
-    parallel_edges_by_ome = F
-    parallel_edges_by_tissue = F
-    color_nodes_by_states = F
+    parallel_edges_by_ome = FALSE
+    parallel_edges_by_tissue = FALSE
+    color_nodes_by_states = FALSE
   }
   
   # Check the input omes and tissues sets
@@ -782,7 +804,7 @@ get_tree_plot_for_tissue <- function(
     d[[j]] = as.numeric(d[[j]])
     d[d[,j]<min_size,j] = 0 # filter by min edge size
   }
-  d_nodes = data.frame(node_info,check.names = F)
+  d_nodes = data.frame(node_info,check.names = FALSE)
   d_nodes[[3]] = as.numeric(d_nodes[[3]])
   d_nodes$inds = 0:(nrow(d_nodes)-1)
   
@@ -843,7 +865,7 @@ get_tree_plot_for_tissue <- function(
   names(d_g_ordered_cols_alt) = d_g_ordered_nodes
   l_x_lim = c(min(d_g_auto_layout$x),max(d_g_auto_layout$x))
   l_y_lim = c(min(d_g_auto_layout$y),max(d_g_auto_layout$y))
-  d_g_our_layout  = copy(d_g_auto_layout)
+  d_g_our_layout  = data.table::copy(d_g_auto_layout)
   # set 5 horiz layers over time
   xjump = (l_x_lim[2]-l_x_lim[1]) / 4
   # set 9 vertical layers over ordered_nodes
@@ -863,7 +885,7 @@ get_tree_plot_for_tissue <- function(
   d_g_our_layout[1,"y"] = d_g_our_layout[grepl("F0_M0",d_g_our_layout$name),"y"][1]
   # set node sizes and other features
   igraph::V(d_g)$setsize = d_nodes[V(d_g)$name,"size"]
-  igraph::V(d_g)$setsize[V(d_g)$name == "0w"] = median(igraph::V(d_g)$setsize)
+  igraph::V(d_g)$setsize[V(d_g)$name == "0w"] = stats::median(igraph::V(d_g)$setsize)
   igraph::V(d_g)$label = sapply(V(d_g)$name,
                         function(x){a=strsplit(x,split="w_")[[1]];a[length(a)]})
   igraph::V(d_g)$label = gsub("_","\n",igraph::V(d_g)$label)
@@ -980,10 +1002,9 @@ get_tree_plot_for_tissue <- function(
                             color=igraph::V(d_g)$alt_col,shape=igraph::V(d_g)$shape)
   }
   p = p +
-    #geom_node_text(aes(label = V(d_g)$label), repel=F) + 
     ggplot2::scale_size(range = c(2,20),name="Number of analytes") +
     ggplot2::theme(panel.background = ggplot2::element_rect(fill="white"),
-          legend.key.size = unit(0.4, 'cm'))
+          legend.key.size = grid::unit(0.4, 'cm'))
   
   names(grid_group_annotation_y) = layer_plot_names
   for(g in names(grid_group_annotation_y)){
@@ -1004,7 +1025,10 @@ get_tree_plot_for_tissue <- function(
 #' 
 #' @param tissues A character vector. The names of the tissues (one or more) to be considered.
 #' @param node_sets A named list with the node (state) sets of analytes/features.
+#'   \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets} by default.
 #' @param edge_sets A named list with the edge (state) sets of analytes/features.
+#'   \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.
+#' @param min_size An integer specifying the minimal path size to be considered.
 #' @param k An integer. How many node/edge/trajectory sets to extract. See details.
 #' @param add_week8 A logical. TRUE (default): add all week 8 nodes to the node set.
 #' @param omes A character vector (optional). The names of the omes (one or more) to be considered.
@@ -1017,7 +1041,8 @@ get_tree_plot_for_tissue <- function(
 #' This function is useful for extracting the largest sets for a specific set of tissues and omes. 
 #' Thus, it is a useful step before running enrichment analysis on sets of analytes identified by the graphical clustering analysis.
 #' 
-#' By specifying k the user can control how many sets to include. The default is three, which means that the top largest node sets, edge sets, and full trajectories will be extracted (three each).
+#' By specifying k the user can control how many sets to include. The default is three, 
+#' which means that the top largest node sets, edge sets, and full trajectories will be extracted (three each).
 #' 
 #' Naming format:
 #' Analyte names are in the ome;tissue;feature_id format.
@@ -1030,14 +1055,16 @@ get_tree_plot_for_tissue <- function(
 #' See bayesian_graphical_clustering for more details about the graphical analysis.
 #' 
 #' @examples
-#' data(GRAPH_COMPONENTS)
 #' filtered_solution = extract_tissue_sets(
-#'    tissues = c("HEART","SKM-VL","SKM-GN"),
-#'    node_sets=GRAPH_COMPONENTS$node_sets,
-#'    edge_sets=GRAPH_COMPONENTS$edge_sets
+#'    tissues = c("HEART","SKM-VL","SKM-GN")
 #' )
-extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
-                              min_size=20,add_week8=T,omes=NULL){
+extract_tissue_sets<-function(tissues,
+                              node_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$node_sets,
+                              edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets,
+                              k=3,
+                              min_size=20,
+                              add_week8=TRUE,
+                              omes=NULL){
   
   tissue_node_sets = limit_sets_by_regex(node_sets,tissues)
   tissue_node_sets = limit_sets_by_regex(tissue_node_sets,omes)
@@ -1047,7 +1074,7 @@ extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
   
   # node sets
   node_set_sizes = sapply(tissue_node_sets,length)
-  selected_node_sets = names(sort(node_set_sizes,decreasing = T))[1:(k+1)]
+  selected_node_sets = names(sort(node_set_sizes,decreasing = TRUE))[1:(k+1)]
   if(add_week8){
     selected_node_sets = union(selected_node_sets,
                                names(tissue_node_sets)[grepl("8w",names(tissue_node_sets))])
@@ -1058,7 +1085,7 @@ extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
   # edge sets
   edge_set_sizes = sapply(tissue_edge_sets,length)
   edge_set_sizes = edge_set_sizes[!grepl("0w",names(edge_set_sizes))]
-  selected_edge_sets = names(sort(edge_set_sizes,decreasing = T))[1:k]
+  selected_edge_sets = names(sort(edge_set_sizes,decreasing = TRUE))[1:k]
   l[selected_edge_sets] = tissue_edge_sets[selected_edge_sets]
   
   # path sets: get the top trajectories first
@@ -1086,10 +1113,10 @@ extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
 
 #' Remove all non-empty trajectories 
 #' 
-#' @param node_sets optional named list of node sets if you want to use a custom input.
-#'   Otherwise use \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets}
-#' @param edge_sets optional named list of edge sets if you want to use a custom input.
-#'   Otherwise use \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets}
+#' @param node_sets A named list with the node (state) sets of analytes/features.
+#'   \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets} by default.
+#' @param edge_sets A named list with the edge (state) sets of analytes/features.
+#'   \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.
 #' @param tissues string vector, optional. tissue subset. all tissues by default
 #' @param omes string vector, optional. ome subset. all omes by default
 #' 
@@ -1099,12 +1126,10 @@ extract_tissue_sets<-function(tissues,node_sets,edge_sets,k=3,
 #' 
 #' @examples
 #' # Get lists of features belonging to all trajectories in the liver
-#' get_all_trajectories(GRAPH_COMPONENTS$edge_sets,
-#'                      GRAPH_COMPONENTS$node_sets,
-#'                      tissues = "LIVER")
+#' get_all_trajectories(tissues = "LIVER")
 #'
-get_all_trajectories = function(edge_sets = GRAPH_COMPONENTS$edge_sets, 
-                                node_sets = GRAPH_COMPONENTS$node_sets, 
+get_all_trajectories = function(edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets, 
+                                node_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$node_sets, 
                                 tissues = MotrpacRatTraining6moData::TISSUE_ABBREV,
                                 omes = MotrpacRatTraining6moData::ASSAY_ABBREV){
   

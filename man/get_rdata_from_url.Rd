@@ -49,9 +49,15 @@ data = get_rdata_from_url(tissue="SKM-GN", assay="ATAC", suffix="DA", scratchdir
 data = get_rdata_from_url(tissue="BAT", assay="METHYL", suffix="RAW_COUNTS", scratchdir="/tmp")
 
 # return DNA methylation feature annotation
-data = get_rdata_from_url(url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda", scratchdir="/tmp")
+data = get_rdata_from_url(
+  url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda", 
+  scratchdir="/tmp"
+)
 
 # return raw DNA methylation data for brown adipose
-data = get_rdata_from_url(url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData", scratchdir="/tmp")
+data = get_rdata_from_url(
+  url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData", 
+  scratchdir="/tmp"
+)
 }
 }

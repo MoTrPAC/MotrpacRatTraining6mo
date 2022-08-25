@@ -53,16 +53,15 @@
 #' }
 atac_training_da = function(tissue, 
                             covariates = c("Sample_batch", "peak_enrich.frac_reads_in_peaks.macs2.frip"), 
-                            outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "ATAC"]),
+                            outliers = data.table::data.table(
+                              MotrpacRatTraining6moData::OUTLIERS)[assay=="ATAC",viallabel],
                             scratchdir = ".",
                             rdata_outfile = NULL,
                             overwrite = FALSE,
                             verbose = TRUE,
                             n_features = Inf){
-  # data.table workaround
-  .tissue = tissue
   
-  check_da_args(.tissue, rdata_outfile, overwrite)
+  check_da_args(tissue, rdata_outfile, overwrite)
   
   if(verbose) message("Loading data...")
   data = atac_prep_data(tissue, 
@@ -74,7 +73,7 @@ atac_training_da = function(tissue,
   
   meta_df = as.data.frame(data$metadata)
   if("sample_batch" %in% tolower(covariates)){
-    which = covariates[grepl("sample_batch", covariates, ignore.case=T)]
+    which = covariates[grepl("sample_batch", covariates, ignore.case=TRUE)]
     meta_df[,which] = factor(meta_df[,which])
   }
   meta_df$group = factor(meta_df$group, levels=c('control','1w','2w','4w','8w')) # IMPORTANT
@@ -101,7 +100,7 @@ atac_training_da = function(tissue,
     # check if full rank
     if(!is.fullrank(design)){
       if("sample_batch" %in% tolower(covariates)){
-        which = covariates[grepl("sample_batch", covariates, ignore.case=T)]
+        which = covariates[grepl("sample_batch", covariates, ignore.case=TRUE)]
         curr_cov = covariates[!covariates == which]
         full = paste0(c("~ 1", "group", curr_cov), collapse=" + ")
         reduced = paste0(c("~ 1", curr_cov), collapse=" + ")
@@ -216,19 +215,21 @@ atac_training_da = function(tissue,
 #'
 #' @examples
 #' \dontrun{
-#' # Perform timewise differential analysis for chromatin accessibility peaks measured in hippocampus with default parameters.
+#' # Perform timewise differential analysis for chromatin accessibility peaks 
+#' # measured in hippocampus with default parameters.
 #' hippoc_atac_da = atac_timewise_da("HIPPOC")
 #' }
 atac_timewise_da = function(tissue, 
                             covariates = c("Sample_batch", "peak_enrich.frac_reads_in_peaks.macs2.frip"), 
-                            outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "ATAC"]),
+                            outliers = data.table::data.table(
+                              MotrpacRatTraining6moData::OUTLIERS)[assay=="ATAC",viallabel],
                             scratchdir = ".",
                             rdata_outfile = NULL,
                             overwrite = FALSE,
                             verbose = TRUE,
                             n_features = Inf){
   
-  check_da_args(.tissue, rdata_outfile, overwrite)
+  check_da_args(tissue, rdata_outfile, overwrite)
   if(verbose) message("Loading data...")
   data = atac_prep_data(tissue, 
                         covariates = covariates,
@@ -239,7 +240,7 @@ atac_timewise_da = function(tissue,
   
   meta_df = as.data.frame(data$metadata)
   if("sample_batch" %in% tolower(covariates)){
-    which = covariates[grepl("sample_batch", covariates, ignore.case=T)]
+    which = covariates[grepl("sample_batch", covariates, ignore.case=TRUE)]
     meta_df[,which] = factor(meta_df[,which])
   }
   filt_counts = data$counts
@@ -264,7 +265,7 @@ atac_timewise_da = function(tissue,
     # check if full rank
     if(!limma::is.fullrank(design)){
       if("sample_batch" %in% tolower(covariates)){
-        which = covariates[grepl("sample_batch", covariates, ignore.case=T)]
+        which = covariates[grepl("sample_batch", covariates, ignore.case=TRUE)]
         curr_cov = covariates[!covariates == which]
         full = paste0(c("~ 0", "group", curr_cov), collapse=" + ")
         reduced = paste0(c("~ 0", curr_cov), collapse=" + ")
@@ -300,7 +301,7 @@ atac_timewise_da = function(tissue,
         assay = "ATAC",
         assay_code = "epigen-atac-seq",
         tissue = tissue, 
-        tissue_code = TISSUE_ABBREV_TO_CODE[[tissue]],
+        tissue_code = MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[[tissue]],
         covariates=paste0(curr_cov, collapse=','),
         removed_samples = ifelse(length(curr_outliers)>0, paste0(curr_outliers, collapse=','), NA_character_), 
         logFC = res$logFC,

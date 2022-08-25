@@ -5,18 +5,18 @@
 \title{Remove all non-empty trajectories}
 \usage{
 get_all_trajectories(
-  edge_sets = GRAPH_COMPONENTS$edge_sets,
-  node_sets = GRAPH_COMPONENTS$node_sets,
+  edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets,
+  node_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$node_sets,
   tissues = MotrpacRatTraining6moData::TISSUE_ABBREV,
   omes = MotrpacRatTraining6moData::ASSAY_ABBREV
 )
 }
 \arguments{
-\item{edge_sets}{optional named list of edge sets if you want to use a custom input.
-Otherwise use \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets}}
+\item{edge_sets}{A named list with the edge (state) sets of analytes/features.
+\code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.}
 
-\item{node_sets}{optional named list of node sets if you want to use a custom input.
-Otherwise use \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets}}
+\item{node_sets}{A named list with the node (state) sets of analytes/features.
+\code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets} by default.}
 
 \item{tissues}{string vector, optional. tissue subset. all tissues by default}
 
@@ -30,8 +30,6 @@ Remove all non-empty trajectories
 }
 \examples{
 # Get lists of features belonging to all trajectories in the liver
-get_all_trajectories(GRAPH_COMPONENTS$edge_sets,
-                     GRAPH_COMPONENTS$node_sets,
-                     tissues = "LIVER")
+get_all_trajectories(tissues = "LIVER")
 
 }

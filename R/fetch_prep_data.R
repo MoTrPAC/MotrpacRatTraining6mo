@@ -53,8 +53,9 @@
 #' # Same as above but only return data from male samples
 #' gastroc_data4 = transcript_prep_data("SKM-GN", covariates = NULL, outliers = NULL, sex = "male")
 #' 
-#' # Same as gastroc_data2 but also center and scale default continuous covariates in the returned metadata,
-#' # which is also done within [run_deseq()] (called by [transcript_timewise_dea()]) 
+#' # Same as gastroc_data2 but also center and scale default continuous covariates 
+#' # in the returned metadata, which is also done within [run_deseq()] 
+#' # (called by [transcript_timewise_dea()]) 
 #' gastroc_data4 = transcript_prep_data("SKM-GN", outliers = NULL, center_scale = TRUE)
 #' 
 transcript_prep_data = function(tissue, 
@@ -73,7 +74,7 @@ transcript_prep_data = function(tissue,
     }
   }
   
-  accepted_tissues = TISSUE_ABBREV[!TISSUE_ABBREV == "PLASMA"]
+  accepted_tissues = MotrpacRatTraining6moData::TISSUE_ABBREV[!MotrpacRatTraining6moData::TISSUE_ABBREV == "PLASMA"]
   if(!tissue %in% accepted_tissues){
     warning(sprintf("'%s' is not an accepted tissue abbreviation. TRNSCRPT data is available for the following tissues:\n  %s",
                     .tissue,
@@ -82,8 +83,10 @@ transcript_prep_data = function(tissue,
   }
   
   # load data
-  counts = get(sprintf("TRNSCRPT_%s_RAW_COUNTS", gsub("-","",.tissue)))
-  tmm = get(sprintf("TRNSCRPT_%s_NORM_DATA", gsub("-","",.tissue)))
+  counts = load_sample_data(.tissue, "TRNSCRPT", normalized = FALSE)
+  #counts = get(sprintf("TRNSCRPT_%s_RAW_COUNTS", gsub("-","",.tissue)))
+  tmm = load_sample_data(.tissue, "TRNSCRPT", normalized = TRUE)
+  #tmm = get(sprintf("TRNSCRPT_%s_NORM_DATA", gsub("-","",.tissue)))
   rownames(tmm) = tmm$feature_ID
   tmm[,c("feature","feature_ID","tissue","assay")] = NULL
   
@@ -93,8 +96,8 @@ transcript_prep_data = function(tissue,
   counts = counts[rownames(counts),]
   
   # format metadata
-  pheno = as.data.table(PHENO)
-  meta = as.data.table(TRNSCRPT_META)
+  pheno = data.table::as.data.table(MotrpacRatTraining6moData::PHENO)
+  meta = data.table::as.data.table(MotrpacRatTraining6moData::TRNSCRPT_META)
   meta = merge(pheno, meta, by="viallabel")
   
   # filter by tissue
@@ -120,7 +123,7 @@ transcript_prep_data = function(tissue,
   
   if(.tissue == 'VENACV'){
     # add Ucp1 as a covariate
-    ucp1 = data.table(viallabel = colnames(counts), ucp1 = unname(unlist(counts['ENSRNOG00000003580',])))
+    ucp1 = data.table::data.table(viallabel = colnames(counts), ucp1 = unname(unlist(counts['ENSRNOG00000003580',])))
     meta = merge(meta, ucp1, by = 'viallabel')
     covariates = c(covariates, 'ucp1')
   }
@@ -129,7 +132,7 @@ transcript_prep_data = function(tissue,
   if(adjust_covariates & !is.null(covariates)){
     new = fix_covariates(covariates, meta, center_scale)
     covariates = new$covariates
-    meta = data.table(new$meta)
+    meta = data.table::data.table(new$meta)
   }
   
   meta[,sex_group := paste0(sex, ';', group)]
@@ -188,7 +191,7 @@ fix_covariates = function(covar, meta, center_scale = FALSE){
           covar = covar[covar != cov]
         }else{
           warning(sprintf("Numeric variable of interest %s has %s missing values. Replacing missing values with mean.\n", cov, num_missing))
-          meta[is.na(get(cov)), (cov) := mean(meta[,get(cov)], na.rm=T)]
+          meta[is.na(get(cov)), (cov) := mean(meta[,get(cov)], na.rm=TRUE)]
         }
       }
     }
@@ -260,7 +263,8 @@ atac_prep_data = function(tissue,
                           filter_counts = FALSE,
                           return_normalized_data = FALSE, 
                           scratchdir = ".", 
-                          outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel[MotrpacRatTraining6moData::OUTLIERS$assay == "ATAC"]),
+                          outliers = data.table::data.table(
+                            MotrpacRatTraining6moData::OUTLIERS)[assay=="ATAC",viallabel],
                           nrows = Inf){
   
   # data.table workaround
@@ -278,7 +282,7 @@ atac_prep_data = function(tissue,
   
   # DMAQC metadata 
   dmaqc_meta = data.table::data.table(MotrpacRatTraining6moData::PHENO)
-  meta = merge(dmaqc_meta, wet, by='viallabel', all.y=T)
+  meta = merge(dmaqc_meta, wet, by='viallabel', all.y=TRUE)
   
   # load raw counts 
   counts = load_sample_data(tissue = tissue, 
@@ -338,7 +342,7 @@ atac_prep_data = function(tissue,
       counts = counts[grepl("^chr[0-9]|^chrY|^chrX", rownames(counts)),]
       # exclude low count peaks in the current dataset
       # at least min_count counts in n_samples samples
-      counts = counts[rowSums(data.frame(lapply(counts, function(x) as.numeric(x >= min_count)), check.names=F)) >= n_samples,]
+      counts = counts[rowSums(data.frame(lapply(counts, function(x) as.numeric(x >= min_count)), check.names=FALSE)) >= n_samples,]
     }else{
       counts = counts[rownames(norm),]
     }
@@ -383,7 +387,11 @@ atac_prep_data = function(tissue,
 #' 
 #' \dontrun{
 #' # Load ATAC-seq raw counts for hippocampus, excluding outliers 
-#' data = load_sample_data("HIPPOC", "ATAC", exclude_outliers = TRUE, normalized = FALSE, scratchdir = "/tmp")
+#' data = load_sample_data("HIPPOC", 
+#'                         "ATAC", 
+#'                         exclude_outliers = TRUE, 
+#'                         normalized = FALSE, 
+#'                         scratchdir = "/tmp")
 #' }
 load_sample_data = function(tissue, 
                             assay, 
@@ -406,21 +414,21 @@ load_sample_data = function(tissue,
     if(assay %in% c("METHYL","ATAC")){
       if(training_regulated_only){
         obj_name = sprintf("%s_%s_NORM_DATA_05FDR", assay, gsub("-","",tissue))
-        data = get(obj_name)
+        data = fetch_object(obj_name)
       }else{
         # download from GCS
         data = get_rdata_from_url(tissue=tissue, assay=assay, suffix="NORM_DATA", scratchdir=scratchdir, nrows=nrows)
       }
     }else if(assay == "METAB"){
       # get combined sample-level data
-      data = METAB_NORM_DATA_FLAT
+      data = MotrpacRatTraining6moData::METAB_NORM_DATA_FLAT
       # filter to this tissue
       data = data[data$tissue == tissue,]
       # remove all-NA columns 
       data[,names(colSums(is.na(data))[colSums(is.na(data)) == nrow(data)])] = NULL
     }else{
       obj_name = sprintf("%s_%s_NORM_DATA", assay, gsub("-","",tissue))
-      data = get(obj_name)
+      data = fetch_object(obj_name)
     }
   }else{
     # raw data 
@@ -430,7 +438,7 @@ load_sample_data = function(tissue,
         data = get_rdata_from_url(tissue=tissue, assay=assay, suffix="RAW_COUNTS", scratchdir=scratchdir, nrows=nrows)
       }else{
         obj_name = sprintf("%s_%s_RAW_COUNTS", assay, gsub("-","",tissue))
-        data = get(obj_name)
+        data = fetch_object(obj_name)
       }
     }else{
       stop(sprintf("Non-normalized data not available for %s. Set 'normalized' to TRUE to get normalized sample-level data.", assay))
@@ -541,10 +549,16 @@ load_methyl_feature_annotation = function(scratchdir = "."){
 #' data = get_rdata_from_url(tissue="BAT", assay="METHYL", suffix="RAW_COUNTS", scratchdir="/tmp")
 #' 
 #' # return DNA methylation feature annotation
-#' data = get_rdata_from_url(url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda", scratchdir="/tmp")
+#' data = get_rdata_from_url(
+#'   url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda", 
+#'   scratchdir="/tmp"
+#' )
 #' 
 #' # return raw DNA methylation data for brown adipose
-#' data = get_rdata_from_url(url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData", scratchdir="/tmp")
+#' data = get_rdata_from_url(
+#'   url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData", 
+#'   scratchdir="/tmp"
+#' )
 #' }
 get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir=".", url=NULL, obj_name=NULL, nrows=Inf){
   # set option if default is low
@@ -617,12 +631,12 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
 #' @examples
 #' curr_outliers = filter_outliers(TISSUE="HIPPOC")
 #' curr_outliers = filter_outliers(TISSUE="HIPPOC", SEX="male")
-filter_outliers = function(TISSUE=NULL, SEX=NULL, outliers=OUTLIERS$viallabel){
+filter_outliers = function(TISSUE=NULL, SEX=NULL, outliers=MotrpacRatTraining6moData::OUTLIERS$viallabel){
   outliers = as.character(outliers)
   if(length(outliers) == 0){
     return(character(0))
   }
-  pheno = as.data.table(MotrpacRatTraining6moData::PHENO)
+  pheno = data.table::as.data.table(MotrpacRatTraining6moData::PHENO)
   if(!is.null(TISSUE)){
     pheno = pheno[tissue == TISSUE]
   }

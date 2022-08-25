@@ -18,7 +18,3 @@ check_da_args(tissue, outfile, overwrite, outfile_is_rdata = TRUE)
 \description{
 Internal function used to check arguments for differential analysis functions
 }
-\examples{
-check_da_args("BAT", "~/Desktop/bat.rda", overwrite = FALSE) 
-
-}

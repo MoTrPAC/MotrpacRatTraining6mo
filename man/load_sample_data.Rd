@@ -50,6 +50,10 @@ data = load_sample_data("HEART", "PROT")
 
 \dontrun{
 # Load ATAC-seq raw counts for hippocampus, excluding outliers 
-data = load_sample_data("HIPPOC", "ATAC", exclude_outliers = TRUE, normalized = FALSE, scratchdir = "/tmp")
+data = load_sample_data("HIPPOC", 
+                        "ATAC", 
+                        exclude_outliers = TRUE, 
+                        normalized = FALSE, 
+                        scratchdir = "/tmp")
 }
 }
