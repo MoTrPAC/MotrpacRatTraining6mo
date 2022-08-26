@@ -44,7 +44,8 @@ Imports:
     repfdr,
     stats,
     tibble,
-    tidyr
+    tidyr,
+    utils
 Suggests: 
     knitr,
     rmarkdown,

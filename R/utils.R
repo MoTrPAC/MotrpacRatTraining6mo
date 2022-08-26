@@ -34,7 +34,8 @@ viallabel_to_pid = function(viallabels){
 #'
 #' @examples
 #' list_available_data()
-#' list_available_data("MotrpacBicQC")
+#' list_available_data("MotrpacRatTraining6moData")
+#' 
 list_available_data = function(package=NULL){
   res = utils::data(package=package)
   obj = res$results[,3]

@@ -19,7 +19,7 @@
 #' 
 transcript_normalize_counts = function(tissue, min_cpm = 0.5, min_num_samples = 2, norm_method="TMM"){
 
-  counts = get(sprintf("TRNSCRPT_%s_RAW_COUNTS", gsub("-","",tissue)))
+  counts = fetch_object(sprintf("TRNSCRPT_%s_RAW_COUNTS", gsub("-","",tissue)))
   rownames(counts) = counts$feature_ID
   counts[,c("feature","feature_ID","tissue","assay")] = NULL
   

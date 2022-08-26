@@ -5,10 +5,10 @@
 
 # test for proteomics_timewise_da()
 test_that("PROT timewise DA returns same p-values", {
-  expect_snapshot(cat(proteomics_timewise_da("PROT", "HEART")$p_value))
+  expect_snapshot(cat(round(proteomics_timewise_da("PROT", "HEART")$p_value, 3)))
 })
 
 # test for proteomics_training_da()
 test_that("PROT training DA returns same p-values", {
-  expect_snapshot(cat(proteomics_training_da("PROT", "HEART")$p_value))
+  expect_snapshot(cat(round(proteomics_training_da("PROT", "HEART")$p_value, 3)))
 })

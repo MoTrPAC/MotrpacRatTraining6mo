@@ -627,6 +627,8 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
 #'
 #' @return character vector, subset of \code{outliers} that correspond to the 
 #'   specified tissue and sex
+#'   
+#' @export
 #'
 #' @examples
 #' curr_outliers = filter_outliers(TISSUE="HIPPOC")

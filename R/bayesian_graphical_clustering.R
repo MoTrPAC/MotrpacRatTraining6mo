@@ -902,7 +902,7 @@ get_tree_plot_for_tissue <- function(
   # Add the set size as a field in the layout data frame
   # This will be used for controlling the node size correctly
   d_g_our_layout["size"] = igraph::V(d_g)$setsize[d_g_our_layout$.ggraph.orig_index]
-  
+
   # for(ome in colnames(tissue_ome_data)){
   #   d_g = set_vertex_attr(d_g,ome,V(d_g),tissue_ome_data[V(d_g)$name,ome])
   # }
