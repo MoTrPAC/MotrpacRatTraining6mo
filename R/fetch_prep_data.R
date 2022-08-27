@@ -610,6 +610,9 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
   if(nrows < Inf & (is.data.frame(data) | is.matrix(data))){
     data = data[1:nrows,]
   }
+  
+  # delete local copy
+  file.remove(local)
 
   return(data)
 }
