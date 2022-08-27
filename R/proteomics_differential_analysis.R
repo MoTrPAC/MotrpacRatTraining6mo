@@ -6,6 +6,7 @@
 #' @param t_col The column containing the t statistic
 #'
 #' @return A vector of standard errors for effect sizes
+#' 
 #' @export
 #'
 limma_res_extract_se<-function(limma_res,
@@ -32,7 +33,7 @@ limma_res_extract_se<-function(limma_res,
 #' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
 #' 
 #' @param tissue_abbrev Abbreviation for proteomics tissue to be analyzed as defined by TISSUE_ABBREV. 
-#' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#'
 #'
 #' @return A data frame containing differential enrichment results
 #' 
@@ -156,15 +157,13 @@ proteomics_timewise_dea  = function(assay_abbrev, tissue_abbrev){
 
 
 
-## Proteomics Training DEA ------------------------------------------------------------------
-
-#' Title
+#' Proteomics Training Differential Abundance Analysis
 #'
 #' @param assay_abbrev Abbreviation for proteomics assay to be analyzed as defined by ASSAY_ABBREV. 
 #' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
 #' 
 #' @param tissue_abbrev Abbreviation for proteomics tissue to be analyzed as defined by TISSUE_ABBREV. 
-#' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#'
 #'
 #' @return A data frame containing differential enrichment results
 #' 
