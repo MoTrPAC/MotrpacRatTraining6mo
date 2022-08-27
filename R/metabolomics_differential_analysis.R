@@ -30,7 +30,7 @@ limma_res_extract_se<-function(limma_res,
 #' @return a data frame with one row per metabolite:
 #' \describe{
 #'   \item{\code{feature_ID}}{Metabolite name}
-#'   \item{\code{dataset}}{The metabolomics assaay in which the metabolite is detected.}
+#'   \item{\code{platform}}{The metabolomics assaay in which the metabolite is detected.}
 #'   \item{\code{groups_tested_female}}{The timepoints used to perform the F-test in females. Some tissues or assays are missing timepoints}
 #'   \item{\code{groups_tested_male}}{The timepoints used to perform the F-test in males. Some tissues or assays are missing timepoints}
 #'   \item{\code{fscore_male}}{F-statistic for males}
@@ -154,7 +154,7 @@ metab_training_dea <- function(tissue_abbrev){
         mutate(p_value = map2_dbl(p_value_male,p_value_female,function(x,y){sumlog(c(x,y))$p}))
     }
     
-    merged$dataset = metab_assay
+    merged$platform = metab_assay
     
     f_results = c(f_results,list(merged))
   }
@@ -188,7 +188,7 @@ metab_training_dea <- function(tissue_abbrev){
 #'     (e.g., 1-week females) and the sex-matched sedentary controls}
 #'   \item{\code{comparison_average_intensity}}{average normalized RNA-seq counts for samples in the training group (e.g., 1-week females)}
 #'   \item{\code{reference_average_intensity}}{average normalized RNA-seq counts for sex-matched sedentary control samples}
-#'   \item{\code{dataset}}{The metabolomics assaay in which the metabolite is detected.}
+#'   \item{\code{platform}}{The metabolomics platform in which the metabolite is detected.}
 #'}
 #' 
 #' @export
