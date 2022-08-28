@@ -8,80 +8,17 @@
 #'
 #' @return named list where names are vial labels and values are PIDs 
 #' @export
-#' 
-#' @import data.table 
-#' @import MotrpacRatTraining6moData
 #'
 #' @examples
 #' viallabel_to_pid(c("90416015402", "90416015403", "90416015302"))
 #' viallabel_to_pid(c(90416015402, 90416015403, 90416015302))
 viallabel_to_pid = function(viallabels){
-  pheno = as.data.table(MotrpacRatTraining6moData::PHENO)
+  pheno = data.table::as.data.table(MotrpacRatTraining6moData::PHENO)
   pheno = unique(pheno[,.(viallabel, pid)])
   pheno = pheno[viallabel %in% as.character(viallabels)]
   vl_to_pid = pheno[,pid]
   names(vl_to_pid) = pheno[,viallabel]
   return(vl_to_pid)
-}
-
-
-#' Download an RData file from Dropbox
-#' 
-#' @param target character, public URL specifying an RData file ('.rda' suffix) on Dropbox
-#' @param tmpdir character, local path in which to download \code{target}
-#' @param redownload boolean, whether or not to download the file if it already exists in \code{tmpdir}
-#'
-#' @return object contained in \code{target}
-#'
-#' @examples
-#' target = "https://www.dropbox.com/s/rsenv5dgsx0to4i/test.rda?raw=1"
-#' obj = load_dropbox_rdata(target, tmpdir)
-#' obj = load_dropbox_rdata(target, tmpdir, redownload = T)
-load_dropbox_rdata = function(target, tmpdir, redownload = FALSE){
-  
-  # This is intended to be an internal function only
-  accepted_files = c("https://www.dropbox.com/s/rsenv5dgsx0to4i/test.rda?raw=1",
-                     "https://www.dropbox.com/s/s6c4otggrkyhh05/ATAC_NORM_DATA.rda?raw=1",
-                     "https://www.dropbox.com/s/t92nm792snxzi3c/METHYL_NORM_DATA.rda?raw=1",
-                     "https://www.dropbox.com/s/b2wxfvb5q59xtw0/METHYL_RAW_COUNTS.rda?raw=1")
-  if(!target %in% accepted_files){
-    warning(sprintf("Unrecognized Dropbox link. 'target' is expected to be one of:\n%s",
-                    paste0(accepted_files, collapse="\n")))
-  }
-  
-  # Check that it ends in "?raw=1"
-  if(!endsWith(target, "?raw=1")){
-    stop("'target' should end with '?raw=1'.")
-  }
-  
-  # Check that it ends in ".rda?raw=1"
-  if(!endsWith(gsub("\\?raw=1", "", basename(target)), ".rda")){
-    stop("'target' should be an RData file with suffix '.rda'.")
-  }
-  
-  dest = sprintf("%s/%s", tmpdir, gsub("\\?raw=1","",basename(target)))
-  
-  if(!file.exists(dest) | redownload){
-    download.file(target,
-                  destfile = dest,
-                  method = "auto")
-  }
-  
-  if(target=="https://www.dropbox.com/s/s6c4otggrkyhh05/ATAC_NORM_DATA.rda?raw=1"){
-    message("Loading and returning an object of size 3.31GB...")
-  }else if (target=="https://www.dropbox.com/s/b2wxfvb5q59xtw0/METHYL_RAW_COUNTS.rda?raw=1"){
-    message("Loading and returning an object of size 3.70GB...")
-  }else if(target=="https://www.dropbox.com/s/t92nm792snxzi3c/METHYL_NORM_DATA.rda?raw=1"){
-    message("Loading and returning an object of size 3.70GB...")
-  }
-  
-  load(dest)
-  obj_name = gsub("\\.rda","",basename(dest))
-  if(!exists(obj_name)){
-    stop(sprintf("File '%s' doesn't contain an object called '%s'. 'target' must specify an RData file that contains a single object with the same name as the file.", basename(dest), obj_name))
-  }
-  
-  return(get(obj_name))
 }
 
 
@@ -97,9 +34,10 @@ load_dropbox_rdata = function(target, tmpdir, redownload = FALSE){
 #'
 #' @examples
 #' list_available_data()
-#' list_available_data("MotrpacBicQC")
+#' list_available_data("MotrpacRatTraining6moData")
+#' 
 list_available_data = function(package=NULL){
-  res = data(package=package)
+  res = utils::data(package=package)
   obj = res$results[,3]
   # remove objects that can't be called directly
   obj = obj[!grepl("\\(", obj)]
@@ -107,21 +45,17 @@ list_available_data = function(package=NULL){
 }
 
 
-#' Check arguments for DEA functions 
+#' Check arguments for DA functions 
 #' 
 #' Internal function used to check arguments for differential analysis functions
 #'
-#' @param tissue @eval tissue()
+#' @param tissue `r tissue()`
 #' @param outfile character, output file 
 #' @param overwrite bool, whether to overwrite \code{outfile} if it exists
 #' @param outfile_is_rdata bool, whether \code{outfile} is intended to save RData
 #'
 #' @return NULL
-#'
-#' @examples
-#' check_dea_args("BAT", "~/Desktop/bat.rda", overwrite = FALSE) 
-#' 
-check_dea_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
+check_da_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
   # check arguments 
   if(length(tissue)>1){
     stop("Please specify a single tissue, e.g., 'BAT' for brown adipose tissue. See 'TISSUE_ABBREV' for options.")
@@ -146,4 +80,24 @@ check_dea_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
     }
   }
   return()
+}
+
+
+#' Get object from MotrpacRatTraining6moData
+#' 
+#' Using \code{get()} to retrieve data from MotrpacRatTraining6moData 
+#' within this package doesn't work, at least in tests.
+#' This function allows us to be explicit about the source package.
+#' For internal use only. Users can use \code{get()} or \code{data()} directly
+#' after loading the \code{MotrpacRatTraining6moData} package. 
+#'
+#' @param name_as_string character, name of object in \code{MotrpacRatTraining6moData}
+#'
+#' @return specified object 
+#' 
+#' @seealso [load_sample_data()]
+fetch_object = function(name_as_string){
+  do.call("data", list(as.name(name_as_string),
+                              package = "MotrpacRatTraining6moData"))
+  return(get(name_as_string))
 }

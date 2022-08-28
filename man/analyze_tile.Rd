@@ -2,7 +2,7 @@
 % Please edit documentation in R/rrbs_pipeline.R
 \name{analyze_tile}
 \alias{analyze_tile}
-\title{A wrapper function that analyzes a tile of loci in the genome to obtain correlated clusters.}
+\title{Analyze genome tiles}
 \usage{
 analyze_tile(
   tile_name,
@@ -10,7 +10,7 @@ analyze_tile(
   M,
   min_cor = 0.7,
   inflations = c(3, 2.5, 2, 1.5),
-  plotcorr = F
+  plotcorr = FALSE
 )
 }
 \arguments{
@@ -33,42 +33,52 @@ A character vector. Names are loci (M matrix rows), entries are the names of the
 A wrapper function that analyzes a tile of loci in the genome to obtain correlated clusters.
 }
 \details{
-This function implements clustering analysis of a specific window in the genome. 
+This function implements clustering analysis of a specific window in the genome.
 We observed that often adjacent loci in RRBS data may manifest low correlations. This
 function can be used for identified a set of highly correlated loci within a window, which
-can then be used to extract new genomic features for downstream analysis. 
+can then be used to extract new genomic features for downstream analysis.
 RRBS data have two columns per sample: "Un" (unmethylated) and "Me"(methylated). This function
 takes the "M matrix" which contains the integrated values of these columns (see examples). This matrix
 is used for computing the correlations of the loci, and then we use the Markov Clustering algorithm (MCL)
-for identifying homogeneous clusters within a window. 
+for identifying homogeneous clusters within a window.
 MCL(Markov clustering) details from: https://www.micans.org/mcl/intro.html
 MCL: Expansion coincides with taking the power of a stochastic matrix
-using the normal matrix product (i.e. matrix squaring). 
-Inflation corresponds with taking the Hadamard power of a matrix 
-(taking powers entrywise), followed by a scaling step, such that the resulting matrix is stochastic again, 
+using the normal matrix product (i.e. matrix squaring).
+Inflation corresponds with taking the Hadamard power of a matrix
+(taking powers entrywise), followed by a scaling step, such that the resulting matrix is stochastic again,
 i.e. the matrix elements (on each column) correspond to probability values.
 Inflation parameter: strengthen intra-region connections and promote cluster homogeneity.
 }
 \examples{
+\dontrun{
 # Raw data in RData file is available through Google Cloud.  
 # The main URL is https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS
 # The files that are available through this URL are by tissue:
-# Brown adipose: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData
-# Heart: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HEART_raw.RData
-# Hippocampus: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HIPPOC_raw.RData
-# Kidney: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/KIDNEY_raw.RData
-# Lung: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LUNG_raw.RData
-# Liver: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LIVER_raw.RData
-# Gastrocnemius: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData
-# White adipose: https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/WATSC_raw.RData
+# Brown adipose:
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData
+# Heart: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HEART_raw.RData
+# Hippocampus: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HIPPOC_raw.RData
+# Kidney: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/KIDNEY_raw.RData
+# Lung: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LUNG_raw.RData
+# Liver: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LIVER_raw.RData
+# Gastrocnemius: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData
+# White adipose: 
+# https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/WATSC_raw.RData
 # download the gastrocnemius data and load the data object into this session
-system("wget https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData")
+f = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData"
+system(sprintf("wget \%s", f))
 yall = get(load("SKMGN_raw.RData"))
 
 # TODO: add links to the data using GCP URLs
 
 # remove control samples
-is_sample = grepl("^9",colnames(yall),perl=T)
+is_sample = grepl("^9",colnames(yall),perl=TRUE)
 yall = yall[,is_sample]
 
 # Filtering unassembled chromosomes
@@ -115,7 +125,7 @@ yall$genes$Strand <- TSS$strand
 yall$genes$Distance <- TSS$distance
 yall$genes$Width <- TSS$width
 
-Now we are ready to cluster the genome
+# Now we are ready to cluster the genome
 wsize = 500
 # step 1: define the genome-level tiles
 chrs = as.character(yall$genes$Chr)
@@ -153,7 +163,10 @@ yall = merge_sites_by_clusters(yall,tile_clusters)
 # same scale, we need to set the library sizes to be equal for each pair of libraries. 
 # We set the library sizes for each sample to be the average of the total read counts for 
 # the methylated and unmethylated libraries.
-# Other normalization methods developed for RNA-seq data, such as TMM, are not required for BS-seq data.
-TotalLibSize <- yall$samples$lib.size[grepl("-Me",colnames(yall$counts))] + yall$samples$lib.size[grepl("-Un",colnames(yall$counts))]
+# Other normalization methods developed for RNA-seq data, 
+# such as TMM, are not required for BS-seq data.
+TotalLibSize <- yall$samples$lib.size[grepl("-Me",colnames(yall$counts))] + 
+  yall$samples$lib.size[grepl("-Un",colnames(yall$counts))]
 yall$samples$lib.size <- rep(TotalLibSize, each=2)
+}
 }

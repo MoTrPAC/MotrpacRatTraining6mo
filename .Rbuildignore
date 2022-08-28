@@ -1,3 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 setup.R
+^LICENSE\.md$
+unofficial_tests.R

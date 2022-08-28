@@ -8,64 +8,76 @@
 #' @return A vector of standard errors for effect sizes
 #' @export
 #'
-limma_res_extract_se<-function(limma_res,
+limma_res_extract_se = function(limma_res,
                                e_fit,
                                effect_col="logFC",
                                t_col="t"){
-  # First approach
   effects = limma_res[[effect_col]]
   ts = limma_res[[t_col]]
   ses1 = effects/ts
-  if(is.null(colname)){
-    return(ses1)
-  }
+  return(ses1)
 }
 
 
-
-
-## Proteomics Timewise DEA ------------------------------------------------------------------
-
-#' Differential abundance analysis of proteomics, phosphoproteomics, acetylome, ubiquitylome
-#'
-#' @param assay_abbrev Abbreviation for proteomics assay to be analyzed as defined by ASSAY_ABBREV. 
-#' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#' Proteomics timewise differential analysis
 #' 
-#' @param tissue_abbrev Abbreviation for proteomics tissue to be analyzed as defined by TISSUE_ABBREV. 
-#' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#' Timewise differential analysis for the proteome, phosphoproteome, acetylome, and ubiquitylome. 
+#' Use limma to perform pairwise contrasts between each group of trained animals
+#' and the sex-matched control group for a single tissue and proteomics assay. 
+#' Analysis is performed separately for males and females. 
 #'
-#' @return A data frame containing differential enrichment results
+#' @param assay character, abbreviation for proteomics assay to be analyzed as defined by [MotrpacRatTraining6moData::ASSAY_ABBREV]. 
+#'   One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#' @param tissue `r tissue()`
+#'
+#' @return a data frame with one row per proteomics feature per contrast (usually 8 rows per gene):
+#' \describe{
+#'   \item{\code{feature_ID}}{`r feature_ID()`}
+#'   \item{\code{sex}}{`r sex()`}
+#'   \item{\code{comparison_group}}{`r comparison_group()`}
+#'   \item{\code{assay}}{`r assay()`}
+#'   \item{\code{assay_code}}{`r assay_code()`}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{tissue_code}}{`r tissue_code()`}
+#'   \item{\code{covariates}}{character, comma-separated list of adjustment variables}
+#'   \item{\code{logFC}}{`r logFC()`}
+#'   \item{\code{logFC_se}}{`r logFC_se()`}
+#'   \item{\code{tscore}}{double, t statistic}
+#'   \item{\code{p_value}}{`r p_value_da()`}
+#'   \item{\code{comparison_average_intensity}}{`r comparison_average_intensity()`}
+#'   \item{\code{reference_average_intensity}}{`r reference_average_intensity()`}
+#'   \item{\code{numNAs}}{`r numNAs()`}
+#' }
 #' 
-#' @import MotrpacRatTraining6moData
-#' @import dplyr
-#' @import limma
-#' @import metap
-#' @import data.table
+#' @importFrom dplyr select filter transmute if_else case_when
+#' @importFrom tibble column_to_rownames
+#' @importFrom limma lmFit eBayes topTable makeContrasts contrasts.fit
+#' @importFrom stats model.matrix
+#' 
 #' @export
 #'
 #' @examples
-#' proteomics_timewise_dea("PROT","HEART")
-proteomics_timewise_dea  = function(assay_abbrev, tissue_abbrev){
+#' # Run timewise differential analysis for heart proteins
+#' proteomics_timewise_da("PROT","HEART")
+proteomics_timewise_da  = function(assay, tissue){
   
-  assay = assay_abbrev
-  tissue = tissue_abbrev
   tpDA_split_sex = c() # keep the timewise results
-  
   
   #Extract current dataset and metadata
   x = 
-    get(sprintf("%s_%s_NORM_DATA", assay,gsub("-","",tissue))) %>%
-    column_to_rownames(var = "feature_ID") %>%
+    load_sample_data(tissue, assay) %>%
+    tibble::column_to_rownames(var = "feature_ID") %>%
+    dplyr::select(-c("feature","tissue","assay")) %>%
     as.matrix()
   
   #Specify covariates
   covs <-  
-    PHENO %>%
-    filter(viallabel %in% colnames(x)) %>%
-    transmute(
-      sex = if_else(sex == "male","M","F"),
+    MotrpacRatTraining6moData::PHENO %>%
+    dplyr::filter(viallabel %in% colnames(x)) %>%
+    dplyr::transmute(
+      sex = dplyr::if_else(sex == "male","M","F"),
       group,
-      tr = factor(case_when(
+      tr = factor(dplyr::case_when(
         group == "control" ~ "8_1",
         group == "1w" ~ "1_0",
         group == "2w" ~ "2_0",
@@ -83,16 +95,16 @@ proteomics_timewise_dea  = function(assay_abbrev, tissue_abbrev){
   sex_ttest_res = list() #T-test result
   
   for(SEX in c('M','F')){
-    curr_meta = covs %>% filter(sex == SEX) 
+    curr_meta = covs %>% dplyr::filter(sex == SEX) 
     curr_counts = x[,rownames(curr_meta)]
     
     #Extract treatment covariate
     tr <- curr_meta$tr
     
-    design = model.matrix(~0+tr)
+    design = stats::model.matrix(~0+tr)
     
     #Set contrasts
-    cont.matrix = makeContrasts(
+    cont.matrix = limma::makeContrasts(
       tr1_0 - tr8_1, tr2_0 - tr8_1, tr4_0 - tr8_1, tr8_0 - tr8_1, 
       levels = design
     )
@@ -100,22 +112,22 @@ proteomics_timewise_dea  = function(assay_abbrev, tissue_abbrev){
     colnames(cont.matrix) = c("1w","2w","4w","8w")
     
     # Fit the new model
-    limma_model2 = lmFit(curr_counts,design)
-    lmfit.cont <- contrasts.fit(limma_model2, cont.matrix)
-    lmfit.cont.ebayes <- eBayes(lmfit.cont)
+    limma_model2 = limma::lmFit(curr_counts,design)
+    lmfit.cont <- limma::contrasts.fit(limma_model2, cont.matrix)
+    lmfit.cont.ebayes <- limma::eBayes(lmfit.cont)
     
     #Extract results for each timepoint
     for(curr_tp in colnames(lmfit.cont.ebayes$t)){
       
       #Extract results
-      limma_res = topTable(lmfit.cont.ebayes,
+      limma_res = limma::topTable(lmfit.cont.ebayes,
                            coef = curr_tp,number = Inf,sort.by = "none")
       
       curr_res = data.frame(
         feature_ID = rownames(limma_res),
         tissue=tissue,
         assay=assay,
-        sex = if_else(SEX == "M","male","female"),
+        sex = dplyr::if_else(SEX == "M","male","female"),
         logFC_se = limma_res_extract_se(limma_res,lmfit.cont.ebayes),
         logFC = limma_res$logFC,
         tscore = limma_res$t,
@@ -125,13 +137,13 @@ proteomics_timewise_dea  = function(assay_abbrev, tissue_abbrev){
       )
       # Add group average intensities
       case_samps = covs %>% 
-        filter(sex == SEX &
+        dplyr::filter(sex == SEX &
                  group == curr_tp) %>%
         rownames()
       curr_res$comparison_average_intensity = apply(x[,case_samps],1,mean,na.rm=TRUE)
       
       control_samps = covs %>% 
-        filter(sex == SEX &
+        dplyr::filter(sex == SEX &
                  group == "control") %>%
         rownames()
       curr_res$reference_average_intensity = apply(x[,control_samps],1,mean,na.rm=TRUE)
@@ -144,60 +156,87 @@ proteomics_timewise_dea  = function(assay_abbrev, tissue_abbrev){
     }
   }
   
+  # add some columns and reorder
+  tpDA_split_sex$assay_code = MotrpacRatTraining6moData::ASSAY_ABBREV_TO_CODE[[assay]]
+  tpDA_split_sex$tissue_code = MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[[tissue]]
+  tpDA_split_sex = tpDA_split_sex[,c('feature_ID',
+                                     'sex',
+                                     'comparison_group',
+                                     'assay',
+                                     'assay_code',
+                                     'tissue',
+                                     'tissue_code',
+                                     'covariates',
+                                     'logFC',
+                                     'logFC_se',
+                                     'tscore',
+                                     'p_value',
+                                     'comparison_average_intensity',
+                                     'reference_average_intensity',
+                                     'numNAs')]
+  
   return(tpDA_split_sex)
 }
 
 
-
-
-
-
-
-
-
-
-## Proteomics Training DEA ------------------------------------------------------------------
-
-#' Title
-#'
-#' @param assay_abbrev Abbreviation for proteomics assay to be analyzed as defined by ASSAY_ABBREV. 
-#' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#' Proteomics training differential analysis 
 #' 
-#' @param tissue_abbrev Abbreviation for proteomics tissue to be analyzed as defined by TISSUE_ABBREV. 
-#' One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#' Training differential analysis for the proteome, phosphoproteome, acetylome, and ubiquitylome.
+#' Use limma to perform an F-test to test the effect of training
+#' across time points. Analysis is performed separately for males and females. 
 #'
-#' @return A data frame containing differential enrichment results
+#' @param assay character, abbreviation for proteomics assay to be analyzed as defined by [MotrpacRatTraining6moData::ASSAY_ABBREV]. 
+#'   One of the following: PROT, PHOSPHO, ACETYL, UBIQ
+#' @param tissue `r tissue()`
+#'
+#' @return a data frame with one row per proteomics feature:
+#' \describe{
+#'   \item{\code{feature_ID}}{`r feature_ID()`}
+#'   \item{\code{assay}}{`r assay()`}
+#'   \item{\code{assay_code}}{`r assay_code()`}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{tissue_code}}{`r tissue_code()`}
+#'   \item{\code{fscore_male}}{double, F statistic for males}
+#'   \item{\code{fscore_female}}{double, F statistic for females}
+#'   \item{\code{p_value_male}}{double, nominal F-test p-value for males}
+#'   \item{\code{p_value_female}}{double, nominal F-test p-value for females}
+#'   \item{\code{full_model}}{character, full model used in F-test}
+#'   \item{\code{reduced_model}}{character, reduced model used in F-test}
+#'   \item{\code{p_value}}{double, combined male and female nominal p-value using the sum of logs}
+#' }
 #' 
-#' @import MotrpacRatTraining6moData
-#' @import dplyr
-#' @import limma
-#' @import metap
-#' @import data.table
+#' @importFrom dplyr select filter transmute case_when if_else mutate
+#' @importFrom tibble column_to_rownames
+#' @importFrom purrr map2_dbl
+#' @importFrom tidyr replace_na
+#' @importFrom limma lmFit eBayes topTable
+#' @importFrom metap sumlog
+#' @importFrom stats model.matrix
+#' 
 #' @export
 #'
 #' @examples
-#' proteomics_training_dea("PROT","HEART")
-proteomics_training_dea  <- function(assay_abbrev, tissue_abbrev){
+#' # Run training differential analysis for heart proteins
+#' proteomics_training_da("PROT","HEART")
+proteomics_training_da = function(assay, tissue){
   
-  assay = assay_abbrev
-  tissue = tissue_abbrev
   ftest_res_split_sex = c() # keeps all ftest results
-  
   
   #Extract current dataset and metadata
   x = 
-    get(sprintf("%s_%s_NORM_DATA", assay,gsub("-","",tissue))) %>%
-    column_to_rownames(var = "feature_ID") %>%
+    load_sample_data(tissue, assay) %>%
+    tibble::column_to_rownames(var = "feature_ID") %>%
+    dplyr::select(-c("feature","tissue","assay")) %>%
     as.matrix()
   
   #Specify covariates
   covs <-  
-    PHENO %>%
-    filter(viallabel %in% colnames(x)) %>%
-    transmute(
-      sex = if_else(sex == "male","M","F"),
+    MotrpacRatTraining6moData::PHENO %>%
+    dplyr::filter(viallabel %in% colnames(x)) %>%
+    dplyr::transmute(
+      sex = dplyr::if_else(sex == "male","M","F"),
       group,
-      tr = factor(case_when(
+      tr = factor(dplyr::case_when(
         group == "control" ~ "8_1",
         group == "1w" ~ "1_0",
         group == "2w" ~ "2_0",
@@ -215,23 +254,23 @@ proteomics_training_dea  <- function(assay_abbrev, tissue_abbrev){
   sex_ttest_res = list() #T-test result
   
   for(SEX in c('M','F')){
-    curr_meta = covs %>% filter(sex == SEX) 
+    curr_meta = covs %>% dplyr::filter(sex == SEX) 
     curr_counts = x[,rownames(curr_meta)]
     
     ###################################################################
-    # F-test analysis - training-dea table
+    # F-test analysis - training-da table
     
     #Extract treatment covariate
     tr <- curr_meta$tr
     #Generate the experimental model
-    design <- model.matrix(~ 1+tr)
-    fit <- lmFit(curr_counts, design)
-    fit.eb <- eBayes(fit)
+    design <- stats::model.matrix(~ 1+tr)
+    fit <- limma::lmFit(curr_counts, design)
+    fit.eb <- limma::eBayes(fit)
     
     
     #Extract results
-    res = topTable(fit.eb, coef = 2:5, n=nrow(fit.eb))
-    dt = data.table(tissue=tissue,
+    res = limma::topTable(fit.eb, coef = 2:5, n=nrow(fit.eb))
+    dt = data.table::data.table(tissue=tissue,
                     assay=assay,
                     feature_ID=rownames(res),
                     fscore=res$`F`,
@@ -246,10 +285,29 @@ proteomics_training_dea  <- function(assay_abbrev, tissue_abbrev){
   merged = data.frame(merge(sex_res[['M']], sex_res[['F']], 
                             by=c("tissue","assay","feature_ID","full_model","reduced_model"), 
                             suffixes=c('_male','_female'))) %>%
-    mutate(p_value_male = replace_na(p_value_male,1),
-           p_value_female = replace_na(p_value_female,1)) %>%
-    mutate(p_value = map2_dbl(p_value_male,p_value_female,function(x,y){sumlog(c(x,y))$p}))
+    dplyr::mutate(p_value_male = tidyr::replace_na(p_value_male,1),
+           p_value_female = tidyr::replace_na(p_value_female,1)) %>%
+    dplyr::mutate(p_value = purrr::map2_dbl(p_value_male,p_value_female,function(x,y){metap::sumlog(c(x,y))$p}))
   
   ftest_res_split_sex <- rbind(ftest_res_split_sex,merged)
+  
+  # add columns and change order
+  ftest_res_split_sex$tissue_code = MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[[tissue]]
+  ftest_res_split_sex$assay_code = MotrpacRatTraining6moData::ASSAY_ABBREV_TO_CODE[[assay]]
+  ftest_res_split_sex = ftest_res_split_sex[,c(
+    "feature_ID",
+    "assay",
+    "assay_code",
+    "tissue",
+    "tissue_code",
+    "fscore_male",
+    "fscore_female",
+    "p_value_male",
+    "p_value_female",
+    "full_model",
+    "reduced_model",
+    "p_value"
+  )]
+  
   return(ftest_res_split_sex)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/bayesian_graphical_clustering.R
 \name{repfdr_wrapper}
 \alias{repfdr_wrapper}
-\title{A general wrapper for running repfdr on a matrix of z-scores}
+\title{\code{repfdr} wrapper}
 \usage{
 repfdr_wrapper(zscores, min_prior_for_config = 0.001)
 }
@@ -12,30 +12,38 @@ repfdr_wrapper(zscores, min_prior_for_config = 0.001)
 \item{min_prior_for_config}{A number. The minimal prior probability on the configuration priors.}
 }
 \value{
-A named list with two objects: (1) a binary matrix representation of the clusters, and (2) a matrix with the cluster posteriors.
+A named list with two objects:
+\describe{
+\item{\code{repfdr_clusters}}{a binary matrix representation of the clusters}
+\item{\code{repfdr_cluster_posteriors}}{a matrix with the cluster posteriors}
+}
 }
 \description{
-A general wrapper for running repfdr on a matrix of z-scores
+A general wrapper for running \code{repfdr} on a matrix of z-scores.
 }
 \details{
 This wrapper runs inference for the two groups model in each column of zscores, and then run repfdr's EM process.
 To extract the fuzzy clustering solution, we exclude configurations whose prior probability is lower than min_prior_for_config.
 }
 \examples{
+\dontrun{
 # Simulate data with a single cluster
 zcolnames = c(
-paste("male",c("1w","2w","4w","8w"),sep="_"),
-paste("female",c("1w","2w","4w","8w"),sep="_")
+  paste("male",c("1w","2w","4w","8w"),sep="_"),
+  paste("female",c("1w","2w","4w","8w"),sep="_")
 )
 zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
 repfdr_results = repfdr_wrapper(zscores)
-# in this example all configurations are null, thus the  posteriors of the null cluster (all zeroes) are very high:
+# in this example all configurations are null, 
+# thus the  posteriors of the null cluster (all zeroes) are very high:
 quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"])
 # now add a cluster with a strong signal and rerun
 zscores[1:500,1:4] = zscores[1:500,1:4] + 5
 repfdr_results = repfdr_wrapper(zscores)
 # look at the null cluster after adding the signal above
 quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"],probs=c(0.05,0.1,0.5))
-# now the posteriors of the first 500 rows, with respect to the "planted" cluster should have high posteriors:
+# now the posteriors of the first 500 rows, 
+# with respect to the "planted" cluster should have high posteriors:
 quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
+}
 }

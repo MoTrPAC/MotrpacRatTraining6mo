@@ -2,19 +2,22 @@
 % Please edit documentation in R/bayesian_graphical_clustering.R
 \name{limit_sets_by_regex}
 \alias{limit_sets_by_regex}
-\title{An auxiliary function for reducing a list of sets by a regex.}
+\title{Reduce a list of sets by a regex}
 \usage{
-limit_sets_by_regex(sets, regs, append_semicol = T)
+limit_sets_by_regex(sets, regs, append_semicol = TRUE)
 }
 \arguments{
-\item{sets}{A named list of character vectors}
+\item{sets}{A named list of character vectors.}
 
 \item{regs}{A character vector of regular expressions}
 
 \item{append_semicol}{A logical. If TRUE (the default): append ';' as the suffix of each regex.}
 }
+\value{
+named list of filtered sets
+}
 \description{
-Useful for filtering DEA analyte sets by tissues or omes.
+An auxiliary function useful for filtering differential analyte sets by tissues or omes.
 }
 \details{
 This function was added for helping with managing the output of the Bayesian clustering in real data.
@@ -23,7 +26,7 @@ It takes a list of analyte (e.g., gene ids) sets and removes items that do not m
 \examples{
 sets = list(
   "cluster1" = c("muscle;g1","heart;g1","muscle;g2"),
-    "cluster2" = c("muscle;g11","heart;g11","muscle;g12")
+  "cluster2" = c("muscle;g11","heart;g11","muscle;g12")
 )
 # remove non muscle analytes from the clustering solution above:
 limit_sets_by_regex(sets,"muscle")

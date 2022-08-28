@@ -2,33 +2,31 @@
 % Please edit documentation in R/rrbs_pipeline.R
 \name{merge_sites_by_clusters}
 \alias{merge_sites_by_clusters}
-\title{Merge an edgeR DGEList object using a clustering of the sites}
+\title{Merge sites by cluster}
 \usage{
 merge_sites_by_clusters(yall, new_clusters)
 }
 \arguments{
-\item{yall}{A DGEList object, where yall$genes is a metadata data frame with the locus coordinates (see details), and these fields at minimum: Chr, EntrezID, Symbol, and Strand.}
+\item{yall}{A \code{\link[edgeR:DGEList]{edgeR::DGEList()}} object, where yall$genes is a metadata data frame with the locus coordinates (see details),
+and these fields at minimum: "Chr", "EntrezID", "Symbol", and "Strand".}
 
-\item{new_clusters}{A character vector. Contains the clustering solution of the sites in yall.}
+\item{new_clusters}{A character vector. Contains the clustering solution of the sites in \code{yall}.}
 }
 \value{
-A new DGEList object that represents the clusters
+A new \code{\link[edgeR:DGEList]{edgeR::DGEList()}} object that represents the clusters
 }
 \description{
-Merge an edgeR DGEList object using a clustering of the sites
+Merge an \code{edgeR} \code{\link[edgeR:DGEList]{edgeR::DGEList()}} object using a clustering of the sites.
 }
 \details{
-The yall object has a metadata framework yall$genes. This data frame has either a Locus field or 
-a pair of fields (LocStart,LocEnd). Assuming that there are no clusters that merge sites across different
+The \code{yall} object has a metadata framework \code{yall$genes}. This data frame has either a "Locus" field or
+a pair of fields ("LocStart", "LocEnd"). Assuming that there are no clusters that merge sites across different
 chromosomes and that clusters represent a continuous window in the genome, the function goes over the
 clustering solutions in new_clusters and merges the sites from the same cluster.
 The new genomic features contain the sum of counts of their sites, and the merged metadata of the sites
 (e.g., a comma separated character with all gene symbols associated with the cluster).
-}
-\examples{
-See example of the full RRBS read count data pre-processing pipeline in analyze_tile.
-
+See example of the full RRBS read count data pre-processing pipeline in \code{\link[=analyze_tile]{analyze_tile()}}.
 }
 \seealso{
-analyze_tile
+\code{\link[=analyze_tile]{analyze_tile()}}
 }
