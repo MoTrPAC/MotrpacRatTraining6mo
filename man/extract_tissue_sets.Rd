@@ -6,22 +6,26 @@
 \usage{
 extract_tissue_sets(
   tissues,
-  node_sets,
-  edge_sets,
+  node_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$node_sets,
+  edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets,
   k = 3,
   min_size = 20,
-  add_week8 = T,
+  add_week8 = TRUE,
   omes = NULL
 )
 }
 \arguments{
 \item{tissues}{A character vector. The names of the tissues (one or more) to be considered.}
 
-\item{node_sets}{A named list with the node (state) sets of analytes/features.}
+\item{node_sets}{A named list with the node (state) sets of analytes/features.
+\code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets} by default.}
 
-\item{edge_sets}{A named list with the edge (state) sets of analytes/features.}
+\item{edge_sets}{A named list with the edge (state) sets of analytes/features.
+\code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.}
 
 \item{k}{An integer. How many node/edge/trajectory sets to extract. See details.}
+
+\item{min_size}{An integer specifying the minimal path size to be considered.}
 
 \item{add_week8}{A logical. TRUE (default): add all week 8 nodes to the node set.}
 
@@ -37,7 +41,8 @@ An auxiliary function for getting the top analyte sets for a set of tissues.
 This function is useful for extracting the largest sets for a specific set of tissues and omes.
 Thus, it is a useful step before running enrichment analysis on sets of analytes identified by the graphical clustering analysis.
 
-By specifying k the user can control how many sets to include. The default is three, which means that the top largest node sets, edge sets, and full trajectories will be extracted (three each).
+By specifying k the user can control how many sets to include. The default is three,
+which means that the top largest node sets, edge sets, and full trajectories will be extracted (three each).
 
 Naming format:
 Analyte names are in the ome;tissue;feature_id format.
@@ -50,9 +55,7 @@ A full trajectory is annotated by node_id->node_id->node_id->node_id. For exampl
 See bayesian_graphical_clustering for more details about the graphical analysis.
 }
 \examples{
-data(GRAPH_COMPONENTS)
 filtered_solution = extract_tissue_sets(
-   tissues = c("HEART","SKM-VL","SKM-GN"),
-   node_sets=GRAPH_COMPONENTS$node_sets,edge_sets=GRAPH_COMPONENTS$edge_sets
- )
+   tissues = c("HEART","SKM-VL","SKM-GN")
+)
 }

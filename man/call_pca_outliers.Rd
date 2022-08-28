@@ -44,6 +44,12 @@ components that explain some minimum variance.
 }
 \examples{
 bat_rna_data = transcript_prep_data("BAT", covariates = NULL, outliers = NULL)
-bat_rna_outliers = call_pca_outliers(bat_rna_data$norm_data, min_pc_ve=0.05, plot=T, verbose=T, iqr_coef=5, M=1000, title="Brown Adipose")
+bat_rna_outliers = call_pca_outliers(bat_rna_data$norm_data, 
+                                     min_pc_ve=0.05, 
+                                     plot=TRUE, 
+                                     verbose=TRUE, 
+                                     iqr_coef=5, 
+                                     M=1000, 
+                                     title="Brown Adipose")
 
 }

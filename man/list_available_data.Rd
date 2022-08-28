@@ -18,5 +18,6 @@ split data frames.
 }
 \examples{
 list_available_data()
-list_available_data("MotrpacBicQC")
+list_available_data("MotrpacRatTraining6moData")
+
 }

@@ -13,8 +13,8 @@ See \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TI
 \value{
 NULL if there are no outliers, or a data frame with three columns and one row per outlier:
 \describe{
-\item{\code{viallabel}}{character, @eval viallabel()}
-\item{\code{tissue}}{@eval tissue()}
+\item{\code{viallabel}}{character, sample identifier}
+\item{\code{tissue}}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
 \item{\code{reason}}{character, PC(s) in which the sample was flagged}
 }
 }

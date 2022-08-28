@@ -5,16 +5,18 @@
 \title{Remove all non-empty trajectories}
 \usage{
 get_all_trajectories(
-  edge_sets,
-  node_sets,
+  edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets,
+  node_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$node_sets,
   tissues = MotrpacRatTraining6moData::TISSUE_ABBREV,
   omes = MotrpacRatTraining6moData::ASSAY_ABBREV
 )
 }
 \arguments{
-\item{edge_sets}{use \code{load_graph_vis_data()$edge_sets}}
+\item{edge_sets}{A named list with the edge (state) sets of analytes/features.
+\code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.}
 
-\item{node_sets}{use \code{load_graph_vis_data()$node_sets}}
+\item{node_sets}{A named list with the node (state) sets of analytes/features.
+\code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets} by default.}
 
 \item{tissues}{string vector, optional. tissue subset. all tissues by default}
 
@@ -25,4 +27,9 @@ named list with one element per trajectories. members are features in the path
 }
 \description{
 Remove all non-empty trajectories
+}
+\examples{
+# Get lists of features belonging to all trajectories in the liver
+get_all_trajectories(tissues = "LIVER")
+
 }

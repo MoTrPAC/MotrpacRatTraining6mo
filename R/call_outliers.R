@@ -3,8 +3,8 @@
 #' Plot pairs of principal components and highlight indicated outliers.
 #' Each point is a sample. 
 #' 
-#' @param pcaA character, PC for x-axis, e.g. "PC1"; also a column name in \code{pcax}
-#' @param pcaB character, PC for y-axis, e.g. "PC2"; also a column name in \code{pcax}
+#' @param pcA character, PC for x-axis, e.g. "PC1"; also a column name in \code{pcax}
+#' @param pcB character, PC for y-axis, e.g. "PC2"; also a column name in \code{pcax}
 #' @param pcax e.g., \code{prcomp(data)$x}
 #' @param outliers vector of viallabels corresponding to PC outliers 
 #' @param pca result returned by \code{prcomp()}
@@ -15,8 +15,6 @@
 #' @seealso [call_pca_outliers()]
 #' 
 #' @export
-#' @import ggplot2 
-#' @import ggrepel
 #'
 plot_pcs = function(pcA, pcB, pcax, outliers, pca, title=NULL){
   
@@ -28,15 +26,15 @@ plot_pcs = function(pcA, pcB, pcax, outliers, pca, title=NULL){
   xlab = sprintf("%s (%s%%)", pcA, round(explained_var[[pcA]]*100, 1))
   ylab = sprintf("%s (%s%%)", pcB, round(explained_var[[pcB]]*100, 1))
   
-  g = ggplot(pcax, aes(x=get(pcA), y=get(pcB))) +
-    geom_point() +
-    theme_classic() +
-    labs(x=xlab, y=ylab, title=title)
+  g = ggplot2::ggplot(pcax, aes(x=get(pcA), y=get(pcB))) +
+    ggplot2::geom_point() +
+    ggplot2::theme_classic() +
+    ggplot2::labs(x=xlab, y=ylab, title=title)
   
   if(length(outliers) > 0){
-    g = g + geom_point(data=pcax[rownames(pcax) %in% outliers,], size=2, colour='red') +
-      geom_text_repel(data=pcax[rownames(pcax) %in% outliers,], aes(label=viallabel)) +
-      labs(title=title)
+    g = g + ggplot2::geom_point(data=pcax[rownames(pcax) %in% outliers,], size=2, colour='red') +
+      ggrepel::geom_text_repel(data=pcax[rownames(pcax) %in% outliers,], ggplot2::aes(label=viallabel)) +
+      ggplot2::labs(title=title)
   }
   
   return(g)
@@ -66,10 +64,15 @@ plot_pcs = function(pcA, pcB, pcax, outliers, pca, title=NULL){
 #'
 #' @examples
 #' bat_rna_data = transcript_prep_data("BAT", covariates = NULL, outliers = NULL)
-#' bat_rna_outliers = call_pca_outliers(bat_rna_data$norm_data, min_pc_ve=0.05, plot=T, verbose=T, iqr_coef=5, M=1000, title="Brown Adipose")
+#' bat_rna_outliers = call_pca_outliers(bat_rna_data$norm_data, 
+#'                                      min_pc_ve=0.05, 
+#'                                      plot=TRUE, 
+#'                                      verbose=TRUE, 
+#'                                      iqr_coef=5, 
+#'                                      M=1000, 
+#'                                      title="Brown Adipose")
 #'
 #' @export
-#' @import data.table
 #' @importFrom grDevices boxplot.stats
 #'
 call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, title=NULL){
@@ -80,8 +83,8 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
   
   # keep M features with highest CVs
   if(M < nrow(norm)){
-    cv = apply(norm, 1, function(x) (sd(x)/mean(x))*100)
-    cv = cv[order(cv, decreasing=T)]
+    cv = apply(norm, 1, function(x) (stats::sd(x)/mean(x))*100)
+    cv = cv[order(cv, decreasing=TRUE)]
     norm = norm[names(cv)[1:M],]
   }
   
@@ -89,7 +92,7 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
   tnorm = as.data.frame(t(norm))
   novar = names(which(apply(tnorm, 2, stats::var)==0))
   tnorm[,novar] = NULL
-  pca = prcomp(x = tnorm,center=T,scale.=T)
+  pca = stats::prcomp(x = tnorm,center=TRUE,scale.=TRUE)
   cum_var = summary(pca)[["importance"]][3,1:ncol(summary(pca)[["importance"]])]
   # save for later
   pca_before = pca
@@ -112,7 +115,7 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
   pca_outliers_report = c()
   pca_outliers = c()
   for(j in 1:num_pcs){
-    outlier_values = boxplot.stats(pcax[,j],coef=iqr_coef)$out # flag samples beyond IQR*iqr_coef
+    outlier_values = grDevices::boxplot.stats(pcax[,j],coef=iqr_coef)$out # flag samples beyond IQR*iqr_coef
     for(outlier in names(outlier_values)){
       pca_outliers_report = rbind(pca_outliers_report,
                                   c(paste("PC",j,sep=""),outlier,
@@ -147,7 +150,7 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
       tnorm <- as.data.frame(t(filt_norm))
       novar <- names(which(apply(tnorm, 2, stats::var)==0))
       tnorm[,novar] = NULL
-      pca = prcomp(x = tnorm,center=T,scale.=T)
+      pca = stats::prcomp(x = tnorm,center=TRUE,scale.=TRUE)
       pcax = pca$x[,1:max(2, num_pcs)]
       for(i in 2:max(2, num_pcs)){
         print(plot_pcs("PC1", paste0("PC", i), pcax, c(), pca, title=sprintf('%s after outlier removal',title)))
@@ -174,8 +177,8 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
 #' 
 #' @return NULL if there are no outliers, or a data frame with three columns and one row per outlier:
 #' \describe{
-#'   \item{\code{viallabel}}{character, @eval viallabel()}
-#'   \item{\code{tissue}}{@eval tissue()}
+#'   \item{\code{viallabel}}{character, `r viallabel()`}
+#'   \item{\code{tissue}}{`r tissue()`}
 #'   \item{\code{reason}}{character, PC(s) in which the sample was flagged}
 #' }
 #'
@@ -187,24 +190,21 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
 #' transcript_call_outliers(c("SKM-GN","BLOOD"))
 #'
 #' @export
-#' @import MotrpacBicQC
-#' @import data.table
-#' @import MotrpacRatTraining6moData
 #'
 transcript_call_outliers = function(tissues){
   pca_outliers_list = list()
   for(.tissue in tissues){
     
     data = transcript_prep_data(.tissue, covariates = NULL, outliers = NULL)
-    meta = data.table(data$metadata)
+    meta = data.table::data.table(data$metadata)
     counts = data$filt_counts
     tmm = data$norm_data
     
     message(sprintf("%s:",.tissue))
-    tmm_pca_1k = call_pca_outliers(tmm, 0.05, plot=T, verbose=T, iqr_coef=5, M=1000, title=.tissue)
+    tmm_pca_1k = call_pca_outliers(tmm, 0.05, plot=TRUE, verbose=TRUE, iqr_coef=5, M=1000, title=.tissue)
     
     if(length(tmm_pca_1k$pca_outliers)>0){
-      rep = as.data.table(tmm_pca_1k$pc_outliers_report)
+      rep = data.table::as.data.table(tmm_pca_1k$pc_outliers_report)
       rep[,tissue := .tissue]
       pca_outliers_list[[.tissue]] = rep
     }
