@@ -49,5 +49,12 @@ utils::globalVariables(
     "tr4_0",
     "tr8_0",
     "tr8_1",
-    "size")
-  )
+    "size", # immuno_timewise_da
+    "cytokine", # immuno_timewise_da
+    "test_grouping", # immuno_timewise_da
+    "terms", # immuno_timewise_da
+    "coef", # immuno_timewise_da
+    "coef_se", # immuno_timewise_da
+    "pval", # immuno_timewise_da
+    "panel" # immuno_timewise_da
+  ))
