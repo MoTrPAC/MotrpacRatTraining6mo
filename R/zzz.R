@@ -4,7 +4,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom ggplot2 guides scale_size theme annotate guide_legend aes element_rect ggplot
 #' @importFrom ggrepel geom_text_repel
-#' @importFrom stats na.omit prcomp sd median poly
+#' @importFrom stats na.omit prcomp sd median poly aov relevel
 #' @importFrom utils download.file data globalVariables
 ## usethis namespace: end
 NULL

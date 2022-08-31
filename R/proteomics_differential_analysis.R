@@ -30,7 +30,7 @@ limma_res_extract_se = function(limma_res,
 #'   One of the following: PROT, PHOSPHO, ACETYL, UBIQ
 #' @param tissue `r tissue()`
 #'
-#' @return a data frame with one row per proteomics feature per contrast (usually 8 rows per gene):
+#' @return a data frame with one row per proteomics feature per contrast (usually 8 rows per feature):
 #' \describe{
 #'   \item{\code{feature_ID}}{`r feature_ID()`}
 #'   \item{\code{sex}}{`r sex()`}
