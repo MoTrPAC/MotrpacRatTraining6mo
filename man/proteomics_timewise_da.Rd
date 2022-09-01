@@ -4,13 +4,16 @@
 \alias{proteomics_timewise_da}
 \title{Proteomics timewise differential analysis}
 \usage{
-proteomics_timewise_da(assay, tissue)
+proteomics_timewise_da(assay, tissue, exclude_outliers = TRUE)
 }
 \arguments{
 \item{assay}{character, abbreviation for proteomics assay to be analyzed as defined by \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV}.
 One of the following: PROT, PHOSPHO, ACETYL, UBIQ}
 
 \item{tissue}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
+
+\item{exclude_outliers}{bool, whether to remove sample outliers specified in
+\link[MotrpacRatTraining6moData:OUTLIERS]{MotrpacRatTraining6moData::OUTLIERS}. \code{TRUE} by default.}
 }
 \value{
 a data frame with one row per proteomics feature per contrast (usually 8 rows per feature):
@@ -22,7 +25,7 @@ a data frame with one row per proteomics feature per contrast (usually 8 rows pe
 \item{\code{assay_code}}{character, assay code used in data release. See \link[MotrpacBicQC:assay_codes]{MotrpacBicQC::assay_codes}.}
 \item{\code{tissue}}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
 \item{\code{tissue_code}}{character, tissue code used in data release. See \link[MotrpacBicQC:bic_animal_tissue_code]{MotrpacBicQC::bic_animal_tissue_code}.}
-\item{\code{covariates}}{character, comma-separated list of adjustment variables}
+\item{\code{removed_samples}}{character, comma-separated list of outliers (vial labels) removed from differential analysis}
 \item{\code{logFC}}{double, log fold-change where the numerator is 'comparison_group', e.g., '1w', and the denominator is the group of sex-matched sedentary control animals}
 \item{\code{logFC_se}}{double, standard error of the log fold-change}
 \item{\code{tscore}}{double, t statistic}

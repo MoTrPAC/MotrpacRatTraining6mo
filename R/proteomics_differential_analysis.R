@@ -29,6 +29,8 @@ limma_res_extract_se = function(limma_res,
 #' @param assay character, abbreviation for proteomics assay to be analyzed as defined by [MotrpacRatTraining6moData::ASSAY_ABBREV]. 
 #'   One of the following: PROT, PHOSPHO, ACETYL, UBIQ
 #' @param tissue `r tissue()`
+#' @param exclude_outliers bool, whether to remove sample outliers specified in 
+#'   [MotrpacRatTraining6moData::OUTLIERS]. \code{TRUE} by default. 
 #'
 #' @return a data frame with one row per proteomics feature per contrast (usually 8 rows per feature):
 #' \describe{
@@ -39,7 +41,7 @@ limma_res_extract_se = function(limma_res,
 #'   \item{\code{assay_code}}{`r assay_code()`}
 #'   \item{\code{tissue}}{`r tissue()`}
 #'   \item{\code{tissue_code}}{`r tissue_code()`}
-#'   \item{\code{covariates}}{character, comma-separated list of adjustment variables}
+#'   \item{\code{removed_samples}}{character, comma-separated list of outliers (vial labels) removed from differential analysis}
 #'   \item{\code{logFC}}{`r logFC()`}
 #'   \item{\code{logFC_se}}{`r logFC_se()`}
 #'   \item{\code{tscore}}{double, t statistic}
@@ -59,13 +61,17 @@ limma_res_extract_se = function(limma_res,
 #' @examples
 #' # Run timewise differential analysis for heart proteins
 #' proteomics_timewise_da("PROT","HEART")
-proteomics_timewise_da  = function(assay, tissue){
+proteomics_timewise_da  = function(assay, tissue, exclude_outliers=TRUE){
   
   tpDA_split_sex = c() # keep the timewise results
+  outliers = data.table::data.table(MotrpacRatTraining6moData::OUTLIERS)
+  # data.table workaround 
+  .tissue = tissue
+  .assay = assay
   
   #Extract current dataset and metadata
   x = 
-    load_sample_data(tissue, assay) %>%
+    load_sample_data(tissue, assay, exclude_outliers=exclude_outliers) %>%
     tibble::column_to_rownames(var = "feature_ID") %>%
     dplyr::select(-c("feature","tissue","assay")) %>%
     as.matrix()
@@ -121,7 +127,9 @@ proteomics_timewise_da  = function(assay, tissue){
       
       #Extract results
       limma_res = limma::topTable(lmfit.cont.ebayes,
-                           coef = curr_tp,number = Inf,sort.by = "none")
+                                  coef = curr_tp,
+                                  number = Inf,
+                                  sort.by = "none")
       
       curr_res = data.frame(
         feature_ID = rownames(limma_res),
@@ -131,7 +139,6 @@ proteomics_timewise_da  = function(assay, tissue){
         logFC_se = limma_res_extract_se(limma_res,lmfit.cont.ebayes),
         logFC = limma_res$logFC,
         tscore = limma_res$t,
-        covariates = NA,
         comparison_group = curr_tp,
         p_value = limma_res$P.Value
       )
@@ -151,6 +158,21 @@ proteomics_timewise_da  = function(assay, tissue){
       # Add NA counts
       curr_res$numNAs = rowSums(is.na(x[,c(case_samps,control_samps)]))
       
+      # Add outliers
+      curr_outliers = NA_character_
+      if(exclude_outliers){
+        curr_outliers = outliers[tissue==.tissue & 
+                                   assay==.assay & 
+                                   grepl(sprintf("control|%s", curr_tp), group) & 
+                                   grepl(sprintf("^%s", ifelse(SEX=="M", "male", "female")), group)]
+        if(nrow(curr_outliers)>0){
+          curr_outliers = paste(curr_outliers[,viallabel], collapse=",")
+        }else{
+          curr_outliers = NA_character_
+        }
+      }
+      curr_res$removed_samples = curr_outliers
+      
       # Add the results
       tpDA_split_sex = rbind(tpDA_split_sex,curr_res)
     }
@@ -166,7 +188,7 @@ proteomics_timewise_da  = function(assay, tissue){
                                      'assay_code',
                                      'tissue',
                                      'tissue_code',
-                                     'covariates',
+                                     'removed_samples',
                                      'logFC',
                                      'logFC_se',
                                      'tscore',
@@ -188,6 +210,8 @@ proteomics_timewise_da  = function(assay, tissue){
 #' @param assay character, abbreviation for proteomics assay to be analyzed as defined by [MotrpacRatTraining6moData::ASSAY_ABBREV]. 
 #'   One of the following: PROT, PHOSPHO, ACETYL, UBIQ
 #' @param tissue `r tissue()`
+#' @param exclude_outliers bool, whether to remove sample outliers specified in
+#'   [MotrpacRatTraining6moData::OUTLIERS]. \code{TRUE} by default. 
 #'
 #' @return a data frame with one row per proteomics feature:
 #' \describe{
@@ -196,6 +220,7 @@ proteomics_timewise_da  = function(assay, tissue){
 #'   \item{\code{assay_code}}{`r assay_code()`}
 #'   \item{\code{tissue}}{`r tissue()`}
 #'   \item{\code{tissue_code}}{`r tissue_code()`}
+#'   \item{\code{removed_samples}}{character, comma-separated list of outliers (vial labels) removed from differential analysis}
 #'   \item{\code{fscore_male}}{double, F statistic for males}
 #'   \item{\code{fscore_female}}{double, F statistic for females}
 #'   \item{\code{p_value_male}}{double, nominal F-test p-value for males}
@@ -218,13 +243,17 @@ proteomics_timewise_da  = function(assay, tissue){
 #' @examples
 #' # Run training differential analysis for heart proteins
 #' proteomics_training_da("PROT","HEART")
-proteomics_training_da = function(assay, tissue){
+proteomics_training_da = function(assay, tissue, exclude_outliers=TRUE){
   
   ftest_res_split_sex = c() # keeps all ftest results
+  outliers = data.table::data.table(MotrpacRatTraining6moData::OUTLIERS)
+  # data.table workaround 
+  .tissue = tissue
+  .assay = assay
   
   #Extract current dataset and metadata
   x = 
-    load_sample_data(tissue, assay) %>%
+    load_sample_data(tissue, assay, exclude_outliers=exclude_outliers) %>%
     tibble::column_to_rownames(var = "feature_ID") %>%
     dplyr::select(-c("feature","tissue","assay")) %>%
     as.matrix()
@@ -267,7 +296,6 @@ proteomics_training_da = function(assay, tissue){
     fit <- limma::lmFit(curr_counts, design)
     fit.eb <- limma::eBayes(fit)
     
-    
     #Extract results
     res = limma::topTable(fit.eb, coef = 2:5, n=nrow(fit.eb))
     dt = data.table::data.table(tissue=tissue,
@@ -277,11 +305,26 @@ proteomics_training_da = function(assay, tissue){
                     p_value = res$P.Value,
                     full_model = "~1+group",
                     reduced_model = "~1")
+
+    # Add outliers
+    curr_outliers = NA_character_
+    if(exclude_outliers){
+      curr_outliers = outliers[tissue==.tissue & 
+                                 assay==.assay & 
+                                 grepl(sprintf("^%s", ifelse(SEX=="M", "male", "female")), group)]
+      if(nrow(curr_outliers)>0){
+        curr_outliers = paste(curr_outliers[,viallabel], collapse=",")
+      }else{
+        curr_outliers = NA_character_
+      }
+    }
+    dt[,removed_samples := curr_outliers]
+    
     sex_res[[SEX]] = dt
     
   }
   
-  #Merge F-test results
+  # Merge F-test results
   merged = data.frame(merge(sex_res[['M']], sex_res[['F']], 
                             by=c("tissue","assay","feature_ID","full_model","reduced_model"), 
                             suffixes=c('_male','_female'))) %>%
@@ -291,7 +334,7 @@ proteomics_training_da = function(assay, tissue){
   
   ftest_res_split_sex <- rbind(ftest_res_split_sex,merged)
   
-  # add columns and change order
+  # Add columns and change order
   ftest_res_split_sex$tissue_code = MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[[tissue]]
   ftest_res_split_sex$assay_code = MotrpacRatTraining6moData::ASSAY_ABBREV_TO_CODE[[assay]]
   ftest_res_split_sex = ftest_res_split_sex[,c(
@@ -300,6 +343,8 @@ proteomics_training_da = function(assay, tissue){
     "assay_code",
     "tissue",
     "tissue_code",
+    "removed_samples_male",
+    "removed_samples_female",
     "fscore_male",
     "fscore_female",
     "p_value_male",

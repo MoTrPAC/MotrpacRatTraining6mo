@@ -40,7 +40,7 @@ Imports:
     magrittr,
     MCL,
     metap,
-    MotrpacRatTraining6moData (>= 1.2.0),
+    MotrpacRatTraining6moData (>= 1.2.1),
     multcomp,
     purrr,
     repfdr,
