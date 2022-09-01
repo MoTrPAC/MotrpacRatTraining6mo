@@ -16,7 +16,7 @@ One of the following: PROT, PHOSPHO, ACETYL, UBIQ}
 \link[MotrpacRatTraining6moData:OUTLIERS]{MotrpacRatTraining6moData::OUTLIERS}. \code{TRUE} by default.}
 }
 \value{
-a data frame with one row per proteomics feature per contrast (usually 8 rows per gene):
+a data frame with one row per proteomics feature per contrast (usually 8 rows per feature):
 \describe{
 \item{\code{feature_ID}}{character, MoTrPAC feature identifier}
 \item{\code{sex}}{character, one of 'male' or 'female'}

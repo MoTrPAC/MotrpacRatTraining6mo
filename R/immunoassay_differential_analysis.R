@@ -188,6 +188,150 @@ immuno_timewise_da = function(){
   return(reportTab)
 }
 
-# immuno_training_da = function(){
-#   
-# }
+
+#' Immunoassay training differential analysis 
+#' 
+#' For each panel and tissue, perform a likelihood ratio test to test the effect of training
+#' across time points. Analysis is performed separately for males and females. 
+#' 
+#' @return a data frame with one row per feature:
+#' \describe{
+#'   \item{\code{feature_ID}}{`r feature_ID()`}
+#'   \item{\code{assay}}{`r assay()`}
+#'   \item{\code{assay_code}}{`r assay_code()`}
+#'   \item{\code{dataset}}{character, LUMINEX panel}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{tissue_code}}{`r tissue_code()`}
+#'   \item{\code{removed_samples_male}}{character, comma-separated list of male samples (vial labels) removed from differential analysis}
+#'   \item{\code{removed_samples_female}}{character, comma-separated list of female samples (vial labels) removed from differential analysis}
+#'   \item{\code{lrt_male}}{double, likelihood ratio test statistic for males}
+#'   \item{\code{lrt_female}}{double, likelihood ratio test statistic for females}
+#'   \item{\code{p_value_male}}{double, nominal LRT p-value for males}
+#'   \item{\code{p_value_female}}{double, nominal LRT p-value for females}
+#'   \item{\code{full_model}}{character, full model used in LRT for males and females}
+#'   \item{\code{reduced_model}}{character, reduced model used in LRT for males and females}
+#'   \item{\code{p_value}}{double, combined male and female nominal p-value using the sum of logs}
+#' }
+#' @export
+#' 
+#' @importFrom lmtest lrtest
+#'
+#' @examples
+#' res = immuno_training_da()
+immuno_training_da = function(){
+  
+  imputed_data = fetch_object("IMMUNO_NORM_DATA_NESTED")
+  metadata = data.table::data.table(fetch_object("IMMUNO_META"))[,c("sex", "group", "tissue", "log2_CHEX4", "panel_name", "viallabel"), with=F]
+  
+  training_res = list()
+  i=1
+  for(PANEL in names(imputed_data)){
+    for(TISSUE in names(imputed_data[[PANEL]])){
+      
+      data = imputed_data[[PANEL]][[TISSUE]]
+      all_meta = metadata[tissue == TISSUE & panel_name == PANEL]
+      
+      # melt data
+      mdata = as.data.frame(data.table::melt(as.data.table(data), 
+                                             id.vars=c('viallabel'),
+                                             variable.name='feature_ID', 
+                                             value.name='value'))
+      # merge with meta
+      mdata = merge(mdata, all_meta, by="viallabel")
+      
+      # for each analyte, perform sex-split tests
+      for(analyte in unique(mdata$feature_ID)){
+        training_sex = list()
+        for(SEX in unique(mdata$sex)){
+          curr_data = mdata[mdata$feature_ID == analyte & mdata$sex == SEX,]
+          # check to see if there are at least two non-na samples per group
+          curr_data = curr_data[!is.na(curr_data$value),]
+          group_table = table(curr_data$group)
+          if(any(group_table < 2)){
+            groups_to_discard = names(group_table)[group_table < 2]
+            if("control" %in% groups_to_discard){
+              # if the timepoint is control, discard the whole analyte
+              message(sprintf("Group 'control' in %s %s %s %s has less than 2 values. Removing analyte.", 
+                              PANEL, TISSUE, SEX, analyte))
+              next
+            }else{
+              # if not, discard that timepoint
+              message(sprintf("Group %s in %s %s %s %s has less than 2 values. Removing remaining samples in this group.",
+                              paste0(groups_to_discard, collapse=', '), PANEL, TISSUE, SEX, analyte))
+              curr_data = curr_data[!curr_data$group %in% groups_to_discard,]
+            }
+          }
+          
+          all_samples = all_meta[sex == SEX, viallabel]
+          removed_samples = all_samples[!all_samples %in% as.character(curr_data$viallabel)]
+          
+          # training-dea
+          lm_full = stats::lm(value ~ group + log2_CHEX4, data=curr_data)
+          lm_reduced = stats::lm(value ~ log2_CHEX4, data=curr_data)
+          lrt = lmtest::lrtest(lm_full, lm_reduced)
+          
+          # save results to table 
+          training_sex[[SEX]] = data.frame(assay="IMMUNO",
+                                           assay_code='immunoassay',
+                                           dataset=PANEL,
+                                           feature_ID=analyte,
+                                           tissue=TISSUE,
+                                           lrt=lrt$LogLik[2],
+                                           p_value=lrt$`Pr(>Chisq)`[2],
+                                           removed_samples=ifelse(length(removed_samples)==0, 
+                                                                  NA_character_, 
+                                                                  paste0(removed_samples, collapse=',')),
+                                           full_model="~group+log2_CHEX4",
+                                           reduced_model="~log2_CHEX4")
+        }
+        # meta-analysis of p-values
+        if(length(training_sex) > 1){
+          # merge male and female results for this feature
+          male = training_sex[['male']]
+          female = training_sex[['female']]
+          merged = merge(male, female, by=c('feature_ID','dataset','assay','assay_code', 'tissue','reduced_model','full_model'),
+                         suffixes=c("_male","_female"), all=T)
+          # calculate meta-analysis p-value (one per feature)
+          pvals = c(merged$p_value_male, merged$p_value_female)
+          pvals = pvals[!is.na(pvals)]
+          merged$p_value = sumlog(pvals)$p
+          # save results to list 
+          training_res[[i]] = merged
+          i=i+1
+        }else{
+          sex_label = names(training_sex)[1]
+          df = training_sex[[1]]
+          colnames(df)[colnames(df) == 'lrt'] = sprintf('lrt_%s', sex_label)
+          colnames(df)[colnames(df) == 'removed_samples'] = sprintf('removed_samples_%s', sex_label)
+          training_res[[i]] = df
+          i=i+1
+        }
+      }
+    }
+  }
+  training = as.data.frame(data.table::rbindlist(training_res, fill=TRUE))
+  training$removed_samples_male = as.character(training$removed_samples_male)
+  training$removed_samples_female = as.character(training$removed_samples_female)
+  training$tissue_code = MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[training$tissue]
+
+  # reorder columns for consistency 
+  training = training[,c(
+    "feature_ID",
+    "assay",
+    "assay_code",
+    "dataset",
+    "tissue",
+    "tissue_code",
+    "removed_samples_male",
+    "removed_samples_female",
+    "lrt_male",
+    "lrt_female",
+    "p_value_male",
+    "p_value_female",
+    "full_model",
+    "reduced_model",
+    "p_value"
+  )]
+  
+  return(training)
+}
