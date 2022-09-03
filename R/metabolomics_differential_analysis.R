@@ -1,31 +1,10 @@
-#' Function to extract standard errors from limma results
-#'
-#' @param limma_res Result table as produced by limma
-#' @param e_fit eBayes fit object as produced by limma
-#' @param effect_col The column containing the effect size
-#' @param t_col The column containing the t statistic
-#'
-#' @return A vector of standard errors for effect sizes
-#' 
-#' @export
-#'
-limma_res_extract_se<-function(limma_res,
-                               e_fit,
-                               effect_col="logFC",
-                               t_col="t"){
-  effects = limma_res[[effect_col]]
-  ts = limma_res[[t_col]]
-  ses1 = effects/ts
-  return(ses1)
-}
-
 #' Metabolomics Training Differential Analysis
 #' 
 #' Use limma to test the effect of training across timepoints. The analysis
 #' is performed separately for Male and Female rats and combined into a single
 #' p-values using sum of logs.
 #'
-#' @param tissue_abbrev Abbreviation for proteomics tissue to be analyzed as defined by TISSUE_ABBREV.
+#' @param tissue `r tissue()`
 #'
 #' @return a data frame with one row per metabolite:
 #' \describe{
@@ -43,18 +22,15 @@ limma_res_extract_se<-function(limma_res,
 #' }
 #' 
 #' @export
-#' @import MotrpacRatTraining6moData
-#' @import dplyr
-#' @import limma
-#' @import metap
-#' @import data.table
-#' @import magrittr
+#' @importFrom dplyr filter transmute bind_rows if_else case_when mutate
+#' @importFrom tidyr replace_na
+#' @importFrom limma lmFit eBayes topTable 
+#' @importFrom purrr map2_dbl
+#' @import metap sumlog
 #' 
 #' @examples
-#' metab_training_dea("HEART")
-metab_training_dea <- function(tissue_abbrev){
-  
-  tissue = tissue_abbrev
+#' metab_training_da("HEART")
+metab_training_da <- function(tissue){
   
   #Save F-test results
   f_results = list()
@@ -75,9 +51,9 @@ metab_training_dea <- function(tissue_abbrev){
       MotrpacRatTraining6moData::PHENO %>%
       dplyr::filter(viallabel %in% colnames(x)) %>%
       dplyr::transmute(
-        sex = if_else(sex == "male","M","F"),
+        sex = dplyr::if_else(sex == "male","M","F"),
         group,
-        tr = factor(case_when(
+        tr = factor(dplyr::case_when(
           group == "control" ~ "8_1",
           group == "1w" ~ "1_0",
           group == "2w" ~ "2_0",
@@ -92,7 +68,7 @@ metab_training_dea <- function(tissue_abbrev){
     sex_res = list() #F-test result
     
     for(SEX in c('M','F')){
-      curr_meta = covs %>% filter(sex == SEX) 
+      curr_meta = covs %>% dplyr::filter(sex == SEX) 
       if(nrow(curr_meta) > 0){
         curr_counts = x[,rownames(curr_meta)]
         
@@ -103,14 +79,14 @@ metab_training_dea <- function(tissue_abbrev){
                                          unique(curr_meta$tr))))
         
         #Generate the experimental model
-        design <- model.matrix(~ 1+tr)
+        design <- stats::model.matrix(~ 1+tr)
         fit <- limma::lmFit(curr_counts, design)
         fit.eb <- limma::eBayes(fit)
         
         #Extract results
         id_coefs <- colnames(design)[2:ncol(design)]
         res = limma::topTable(fit.eb, coef = id_coefs, n=nrow(fit.eb))
-        dt = data.table(feature_ID=rownames(res),
+        dt = data.table::data.table(feature_ID=rownames(res),
                         fscore=res$`F`,
                         p_value = res$P.Value,
                         full_model = "~1+group",
@@ -119,9 +95,9 @@ metab_training_dea <- function(tissue_abbrev){
         sex_res[[SEX]] = dt
       } else {
         #Handle cases in which there are no samples for one sex
-        curr_meta = covs %>% filter(sex != SEX) 
+        curr_meta = covs %>% dplyr::filter(sex != SEX) 
         curr_counts = x[,rownames(curr_meta)]
-        dt = data.table(feature_ID=rownames(curr_counts),
+        dt = data.table::data.table(feature_ID=rownames(curr_counts),
                         fscore=NA,
                         p_value = NA,
                         full_model = "~1+group",
@@ -141,17 +117,17 @@ metab_training_dea <- function(tissue_abbrev){
     #Special handling for ovaries and testes which only have samples for one sex
     if(sum(is.na(merged$p_value_female)) == nrow(merged)){
       merged <- merged %>%
-        mutate(p_value_male = replace_na(p_value_male,1),
+        dplyr::mutate(p_value_male = tidyr::replace_na(p_value_male,1),
                p_value = p_value_male)
     } else if (sum(is.na(merged$p_value_male)) == nrow(merged)){
       merged <- merged %>% 
-        mutate(p_value_female = replace_na(p_value_female,1),
+        dplyr::mutate(p_value_female = tidyr::replace_na(p_value_female,1),
                p_value = p_value_female)
     } else {
       merged <- merged %>%
-        mutate(p_value_male = replace_na(p_value_male,1),
-               p_value_female = replace_na(p_value_female,1)) %>%
-        mutate(p_value = map2_dbl(p_value_male,p_value_female,function(x,y){sumlog(c(x,y))$p}))
+        dplyr::mutate(p_value_male = tidyr::replace_na(p_value_male,1),
+               p_value_female = tidyr::replace_na(p_value_female,1)) %>%
+        dplyr::mutate(p_value = purrr::map2_dbl(p_value_male,p_value_female,function(x,y){metap::sumlog(c(x,y))$p}))
     }
     
     merged$platform = metab_assay
@@ -168,7 +144,7 @@ metab_training_dea <- function(tissue_abbrev){
 #' Use limma to test the effect of training for each exercised time point vs the control. The analysis
 #' is performed separately for Male and Female rats 
 #'
-#' @param tissue_abbrev Abbreviation for proteomics tissue to be analyzed as defined by TISSUE_ABBREV.
+#'  @param tissue `r tissue()`
 #'
 #' @return a data frame with one row per metabolite, time, and sex combination:
 #' \describe{
@@ -192,19 +168,13 @@ metab_training_dea <- function(tissue_abbrev){
 #'}
 #' 
 #' @export
-#' @import MotrpacRatTraining6moData
-#' @import dplyr
-#' @import limma
-#' @import metap
-#' @import data.table
-#' @import magrittr
+#' @import dplyr filter transmute bind_rows if_else case_when mutate
+#' @importFrom limma lmFit eBayes topTable makeContrasts contrasts.fit
 #' 
 #' @examples
 #' # Perform differential analysis for metabolites in heart tissue.
-#' metab_training_dea("HEART")
-metab_timewise_dea <- function(tissue_abbrev){
-  
-  tissue = tissue_abbrev
+#' metab_training_da("HEART")
+metab_timewise_da <- function(tissue){
   
   #Save F-test results
   t_results = list()
@@ -225,9 +195,9 @@ metab_timewise_dea <- function(tissue_abbrev){
       MotrpacRatTraining6moData::PHENO %>%
       dplyr::filter(viallabel %in% colnames(x)) %>%
       dplyr::transmute(
-        sex = if_else(sex == "male","M","F"),
+        sex = dplyr::if_else(sex == "male","M","F"),
         group,
-        tr = factor(case_when(
+        tr = factor(dplyr::case_when(
           group == "control" ~ "8_1",
           group == "1w" ~ "1_0",
           group == "2w" ~ "2_0",
@@ -246,7 +216,7 @@ metab_timewise_dea <- function(tissue_abbrev){
     x_cv <- apply(x,1,sd)/apply(x,1,mean)
     
     #Calculate CV for control
-    control_viallabels <- covs %>% filter(is_control == 1) %>% .$viallabel
+    control_viallabels <- covs %>% dplyr::filter(is_control == 1) %>% .$viallabel
     x_control = x[,control_viallabels]
     if(length(control_viallabels)>3){
       control_cvs = apply(x_control,1,sd)/apply(x_control,1,mean)
@@ -255,7 +225,7 @@ metab_timewise_dea <- function(tissue_abbrev){
     }
     
     for(SEX in c('M','F')){
-      curr_meta = covs %>% filter(sex == SEX) 
+      curr_meta = covs %>% dplyr::filter(sex == SEX) 
       
       if(nrow(curr_meta) > 0){
         
@@ -268,7 +238,7 @@ metab_timewise_dea <- function(tissue_abbrev){
                                intersect(c("1_0","2_0","4_0","8_0"),
                                          unique(curr_meta$tr))))
         
-        design = model.matrix(~0+tr)
+        design = stats::model.matrix(~0+tr)
         
         #Set contrasts
         cont.matrix = limma::makeContrasts(
@@ -283,7 +253,7 @@ metab_timewise_dea <- function(tissue_abbrev){
         cont.matrix <- cont.matrix[,apply(cont.matrix,2,sum)== 0]
         
         #Rename column of contrast matrix to something readable
-        colnames(cont.matrix) = case_when(
+        colnames(cont.matrix) = dplyr::case_when(
           colnames(cont.matrix) == "tr1_0 - tr8_1" ~ "1w",
           colnames(cont.matrix) == "tr2_0 - tr8_1" ~ "2w",
           colnames(cont.matrix) == "tr4_0 - tr8_1" ~ "4w",
@@ -304,10 +274,10 @@ metab_timewise_dea <- function(tissue_abbrev){
           
           curr_res = data.frame(
             feature_ID = rownames(limma_res),
-            sex = if_else(SEX == "M","male","female"),
+            sex = dplyr::if_else(SEX == "M","male","female"),
             cv = x_cv,
             control_cv = control_cvs, 
-            logFC_se = limma_res_extract_se(limma_res,lmfit.cont.ebayes),
+            logFC_se = limma_res_extract_se(limma_res),
             logFC = limma_res$logFC,
             tscore = limma_res$t,
             covariates = NA,
@@ -317,7 +287,7 @@ metab_timewise_dea <- function(tissue_abbrev){
           )
           # Add group average intensities
           case_samps = covs %>% 
-            filter(sex == SEX &
+            dplyr::filter(sex == SEX &
                      group == curr_tp) %>%
             rownames()
           
@@ -325,7 +295,7 @@ metab_timewise_dea <- function(tissue_abbrev){
           
           
           control_samps = covs %>% 
-            filter(sex == SEX &
+            dplyr::filter(sex == SEX &
                      is_control == 1) %>%
             rownames()
           curr_res$reference_average_intensity = apply(x[,control_samps],1,mean,na.rm=TRUE)
