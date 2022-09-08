@@ -1,12 +1,17 @@
-#' TODO
-#' Calculate EnrichmentMap's similarity metric for pathways
-#' Function used internally in `enrichment_network_vis()`
+#' Calculate pathway similarity metric 
 #' 
-#' @param string1 comma-separated list of intersection with pathway1
-#' @param string2 comma-separated list of intersection with pathway2
+#' Calculate EnrichmentMap's similarity metric for pathways, which is 50% Jaccard
+#' index and 50% overlap score.
+#' Function is used internally in [enrichment_network_vis()]. 
 #' 
-#' @return numeric: similarity score (50% Jaccard, 50% Overlap)
-.calc_similarity_metric = function(string1, string2){
+#' @param string1 character, comma-separated list of intersection with pathway1
+#' @param string2 character, comma-separated list of intersection with pathway2
+#' 
+#' @return numeric similarity score
+#' 
+#' @seealso [enrichment_network_vis()]
+#' 
+calc_similarity_metric = function(string1, string2){
   # use Cytoscape Enrichment Map similarity score:
   # jaccard = [size of (A intersect B)] / [size of (A union B)]
   # overlap = [size of (A intersect B)] / [size of (minimum( A , B))]
@@ -22,26 +27,36 @@
 }
 
 
-#' TODO
-#' Replace Ensembl IDs with gene symbols
-#' Function used internally in `enrichment_network_vis()`
+#' Replace Ensembl ID with gene symbol
 #' 
-#' @param x string: comma-separated Ensembl IDs
-#' @param map data.table master_feature_to_gene
-#' @param return_N boolean, whether or not to prepend the concatenated 
-#'     gene symbols with the number of unique gene symbols
-#' @param collapse boolean, whether or not to collapse the gene symbols into a 
-#'     comma-separated string. If not, return a vector of unique gene symbols
+#' Function is used internally in [enrichment_network_vis()].
+#' 
+#' @param x character, comma-separated Ensembl IDs
+#' @param map data frame, mapping between Ensembl IDs and gene symbols.
+#'   Must include the columns "ensembl_gene" and "gene_symbol". 
+#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default.
+#' @param return_N boolean, whether to prepend the concatenated 
+#'     gene symbols with the number of unique gene symbols.
+#'     \code{TRUE} by default. 
+#' @param collapse boolean, whether to collapse the gene symbols into a 
+#'     comma-separated string. If not, return a vector of unique gene symbols.
+#'     \code{TRUE} by default. 
 #'     
-#' @return string: comma-separated gene symbols
-.replace_ensembl_with_symbol = function(x, map, return_N = T, collapse = T){
-  require(data.table)
-  if(!is.data.table(map)){
-    map = data.table(map)
-    # map = unique(feature_to_gene[,.(ensembl_gene, gene_symbol)])
-    # map = map[!is.na(ensembl_gene)]
-    setkey(map, ensembl_gene)
-  }
+#' @return either a string of comma-separated gene symbols, 
+#'   a vector of unique gene symbols,
+#'   or a named list with two values ("N" and "genes")
+#'   depending on the values of \code{return_N} and \code{collapse}. 
+#'   
+#' @seealso [enrichment_network_vis()]
+#' 
+replace_ensembl_with_symbol = function(x, 
+                                       map = MotrpacRatTraining6moData::FEATURE_TO_GENE, 
+                                       return_N = TRUE, 
+                                       collapse = TRUE){
+  
+  map = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE)
+  data.table::setkey(map, ensembl_gene)
+
   ensembls = unlist(unname(strsplit(x, ',')))
   if(all(is.na(ensembls))){
     if(return_N & collapse){
@@ -75,9 +90,26 @@
 }
 
 
-# TODO
-.format_gene_symbols = function(x, return_N = T, collapse = T){
-  require(data.table)
+#' Format gene symbols
+#' 
+#' Format a string of comma-separated gene symbols for use in [enrichment_network_vis()].
+#'
+#' @param x character, comma-separated gene symbols
+#' @param return_N boolean, whether to prepend the concatenated 
+#'     gene symbols with the number of unique gene symbols.
+#'     \code{TRUE} by default. 
+#' @param collapse boolean, whether to collapse the gene symbols into a 
+#'     comma-separated string. If not, return a vector of unique gene symbols.
+#'     \code{TRUE} by default. 
+#'     
+#' @return either a string of comma-separated gene symbols, 
+#'   a vector of unique gene symbols,
+#'   or a named list with two values ("N" and "genes")
+#'   depending on the values of \code{return_N} and \code{collapse}. 
+#'   
+#' @seealso [enrichment_network_vis()]
+#'
+format_gene_symbols = function(x, return_N = TRUE, collapse = TRUE){
   symbols = unlist(unname(strsplit(x, ',')))
   if(all(is.na(symbols))){
     if(return_N & collapse){
@@ -108,15 +140,19 @@
   }
 }
 
-# TODO
+
 #' Return intersection of gene symbols
-#' Function used internally in `enrichment_network_vis()`
 #' 
-#' @param ensembl1 string: comma-separated gene symbols of intersection from start node
-#' @param ensembl2 string: comma-separated gene symbols of intersection from end node
+#' Function used internally in [enrichment_network_vis()].
 #' 
-#' @return string: comma-separated gene symbols in intersection 
-.edge_intersection = function(symbol1, symbol2){
+#' @param ensembl1 character, comma-separated gene symbols of intersection from start node
+#' @param ensembl2 character, comma-separated gene symbols of intersection from end node
+#' 
+#' @return string of comma-separated gene symbols in intersection 
+#' 
+#' @seealso [enrichment_network_vis()]
+#' 
+edge_intersection = function(symbol1, symbol2){
   symbol1 = unique(unname(unlist(strsplit(symbol1, ', '))))
   symbol2 = unique(unname(unlist(strsplit(symbol2, ', '))))
   gene_intersection = intersect(symbol1, symbol2)
@@ -124,52 +160,43 @@
 }
 
 
-# TODO
-#' Assign hex colors to continuous values 
-#' Function used internally in `enrichment_network_vis()`
+#' Collapse p-values 
 #' 
-#' @param hex_vec e.g. `brewer.pal(9,"YlOrRd")[3:9]`
-#' @param values e.g. `-log10(points[,sumlog_p])`
-#' 
-#' @return vector of hex codes corresponding to values, in the order they were supplied 
-.get_feature_colors = function(hex_vec, values){
-  require(RColorBrewer)
-  my.col = colorRampPalette(hex_vec)(100)
-  # get quantile from values; get corresponding quantile from my.col
-  values_quant = ecdf(values)(values)
-  values_percentile = ceiling(values_quant*100)
-  values_colors = my.col[values_percentile]
-  return(values_colors)
-}
-
-
-# TODO
-#' Collapse p-values using `metap::sumlog()` when multiple are present
-#' Function used internally in `enrichment_network_vis()`
+#' Collapse p-values using [metap::sumlog()] when multiple are present.
+#' Function is used internally in [enrichment_network_vis()].
 #' 
 #' @param ps vector of nominal p-values 
 #' 
 #' @return merged p-value 
-.collapse_p = function(ps){
-  require(metap)
+#' 
+#' @importFrom metap sumlog
+#' 
+#' @seealso [enrichment_network_vis()]
+#' 
+collapse_p = function(ps){
   if(length(ps) == 1){
     return(ps)
   }else{
-    return(sumlog(ps)$p)
+    return(metap::sumlog(ps)$p)
   }
 }
 
 
-# TODO
 #' Add line breaks to a string 
-#' Function used internally in `enrichment_network_vis()`
 #' 
-#' @param x string
-#' @param max_char add line breaks every `max_char` characters 
+#' Given a long string, add line breaks "\<br\>" at specified intervals. 
+#' Breaks are always added at the preceding instance of the separator. 
+#' Function is used internally in [enrichment_network_vis()]. 
+#' 
+#' @param x character string
+#' @param max_char integer, add line breaks at least every \code{max_char} characters 
 #' @param sep character after which to add line break
 #' 
-#' @return string with additional <br> if necessary 
-.add_line_breaks = function(x, max_char=50, sep=','){
+#' @return string with additional \<br\> if necessary 
+#' 
+#' @seealso [enrichment_network_vis()]
+#' 
+add_line_breaks = function(x, max_char=50, sep=','){
   if(nchar(x) > max_char){
     charsplits = unname(unlist(strsplit(x, "")))
     newbreaks = seq(max_char, nchar(x), by=max_char)
@@ -185,62 +212,153 @@
 }
 
 
-# TODO
-#' Apply `.add_line_breaks()` to `points[,enriched]` column
-#' #' Function used internally in `enrichment_network_vis()`
+#' Format gene lists
 #' 
-#' @param x value in `points[,enriched]` column
+#' Apply [add_line_breaks()] to the \code{points$enriched} column. 
+#' Function is used internally in [enrichment_network_vis()]. 
 #' 
-#' @return string, new value with additional line breaks 
-.format_gene_lists = function(x){
+#' @param x value in \code{points$enriched} column
+#' 
+#' @return character, new value with additional line breaks 
+#' 
+#' @seealso [enrichment_network_vis()], [add_line_breaks()]
+#' 
+format_gene_lists = function(x){
   if(grepl("(METAB)", x)) return(x)
   splits = unname(unlist(strsplit(x, "<br>")))
-  newsplits = unname(unlist(sapply(splits, .add_line_breaks)))
+  newsplits = unname(unlist(sapply(splits, add_line_breaks)))
   return(paste0(newsplits, collapse="<br>"))
 }
 
 
-# TODO
-#' Plot a network view of pathway enrichments for a cluster, node, or trajectory
+#' Clean up pathways
 #' 
-#' @param sub_enrich data.frame of enrichment results returned from `cluster_pathway_enrichment()`, 
-#'     subset to the cluster of interest. Columns must include "adj_p_value", "ome", "tissue", 
-#'     "intersection", "computed_p_value", "term_size", "query_size", "intersection_size", "term_name", "term_id". 
-#' @param feature_to_gene data.frame: gs://motrpac-data-freeze-pass/pass1b-06/v1.1/analysis/resources/motrpac-mappings-master_feature_to_gene.txt
-#' @param classlist list, map of KEGG pathway term ID to class
-#' @param corr_thresh similarity metric between pathways below which edges are not drawn between pathways 
-#' @param adj_pval_cutoff adj_p_value threshold to define significant enrichments
-#' @param verbose boolean, whether or not to print verbose output
-#' @param title plot title
-#' @param add_group_label_nodes boolean, whether or not to label groups with nodes. If FALSE, use a standard legend instead. 
-#' @param out_html output file for HTML
-#' @param overwrite_html boolean, whether or not to overwrite `out_html` if it already exists 
-#' @param return_html boolean, if TRUE return the path to `out_html`
-#' @param save_similarity_scores character or NULL, provide RDS path in which to save/read pairwise similarity scores. 
-#'     This is a big time saver if you run more than one iteration.
-#' @param multitissue_pathways_only boolean, if TRUE, only include pathways in the input enriched in more than one tissue
-#' @param include_metab boolean, if TRUE include pathways enriched only by METAB as singleton nodes
-#' @param return_graph_for_cytoscape boolean, if TRUE return igraph::graph_from_data_frame
-#' @param intersection_id_type character, type of gene identifier used to define the intersection column in the input, one of c('ensembl_gene', 'gene_symbol')
+#' Remove punctuation, numbers, and common words to determine qualitative 
+#' overlap between pathways enriched by metabolites versus other pathways.
+#' Function used internally in [enrichment_network_vis()].
+#'
+#' @param x character, pathway names 
+#'
+#' @return vector of candidate words to determine overlap 
 #' 
-#' @result visNetwork graph with `visIgraphLayout(v1,layout = "layout_nicely")`
-enrichment_network_vis = function(sub_enrich, 
-                                  feature_to_gene,
-                                  classlist,
-                                  corr_thresh = 0.375,
+#' @seealso [enrichment_network_vis()]
+#'
+cleanup = function(x){
+  x1 = gsub(":|-|;|'|[0-9]|,","",x)
+  x2 = unique(tolower(unlist(strsplit(x1, " "))))
+  x2 = x2[x2!=""]
+  x2 = x2[!x2 %in% tm::stopwords()]
+  # exclude other common words
+  common_pw_words = c("regulation", "cell", "diseases", "pathway", "response", "system", "human", "disease", "systems")
+  x2 = x2[!x2 %in% common_pw_words]
+  return(x2)
+}
+
+
+#' Pathway enrichment network
+#' 
+#' Plot an interactive network of pathway enrichments. 
+#' 
+#' @param pw_enrich_res data frame of enrichment results. 
+#'   May be a subset of [MotrpacRatTraining6moData::GRAPH_PW_ENRICH] 
+#'   or a data frame returned from [cluster_pathway_enrichment()].
+#'   Columns must include "adj_p_value", "ome", "tissue", "intersection", "computed_p_value", 
+#'   "term_size", "query_size", "intersection_size", "term_name", "term_id". 
+#' @param feature_to_gene data frame, map between \code{intersection_id_type} and gene symbols. 
+#'   Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
+#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default. 
+#' @param intersection_id_type character, type of gene identifier used to define 
+#'   \code{pw_enrich_res$intersection}, either "ensembl_gene" or "gene_symbol"
+#' @param similarity_cutoff numeric, edges are drawn between pairs of pathways if they have 
+#'   a similarity metric above this value. 0.375 by default. 
+#' @param adj_pval_cutoff numeric, pathway enrichments are only considered for 
+#'   the network if the corresponding adjusted p-value (\code{pw_enrich_res$adj_p_value}) 
+#'   is less than this value. 0.1 (10% FDR) by default. 
+#' @param title character, plot title. \code{NULL} by default. 
+#' @param add_group_label_nodes boolean, whether to label groups with nodes. 
+#'   If \code{FALSE}, use a standard legend instead. 
+#' @param parent_pathways named list, map of KEGG and REAC pathway term ID to parent pathway.
+#'   Used to create labels for clusters of pathway enrichments. 
+#'   List names must correspond to values in \code{pw_enrich_res$term_id}. 
+#'   [MotrpacRatTraining6moData::PATHWAY_PARENTS] by default. 
+#' @param multitissue_pathways_only boolean. If \code{TRUE}, only include pathways 
+#'   in the network if they are significantly enriched in more than one tissue
+#'   in \code{pw_enrich_res}.
+#' @param include_metab_singletons boolean. If \code{TRUE}, include pathways enriched only 
+#'   by metabolites (ome METAB) as singleton nodes
+#' @param similarity_scores_file character or \code{NULL}, path in which to save 
+#'   pairwise pathway similarity scores as RData. If this file exists, the pairwise 
+#'   similarity scores are loaded from the file instead of being recalculated. 
+#'   \code{NULL} by default. 
+#' @param out_html character, output file for HTML. "/dev/null" by default. 
+#' @param overwrite_html boolean, whether to overwrite \code{out_html} if it already exists.
+#'   \code{TRUE} by default. If \code{out_html} exists and \code{overwrite_html=FALSE},
+#'   then the path \code{out_html} is returned. 
+#' @param return_html boolean, whether to return the path to \code{out_html}. If
+#'   \code{FALSE}, return the \code{visNetwork} object instead. \code{FALSE} by default. 
+#' @param return_graph_for_cytoscape boolean. If \code{TRUE}, return an \code{igraph}
+#'   graph object that can be exported to Cytoscape.
+#' @param verbose boolean, whether to print verbose output
+#' 
+#' @return 
+#' If \code{return_graph_for_cytoscape=FALSE} and \code{return_html=FALSE}, return a 
+#' \code{visNetwork} graph. If \code{return_graph_for_cytoscape=TRUE}, return an 
+#' igraph object. If \code{return_html=TRUE}, return the path to the HTML file in
+#' which the interactive \code{visNetwork} was saved. 
+#' 
+#' @export
+#' 
+#' @importFrom igraph graph_from_data_frame cluster_louvain
+#' @importFrom visNetwork visNetwork visGroups visInteraction visIgraphLayout visLegend visSave
+#' @importFrom RColorBrewer brewer.pal
+#' 
+#' @seealso Ancillary functions include [calc_similarity_metric()], [replace_ensembl_with_symbol()],
+#'   [format_gene_symbols()], [edge_intersection()], [collapse_p()], [add_line_breaks()], 
+#'   [format_gene_lists()], and [cleanup()]. 
+#'   The input \code{pw_enrich_res} can also be generated with [cluster_pathway_enrichment()]. 
+#' 
+#' @examples 
+#' # Example 1: Plot an interactive network of pathway enrichments from the HEART:8w_F1_M1 node,
+#' # i.e., features that are up-regulated in both males and females after 8 weeks of training
+#' enrich_res = MotrpacRatTraining6moData::GRAPH_PW_ENRICH
+#' enrich_res = enrich_res[enrich_res$cluster == "HEART:8w_F1_M1",]
+#' enrichment_network_vis(enrich_res, add_group_label_nodes = TRUE) 
+#' 
+#' \dontrun{
+#' # Example 2: Export the above network to Cytoscape.
+#' # Cytoscape must be running locally for this to work. 
+#' library(RCy3)
+#' g = enrichment_network_vis(enrich_res, return_graph_for_cytoscape = T) 
+#' cytoscapePing()
+#' createNetworkFromIgraph(g,new.title='HEART:8w_F1_M1')
+#' }
+#' 
+#' # Example 3: Plot an interactive network of pathway enrichments corresponding to 
+#' # features that are up-regulated in both sexes at 8 weeks in any of the 3 muscle tissues. 
+#' # Only include pathways that are enriched in at least 2 muscle tissues. 
+#' enrich_res = MotrpacRatTraining6moData::GRAPH_PW_ENRICH
+#' enrich_res = enrich_res[enrich_res$tissue %in% c("SKM-GN","SKM-VL","HEART") &
+#'                           grepl(":8w_F1_M1",enrich_res$cluster),]
+#' enrichment_network_vis(enrich_res, 
+#'                        multitissue_pathways_only = TRUE,
+#'                        add_group_label_nodes = TRUE)
+#' 
+enrichment_network_vis = function(pw_enrich_res, 
+                                  feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE,
+                                  intersection_id_type = 'ensembl_gene',
+                                  similarity_cutoff = 0.375,
                                   adj_pval_cutoff = 0.1,
-                                  verbose = TRUE,
                                   title = NULL,
                                   add_group_label_nodes = FALSE,
+                                  parent_pathways = MotrpacRatTraining6moData::PATHWAY_PARENTS,
+                                  multitissue_pathways_only = FALSE,
+                                  include_metab_singletons = TRUE,
+                                  similarity_scores_file = NULL,
                                   out_html = "/dev/null",
                                   overwrite_html = TRUE,
                                   return_html = FALSE,
-                                  save_similarity_scores = NULL,
-                                  multitissue_pathways_only = FALSE,
-                                  include_metab = TRUE,
                                   return_graph_for_cytoscape = FALSE,
-                                  intersection_id_type='ensembl_gene'){
-  
+                                  verbose = TRUE){
   
   ptm = proc.time()
   set.seed(123)
@@ -254,18 +372,10 @@ enrichment_network_vis = function(sub_enrich,
     stop("Only one of 'return_html' and 'return_graph_for_cytoscape' can be set to TRUE.")
   }
   
-  require(igraph)
-  require(visNetwork)
-  require(data.table)
-  require(RColorBrewer)
-  require(testit)
-  require(tm)
-  require(MotrpacBicQC)
-  
   if(verbose) message("Checking input formats...")
   
   # check format of enrich_res 
-  sub_enrich = data.table(sub_enrich)
+  sub_enrich = data.table::data.table(pw_enrich_res)
   req_cols = c("adj_p_value", "ome", "tissue", "intersection", "computed_p_value", 
                "term_size", "query_size", "intersection_size", "term_name", "term_id")
   if(!all(req_cols %in% colnames(sub_enrich))){
@@ -273,10 +383,10 @@ enrichment_network_vis = function(sub_enrich,
   }
   
   # check format of feature_to_gene
-  feature_to_gene = data.table(feature_to_gene)
+  feature_to_gene = data.table::data.table(feature_to_gene)
   req_cols = c("feature_ID", "gene_symbol", "ensembl_gene", "kegg_id")
   if(!all(req_cols %in% colnames(feature_to_gene))){
-    stop("The feature-to-gene map is missing required columns. Did you read it from 'gs://motrpac-data-freeze-pass/pass1b-06/v1.1/analysis/resources'?")
+    stop("The feature-to-gene map is missing required columns. Did you use 'MotrpacRatTraining6moData::FEATURE_TO_GENE'?")
   }
   
   curr_tissues = unique(sub_enrich[,tissue])
@@ -315,10 +425,10 @@ enrichment_network_vis = function(sub_enrich,
     # convert ensembl to gene symbol now 
     map = unique(feature_to_gene[,.(ensembl_gene, gene_symbol)])
     map = map[!is.na(ensembl_gene)]
-    setkey(map, ensembl_gene)
-    clust1sig[,symbols := .replace_ensembl_with_symbol(intersection, map), by = 1:nrow(clust1sig)]
+    data.table::setkey(map, ensembl_gene)
+    clust1sig[,symbols := replace_ensembl_with_symbol(intersection, map), by = 1:nrow(clust1sig)]
   }else if(intersection_id_type=="gene_symbol"){
-    clust1sig[,symbols := .format_gene_symbols(intersection), by = 1:nrow(clust1sig)] 
+    clust1sig[,symbols := format_gene_symbols(intersection), by = 1:nrow(clust1sig)] 
   }else{
     stop("'intersection_id_type' must be one of c('ensembl_gene','gene_symbol').")
   }
@@ -333,7 +443,7 @@ enrichment_network_vis = function(sub_enrich,
   clust1sig_collapsed = clust1sig[,list(intersection_formatted = paste0(genes, collapse=', '),
                                         genes = paste0(genes, collapse=', '),
                                         intersection_original = paste0(intersection, collapse=','), 
-                                        sumlog_p = .collapse_p(computed_p_value),
+                                        sumlog_p = collapse_p(computed_p_value),
                                         term_size = sum(term_size),
                                         query_size = sum(query_size),
                                         omes = paste0(unique(ome), collapse=', '),
@@ -343,9 +453,9 @@ enrichment_network_vis = function(sub_enrich,
                                         enriched = paste0(enriched, collapse="<br>")), 
                                   by=.(term_name, term_id)]
   
-  assert(!any(duplicated(clust1sig_collapsed[,term_id])))
+  stopifnot(!any(duplicated(clust1sig_collapsed[,term_id])))
   
-  if(!include_metab){
+  if(!include_metab_singletons){
     # remove pathways (nodes) if they have no intersection (i.e. METAB-only enrichments)
     clust1sig_collapsed = clust1sig_collapsed[intersection_formatted != "NA"]
     clust1sig_collapsed = clust1sig_collapsed[!is.na(intersection_formatted)]
@@ -380,33 +490,21 @@ enrichment_network_vis = function(sub_enrich,
   # calculate similarity metric 
   # make pairs 
   allpw = unique(clust1sig_collapsed[,term_id])
-  pairs = data.table(t(combn(allpw, 2, simplify = T)))
+  pairs = data.table::data.table(t(utils::combn(allpw, 2, simplify = T)))
   pairs = pairs[V1 != V2]
   pairs[,similarity_score := NA_real_]
   
   generate_scores = T
-  if(!is.null(save_similarity_scores)){
-    if(!endsWith(tolower(save_similarity_scores), "rds")){
-      message("'save_similarity_scores' does not end with '.rds'. Appending '.RDS' suffix.")
-      save_similarity_scores = paste0(save_similarity_scores, ".RDS")
-      message(sprintf("Similarity scores will be saved in and/or read from '%s'.", save_similarity_scores))
+  if(!is.null(similarity_scores_file)){
+    if(!endsWith(tolower(similarity_scores_file), "rds")){
+      message("'similarity_scores_file' does not end with '.rds'. Appending '.RDS' suffix.")
+      similarity_scores_file = paste0(similarity_scores_file, ".RDS")
+      message(sprintf("Similarity scores will be saved in and/or read from '%s'.", similarity_scores_file))
     }
-    if(file.exists(save_similarity_scores)){
-      pairs = as.data.table(readRDS(file = save_similarity_scores))
+    if(file.exists(similarity_scores_file)){
+      pairs = data.table::as.data.table(readRDS(file = similarity_scores_file))
       generate_scores = F
     }
-  }
-  
-  # remove punctuation and numbers
-  .cleanup = function(x){
-    x1 = gsub(":|-|;|'|[0-9]|,","",x)
-    x2 = unique(tolower(unlist(strsplit(x1, " "))))
-    x2 = x2[x2!=""]
-    x2 = x2[!x2 %in% tm::stopwords()]
-    # exclude other common words
-    common_pw_words = c("regulation", "cell", "diseases", "pathway", "response", "system", "human", "disease", "systems")
-    x2 = x2[!x2 %in% common_pw_words]
-    return(x2)
   }
   
   if(generate_scores){
@@ -419,16 +517,16 @@ enrichment_network_vis = function(sub_enrich,
       # get string2
       v2_members = clust1sig_collapsed[term_id == v2_pw, intersection_original]
       if(v1_members == "NA" | v2_members == "NA"){
-        if(include_metab){
+        if(include_metab_singletons){
           if(v1_members == "NA" & v2_members == "NA"){
             # both are METAB PWs
             # draw an edge if at least one word overlaps between name and parents
-            v1_parent = gsub(".*; ","",classlist[[v1_pw]])
-            v2_parent = gsub(".*; ","",classlist[[v2_pw]])
-            v1_words = .cleanup(paste(clust1sig_collapsed[term_id == v1_pw, term_name], v1_parent))
-            v2_words = .cleanup(paste(clust1sig_collapsed[term_id == v2_pw, term_name], v2_parent))
+            v1_parent = gsub(".*; ","",parent_pathways[[v1_pw]])
+            v2_parent = gsub(".*; ","",parent_pathways[[v2_pw]])
+            v1_words = cleanup(paste(clust1sig_collapsed[term_id == v1_pw, term_name], v1_parent))
+            v2_words = cleanup(paste(clust1sig_collapsed[term_id == v2_pw, term_name], v2_parent))
             if(length(intersect(v1_words, v2_words))>0){
-              s = corr_thresh
+              s = similarity_cutoff
             }else{
               s = 0
             }
@@ -439,29 +537,29 @@ enrichment_network_vis = function(sub_enrich,
           s = 0
         }
       }else{
-        s = .calc_similarity_metric(v1_members, v2_members)
+        s = calc_similarity_metric(v1_members, v2_members)
       }
       pairs[i,similarity_score := s]
     }
     
-    if(!is.null(save_similarity_scores)){
-      saveRDS(pairs, file = save_similarity_scores)
+    if(!is.null(similarity_scores_file)){
+      saveRDS(pairs, file = similarity_scores_file)
     }
   }
   
   if(verbose) message("Defining nodes...")
   points = clust1sig_collapsed
-  setnames(points, 'term_id', 'Var')
-  # points[,symbols := unname(unlist(sapply(intersection, .replace_ensembl_with_symbol, feature_to_gene)))]
+  data.table::setnames(points, 'term_id', 'Var')
+  # points[,symbols := unname(unlist(sapply(intersection, replace_ensembl_with_symbol, feature_to_gene)))]
   # points[,n_genes := as.numeric(gsub(":.*","",symbols))]
   # points[,genes := gsub(".*:","",symbols)]
   
   if(verbose) message("Defining edges...")
-  edges = pairs[similarity_score >= corr_thresh]
+  edges = pairs[similarity_score >= similarity_cutoff]
   
   # skip if there are no edges
   if(nrow(edges) == 0){
-    message(sprintf("No similarity scores > %s.", corr_thresh))
+    message(sprintf("No similarity scores > %s.", similarity_cutoff))
     return()
   } 
   
@@ -470,10 +568,10 @@ enrichment_network_vis = function(sub_enrich,
   edges = merge(edges_v1, points, by.x='V2', by.y='Var', all.x=T, suffixes = c("_Var1", "_Var2"))
   
   # add intersection (gene symbols)
-  edges[,intersection := .edge_intersection(genes_Var1, genes_Var2), by=1:nrow(edges)]
+  edges[,intersection := edge_intersection(genes_Var1, genes_Var2), by=1:nrow(edges)]
   
   # remove nodes with only one supporting gene 
-  if(include_metab){
+  if(include_metab_singletons){
     points = points[grepl(",", intersection_formatted) | intersection_formatted == "unknown (METAB)"]
   }else{
     points = points[grepl(",", intersection_formatted)]
@@ -489,19 +587,19 @@ enrichment_network_vis = function(sub_enrich,
   #if(verbose) message("Labelling groups by most frequent pathway subclass...")
   
   # add class and subclass to edges 
-  points[,pathway_class := classlist[Var]]
+  points[,pathway_class := parent_pathways[Var]]
   points[,pathway_subclass := gsub(".*; ","",pathway_class)]
   
   # if gene lists are longer than 50 characters, add line breaks 
   # make sure to skip METAB nodes 
-  points[,enriched_br := .format_gene_lists(enriched), by = 1:nrow(points)]
+  points[,enriched_br := format_gene_lists(enriched), by = 1:nrow(points)]
   
   # if pathway name + parent is longer than 50 characters, add line breaks 
   points[,title := sprintf("<b>%s</b> (%s)", term_name, pathway_subclass)]
-  points[,title_br := .add_line_breaks(title, sep=' '), by = 1:nrow(points)]
+  points[,title_br := add_line_breaks(title, sep=' '), by = 1:nrow(points)]
   
   # we will color by group later
-  viznetwork_nodes = data.table(id = points[,Var],
+  viznetwork_nodes = data.table::data.table(id = points[,Var],
                                 value = 100*(points[,n_datasets]^2),
                                 title = sprintf("%s<br><b>P-val:</b> %s<br>%s", # tooltip
                                                 points[,title_br],
@@ -515,15 +613,12 @@ enrichment_network_vis = function(sub_enrich,
                                 borderWidthSelected = 3,
                                 pathway_subclass = points[,pathway_subclass])
   
-  # edge color
-  #edge_colors = .get_feature_colors(brewer.pal(9,"YlGnBu")[4:8], edges[,similarity_score])
-  
   # add line breaks
   # allow for METAB
   edges[,intersection_label := sprintf("<b>Intersection:</b> %s",intersection)]
-  edges[,intersection_br := .add_line_breaks(intersection_label), by = 1:nrow(edges)]
+  edges[,intersection_br := add_line_breaks(intersection_label), by = 1:nrow(edges)]
   
-  viznetwork_edges = data.table(from = edges[,V1],
+  viznetwork_edges = data.table::data.table(from = edges[,V1],
                                 to = edges[,V2],
                                 value = (edges[,similarity_score]*50),
                                 title = sprintf("<b>Similarity score:</b> %s<br>%s", # tooltip
@@ -543,7 +638,7 @@ enrichment_network_vis = function(sub_enrich,
   viznetwork_edges = viznetwork_edges[from %in% viznetwork_nodes[,id] & to %in% viznetwork_nodes[,id]]
   
   # define group by igraph cluster 
-  net = graph_from_data_frame(d=viznetwork_edges, vertices=viznetwork_nodes, directed=F)
+  net = igraph::graph_from_data_frame(d=viznetwork_edges, vertices=viznetwork_nodes, directed=F)
   clust_to_pw = igraph::cluster_louvain(net)
   viznetwork_nodes[,group := as.character(clust_to_pw$membership)]
   
@@ -582,7 +677,7 @@ enrichment_network_vis = function(sub_enrich,
   # add to node data.table
   viznetwork_nodes[,group := group_labels[group_number]]
   
-  # if(include_metab){
+  # if(include_metab_singletons){
   #   # do we have METAB-only enrichments?
   #   if('METAB' %in% points[,omes]){
   #     # find the group with all of the orphan METAB enrichments 
@@ -598,21 +693,24 @@ enrichment_network_vis = function(sub_enrich,
   #if(verbose) message("Assigning colors to groups...")
   
   # help by initializing 
-  vn0 = visNetwork(viznetwork_nodes, viznetwork_edges) %>%
-    visGroups(groupname = viznetwork_nodes[1,group], color = "red", shape = "triangle") 
+  vn0 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges) %>%
+    visNetwork::visGroups(groupname = viznetwork_nodes[1,group], color = "red", shape = "triangle") 
   
   # define colors 
   # use Set2, then Set3, then Set1 + Set 3
   n_clusters = length(unique(viznetwork_nodes[,group]))
   if(n_clusters > 12 & n_clusters < 21){
-    hex = c(brewer.pal(12, "Set3"), brewer.pal(9, "Set1"))
+    hex = c(RColorBrewer::brewer.pal(12, "Set3"), 
+            RColorBrewer::brewer.pal(9, "Set1"))
   }else if(n_clusters > 8){
-    hex = brewer.pal(12, "Set3")
+    hex = RColorBrewer::brewer.pal(12, "Set3")
   }else if(n_clusters <= 8){
-    hex = brewer.pal(8, "Set2")
+    hex = RColorBrewer::brewer.pal(8, "Set2")
   }else{
     warning("More than 21 clusters? I didn't think that would happen.")
-    hex = c(brewer.pal(12, "Set3"), brewer.pal(9, "Set1"), brewer.pal(7, "Set2"))
+    hex = c(RColorBrewer::brewer.pal(12, "Set3"), 
+            RColorBrewer::brewer.pal(9, "Set1"), 
+            RColorBrewer::brewer.pal(7, "Set2"))
   }
   hex = hex[1:n_clusters]
   names(hex) = unique(viznetwork_nodes[,group])
@@ -649,10 +747,9 @@ enrichment_network_vis = function(sub_enrich,
     }
     
     # add columns for other omes and tissues 
-    all_tissues = unique(unname(MotrpacBicQC::tissue_abbr))
+    all_tissues = MotrpacRatTraining6moData::TISSUE_ABBREV
     all_tissues = all_tissues[!all_tissues %in% c("VENACV","OVARY","TESTES")]
-    all_omes = unique(unname(MotrpacBicQC::assay_abbr))
-    all_omes = all_omes[!all_omes %in% c("U-METAB","N-METAB")]
+    all_omes = MotrpacRatTraining6moData::ASSAY_ABBREV
     
     for(col in c(all_tissues, all_omes)){
       if(! col %in% colnames(vn)){
@@ -664,7 +761,7 @@ enrichment_network_vis = function(sub_enrich,
     vn[,sumlog_p_log10 := round(-log10(sumlog_p),2)]
     
     # clean up nodes and edges
-    setnames(vn, 
+    data.table::setnames(vn, 
              c('group_number', 'group'), 
              c('group', 'group_label'))
     
@@ -677,7 +774,7 @@ enrichment_network_vis = function(sub_enrich,
   # add group label nodes
   if(add_group_label_nodes){
     # create additional nodes with a strong weight to a random member of that group 
-    group_nodes = data.table(id = names(hex),
+    group_nodes = data.table::data.table(id = names(hex),
                              value = max(viznetwork_nodes[,value])*2, 
                              shape = "box",
                              label = names(hex),
@@ -694,7 +791,7 @@ enrichment_network_vis = function(sub_enrich,
                              shadow = T)
     group_nodes = group_nodes[!grepl("^0: ", id)] # remove label for singleton clusters 
     
-    viznetwork_nodes = rbindlist(list(viznetwork_nodes, group_nodes), fill=T)
+    viznetwork_nodes = data.table::rbindlist(list(viznetwork_nodes, group_nodes), fill=T)
     
     # add edges
     # for each group, pick node (smallest pval) where the category is also the label
@@ -720,13 +817,13 @@ enrichment_network_vis = function(sub_enrich,
                              physics = F,
                              shadow = T)
     group_edges = group_edges[!grepl("^0: ", to)]
-    viznetwork_edges = rbindlist(list(viznetwork_edges, group_edges), fill=T)
+    viznetwork_edges = data.table::rbindlist(list(viznetwork_edges, group_edges), fill=T)
     
-    v1 = visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
-      visInteraction(tooltipDelay = 10,
+    v1 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
+      visNetwork::visInteraction(tooltipDelay = 10,
                      tooltipStay = Inf,
                      hideEdgesOnZoom = T) %>%
-      visIgraphLayout(layout = "layout_nicely") 
+      visNetwork::visIgraphLayout(layout = "layout_nicely") 
   }else{
     # nodes for legend
     # order by cluster number
@@ -739,21 +836,21 @@ enrichment_network_vis = function(sub_enrich,
                         color = unname(hex),
                         physics = F)
     
-    v1 = visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
-      visLegend(zoom = F,
+    v1 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
+      visNetwork::visLegend(zoom = F,
                 addNodes = lnodes,
                 useGroups = F,
                 width = 0.3,
                 stepY = 40) %>%
-      visInteraction(tooltipDelay = 10,
+      visNetwork::visInteraction(tooltipDelay = 10,
                      tooltipStay = Inf,
                      hideEdgesOnZoom = T) %>%
-      visIgraphLayout(layout = "layout_nicely") 
+      visNetwork::visIgraphLayout(layout = "layout_nicely") 
   }
   
   if(out_html != "/dev/null"){ 
     if( (file.exists(out_html) & overwrite_html) | !file.exists(out_html)){
-      visSave(v1, file = out_html)
+      visNetwork::visSave(v1, file = out_html)
       message(sprintf("Network saved in %s", out_html))
       # adjust browser window size 
       cmd = sprintf('sed -i \'s|"browser":{"width":960,"height":500,"padding":40,"fill":false}|"browser":{"width":960,"height":960,"padding":0,"fill":false}|\' %s', out_html)

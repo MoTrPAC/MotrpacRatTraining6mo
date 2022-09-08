@@ -1,11 +1,11 @@
 ## usethis namespace: start
-#' @importFrom data.table as.data.table data.table rbindlist setnames := copy melt
+#' @importFrom data.table as.data.table data.table rbindlist setnames := copy melt setkey
 #' @import MotrpacRatTraining6moData
 #' @importFrom magrittr %>%
 #' @importFrom ggplot2 guides scale_size theme annotate guide_legend aes element_rect ggplot
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom stats na.omit prcomp sd median poly
-#' @importFrom utils download.file data globalVariables
+#' @importFrom utils download.file data globalVariables combn
 ## usethis namespace: end
 NULL
 
@@ -57,5 +57,46 @@ utils::globalVariables(
     "coef_se", # immuno_timewise_da
     "pval", # immuno_timewise_da
     "panel", # immuno_timewise_da
-    "panel_name" #immuno_training_da
+    "panel_name", #immuno_training_da
+    ########################################### enrichment_network_vis()
+    "gene_symbol", #replace_ensembl_with_symbol
+    "ensembl_gene", #replace_ensembl_with_symbol
+    "adj_p_value",
+    "term_name",
+    "term_id",
+    "intersection",
+    "intersection_original",
+    "n_dataset",
+    "n_datasets",
+    "dataset",
+    "datasets",
+    "ome",
+    "tissue",
+    "tissues",
+    "symbols",
+    "n_genes",
+    "genes",
+    "computed_p_value",
+    "term_size",
+    "query_size",
+    "enriched",
+    "intersection_formatted",
+    "V1",
+    "V2",
+    "similarity_score",
+    "edges",
+    "points", 
+    "genes_Var1",
+    "genes_Var2",
+    "pathway_class",
+    "pathway_subclass",
+    "Var",
+    "title_br", 
+    "sumlog_p",
+    "enriched_br",
+    "intersection_br",
+    "id",
+    "group_number",
+    "value",
+    "color.background"
   ))

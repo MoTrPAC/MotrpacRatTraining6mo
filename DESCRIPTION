@@ -43,11 +43,13 @@ Imports:
     MotrpacRatTraining6moData (>= 1.2.1),
     multcomp,
     purrr,
+    RColorBrewer,
     repfdr,
     stats,
     tibble,
     tidyr,
-    utils
+    utils,
+    visNetwork
 Suggests: 
     knitr,
     rmarkdown,
