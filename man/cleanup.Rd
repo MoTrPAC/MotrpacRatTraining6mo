@@ -2,7 +2,7 @@
 % Please edit documentation in R/pathway_enrichment_networks.R
 \name{cleanup}
 \alias{cleanup}
-\title{Clean up pathways}
+\title{Clean up pathway names}
 \usage{
 cleanup(x)
 }

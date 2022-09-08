@@ -1,260 +1,3 @@
-#' Calculate pathway similarity metric 
-#' 
-#' Calculate EnrichmentMap's similarity metric for pathways, which is 50% Jaccard
-#' index and 50% overlap score.
-#' Function is used internally in [enrichment_network_vis()]. 
-#' 
-#' @param string1 character, comma-separated list of intersection with pathway1
-#' @param string2 character, comma-separated list of intersection with pathway2
-#' 
-#' @return numeric similarity score
-#' 
-#' @seealso [enrichment_network_vis()]
-#' 
-calc_similarity_metric = function(string1, string2){
-  # use Cytoscape Enrichment Map similarity score:
-  # jaccard = [size of (A intersect B)] / [size of (A union B)]
-  # overlap = [size of (A intersect B)] / [size of (minimum( A , B))]
-  # similarity_score = 0.5*jaccard + 0.5*overlap
-  set1 = unname(unlist(strsplit(string1, ',')))
-  set2 = unname(unlist(strsplit(string2, ',')))
-  
-  jaccard = length(intersect(set1, set2)) / length(union(set1, set2))
-  overlap = length(intersect(set1, set2)) / min(length(set1), length(set2))
-  similarity_score = 0.5*jaccard + 0.5*overlap
-  
-  return(similarity_score)
-}
-
-
-#' Replace Ensembl ID with gene symbol
-#' 
-#' Function is used internally in [enrichment_network_vis()].
-#' 
-#' @param x character, comma-separated Ensembl IDs
-#' @param map data frame, mapping between Ensembl IDs and gene symbols.
-#'   Must include the columns "ensembl_gene" and "gene_symbol". 
-#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default.
-#' @param return_N boolean, whether to prepend the concatenated 
-#'     gene symbols with the number of unique gene symbols.
-#'     \code{TRUE} by default. 
-#' @param collapse boolean, whether to collapse the gene symbols into a 
-#'     comma-separated string. If not, return a vector of unique gene symbols.
-#'     \code{TRUE} by default. 
-#'     
-#' @return either a string of comma-separated gene symbols, 
-#'   a vector of unique gene symbols,
-#'   or a named list with two values ("N" and "genes")
-#'   depending on the values of \code{return_N} and \code{collapse}. 
-#'   
-#' @seealso [enrichment_network_vis()]
-#' 
-replace_ensembl_with_symbol = function(x, 
-                                       map = MotrpacRatTraining6moData::FEATURE_TO_GENE, 
-                                       return_N = TRUE, 
-                                       collapse = TRUE){
-  
-  map = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE)
-  data.table::setkey(map, ensembl_gene)
-
-  ensembls = unlist(unname(strsplit(x, ',')))
-  if(all(is.na(ensembls))){
-    if(return_N & collapse){
-      return("0:")
-    }else if(!return_N & collapse){
-      return("")
-    }else if(!return_N & !collapse){
-      return("")
-    }else{
-      return(list(N=0, genes=""))
-    }
-  } 
-  symbols = unique(map[ensembls, on = "ensembl_gene", gene_symbol])
-  #symbols = unique(map[ensembl_gene %in% ensembls, gene_symbol])
-  symbols = symbols[!is.na(symbols)]
-  n_genes = length(symbols)
-  # remove LOC## cuz who on earth knows what that is 
-  symbols = symbols[!grepl("LOC[0-9]+$",symbols)]  
-  # same with RGD# 
-  symbols = symbols[!grepl("RGD[0-9]+$",symbols)]
-  symbols = symbols[order(symbols)]
-  if(return_N & collapse){
-    return(paste0(n_genes, ":", paste(symbols, collapse=', ')))
-  }else if(!return_N & collapse){
-    return(paste(symbols, collapse=', '))
-  }else if(!return_N & !collapse){
-    return(symbols)
-  }else{
-    return(list(N=n_genes, genes=symbols))
-  }
-}
-
-
-#' Format gene symbols
-#' 
-#' Format a string of comma-separated gene symbols for use in [enrichment_network_vis()].
-#'
-#' @param x character, comma-separated gene symbols
-#' @param return_N boolean, whether to prepend the concatenated 
-#'     gene symbols with the number of unique gene symbols.
-#'     \code{TRUE} by default. 
-#' @param collapse boolean, whether to collapse the gene symbols into a 
-#'     comma-separated string. If not, return a vector of unique gene symbols.
-#'     \code{TRUE} by default. 
-#'     
-#' @return either a string of comma-separated gene symbols, 
-#'   a vector of unique gene symbols,
-#'   or a named list with two values ("N" and "genes")
-#'   depending on the values of \code{return_N} and \code{collapse}. 
-#'   
-#' @seealso [enrichment_network_vis()]
-#'
-format_gene_symbols = function(x, return_N = TRUE, collapse = TRUE){
-  symbols = unlist(unname(strsplit(x, ',')))
-  if(all(is.na(symbols))){
-    if(return_N & collapse){
-      return("0:")
-    }else if(!return_N & collapse){
-      return("")
-    }else if(!return_N & !collapse){
-      return("")
-    }else{
-      return(list(N=0, genes=""))
-    }
-  } 
-  symbols = symbols[!is.na(symbols)]
-  n_genes = length(symbols)
-  # remove LOC## cuz who on earth knows what that is 
-  symbols = symbols[!grepl("LOC[0-9]+$",symbols)]  
-  # same with RGD# 
-  symbols = symbols[!grepl("RGD[0-9]+$",symbols)]
-  symbols = symbols[order(symbols)]
-  if(return_N & collapse){
-    return(paste0(n_genes, ":", paste(symbols, collapse=', ')))
-  }else if(!return_N & collapse){
-    return(paste(symbols, collapse=', '))
-  }else if(!return_N & !collapse){
-    return(symbols)
-  }else{
-    return(list(N=n_genes, genes=symbols))
-  }
-}
-
-
-#' Return intersection of gene symbols
-#' 
-#' Function used internally in [enrichment_network_vis()].
-#' 
-#' @param ensembl1 character, comma-separated gene symbols of intersection from start node
-#' @param ensembl2 character, comma-separated gene symbols of intersection from end node
-#' 
-#' @return string of comma-separated gene symbols in intersection 
-#' 
-#' @seealso [enrichment_network_vis()]
-#' 
-edge_intersection = function(symbol1, symbol2){
-  symbol1 = unique(unname(unlist(strsplit(symbol1, ', '))))
-  symbol2 = unique(unname(unlist(strsplit(symbol2, ', '))))
-  gene_intersection = intersect(symbol1, symbol2)
-  return(paste0(gene_intersection, collapse=', '))
-}
-
-
-#' Collapse p-values 
-#' 
-#' Collapse p-values using [metap::sumlog()] when multiple are present.
-#' Function is used internally in [enrichment_network_vis()].
-#' 
-#' @param ps vector of nominal p-values 
-#' 
-#' @return merged p-value 
-#' 
-#' @importFrom metap sumlog
-#' 
-#' @seealso [enrichment_network_vis()]
-#' 
-collapse_p = function(ps){
-  if(length(ps) == 1){
-    return(ps)
-  }else{
-    return(metap::sumlog(ps)$p)
-  }
-}
-
-
-#' Add line breaks to a string 
-#' 
-#' Given a long string, add line breaks "\<br\>" at specified intervals. 
-#' Breaks are always added at the preceding instance of the separator. 
-#' Function is used internally in [enrichment_network_vis()]. 
-#' 
-#' @param x character string
-#' @param max_char integer, add line breaks at least every \code{max_char} characters 
-#' @param sep character after which to add line break
-#' 
-#' @return string with additional \<br\> if necessary 
-#' 
-#' @seealso [enrichment_network_vis()]
-#' 
-add_line_breaks = function(x, max_char=50, sep=','){
-  if(nchar(x) > max_char){
-    charsplits = unname(unlist(strsplit(x, "")))
-    newbreaks = seq(max_char, nchar(x), by=max_char)
-    for(b in newbreaks){
-      # find closest preceding comma
-      comma_index = max(which(charsplits[1:b] == sep))
-      # replace comma 
-      charsplits[comma_index] = sprintf("%s<br>", sep)
-    }
-    x = paste0(charsplits, collapse="")
-  }
-  return(x)
-}
-
-
-#' Format gene lists
-#' 
-#' Apply [add_line_breaks()] to the \code{points$enriched} column. 
-#' Function is used internally in [enrichment_network_vis()]. 
-#' 
-#' @param x value in \code{points$enriched} column
-#' 
-#' @return character, new value with additional line breaks 
-#' 
-#' @seealso [enrichment_network_vis()], [add_line_breaks()]
-#' 
-format_gene_lists = function(x){
-  if(grepl("(METAB)", x)) return(x)
-  splits = unname(unlist(strsplit(x, "<br>")))
-  newsplits = unname(unlist(sapply(splits, add_line_breaks)))
-  return(paste0(newsplits, collapse="<br>"))
-}
-
-
-#' Clean up pathways
-#' 
-#' Remove punctuation, numbers, and common words to determine qualitative 
-#' overlap between pathways enriched by metabolites versus other pathways.
-#' Function used internally in [enrichment_network_vis()].
-#'
-#' @param x character, pathway names 
-#'
-#' @return vector of candidate words to determine overlap 
-#' 
-#' @seealso [enrichment_network_vis()]
-#'
-cleanup = function(x){
-  x1 = gsub(":|-|;|'|[0-9]|,","",x)
-  x2 = unique(tolower(unlist(strsplit(x1, " "))))
-  x2 = x2[x2!=""]
-  x2 = x2[!x2 %in% tm::stopwords()]
-  # exclude other common words
-  common_pw_words = c("regulation", "cell", "diseases", "pathway", "response", "system", "human", "disease", "systems")
-  x2 = x2[!x2 %in% common_pw_words]
-  return(x2)
-}
-
-
 #' Pathway enrichment network
 #' 
 #' Plot an interactive network of pathway enrichments. 
@@ -600,18 +343,18 @@ enrichment_network_vis = function(pw_enrich_res,
   
   # we will color by group later
   viznetwork_nodes = data.table::data.table(id = points[,Var],
-                                value = 100*(points[,n_datasets]^2),
-                                title = sprintf("%s<br><b>P-val:</b> %s<br>%s", # tooltip
-                                                points[,title_br],
-                                                signif(points[,sumlog_p], 2),
-                                                points[,enriched_br]),
-                                color.highlight.background = 'yellow',
-                                color.border = 'black',
-                                shadow = F,
-                                physics = F,
-                                borderWidth = 1,
-                                borderWidthSelected = 3,
-                                pathway_subclass = points[,pathway_subclass])
+                                            value = 100*(points[,n_datasets]^2),
+                                            title = sprintf("%s<br><b>P-val:</b> %s<br>%s", # tooltip
+                                                            points[,title_br],
+                                                            signif(points[,sumlog_p], 2),
+                                                            points[,enriched_br]),
+                                            color.highlight.background = 'yellow',
+                                            color.border = 'black',
+                                            shadow = F,
+                                            physics = F,
+                                            borderWidth = 1,
+                                            borderWidthSelected = 3,
+                                            pathway_subclass = points[,pathway_subclass])
   
   # add line breaks
   # allow for METAB
@@ -619,15 +362,15 @@ enrichment_network_vis = function(pw_enrich_res,
   edges[,intersection_br := add_line_breaks(intersection_label), by = 1:nrow(edges)]
   
   viznetwork_edges = data.table::data.table(from = edges[,V1],
-                                to = edges[,V2],
-                                value = (edges[,similarity_score]*50),
-                                title = sprintf("<b>Similarity score:</b> %s<br>%s", # tooltip
-                                                round(edges[,similarity_score],2),
-                                                edges[,intersection_br]),
-                                color.color = "#848484", # visNetwork default
-                                physics = F,
-                                color.highlight = "#545454",
-                                labelHighlightBold = T)
+                                            to = edges[,V2],
+                                            value = (edges[,similarity_score]*50),
+                                            title = sprintf("<b>Similarity score:</b> %s<br>%s", # tooltip
+                                                            round(edges[,similarity_score],2),
+                                                            edges[,intersection_br]),
+                                            color.color = "#848484", # visNetwork default
+                                            physics = F,
+                                            color.highlight = "#545454",
+                                            labelHighlightBold = T)
   
   # # remove nodes without an edge before clustering
   # viznetwork_nodes = viznetwork_nodes[id %in% c(viznetwork_edges[,from], viznetwork_edges[,to])]
@@ -762,8 +505,8 @@ enrichment_network_vis = function(pw_enrich_res,
     
     # clean up nodes and edges
     data.table::setnames(vn, 
-             c('group_number', 'group'), 
-             c('group', 'group_label'))
+                         c('group_number', 'group'), 
+                         c('group', 'group_label'))
     
     ve[,title := NULL]
     
@@ -775,20 +518,20 @@ enrichment_network_vis = function(pw_enrich_res,
   if(add_group_label_nodes){
     # create additional nodes with a strong weight to a random member of that group 
     group_nodes = data.table::data.table(id = names(hex),
-                             value = max(viznetwork_nodes[,value])*2, 
-                             shape = "box",
-                             label = names(hex),
-                             title = names(hex), 
-                             group = names(hex),
-                             physics = F,
-                             labelHighlightBold = F, 
-                             color.background = unname(hex),
-                             color.highlight.background = unname(hex),
-                             color.highlight.border = unname(hex),
-                             color.border = unname(hex),
-                             borderWidthSelected = 0, 
-                             borderWidth = 1, 
-                             shadow = T)
+                                         value = max(viznetwork_nodes[,value])*2, 
+                                         shape = "box",
+                                         label = names(hex),
+                                         title = names(hex), 
+                                         group = names(hex),
+                                         physics = F,
+                                         labelHighlightBold = F, 
+                                         color.background = unname(hex),
+                                         color.highlight.background = unname(hex),
+                                         color.highlight.border = unname(hex),
+                                         color.border = unname(hex),
+                                         borderWidthSelected = 0, 
+                                         borderWidth = 1, 
+                                         shadow = T)
     group_nodes = group_nodes[!grepl("^0: ", id)] # remove label for singleton clusters 
     
     viznetwork_nodes = data.table::rbindlist(list(viznetwork_nodes, group_nodes), fill=T)
@@ -821,8 +564,8 @@ enrichment_network_vis = function(pw_enrich_res,
     
     v1 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
       visNetwork::visInteraction(tooltipDelay = 10,
-                     tooltipStay = Inf,
-                     hideEdgesOnZoom = T) %>%
+                                 tooltipStay = Inf,
+                                 hideEdgesOnZoom = T) %>%
       visNetwork::visIgraphLayout(layout = "layout_nicely") 
   }else{
     # nodes for legend
@@ -838,13 +581,13 @@ enrichment_network_vis = function(pw_enrich_res,
     
     v1 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
       visNetwork::visLegend(zoom = F,
-                addNodes = lnodes,
-                useGroups = F,
-                width = 0.3,
-                stepY = 40) %>%
+                            addNodes = lnodes,
+                            useGroups = F,
+                            width = 0.3,
+                            stepY = 40) %>%
       visNetwork::visInteraction(tooltipDelay = 10,
-                     tooltipStay = Inf,
-                     hideEdgesOnZoom = T) %>%
+                                 tooltipStay = Inf,
+                                 hideEdgesOnZoom = T) %>%
       visNetwork::visIgraphLayout(layout = "layout_nicely") 
   }
   
@@ -869,3 +612,263 @@ enrichment_network_vis = function(pw_enrich_res,
     return(v1)
   }
 }
+
+
+#' Calculate pathway similarity metric 
+#' 
+#' Calculate EnrichmentMap's similarity metric for pathways, which is 50% Jaccard
+#' index and 50% overlap score.
+#' Function is used internally in [enrichment_network_vis()]. 
+#' 
+#' @param string1 character, comma-separated list of intersection with pathway1
+#' @param string2 character, comma-separated list of intersection with pathway2
+#' 
+#' @return numeric similarity score
+#' 
+#' @seealso [enrichment_network_vis()]
+#' 
+calc_similarity_metric = function(string1, string2){
+  # use Cytoscape Enrichment Map similarity score:
+  # jaccard = [size of (A intersect B)] / [size of (A union B)]
+  # overlap = [size of (A intersect B)] / [size of (minimum( A , B))]
+  # similarity_score = 0.5*jaccard + 0.5*overlap
+  set1 = unname(unlist(strsplit(string1, ',')))
+  set2 = unname(unlist(strsplit(string2, ',')))
+  
+  jaccard = length(intersect(set1, set2)) / length(union(set1, set2))
+  overlap = length(intersect(set1, set2)) / min(length(set1), length(set2))
+  similarity_score = 0.5*jaccard + 0.5*overlap
+  
+  return(similarity_score)
+}
+
+
+#' Replace Ensembl ID with gene symbol
+#' 
+#' Function is used internally in [enrichment_network_vis()].
+#' 
+#' @param x character, comma-separated Ensembl IDs
+#' @param map data frame, mapping between Ensembl IDs and gene symbols.
+#'   Must include the columns "ensembl_gene" and "gene_symbol". 
+#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default.
+#' @param return_N boolean, whether to prepend the concatenated 
+#'     gene symbols with the number of unique gene symbols.
+#'     \code{TRUE} by default. 
+#' @param collapse boolean, whether to collapse the gene symbols into a 
+#'     comma-separated string. If not, return a vector of unique gene symbols.
+#'     \code{TRUE} by default. 
+#'     
+#' @return either a string of comma-separated gene symbols, 
+#'   a vector of unique gene symbols,
+#'   or a named list with two values ("N" and "genes")
+#'   depending on the values of \code{return_N} and \code{collapse}. 
+#'   
+#' @seealso [enrichment_network_vis()]
+#' 
+replace_ensembl_with_symbol = function(x, 
+                                       map = MotrpacRatTraining6moData::FEATURE_TO_GENE, 
+                                       return_N = TRUE, 
+                                       collapse = TRUE){
+  
+  map = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE)
+  data.table::setkey(map, ensembl_gene)
+
+  ensembls = unlist(unname(strsplit(x, ',')))
+  if(all(is.na(ensembls))){
+    if(return_N & collapse){
+      return("0:")
+    }else if(!return_N & collapse){
+      return("")
+    }else if(!return_N & !collapse){
+      return("")
+    }else{
+      return(list(N=0, genes=""))
+    }
+  } 
+  symbols = unique(map[ensembls, on = "ensembl_gene", gene_symbol])
+  #symbols = unique(map[ensembl_gene %in% ensembls, gene_symbol])
+  symbols = symbols[!is.na(symbols)]
+  n_genes = length(symbols)
+  # remove LOC## cuz who on earth knows what that is 
+  symbols = symbols[!grepl("LOC[0-9]+$",symbols)]  
+  # same with RGD# 
+  symbols = symbols[!grepl("RGD[0-9]+$",symbols)]
+  symbols = symbols[order(symbols)]
+  if(return_N & collapse){
+    return(paste0(n_genes, ":", paste(symbols, collapse=', ')))
+  }else if(!return_N & collapse){
+    return(paste(symbols, collapse=', '))
+  }else if(!return_N & !collapse){
+    return(symbols)
+  }else{
+    return(list(N=n_genes, genes=symbols))
+  }
+}
+
+
+#' Format gene symbols
+#' 
+#' Format a string of comma-separated gene symbols for use in [enrichment_network_vis()].
+#'
+#' @param x character, comma-separated gene symbols
+#' @param return_N boolean, whether to prepend the concatenated 
+#'     gene symbols with the number of unique gene symbols.
+#'     \code{TRUE} by default. 
+#' @param collapse boolean, whether to collapse the gene symbols into a 
+#'     comma-separated string. If not, return a vector of unique gene symbols.
+#'     \code{TRUE} by default. 
+#'     
+#' @return either a string of comma-separated gene symbols, 
+#'   a vector of unique gene symbols,
+#'   or a named list with two values ("N" and "genes")
+#'   depending on the values of \code{return_N} and \code{collapse}. 
+#'   
+#' @seealso [enrichment_network_vis()]
+#'
+format_gene_symbols = function(x, return_N = TRUE, collapse = TRUE){
+  symbols = unlist(unname(strsplit(x, ',')))
+  if(all(is.na(symbols))){
+    if(return_N & collapse){
+      return("0:")
+    }else if(!return_N & collapse){
+      return("")
+    }else if(!return_N & !collapse){
+      return("")
+    }else{
+      return(list(N=0, genes=""))
+    }
+  } 
+  symbols = symbols[!is.na(symbols)]
+  n_genes = length(symbols)
+  # remove LOC## cuz who on earth knows what that is 
+  symbols = symbols[!grepl("LOC[0-9]+$",symbols)]  
+  # same with RGD# 
+  symbols = symbols[!grepl("RGD[0-9]+$",symbols)]
+  symbols = symbols[order(symbols)]
+  if(return_N & collapse){
+    return(paste0(n_genes, ":", paste(symbols, collapse=', ')))
+  }else if(!return_N & collapse){
+    return(paste(symbols, collapse=', '))
+  }else if(!return_N & !collapse){
+    return(symbols)
+  }else{
+    return(list(N=n_genes, genes=symbols))
+  }
+}
+
+
+#' Return intersection of gene symbols
+#' 
+#' Function used internally in [enrichment_network_vis()].
+#' 
+#' @param symbol1 character, comma-separated gene symbols of intersection from start node
+#' @param symbol2 character, comma-separated gene symbols of intersection from end node
+#' 
+#' @return string of comma-separated gene symbols in intersection 
+#' 
+#' @seealso [enrichment_network_vis()]
+#' 
+edge_intersection = function(symbol1, symbol2){
+  symbol1 = unique(unname(unlist(strsplit(symbol1, ', '))))
+  symbol2 = unique(unname(unlist(strsplit(symbol2, ', '))))
+  gene_intersection = intersect(symbol1, symbol2)
+  return(paste0(gene_intersection, collapse=', '))
+}
+
+
+#' Collapse p-values 
+#' 
+#' Collapse p-values using [metap::sumlog()] when multiple are present.
+#' Function is used internally in [enrichment_network_vis()].
+#' 
+#' @param ps vector of nominal p-values 
+#' 
+#' @return merged p-value 
+#' 
+#' @importFrom metap sumlog
+#' 
+#' @seealso [enrichment_network_vis()]
+#' 
+collapse_p = function(ps){
+  if(length(ps) == 1){
+    return(ps)
+  }else{
+    return(metap::sumlog(ps)$p)
+  }
+}
+
+
+#' Add line breaks to a string 
+#' 
+#' Given a long string, add line breaks "\<br\>" at specified intervals. 
+#' Breaks are always added at the preceding instance of the separator. 
+#' Function is used internally in [enrichment_network_vis()]. 
+#' 
+#' @param x character string
+#' @param max_char integer, add line breaks at least every \code{max_char} characters 
+#' @param sep character after which to add line break
+#' 
+#' @return string with additional \<br\> if necessary 
+#' 
+#' @seealso [enrichment_network_vis()]
+#' 
+add_line_breaks = function(x, max_char=50, sep=','){
+  if(nchar(x) > max_char){
+    charsplits = unname(unlist(strsplit(x, "")))
+    newbreaks = seq(max_char, nchar(x), by=max_char)
+    for(b in newbreaks){
+      # find closest preceding comma
+      comma_index = max(which(charsplits[1:b] == sep))
+      # replace comma 
+      charsplits[comma_index] = sprintf("%s<br>", sep)
+    }
+    x = paste0(charsplits, collapse="")
+  }
+  return(x)
+}
+
+
+#' Format gene lists
+#' 
+#' Apply [add_line_breaks()] to the \code{points$enriched} column. 
+#' Function is used internally in [enrichment_network_vis()]. 
+#' 
+#' @param x value in \code{points$enriched} column
+#' 
+#' @return character, new value with additional line breaks 
+#' 
+#' @seealso [enrichment_network_vis()], [add_line_breaks()]
+#' 
+format_gene_lists = function(x){
+  if(grepl("(METAB)", x)) return(x)
+  splits = unname(unlist(strsplit(x, "<br>")))
+  newsplits = unname(unlist(sapply(splits, add_line_breaks)))
+  return(paste0(newsplits, collapse="<br>"))
+}
+
+
+#' Clean up pathway names
+#' 
+#' Remove punctuation, numbers, and common words to determine qualitative 
+#' overlap between pathways enriched by metabolites versus other pathways.
+#' Function used internally in [enrichment_network_vis()].
+#'
+#' @param x character, pathway names 
+#'
+#' @return vector of candidate words to determine overlap 
+#' 
+#' @seealso [enrichment_network_vis()]
+#' 
+#' @importFrom tm stopwords
+#' 
+cleanup = function(x){
+  x1 = gsub(":|-|;|'|[0-9]|,","",x)
+  x2 = unique(tolower(unlist(strsplit(x1, " "))))
+  x2 = x2[x2!=""]
+  x2 = x2[!x2 %in% tm::stopwords()]
+  # exclude other common words
+  common_pw_words = c("regulation", "cell", "diseases", "pathway", "response", "system", "human", "disease", "systems")
+  x2 = x2[!x2 %in% common_pw_words]
+  return(x2)
+}
+

@@ -7,9 +7,9 @@
 edge_intersection(symbol1, symbol2)
 }
 \arguments{
-\item{ensembl1}{character, comma-separated gene symbols of intersection from start node}
+\item{symbol1}{character, comma-separated gene symbols of intersection from start node}
 
-\item{ensembl2}{character, comma-separated gene symbols of intersection from end node}
+\item{symbol2}{character, comma-separated gene symbols of intersection from end node}
 }
 \value{
 string of comma-separated gene symbols in intersection

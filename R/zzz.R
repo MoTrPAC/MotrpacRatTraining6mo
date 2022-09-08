@@ -98,5 +98,10 @@ utils::globalVariables(
     "id",
     "group_number",
     "value",
-    "color.background"
+    "color.background",
+    "intersection_label",
+    "from",
+    "to",
+    "color.highlight.border",
+    "sumlog_p_log10"
   ))
