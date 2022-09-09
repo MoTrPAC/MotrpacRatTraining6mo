@@ -49,6 +49,9 @@ utils::globalVariables(
     "tr4_0",
     "tr8_0",
     "tr8_1",
+    "size",
+    "is_control",
+    "x_cvs",
     "size", # immuno_timewise_da
     "cytokine", # immuno_timewise_da
     "test_grouping", # immuno_timewise_da

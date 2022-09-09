@@ -1,24 +1,3 @@
-#' Function to extract standard errors from limma results
-#'
-#' @param limma_res Result table as produced by limma
-#' @param e_fit eBayes fit object as produced by limma
-#' @param effect_col The column containing the effect size
-#' @param t_col The column containing the t statistic
-#'
-#' @return A vector of standard errors for effect sizes
-#' @export
-#'
-limma_res_extract_se = function(limma_res,
-                               e_fit,
-                               effect_col="logFC",
-                               t_col="t"){
-  effects = limma_res[[effect_col]]
-  ts = limma_res[[t_col]]
-  ses1 = effects/ts
-  return(ses1)
-}
-
-
 #' Proteomics timewise differential analysis
 #' 
 #' Timewise differential analysis for the proteome, phosphoproteome, acetylome, and ubiquitylome. 
@@ -136,7 +115,7 @@ proteomics_timewise_da  = function(assay, tissue, exclude_outliers=TRUE){
         tissue=tissue,
         assay=assay,
         sex = dplyr::if_else(SEX == "M","male","female"),
-        logFC_se = limma_res_extract_se(limma_res,lmfit.cont.ebayes),
+        logFC_se = limma_res_extract_se(limma_res),
         logFC = limma_res$logFC,
         tscore = limma_res$t,
         comparison_group = curr_tp,

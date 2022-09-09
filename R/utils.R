@@ -101,3 +101,25 @@ fetch_object = function(name_as_string){
                               package = "MotrpacRatTraining6moData"))
   return(get(name_as_string))
 }
+
+
+#' Extract standard errors
+#' 
+#' Extract standard errors from \code{limma} results
+#'
+#' @param limma_res data frame returned by [limma::topTable()]
+#' @param effect_col character, name of column containing the effect size
+#' @param t_col character, column name containing the t statistic
+#'
+#' @return numeric vector of standard errors for effect sizes
+#' 
+#' @export
+#'
+limma_res_extract_se = function(limma_res,
+                                effect_col="logFC",
+                                t_col="t"){
+  effects = limma_res[[effect_col]]
+  ts = limma_res[[t_col]]
+  ses1 = effects/ts
+  return(ses1)
+}
