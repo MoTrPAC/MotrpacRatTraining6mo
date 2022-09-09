@@ -1,24 +1,27 @@
-#' Metabolomics Training Differential Analysis
+#' Metabolomics training differential analysis
 #' 
-#' Use limma to test the effect of training across timepoints. The analysis
-#' is performed separately for Male and Female rats and combined into a single
-#' p-values using sum of logs.
+#' Use \code{limma} to test the effect of training across timepoints. The analysis
+#' is performed separately for male and female rats and combined into a single
+#' p-value using sum of logs.
 #'
 #' @param tissue `r tissue()`
 #'
 #' @return a data frame with one row per metabolite:
 #' \describe{
-#'   \item{\code{feature_ID}}{Metabolite name}
-#'   \item{\code{platform}}{The metabolomics assaay in which the metabolite is detected.}
-#'   \item{\code{groups_tested_female}}{The timepoints used to perform the F-test in females. Some tissues or assays are missing timepoints}
-#'   \item{\code{groups_tested_male}}{The timepoints used to perform the F-test in males. Some tissues or assays are missing timepoints}
-#'   \item{\code{fscore_male}}{F-statistic for males}
-#'   \item{\code{fscore_female}}{F-statistic for females}
-#'   \item{\code{p_value_male}}{nominal p-value for males}
-#'   \item{\code{p_value_female}}{nominal  p-value for females}
-#'   \item{\code{full_model}}{full model used in limma}
-#'   \item{\code{reduced_model}}{Representation of the reduced model, although not used by limma}
-#'   \item{\code{p_value}}{combined male and female nominal p-value using the sum of logs}
+#'   \item{\code{feature_ID}}{`r feature_ID()`}
+#'   \item{\code{dataset}}{character, the metabolomics platform in which the metabolite is detected}
+#'   \item{\code{groups_tested_female}}{character, timepoints used to perform the F-test in females. 
+#'     Some tissues or assays are missing timepoints.}
+#'   \item{\code{groups_tested_male}}{character, timepoints used to perform the F-test in males. 
+#'     Some tissues or assays are missing timepoints.}
+#'   \item{\code{fscore_male}}{double, F-statistic for males}
+#'   \item{\code{fscore_female}}{double, F-statistic for females}
+#'   \item{\code{p_value_male}}{double, nominal p-value for males}
+#'   \item{\code{p_value_female}}{double, nominal  p-value for females}
+#'   \item{\code{full_model}}{character, full model used in limma}
+#'   \item{\code{reduced_model}}{character, representation of the reduced model, 
+#'     though not used by limma}
+#'   \item{\code{p_value}}{double, combined male and female nominal p-value using the sum of logs}
 #' }
 #' 
 #' @export
@@ -26,11 +29,13 @@
 #' @importFrom tidyr replace_na
 #' @importFrom limma lmFit eBayes topTable 
 #' @importFrom purrr map2_dbl
-#' @import metap sumlog
+#' @importFrom metap sumlog
 #' 
 #' @examples
+#' # Perform training differential analysis for metabolites in heart tissue
 #' metab_training_da("HEART")
-metab_training_da <- function(tissue){
+#' 
+metab_training_da = function(tissue){
   
   #Save F-test results
   f_results = list()
@@ -44,7 +49,6 @@ metab_training_da <- function(tissue){
     }
     
     x <- as.matrix(x)
-    
     
     #Specify covariates
     covs <-  
@@ -130,7 +134,7 @@ metab_training_da <- function(tissue){
         dplyr::mutate(p_value = purrr::map2_dbl(p_value_male,p_value_female,function(x,y){metap::sumlog(c(x,y))$p}))
     }
     
-    merged$platform = metab_assay
+    merged$dataset = metab_assay
     
     f_results = c(f_results,list(merged))
   }
@@ -138,42 +142,39 @@ metab_training_da <- function(tissue){
 }
 
 
-
-#' Metabolomics Training Differential Analysis
+#' Metabolomics timewise differential analysis
 #' 
-#' Use limma to test the effect of training for each exercised time point vs the control. The analysis
-#' is performed separately for Male and Female rats 
+#' Use \code{limma} to perform pairwise contrasts between each group of trained animals
+#' and the sex-matched control group for a single tissue. Analysis is performed separately for males and 
+#' females. 
 #'
-#'  @param tissue `r tissue()`
+#' @param tissue `r tissue()`
 #'
 #' @return a data frame with one row per metabolite, time, and sex combination:
 #' \describe{
-#'   \item{\code{feature_ID}}{Metabolite name}
-#'   \item{\code{sex}}{one of "male" or "female"}
-#'   \item{\code{cv}}{Coefficient of variation for case sample}
-#'   \item{\code{control_cv}}{Coefficient of variation for control samples}
-#'   \item{\code{logFC}}{log fold-change of the training group specified by \code{sex} and \code{comparison_group} (e.g., 1-week females) 
-#'     relative to the sex-matched sedentary controls}
-#'   \item{\code{logFC_se}}{standard error of \code{logFC}}
-#'   \item{\code{tscore}}{t-statistic of the training group specified by \code{sex} and \code{comparison_group} (e.g., 1-week females) 
-#'     relative to the sex-matched sedentary controls}
-#'   \item{\code{covariates}}{Additional covariates used in the analysis. NA for none.}
-#'   \item{\code{comparison_group}}{time point compared to the sex-matched 
-#'       sedentary control animals, one of "1w", "2w", "4w", "8w"}
-#'   \item{\code{p_value}}{nominal p-value corresponding to the contrast between the training group 
-#'     (e.g., 1-week females) and the sex-matched sedentary controls}
-#'   \item{\code{comparison_average_intensity}}{average normalized RNA-seq counts for samples in the training group (e.g., 1-week females)}
-#'   \item{\code{reference_average_intensity}}{average normalized RNA-seq counts for sex-matched sedentary control samples}
-#'   \item{\code{platform}}{The metabolomics platform in which the metabolite is detected.}
-#'}
+#'   \item{\code{feature_ID}}{`r feature_ID()`}
+#'   \item{\code{sex}}{`r sex()`}
+#'   \item{\code{cv}}{double, coefficient of variation for case samples}
+#'   \item{\code{control_cv}}{double, coefficient of variation for control samples}
+#'   \item{\code{logFC}}{`r logFC()`}
+#'   \item{\code{logFC_se}}{`r logFC_se()`}
+#'   \item{\code{tscore}}{`r tscore()`}
+#'   \item{\code{covariates}}{`r covariates()`}
+#'   \item{\code{comparison_group}}{`r comparison_group()`}
+#'   \item{\code{p_value}}{`r p_value_da()`}
+#'   \item{\code{comparison_average_intensity}}{`r comparison_average_intensity()`}
+#'   \item{\code{reference_average_intensity}}{`r reference_average_intensity()`}
+#'   \item{\code{dataset}}{character, the metabolomics platform in which the metabolite is detected}
+#' }
 #' 
 #' @export
-#' @import dplyr filter transmute bind_rows if_else case_when mutate
+#' @importFrom dplyr filter transmute bind_rows if_else case_when mutate
 #' @importFrom limma lmFit eBayes topTable makeContrasts contrasts.fit
 #' 
 #' @examples
-#' # Perform differential analysis for metabolites in heart tissue.
-#' metab_training_da("HEART")
+#' # Perform timewise differential analysis for metabolites in heart tissue
+#' metab_timewise_da("HEART")
+#' 
 metab_timewise_da <- function(tissue){
   
   #Save F-test results
@@ -188,7 +189,6 @@ metab_timewise_da <- function(tissue){
     }
     
     x <- as.matrix(x)
-    
     
     #Specify covariates
     covs <-  
@@ -209,7 +209,6 @@ metab_timewise_da <- function(tissue){
         viallabel
       )
     
-    
     sex_ttest_res = list() #T-test result
     
     #Calculate CV
@@ -221,7 +220,7 @@ metab_timewise_da <- function(tissue){
     if(length(control_viallabels)>3){
       control_cvs = apply(x_control,1,sd)/apply(x_control,1,mean)
     }else{
-      control_cvs = rep(NA,length(x_cvs))
+      control_cvs = rep(NA,length(x_cv))
     }
     
     for(SEX in c('M','F')){
@@ -230,7 +229,6 @@ metab_timewise_da <- function(tissue){
       if(nrow(curr_meta) > 0){
         
         curr_counts = x[,rownames(curr_meta)]
-        
         
         #Extract treatment covariate
         tr <- factor(curr_meta$tr,
@@ -293,13 +291,11 @@ metab_timewise_da <- function(tissue){
           
           curr_res$comparison_average_intensity = apply(data.frame(x[,case_samps]),1,mean,na.rm=TRUE)
           
-          
           control_samps = covs %>% 
             dplyr::filter(sex == SEX &
                      is_control == 1) %>%
             rownames()
           curr_res$reference_average_intensity = apply(x[,control_samps],1,mean,na.rm=TRUE)
-          
           
           # Add the results
           sex_ttest_res = rbind(sex_ttest_res,curr_res)

@@ -49,5 +49,7 @@ utils::globalVariables(
     "tr4_0",
     "tr8_0",
     "tr8_1",
-    "size")
+    "size",
+    "is_control",
+    "x_cvs")
   )

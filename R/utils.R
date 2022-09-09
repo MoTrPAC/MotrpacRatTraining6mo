@@ -83,7 +83,6 @@ check_da_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
 }
 
 
-
 #' Get object from MotrpacRatTraining6moData
 #' 
 #' Using \code{get()} to retrieve data from MotrpacRatTraining6moData 
@@ -103,19 +102,22 @@ fetch_object = function(name_as_string){
   return(get(name_as_string))
 }
 
-#' Function to extract standard errors from limma results
+
+#' Extract standard errors
+#' 
+#' Extract standard errors from \code{limma} results
 #'
-#' @param limma_res Result table as produced by limma
-#' @param effect_col The column containing the effect size
-#' @param t_col The column containing the t statistic
+#' @param limma_res data frame returned by [limma::topTable()]
+#' @param effect_col character, name of column containing the effect size
+#' @param t_col character, column name containing the t statistic
 #'
-#' @return A vector of standard errors for effect sizes
+#' @return numeric vector of standard errors for effect sizes
 #' 
 #' @export
 #'
-limma_res_extract_se<-function(limma_res,
-                               effect_col="logFC",
-                               t_col="t"){
+limma_res_extract_se = function(limma_res,
+                                effect_col="logFC",
+                                t_col="t"){
   effects = limma_res[[effect_col]]
   ts = limma_res[[t_col]]
   ses1 = effects/ts
