@@ -125,6 +125,12 @@ cluster_pathway_enrichment = function(cluster_res,
       call. = FALSE
     )
   }
+  if (!requireNamespace("gprofiler2", quietly = TRUE)) {
+    stop(
+      "Package 'gprofiler2' must be installed to perform pathway enrichment.",
+      call. = FALSE
+    )
+  }
   
   kegg_databaseDir = kegg_db_destination
   
