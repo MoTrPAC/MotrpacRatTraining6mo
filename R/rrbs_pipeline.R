@@ -98,10 +98,6 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' 
 #' @return A character vector. Names are loci (M matrix rows), entries are the names of the loci clusters.
 #' 
-#' @importFrom MCL mcl
-#' @importFrom corrplot corrplot
-#' @importFrom stats cor
-#' 
 #' @export
 #' 
 #' @details 
@@ -212,19 +208,23 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' tile_l = split(1:nrow(M),tiles)
 #' tile_l = tile_l[unique(tiles)] # keep the genome order
 #' # parallel comp
-#' library(parallel)
-#' tile_clusters = data.table::copy(tiles)
-#' for(chr in unique(chrs)){
-#'   print(chr)
-#'   curr_chr_inds = grepl(paste0(chr,"-"),tiles)
-#'   chr_tiles = unique(tiles[curr_chr_inds])
-#'   chr_tile_l = tile_l[chr_tiles]
-#'   print(system.time({
-#'       chr_tile_clusters = mclapply(chr_tiles,analyze_tile,
-#'           tile_l = chr_tile_l,M = M, mc.cores = 5)
+#' if(require("parallel")){
+#'   tile_clusters = data.table::copy(tiles)
+#'   for(chr in unique(chrs)){
+#'     print(chr)
+#'     curr_chr_inds = grepl(paste0(chr,"-"),tiles)
+#'     chr_tiles = unique(tiles[curr_chr_inds])
+#'     chr_tile_l = tile_l[chr_tiles]
+#'     print(system.time({
+#'       chr_tile_clusters = parallel::mclapply(chr_tiles,
+#'                                              analyze_tile,
+#'                                              tile_l = chr_tile_l,
+#'                                              M = M, 
+#'                                              mc.cores = 5)
 #'       chr_tile_clusters = unlist(chr_tile_clusters)
 #'       tile_clusters[names(chr_tile_clusters)] = chr_tile_clusters}))
-#'   gc()
+#'     gc()
+#'   }
 #' }
 #' yall = merge_sites_by_clusters(yall,tile_clusters)
 #' 
@@ -241,12 +241,21 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #'   yall$samples$lib.size[grepl("-Un",colnames(yall$counts))]
 #' yall$samples$lib.size <- rep(TotalLibSize, each=2)
 #' }
-analyze_tile<-function(tile_name,
-                       tile_l,
-                       M,
-                       min_cor=0.7,
-                       inflations = c(3,2.5,2,1.5),
-                       plotcorr=FALSE){
+analyze_tile <- function(tile_name,
+                         tile_l,
+                         M,
+                         min_cor=0.7,
+                         inflations = c(3,2.5,2,1.5),
+                         plotcorr=FALSE){
+  
+  for(pkg in c("corrplot","MCL")){
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      stop(
+        sprintf("Package '%s' must be installed to run 'analyze_tile()'."),
+        call. = FALSE
+      )
+    }
+  }
   
   tile_inds = tile_l[[tile_name]]
   if(length(tile_inds) < 2){

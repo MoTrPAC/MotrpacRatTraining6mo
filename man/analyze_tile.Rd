@@ -140,19 +140,23 @@ M <- log2(Me + 2) - log2(Un + 2)
 tile_l = split(1:nrow(M),tiles)
 tile_l = tile_l[unique(tiles)] # keep the genome order
 # parallel comp
-library(parallel)
-tile_clusters = data.table::copy(tiles)
-for(chr in unique(chrs)){
-  print(chr)
-  curr_chr_inds = grepl(paste0(chr,"-"),tiles)
-  chr_tiles = unique(tiles[curr_chr_inds])
-  chr_tile_l = tile_l[chr_tiles]
-  print(system.time({
-      chr_tile_clusters = mclapply(chr_tiles,analyze_tile,
-          tile_l = chr_tile_l,M = M, mc.cores = 5)
+if(require("parallel")){
+  tile_clusters = data.table::copy(tiles)
+  for(chr in unique(chrs)){
+    print(chr)
+    curr_chr_inds = grepl(paste0(chr,"-"),tiles)
+    chr_tiles = unique(tiles[curr_chr_inds])
+    chr_tile_l = tile_l[chr_tiles]
+    print(system.time({
+      chr_tile_clusters = parallel::mclapply(chr_tiles,
+                                             analyze_tile,
+                                             tile_l = chr_tile_l,
+                                             M = M, 
+                                             mc.cores = 5)
       chr_tile_clusters = unlist(chr_tile_clusters)
       tile_clusters[names(chr_tile_clusters)] = chr_tile_clusters}))
-  gc()
+    gc()
+  }
 }
 yall = merge_sites_by_clusters(yall,tile_clusters)
 

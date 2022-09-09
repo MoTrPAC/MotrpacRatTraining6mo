@@ -13,7 +13,7 @@
 #' @details 
 #' This function is highly specialized for the MoTrPAC data. It assumes that the input zscore matrix has eight columns.
 #' Four columns for male z-scores (weeks 1, 2, 4, 8), and four for females. No NA values in the input matrix.
-#' The function first runs the Bayesian clustering using \code{repfdr} (see [repfdr_wrapper]) and then extracts the node and 
+#' The function first runs the Bayesian clustering using \code{repfdr} (see [repfdr_wrapper()]) and then extracts the node and 
 #' edge sets of the graphical solution.
 #' 
 #' A node is a time-point specific state. It can represent null features (z-score around zero, no effect), up-regulated 
@@ -103,6 +103,13 @@ bayesian_graphical_clustering <- function(zscores,
                                           min_analyte_posterior_thr=0.5,
                                           min_prior_for_config=0.001,
                                           naive_edge_sets=TRUE){
+  
+  if (!requireNamespace("repfdr", quietly = TRUE)){
+    stop(
+      "Package 'repfdr' must be installed to use this function.",
+      call. = FALSE
+    )
+  }
   
   if(is.null(dim(zscores))||nrow(zscores)<5 || ncol(zscores)!=8){
     stop("Input zscore matrix does not fit the required input. See documentation for details.")
@@ -209,8 +216,6 @@ bayesian_graphical_clustering <- function(zscores,
 #' 
 #' A general wrapper for running \code{repfdr} on a matrix of z-scores.
 #' 
-#' @importFrom repfdr em.control repfdr ztobins ldr hconfigs
-#' 
 #' @export
 #' 
 #' @param zscores A numeric matrix. Rows are analytes, columns are conditions (e.g., male week 1). Entries are z-scores.
@@ -248,6 +253,14 @@ bayesian_graphical_clustering <- function(zscores,
 #' quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
 #' }
 repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
+  
+  if (!requireNamespace("repfdr", quietly = TRUE)){
+    stop(
+      "Package 'repfdr' must be installed to use this function.",
+      call. = FALSE
+    )
+  }
+  
   # Step 1 in repfdr: discretize the z-scores and estimate the probabilities 
   # in each bin.
   # In our work we examined the diagnostic plots manually. The results look reasonable,
@@ -565,6 +578,7 @@ filter_edge_sets_by_trajectories <- function(edge_sets = MotrpacRatTraining6moDa
   }
   return(e_copy)
 }
+
 
 #' Graph representation of feature trajectories 
 #' 
@@ -1157,3 +1171,208 @@ get_all_trajectories = function(edge_sets = MotrpacRatTraining6moData::GRAPH_COM
   return(l)
 }
 
+
+#' Extract main graphical clusters
+#' 
+#' Return a data frame with features from the 2 largest nodes, 2 largest edges, 
+#' and 10 largest non-null paths from the graphical representation of training-regulated
+#' features in each tissue. This code replicates the graphical clusters for which
+#' pathway enrichment was performed for the landscape manuscript. 
+#' 
+#' @return a data frame with 5 columns and one row per combination of 
+#'   feature ID and cluster:
+#' \describe{
+#'   \item{\code{feature}}{`r feature()`}
+#'   \item{\code{cluster}}{character, cluster label}
+#'   \item{\code{ome}}{`r assay()`}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{feature_ID}}{`r feature_ID()`} 
+#' }
+#' 
+#' @export
+#'
+#' @examples
+#' cluster_df = extract_main_clusters()
+#' 
+#' @details 
+#' Notes about cluster labels:  
+#' * All clusters are prefixed with the tissue abbreviation and a colon, e.g. "SKM-GN:"  
+#' * Nodes are defined by the time point and state in each sex, where state is 1 for up,  
+#' 0 for null, and -1 for down. For example, "1w_F-1_M-1" is a node that characterizes molecules 
+#' at the "1w" time point that are down-regulated in females ("F-1") and down-regulated in males ("M-1"). 
+#' These three pieces of information (time point, female state, male state) are separated by underscores ("_")   
+#' * Edges contain "---" and connect a pair of nodes  
+#' * Paths contain "->" and connect four nodes  
+#' 
+extract_main_clusters = function(){
+  edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets
+  node_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$node_sets
+  tissues = MotrpacRatTraining6moData::TISSUE_ABBREV
+  tissues = tissues[!tissues %in% c("OVARY","TESTES","VENACV")]
+  tree_analysis_selected_sets = c()
+  
+  # Add top 2 nodes, edges, paths from each cluster 
+  # Note that null nodes and edges are currently INCLUDED 
+  for(tissue in tissues){
+    curr_sets = extract_tissue_sets(tissue,
+                                    k = 2,
+                                    min_size = 20,
+                                    node_sets,
+                                    edge_sets)
+    if(length(curr_sets)==0) next 
+    names(curr_sets) = paste(tissue,names(curr_sets),sep=":")
+    tree_analysis_selected_sets = c(tree_analysis_selected_sets,curr_sets)
+  }
+  
+  # Add top 10 paths from each cluster 
+  tree_analysis_selected_paths = list()
+  for(tissue in tissues){
+    curr_sets = extract_tissue_sets(tissue,k=10,min_size = 20,node_sets,edge_sets)
+    if(length(curr_sets)==0) next
+    names(curr_sets) = paste(tissue,names(curr_sets),sep=":")
+    tree_analysis_selected_paths = c(tree_analysis_selected_paths,curr_sets)
+  }
+  # Keep paths only 
+  tree_analysis_selected_paths = tree_analysis_selected_paths[grepl("->", names(tree_analysis_selected_paths))]
+  # Remove all null paths
+  tree_analysis_selected_paths = tree_analysis_selected_paths[!grepl("1w_F0_M0->2w_F0_M0->4w_F0_M0->8w_F0_M0", names(tree_analysis_selected_paths))]
+  # Add them only if not already in `tree_analysis_selected_sets`
+  tree_analysis_selected_paths = tree_analysis_selected_paths[!names(tree_analysis_selected_paths) %in% names(tree_analysis_selected_sets)]
+  
+  selected_sets = c(tree_analysis_selected_sets, tree_analysis_selected_paths)
+  selected_sets_df  = check_cluster_res_format(selected_sets)
+  return(selected_sets_df)
+}
+
+
+#' Check clustering results format 
+#' 
+#' This function will generate warnings or errors if there are issues with the format of the input. 
+#' Used internally in [extract_main_clusters()].
+#'
+#' @param cluster_res Either a data frame or a list of lists. 
+#'   If a data frame, it needs at least two columns: "feature" and "cluster". 
+#'   The "feature" column should be in the format 
+#'   '[MotrpacRatTraining6moData::ASSAY_ABBREV];[MotrpacRatTraining6moData::TISSUE_ABBREV];feature_ID'. 
+#'   If a list of lists, each sublist must be named with the cluster name (character string), 
+#'   and the values must be features in the format 
+#'   '[MotrpacRatTraining6moData::ASSAY_ABBREV];[MotrpacRatTraining6moData::TISSUE_ABBREV];feature_ID'. 
+#'
+#' @return a data frame with 5 columns:
+#' \describe{
+#'   \item{\code{feature}}{`r feature()`}
+#'   \item{\code{cluster}}{character, cluster label}
+#'   \item{\code{ome}}{`r assay()`}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{feature_ID}}{`r feature_ID()`} 
+#' }
+#' 
+#' @seealso [extract_main_clusters()]
+#' 
+#' @export 
+#' 
+#' @examples 
+#' # Note this example is redundant because check_cluster_res_format()
+#' # is called within extract_main_clusters(), but it provides an 
+#' # example input and output
+#' cluster_res = extract_main_clusters()
+#' cluster_res_checked = check_cluster_res_format(cluster_res)
+#' 
+check_cluster_res_format = function(cluster_res){
+  
+  if(is.list(cluster_res) & !is.data.frame(cluster_res) & !data.table::is.data.table(cluster_res)){
+    # convert to data.table
+    dtlist = list()
+    for(c in names(cluster_res)){
+      dtlist[[c]] = data.table::data.table(feature=unlist(cluster_res[[c]]), cluster=c)
+    }
+    cluster_res = data.table::rbindlist(dtlist)
+  }
+  
+  cluster_res = as.data.frame(cluster_res, check.names=F, stringsAsFactors=F)
+  
+  ## check colnames
+  errors = c()
+  if(!"feature" %in% colnames(cluster_res)){
+    errors = c(errors, "\n'feature' not found in colnames of clustering results. Please reformat.")
+  }
+  if(!"cluster" %in% colnames(cluster_res)){
+    errors = c(errors, "\n'cluster' not found in colnames of clustering results. Please reformat.")
+  }
+  if(length(errors)>0){
+    stop(errors)
+  }
+  cluster_res$feature = as.character(cluster_res$feature)
+  
+  ## check that "feature" is in the right format
+  ## should be "OME;TISSUE;feature_ID"
+  
+  # first check that there are two semicolons in each cell 
+  if(!all(grepl("*;*;*", cluster_res$feature))){
+    stop("Are all features in the 'feature' column of the clustering results in the format 'OME;TISSUE;FEATURE_ID'? At least one 'feature' does not have 2 semicolons.")
+  }
+  
+  # then check that there are only 3 ;-separated strings
+  if(!all(unlist(lapply(strsplit(cluster_res$feature, ';'), length))==3)){
+    stop("There are more than 3 ;-separated strings in the 'feature' column of the clustering results. Make sure the 'feature' column is in the required format 'OME;TISSUE;FEATURE_ID'.")
+  }
+  
+  # then check that the strings are correct 
+  cluster_res = annotate_cluster_res(cluster_res)
+  
+  errors = c()
+  assay_abbr = MotrpacRatTraining6moData::ASSAY_ABBREV
+  if(!all(cluster_res$ome %in% assay_abbr)){
+    not_rec = unique(cluster_res$ome[!cluster_res$ome %in% unname(assay_abbr)])
+    errors = c(errors, sprintf("\nUnrecognized ome labels: %s", paste(not_rec, collapse=', ')))
+  }
+  tissue_abbr = MotrpacRatTraining6moData::TISSUE_ABBREV
+  if(!all(cluster_res$tissue %in% tissue_abbr)){
+    not_rec = unique(cluster_res$tissue[!cluster_res$tissue %in% unname(tissue_abbr)])
+    errors = c(errors, sprintf("\nUnrecognized tissue labels: %s", paste(not_rec, collapse=', ')))
+  } 
+  if(length(errors)>0){
+    stop(errors)
+  }
+  
+  # ## check that "cluster" is in the right format
+  # if(length(unique(cluster_res$cluster)) > 50){
+  #   warning("There are more than 50 unique values in the 'cluster' column. Is this right?")
+  # }
+  
+  return(cluster_res)
+  
+}
+
+
+#' Annotate clustering results
+#' 
+#' Add "ome", "tissue", and "feature_ID" columns to the input.
+#' Run within [check_cluster_res_format()]. 
+#'
+#' @param cluster_res data frame with at least two columns: "feature" and "cluster". 
+#'   The "feature" column must be in the format 
+#'   "[MotrpacRatTraining6moData::ASSAY_ABBREV];[MotrpacRatTraining6moData::TISSUE_ABBREV];feature_ID".
+#'
+#' @return the input as a data frame with additional "ome", "tissue", and "feature_ID" columns
+#'   and unfactorized "cluster" and "feature" columns
+#'   
+#' @seealso [check_cluster_res_format()]
+#' 
+annotate_cluster_res = function(cluster_res){
+  cluster_res = as.data.frame(cluster_res, stringsAsFactors = F, check.names = F)
+  cluster_res$cluster = as.character(cluster_res$cluster) # keep it from being a factor
+  cluster_res$feature = as.character(cluster_res$feature) # keep it from being a factor
+  cluster_res$ome = sapply(cluster_res$feature, function(x) unname(unlist(strsplit(x, ';')))[1])
+  cluster_res$tissue = sapply(cluster_res$feature, function(x) unname(unlist(strsplit(x, ';')))[2])
+  cluster_res$feature_ID = sapply(cluster_res$feature, function(x) unname(unlist(strsplit(x, ';')))[3])
+  return(cluster_res)
+}
+
+
+# TODO
+features_per_cluster = function(){}
+
+
+# TODO
+plot_cluster_trajectories = function(){}
