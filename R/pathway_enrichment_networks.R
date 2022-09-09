@@ -866,7 +866,7 @@ cleanup = function(x){
   x1 = gsub(":|-|;|'|[0-9]|,","",x)
   x2 = unique(tolower(unlist(strsplit(x1, " "))))
   x2 = x2[x2!=""]
-  x2 = x2[!x2 %in% STOPWORDS]
+  x2 = x2[!x2 %in% MotrpacRatTraining6mo::STOPWORDS]
   # exclude other common words
   common_pw_words = c("regulation", "cell", "diseases", "pathway", "response", "system", "human", "disease", "systems")
   x2 = x2[!x2 %in% common_pw_words]

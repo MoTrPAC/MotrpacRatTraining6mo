@@ -109,8 +109,10 @@ computed from the \code{\link[gprofiler2:gost]{gprofiler2::gost()}} output}
 }
 }
 \description{
-Wrapper for multi-tissue, multi-omic pathway enrichment of clustering or graphical results.
-Pathway enrichment is performed separately for each unique combination of tissue, assay/ome, and cluster.
+Wrapper for multi-tissue, multi-omic pathway enrichment of clustering or
+graphical results.
+Pathway enrichment is performed using \code{\link[gprofiler2:gost]{gprofiler2::gost()}} separately for
+each unique combination of tissue, assay/ome, and cluster.
 }
 \details{
 \code{\link[FELLA:enrich-funs]{FELLA::enrich()}} is used for pathway enrichment of metabolites; \code{\link[gprofiler2:gost]{gprofiler2::gost()}} is used for

@@ -109,5 +109,19 @@ utils::globalVariables(
     "gost_adj_p_value",
     "i",
     "intersection_size",
-    "kegg_id"
+    "kegg_id",
+    ########################################### get_peak_annotations()
+    ".SD", 
+    "annotation",
+    "chrom",
+    "dist_downstream",
+    "dist_upstream",
+    "end",
+    "geneEnd",
+    "geneStart",
+    "geneStrand",
+    "relationship_to_gene",
+    "short_annotation",
+    "start",
+    "intersection_ensembl" # pathway_hypergeom_test()
   ))
