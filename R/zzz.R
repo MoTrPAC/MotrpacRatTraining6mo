@@ -4,7 +4,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom ggplot2 guides scale_size theme annotate guide_legend aes element_rect ggplot
 #' @importFrom ggrepel geom_text_repel
-#' @importFrom stats na.omit prcomp sd median poly
+#' @importFrom stats na.omit prcomp sd median poly phyper
 #' @importFrom utils download.file data globalVariables combn
 ## usethis namespace: end
 NULL
@@ -103,5 +103,12 @@ utils::globalVariables(
     "from",
     "to",
     "color.highlight.border",
-    "sumlog_p_log10"
+    "sumlog_p_log10",
+    ########################################### cluster_pathway_enrichment()
+    "cluster",
+    "effective_domain_size",
+    "gost_adj_p_value",
+    "i",
+    "intersection_size",
+    "kegg_id"
   ))
