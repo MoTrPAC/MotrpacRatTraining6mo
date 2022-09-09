@@ -77,12 +77,6 @@
 #' 
 #' @export
 #' 
-#' @importFrom IHW ihw adj_pvalues
-#' @importFrom foreach foreach %do% %dopar%
-#' @importFrom doParallel registerDoParallel
-#' @importFrom KEGGREST keggList
-#' @importFrom FELLA loadKEGGdata
-#' 
 #' @details 
 #' [FELLA::enrich()] is used for pathway enrichment of metabolites; [gprofiler2::gost()] is used for 
 #' all other omes assuming features have been mapped to genes. 
@@ -124,6 +118,14 @@ cluster_pathway_enrichment = function(cluster_res,
                                       num_cores = NULL,
                                       logfile = "/dev/null",
                                       maxattempt = 50){
+  
+  if(!requireNamespace("foreach", quietly = TRUE)){
+    stop(
+      "Package 'foreach' must be installed to run 'cluster_pathway_enrichment()'.",
+      call. = FALSE
+    )
+  }
+  
   kegg_databaseDir = kegg_db_destination
   
   feature_to_gene_map = data.table::data.table(feature_to_gene)
@@ -134,6 +136,12 @@ cluster_pathway_enrichment = function(cluster_res,
   
   # load KEGG data if path exists (only need to do this once before querying)
   if(!is.null(kegg_databaseDir)){
+    if(!requireNamespace("FELLA", quietly = TRUE) | !requireNamespace("KEGGREST", quietly = TRUE)){
+      stop(
+        "Packages 'FELLA' and 'KEGGREST' must be installed to perform pathway enrichment with metabolites.",
+        call. = FALSE
+      )
+    }
     make_kegg_db(kegg_databaseDir)
     # load database
     fella.data = FELLA::loadKEGGdata(
@@ -143,6 +151,16 @@ cluster_pathway_enrichment = function(cluster_res,
   }
   
   cluster_res = annotate_cluster_res(cluster_res)
+  
+  if(!requireNamespace("IHW", quietly = TRUE)){
+    if(length(unique(cluster_res$tissue)) > 1){
+      stop(
+        "Package 'IHW' must be installed to perform multiple testing adjustment when more than one tissue is present in the input.",
+        call. = FALSE
+      )
+    }
+  }
+  
   if(is.null(kegg_databaseDir) & 'METAB' %in% cluster_res$ome){
     warning("It looks like you have metabolites in your clustering result, but you did not provide a path for the KEGG database ('kegg_db_destination'). Pathway enrichment will be skipped for metabolites.\n")
   }
@@ -166,6 +184,12 @@ cluster_pathway_enrichment = function(cluster_res,
   }
   
   if(num_cores > 1){
+    if(!requireNamespace("doParallel", quietly = TRUE)){
+      stop(
+        "Package 'doParallel' must be installed to run 'cluster_pathway_enrichment()' with more than one core.",
+        call. = FALSE
+      )
+    }
     doParallel::registerDoParallel(num_cores)
     message(sprintf("Registered %s core(s).", num_cores))
   }
@@ -244,10 +268,14 @@ cluster_pathway_enrichment = function(cluster_res,
   # make variable for IHW
   enrich_res = enrich_res[!is.na(computed_p_value)]
   if(adjust_p){
-    ihw_res = IHW::ihw(enrich_res[,computed_p_value],
-                       factor(enrich_res[,cluster]),
-                       alpha=0.05)
-    enrich_res[,adj_p_value := adj_pvalues(ihw_res)]
+    if(length(unique(enrich_res[,tissue])) == 1){
+      enrich_res[,adj_p_value := stats::p.adjust(computed_p_value, method="BH")]
+    }else{
+      ihw_res = IHW::ihw(enrich_res[,computed_p_value],
+                         factor(enrich_res[,tissue]),
+                         alpha=0.05)
+      enrich_res[,adj_p_value := adj_pvalues(ihw_res)]
+    }
   }
   
   # convert to data.frame 
@@ -304,6 +332,13 @@ run_single_enrichment = function(feature_to_gene_map,
                                  fella_method, 
                                  logfile = "/dev/null",
                                  maxattempt = 50){
+  
+  if (!requireNamespace("gprofiler2", quietly = TRUE)) {
+    stop(
+      "Package 'gprofiler2' must be installed to perform pathway enrichment.",
+      call. = FALSE
+    )
+  }
   
   CLUSTER = iterations[i,cluster]
   OME = iterations[i, ome]
@@ -419,8 +454,6 @@ run_single_enrichment = function(feature_to_gene_map,
 #' 
 #' @export
 #' 
-#' @importFrom FELLA enrich
-#' 
 #' @return data table of pathway enrichment results:
 #' \describe{
 #'   \item{\code{term_size}}{double, number of KEGG IDs that are annotated to the term}
@@ -460,6 +493,12 @@ run_single_enrichment = function(feature_to_gene_map,
 #' res = run_fella(input, background, fella.data, method="diffusion")
 #' }
 run_fella = function(input, background, fella.data, method="hypergeom", niter=1e5){
+  if(!requireNamespace("FELLA", quietly = TRUE)){
+    stop(
+      "Package 'FELLA' must be installed to perform pathway enrichment with metabolites.",
+      call. = FALSE
+    )
+  }
   if(method=="hypergeom"){
     out = tryCatch(
       {
@@ -534,9 +573,14 @@ run_fella = function(input, background, fella.data, method="hypergeom", niter=1e
 #' @param kegg_db_destination character, target directory for KEGG 
 #'   database. Parent directories are created if they do not yet exist. 
 #' @export
-#' @importFrom FELLA buildGraphFromKEGGREST buildDataFromGraph
 #' @seealso [cluster_pathway_enrichment()], [run_fella()]
 make_kegg_db = function(kegg_db_destination){
+  if(!requireNamespace("FELLA", quietly = TRUE)){
+    stop(
+      "Package 'FELLA' must be installed to perform pathway enrichment with metabolites.",
+      call. = FALSE
+    )
+  }
   if(endsWith(kegg_db_destination, "/")){
     kegg_db_destination = gsub("/$","",kegg_db_destination)
   }

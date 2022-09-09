@@ -13,7 +13,7 @@
 #' @details 
 #' This function is highly specialized for the MoTrPAC data. It assumes that the input zscore matrix has eight columns.
 #' Four columns for male z-scores (weeks 1, 2, 4, 8), and four for females. No NA values in the input matrix.
-#' The function first runs the Bayesian clustering using \code{repfdr} (see [repfdr_wrapper]) and then extracts the node and 
+#' The function first runs the Bayesian clustering using \code{repfdr} (see [repfdr_wrapper()]) and then extracts the node and 
 #' edge sets of the graphical solution.
 #' 
 #' A node is a time-point specific state. It can represent null features (z-score around zero, no effect), up-regulated 
@@ -103,6 +103,13 @@ bayesian_graphical_clustering <- function(zscores,
                                           min_analyte_posterior_thr=0.5,
                                           min_prior_for_config=0.001,
                                           naive_edge_sets=TRUE){
+  
+  if (!requireNamespace("repfdr", quietly = TRUE)){
+    stop(
+      "Package 'repfdr' must be installed to use this function.",
+      call. = FALSE
+    )
+  }
   
   if(is.null(dim(zscores))||nrow(zscores)<5 || ncol(zscores)!=8){
     stop("Input zscore matrix does not fit the required input. See documentation for details.")
@@ -209,8 +216,6 @@ bayesian_graphical_clustering <- function(zscores,
 #' 
 #' A general wrapper for running \code{repfdr} on a matrix of z-scores.
 #' 
-#' @importFrom repfdr em.control repfdr ztobins ldr hconfigs
-#' 
 #' @export
 #' 
 #' @param zscores A numeric matrix. Rows are analytes, columns are conditions (e.g., male week 1). Entries are z-scores.
@@ -248,6 +253,14 @@ bayesian_graphical_clustering <- function(zscores,
 #' quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
 #' }
 repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
+  
+  if (!requireNamespace("repfdr", quietly = TRUE)){
+    stop(
+      "Package 'repfdr' must be installed to use this function.",
+      call. = FALSE
+    )
+  }
+  
   # Step 1 in repfdr: discretize the z-scores and estimate the probabilities 
   # in each bin.
   # In our work we examined the diagnostic plots manually. The results look reasonable,
@@ -565,6 +578,7 @@ filter_edge_sets_by_trajectories <- function(edge_sets = MotrpacRatTraining6moDa
   }
   return(e_copy)
 }
+
 
 #' Graph representation of feature trajectories 
 #' 

@@ -24,43 +24,51 @@ Description: The goal of the Molecular Transducers of Physical Activity
 License: MIT + file LICENSE
 URL: https://github.com/MoTrPAC/MotrpacRatTraining6mo
 Imports: 
-    ashr,
-    corrplot,
     data.table,
-    DESeq2,
-    doParallel,
     dplyr,
     edgeR,
-    FELLA,
-    foreach,
     ggplot2,
     ggraph,
-    ggrepel,
-    gprofiler2,
     grid,
     igraph,
-    IHW,
-    KEGGREST,
     limma,
-    lmtest,
     magrittr,
-    MCL,
     metap,
     MotrpacRatTraining6moData (>= 1.2.1),
-    multcomp,
     purrr,
     RColorBrewer,
-    repfdr,
     stats,
     tibble,
     tidyr,
-    tm,
     utils,
     visNetwork
 Suggests: 
+    ashr,
+    ChIPseeker,
+    corrplot,
+    DESeq2,
+    doParallel,
+    FELLA,
+    foreach,
+    GenomeInfoDb,
+    GenomicFeatures,
+    GenomicRanges,
+    ggrepel,
+    gprofiler2,
+    IHW,
+    IRanges,
+    KEGGREST,
     knitr,
+    lmtest,
+    MCL,
+    multcomp,
+    parallel,
+    RCy3,
+    repfdr,
+    RMariaDB,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tm
 VignetteBuilder: 
     knitr
 Remotes: 
@@ -69,3 +77,6 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+Depends: 
+    R (>= 2.10)
+LazyData: true

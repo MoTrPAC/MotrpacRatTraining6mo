@@ -72,8 +72,8 @@
 #' # Cytoscape must be running locally for this to work. 
 #' library(RCy3)
 #' g = enrichment_network_vis(enrich_res, return_graph_for_cytoscape = T) 
-#' cytoscapePing()
-#' createNetworkFromIgraph(g,new.title='HEART:8w_F1_M1')
+#' RCy3::cytoscapePing()
+#' RCy3::createNetworkFromIgraph(g, new.title='HEART:8w_F1_M1')
 #' }
 #' 
 #' # Example 3: Plot an interactive network of pathway enrichments corresponding to 
@@ -862,13 +862,11 @@ format_gene_lists = function(x){
 #' 
 #' @seealso [enrichment_network_vis()]
 #' 
-#' @importFrom tm stopwords
-#' 
 cleanup = function(x){
   x1 = gsub(":|-|;|'|[0-9]|,","",x)
   x2 = unique(tolower(unlist(strsplit(x1, " "))))
   x2 = x2[x2!=""]
-  x2 = x2[!x2 %in% tm::stopwords()]
+  x2 = x2[!x2 %in% STOPWORDS]
   # exclude other common words
   common_pw_words = c("regulation", "cell", "diseases", "pathway", "response", "system", "human", "disease", "systems")
   x2 = x2[!x2 %in% common_pw_words]

@@ -54,7 +54,6 @@ list_available_data = function(package=NULL){
 #' @param overwrite bool, whether to overwrite \code{outfile} if it exists
 #' @param outfile_is_rdata bool, whether \code{outfile} is intended to save RData
 #'
-#' @return NULL
 check_da_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
   # check arguments 
   if(length(tissue)>1){
@@ -80,6 +79,146 @@ check_da_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
     }
   }
   return()
+}
+
+
+#' Get genomic peak annotations
+#' 
+#' Get and fix peak annotations from [ChIPseeker::annotatePeak()]
+#' 
+#' @param counts data table or data frame with columns 'chrom','start','end', and 'feature_ID' OR 
+#'   for ATAC only, data frame with row names as feature IDs in the format format 'chrom:start-end'
+#' @param species character, scientific name of the organism for which to create the 
+#'   Ensembl database with [GenomicFeatures::makeTxDbFromEnsembl()]
+#' @param release integer, the Ensembl release to query. 
+#'   If set to NA, the current release is used.  
+#' @param txdb optional [GenomicFeatures::TxDb-class] object, in which case 
+#'   the database is not regenerated 
+#' 
+#' @export
+#' 
+#' @return data frame with formatted [ChIPseeker::annotatePeak()] output 
+#'   and additional columns "custom_annotation" and "relationship_to_gene". 
+#'   
+#' @details 
+#'   "relationship_to_gene" is the shortest distance between the feature and the start or end of the closest gene. 
+#'   It is 0 if the feature has any overlap with the gene. 
+#'   "custom_annotation" fixes many issues with the \code{ChIPseeker} annotation (v1.22.1). 
+#'   
+get_peak_annotations = function(counts, species="Rattus norvegicus", release=96, txdb=NULL){
+
+  for (pkg in c('GenomeInfoDb','GenomicRanges','ChIPseeker','IRanges')){
+    if (!requireNamespace(pkg, quietly = TRUE)){
+      stop(
+        sprintf("Package '%s' must be installed to generate a TxDb object.", pkg),
+        call. = FALSE
+      )
+    }
+  }
+  
+  if(!"feature_ID" %in% colnames(counts) & !data.table::is.data.table(counts)){
+    genomic_peaks = data.table::data.table(
+      feature_ID = rownames(counts),
+      chrom = gsub(":.*","",rownames(counts)),
+      start = as.numeric(gsub(".*:|-.*","",rownames(counts))),
+      end = as.numeric(gsub(".*-","",rownames(counts)))
+    )
+  }else if(!"feature_ID" %in% colnames(counts) & data.table::is.data.table(counts)){
+    counts = counts
+    counts[,feature_ID := paste0(chrom,':',start,'-',end)]
+    genomic_peaks = counts[,.(chrom, start, end, feature_ID)]
+  }else if("feature_ID" %in% colnames(counts) & data.table::is.data.table(counts)){
+    counts = counts
+    genomic_peaks = counts[,.(chrom, start, end, feature_ID)]
+  }else if("feature_ID" %in% colnames(counts) & data.table::is.data.table(counts)){
+    counts = data.table::as.data.table(counts)
+    genomic_peaks = counts[,.(chrom, start, end, feature_ID)]
+  }else{
+    stop("Incorrect input format. 'counts' should be a data frame or data table with columns 'chrom', 'start', 'end', and 'feature_ID'.")
+  }
+  
+  if(is.null(txdb)){
+
+    if (!requireNamespace("GenomicFeatures", quietly = TRUE) | !requireNamespace("RMariaDB", quietly = TRUE)){
+      stop(
+        "Packages 'GenomicFeatures' and 'RMariaDB' must be installed to generate a TxDb object with 'makeTxDbFromEnsembl()'.",
+        call. = FALSE
+      )
+    }
+
+    # make TxDb object 
+    txdb = GenomicFeatures::makeTxDbFromEnsembl(organism=species,
+                                                release=release)
+  }
+  
+  accepted_chrom = GenomeInfoDb::seqlevels(txdb)
+  # remove contigs
+  accepted_chrom = accepted_chrom[!grepl("\\.",accepted_chrom)]
+  
+  # remove contigs from input 
+  genomic_peaks = genomic_peaks[!grepl("\\.",chrom)]
+  
+  genomic_peaks[,chrom := gsub("^chr","",as.character(chrom))]
+  if(!all(unique(genomic_peaks[,chrom]) %in% accepted_chrom)){
+    stop(sprintf("The following chromosomes are found in the input but not in the txdb object: %s", paste0(unique(!genomic_peaks[,chrom] %in% accepted_chrom), collapse=', ')))
+  }
+  
+  # annotate peaks 
+  peak = GenomicRanges::GRanges(seqnames = genomic_peaks[,chrom], 
+                                ranges = IRanges::IRanges(as.numeric(genomic_peaks[,start]), as.numeric(genomic_peaks[,end])))
+  peakAnno = ChIPseeker::annotatePeak(peak, 
+                                      level = "gene",
+                                      tssRegion=c(-2000,1000), 
+                                      TxDb=txdb,
+                                      overlap = "all")
+  pa = data.table::as.data.table(peakAnno@anno)
+  
+  # add back feature_ID
+  if(nrow(pa)==nrow(genomic_peaks)){
+    pa[,feature_ID := genomic_peaks[,feature_ID]]
+  }else{
+    cols=c('seqnames','start','end')
+    pa[,(cols) := lapply(.SD, as.character), .SDcols=cols]
+    cols=c('chrom','start','end')
+    genomic_peaks[,(cols) := lapply(.SD, as.character), .SDcols=cols]
+    pa = merge(pa, genomic_peaks, by.x=c('seqnames','start','end'), by.y=c('chrom','start','end'), all.y=T)
+  }
+  
+  # add simpler annotation
+  pa[,short_annotation := annotation]
+  pa[grepl('Exon', short_annotation), short_annotation := 'Exon']
+  pa[grepl('Intron', short_annotation), short_annotation := 'Intron']
+  
+  pa[,c('geneChr','strand') := NULL]
+  
+  # add a "relationship_to_gene" (from gene start or end, whichever is closer)
+  cols=c('start','end','geneStart','geneEnd','geneStrand')
+  pa[,(cols) := lapply(.SD, as.numeric), .SDcols=cols]
+  pa[,dist_upstream := ifelse(end-geneStart <=0, end-geneStart, NA_real_)]
+  pa[,dist_downstream := ifelse(start-geneEnd >= 0, start-geneEnd, NA_real_)]
+  # if feature overlaps with gene body, say dist_to_gene is 0
+  pa[end >= geneStart & start <= geneEnd, dist_downstream := 0]
+  pa[end >= geneStart & start <= geneEnd, dist_upstream := 0]
+  pa[, relationship_to_gene := ifelse(is.na(dist_downstream), dist_upstream, dist_downstream)]
+  pa[,c('dist_upstream','dist_downstream') := NULL]
+  
+  # fix "Downstream" and "Distal Intergenic" annotations
+  pa[relationship_to_gene == 0 & grepl("Downstream|Intergenic", short_annotation), short_annotation := "Overlaps Gene"]
+  # Downstream
+  pa[geneStrand == 1 & relationship_to_gene > 0 & relationship_to_gene < 5000, short_annotation := "Downstream (<5kb)"]
+  pa[geneStrand == 2 & relationship_to_gene < 0 & relationship_to_gene > -5000, short_annotation := "Downstream (<5kb)"]
+  # Upstream (promoter excluded)
+  pa[geneStrand == 1 & relationship_to_gene > -5000 & relationship_to_gene < 0 & 
+       grepl("Downstream|Intergenic", short_annotation), short_annotation := "Upstream (<5kb)"]
+  pa[geneStrand == 2 & relationship_to_gene < 5000 & relationship_to_gene > 0 & 
+       grepl("Downstream|Intergenic", short_annotation), short_annotation := "Upstream (<5kb)"]
+  pa[abs(relationship_to_gene) >= 5000, short_annotation := "Distal Intergenic"]
+
+  data.table::setnames(pa, 
+                       c('short_annotation','annotation','seqnames','geneId'), 
+                       c('custom_annotation','chipseeker_annotation','chrom','ensembl_gene'))
+  
+  return(as.data.frame(pa))
 }
 
 
