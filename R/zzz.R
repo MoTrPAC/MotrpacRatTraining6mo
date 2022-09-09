@@ -1,5 +1,5 @@
 ## usethis namespace: start
-#' @importFrom data.table as.data.table data.table rbindlist setnames := copy
+#' @importFrom data.table as.data.table data.table rbindlist setnames := copy melt
 #' @import MotrpacRatTraining6moData
 #' @importFrom magrittr %>%
 #' @importFrom ggplot2 guides scale_size theme annotate guide_legend aes element_rect ggplot
@@ -51,5 +51,14 @@ utils::globalVariables(
     "tr8_1",
     "size",
     "is_control",
-    "x_cvs")
-  )
+    "x_cvs",
+    "size", # immuno_timewise_da
+    "cytokine", # immuno_timewise_da
+    "test_grouping", # immuno_timewise_da
+    "terms", # immuno_timewise_da
+    "coef", # immuno_timewise_da
+    "coef_se", # immuno_timewise_da
+    "pval", # immuno_timewise_da
+    "panel", # immuno_timewise_da
+    "panel_name" #immuno_training_da
+  ))

@@ -4,13 +4,16 @@
 \alias{proteomics_training_da}
 \title{Proteomics training differential analysis}
 \usage{
-proteomics_training_da(assay, tissue)
+proteomics_training_da(assay, tissue, exclude_outliers = TRUE)
 }
 \arguments{
 \item{assay}{character, abbreviation for proteomics assay to be analyzed as defined by \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV}.
 One of the following: PROT, PHOSPHO, ACETYL, UBIQ}
 
 \item{tissue}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
+
+\item{exclude_outliers}{bool, whether to remove sample outliers specified in
+\link[MotrpacRatTraining6moData:OUTLIERS]{MotrpacRatTraining6moData::OUTLIERS}. \code{TRUE} by default.}
 }
 \value{
 a data frame with one row per proteomics feature:
@@ -20,6 +23,7 @@ a data frame with one row per proteomics feature:
 \item{\code{assay_code}}{character, assay code used in data release. See \link[MotrpacBicQC:assay_codes]{MotrpacBicQC::assay_codes}.}
 \item{\code{tissue}}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
 \item{\code{tissue_code}}{character, tissue code used in data release. See \link[MotrpacBicQC:bic_animal_tissue_code]{MotrpacBicQC::bic_animal_tissue_code}.}
+\item{\code{removed_samples}}{character, comma-separated list of outliers (vial labels) removed from differential analysis}
 \item{\code{fscore_male}}{double, F statistic for males}
 \item{\code{fscore_female}}{double, F statistic for females}
 \item{\code{p_value_male}}{double, nominal F-test p-value for males}

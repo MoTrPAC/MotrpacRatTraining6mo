@@ -390,11 +390,11 @@ transcript_timewise_da = function(tissue,
 #'                             overwrite = TRUE)
 #' }
 transcript_training_da = function(tissue, 
-                                   covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
-                                   outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
-                                   rdata_outfile = NULL,
-                                   overwrite = FALSE,
-                                   verbose = FALSE){
+                                  covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
+                                  outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
+                                  rdata_outfile = NULL,
+                                  overwrite = FALSE,
+                                  verbose = FALSE){
   
   .tissue = tissue # data.table workaround
   

@@ -342,16 +342,27 @@ analyze_tile<-function(tile_name,
 #' f = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData"
 #' system(sprintf("wget %s", f))
 #' yall = get(load("SKMGN_raw.RData"))
+#'
+#' # for the simplicity of this example, we subset the data to 5000 loci
+#' y = yall[1:5000,]
+#' dea_res = rrbs_differential_analysis(y,PHENO,METHYL_META,adj_pct_unaligned=T)
+#' head(dea_res$timewise)
+#' head(dea_res$training)
 #' 
 #' # Alternatively, you can use the processed datasets.
 #' # These are also available through the Google Cloud directory:
 #' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/
-#' # File formats are 
-#' (TBD)
-#' 
-#' # for the simplicity of this example, we subset the data to 5000 loci
-#' y = yall[1:5000,]
-#' da_res = rrbs_differential_analysis(y,adj_pct_unaligned=TRUE)
+#' # File formats are `METHYL_XXX_NORM_DATA.rda` and `METHYL_XXX_DA.rda` 
+#' # where XXX is the tissue name:
+#' # BAT (brown adipose), HEART, HIPPOC (hippocampus), KIDNEY, LUNG, LIVER, 
+#' # SKMGN (gastrocnemius skeletal muscle), and WATSC (white adipose)
+#'
+#' f = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_SKMGN_NORM_DATA.rda"
+#' system(sprintf("wget %s", f))
+#' y_processed = get(load("METHYL_SKMGN_NORM_DATA.rda"))
+#' # again, for the simplicity of this example, we subset the data to 5000 loci
+#' y = y_processed[1:5000,-c(1:4)]
+#' da_res = rrbs_differential_analysis(y, adj_pct_unaligned=TRUE)
 #' head(da_res$timewise)
 #' head(da_res$training)
 #' }
