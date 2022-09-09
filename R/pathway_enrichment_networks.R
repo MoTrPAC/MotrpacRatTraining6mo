@@ -78,13 +78,16 @@
 #' 
 #' # Example 3: Plot an interactive network of pathway enrichments corresponding to 
 #' # features that are up-regulated in both sexes at 8 weeks in any of the 3 muscle tissues. 
-#' # Only include pathways that are enriched in at least 2 muscle tissues. 
+#' # Only include pathways that are enriched in at least 2 muscle tissues.
+#' # Plot the color legend on the left instead of using colored labels pointing to nodes 
 #' enrich_res = MotrpacRatTraining6moData::GRAPH_PW_ENRICH
 #' enrich_res = enrich_res[enrich_res$tissue %in% c("SKM-GN","SKM-VL","HEART") &
-#'                           grepl(":8w_F1_M1",enrich_res$cluster),]
-#' enrichment_network_vis(enrich_res, 
-#'                        multitissue_pathways_only = TRUE,
-#'                        add_group_label_nodes = TRUE)
+#'                          grepl(":8w_F1_M1",enrich_res$cluster),]
+#' enrichment_network_vis(enrich_res,
+#'                        similarity_cutoff = 0.3,
+#'                        title = "Muscle 8w_F1_M1",
+#'                        add_group_label_nodes = FALSE,
+#'                        multitissue_pathways_only = TRUE) 
 #' 
 enrichment_network_vis = function(pw_enrich_res, 
                                   feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE,
@@ -115,7 +118,7 @@ enrichment_network_vis = function(pw_enrich_res,
     stop("Only one of 'return_html' and 'return_graph_for_cytoscape' can be set to TRUE.")
   }
   
-  if(verbose) message("Checking input formats...")
+  if(verbose) message("Formatting inputs...")
   
   # check format of enrich_res 
   sub_enrich = data.table::data.table(pw_enrich_res)
@@ -290,14 +293,14 @@ enrichment_network_vis = function(pw_enrich_res,
     }
   }
   
-  if(verbose) message("Defining nodes...")
+  if(verbose) message("Constructing graph...")
   points = clust1sig_collapsed
   data.table::setnames(points, 'term_id', 'Var')
   # points[,symbols := unname(unlist(sapply(intersection, replace_ensembl_with_symbol, feature_to_gene)))]
   # points[,n_genes := as.numeric(gsub(":.*","",symbols))]
   # points[,genes := gsub(".*:","",symbols)]
   
-  if(verbose) message("Defining edges...")
+  #if(verbose) message("Defining edges...")
   edges = pairs[similarity_score >= similarity_cutoff]
   
   # skip if there are no edges
@@ -325,7 +328,7 @@ enrichment_network_vis = function(pw_enrich_res,
     return()
   }
   
-  if(verbose) message("Final touches...")
+  #if(verbose) message("Final touches...")
   
   #if(verbose) message("Labelling groups by most frequent pathway subclass...")
   
@@ -602,7 +605,7 @@ enrichment_network_vis = function(pw_enrich_res,
   }
   
   if(verbose){
-    message(sprintf("Elapsed time: %s", round((proc.time() - ptm)[3], 3)))
+    message(sprintf("Elapsed time: %ss", round((proc.time() - ptm)[3], 3)))
     cat("\n")
   }
   
@@ -648,9 +651,8 @@ calc_similarity_metric = function(string1, string2){
 #' Function is used internally in [enrichment_network_vis()].
 #' 
 #' @param x character, comma-separated Ensembl IDs
-#' @param map data frame, mapping between Ensembl IDs and gene symbols.
+#' @param map data table, mapping between Ensembl IDs and gene symbols.
 #'   Must include the columns "ensembl_gene" and "gene_symbol". 
-#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default.
 #' @param return_N boolean, whether to prepend the concatenated 
 #'     gene symbols with the number of unique gene symbols.
 #'     \code{TRUE} by default. 
@@ -666,12 +668,13 @@ calc_similarity_metric = function(string1, string2){
 #' @seealso [enrichment_network_vis()]
 #' 
 replace_ensembl_with_symbol = function(x, 
-                                       map = MotrpacRatTraining6moData::FEATURE_TO_GENE, 
+                                       map, 
                                        return_N = TRUE, 
                                        collapse = TRUE){
-  
-  map = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE)
-  data.table::setkey(map, ensembl_gene)
+  if(!data.table::is.data.table(map)){
+    map = data.table::data.table(map)
+    data.table::setkey(map, ensembl_gene)
+  }
 
   ensembls = unlist(unname(strsplit(x, ',')))
   if(all(is.na(ensembls))){

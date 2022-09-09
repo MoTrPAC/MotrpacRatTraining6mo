@@ -107,13 +107,16 @@ createNetworkFromIgraph(g,new.title='HEART:8w_F1_M1')
 
 # Example 3: Plot an interactive network of pathway enrichments corresponding to 
 # features that are up-regulated in both sexes at 8 weeks in any of the 3 muscle tissues. 
-# Only include pathways that are enriched in at least 2 muscle tissues. 
+# Only include pathways that are enriched in at least 2 muscle tissues.
+# Plot the color legend on the left instead of using colored labels pointing to nodes 
 enrich_res = MotrpacRatTraining6moData::GRAPH_PW_ENRICH
 enrich_res = enrich_res[enrich_res$tissue \%in\% c("SKM-GN","SKM-VL","HEART") &
-                          grepl(":8w_F1_M1",enrich_res$cluster),]
-enrichment_network_vis(enrich_res, 
-                       multitissue_pathways_only = TRUE,
-                       add_group_label_nodes = TRUE)
+                         grepl(":8w_F1_M1",enrich_res$cluster),]
+enrichment_network_vis(enrich_res,
+                       similarity_cutoff = 0.3,
+                       title = "Muscle 8w_F1_M1",
+                       add_group_label_nodes = FALSE,
+                       multitissue_pathways_only = TRUE) 
 
 }
 \seealso{

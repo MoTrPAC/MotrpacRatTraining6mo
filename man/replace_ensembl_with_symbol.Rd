@@ -4,19 +4,13 @@
 \alias{replace_ensembl_with_symbol}
 \title{Replace Ensembl ID with gene symbol}
 \usage{
-replace_ensembl_with_symbol(
-  x,
-  map = MotrpacRatTraining6moData::FEATURE_TO_GENE,
-  return_N = TRUE,
-  collapse = TRUE
-)
+replace_ensembl_with_symbol(x, map, return_N = TRUE, collapse = TRUE)
 }
 \arguments{
 \item{x}{character, comma-separated Ensembl IDs}
 
-\item{map}{data frame, mapping between Ensembl IDs and gene symbols.
-Must include the columns "ensembl_gene" and "gene_symbol".
-\link[MotrpacRatTraining6moData:FEATURE_TO_GENE]{MotrpacRatTraining6moData::FEATURE_TO_GENE} by default.}
+\item{map}{data table, mapping between Ensembl IDs and gene symbols.
+Must include the columns "ensembl_gene" and "gene_symbol".}
 
 \item{return_N}{boolean, whether to prepend the concatenated
 gene symbols with the number of unique gene symbols.
