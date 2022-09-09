@@ -101,8 +101,8 @@ enrichment_network_vis(enrich_res, add_group_label_nodes = TRUE)
 # Cytoscape must be running locally for this to work. 
 library(RCy3)
 g = enrichment_network_vis(enrich_res, return_graph_for_cytoscape = T) 
-cytoscapePing()
-createNetworkFromIgraph(g,new.title='HEART:8w_F1_M1')
+RCy3::cytoscapePing()
+RCy3::createNetworkFromIgraph(g, new.title='HEART:8w_F1_M1')
 }
 
 # Example 3: Plot an interactive network of pathway enrichments corresponding to 

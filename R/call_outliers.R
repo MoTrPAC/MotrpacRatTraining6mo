@@ -18,6 +18,13 @@
 #'
 plot_pcs = function(pcA, pcB, pcax, outliers, pca, title=NULL){
   
+  if(length(outliers) > 0 & !requireNamespace("ggrepel", quietly = TRUE)){
+    stop(
+      "Package 'ggrepel' must be installed to run 'plot_pcs()' with outliers.",
+      call. = FALSE
+    )
+  }
+  
   pcax = as.data.frame(pcax)
   pcax$viallabel = rownames(pcax)
   

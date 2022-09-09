@@ -35,7 +35,7 @@ Perform Bayesian graphical clustering of the differential analysis results using
 \details{
 This function is highly specialized for the MoTrPAC data. It assumes that the input zscore matrix has eight columns.
 Four columns for male z-scores (weeks 1, 2, 4, 8), and four for females. No NA values in the input matrix.
-The function first runs the Bayesian clustering using \code{repfdr} (see \link{repfdr_wrapper}) and then extracts the node and
+The function first runs the Bayesian clustering using \code{repfdr} (see \code{\link[=repfdr_wrapper]{repfdr_wrapper()}}) and then extracts the node and
 edge sets of the graphical solution.
 
 A node is a time-point specific state. It can represent null features (z-score around zero, no effect), up-regulated

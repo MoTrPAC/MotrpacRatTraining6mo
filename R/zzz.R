@@ -1,10 +1,9 @@
 ## usethis namespace: start
-#' @importFrom data.table as.data.table data.table rbindlist setnames := copy melt setkey
 #' @import MotrpacRatTraining6moData
+#' @importFrom data.table as.data.table data.table rbindlist setnames := copy melt setkey
 #' @importFrom magrittr %>%
 #' @importFrom ggplot2 guides scale_size theme annotate guide_legend aes element_rect ggplot
-#' @importFrom ggrepel geom_text_repel
-#' @importFrom stats na.omit prcomp sd median poly phyper
+#' @importFrom stats na.omit prcomp sd median poly phyper cor p.adjust
 #' @importFrom utils download.file data globalVariables combn
 ## usethis namespace: end
 NULL
@@ -110,5 +109,19 @@ utils::globalVariables(
     "gost_adj_p_value",
     "i",
     "intersection_size",
-    "kegg_id"
+    "kegg_id",
+    ########################################### get_peak_annotations()
+    ".SD", 
+    "annotation",
+    "chrom",
+    "dist_downstream",
+    "dist_upstream",
+    "end",
+    "geneEnd",
+    "geneStart",
+    "geneStrand",
+    "relationship_to_gene",
+    "short_annotation",
+    "start",
+    "intersection_ensembl" # pathway_hypergeom_test()
   ))

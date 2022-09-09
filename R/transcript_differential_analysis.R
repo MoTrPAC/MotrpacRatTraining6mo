@@ -23,8 +23,6 @@
 #' }
 #' 
 #' @export 
-#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq lfcShrink
-#' @importFrom ashr ash
 #' 
 #' @examples 
 #' \dontrun{
@@ -48,7 +46,14 @@
 #' }                           
 run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NULL, shrink=FALSE, verbose=FALSE){
   
-  meta = as.data.table(meta)
+  if(!requireNamespace("DESeq2", quietly = TRUE)){
+    stop(
+      "Package 'DESeq2' must be installed to run 'run_deseq()'.",
+      call. = FALSE
+    )
+  }
+  
+  meta = data.table::as.data.table(meta)
   meta[,(outcome_of_interest) := as.factor(get(outcome_of_interest))]
   counts = counts[,as.character(meta[,viallabel])]
   
@@ -58,7 +63,7 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
   # remove missing values; center and scale covariates
   new = fix_covariates(covar, meta, center_scale = TRUE)
   covar = new$covariates
-  meta = data.table(new$meta)
+  meta = data.table::data.table(new$meta)
   
   # make contrast
   contrast = paste0('~', paste0(c(outcome_of_interest, covar), collapse=' + '))
@@ -83,12 +88,19 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
       # not suppressing warnings anyway?
       
       # make sure ashr is a dependency
+      if (!requireNamespace("ashr", quietly = TRUE)){
+        stop(
+          "Package 'ashr' must be installed to shrink log fold-changes with DESeq2.",
+          call. = FALSE
+        )
+      }
+      
       res = suppressWarnings(DESeq2::lfcShrink(dds, 
                                                contrast = c, 
                                                type = 'ashr', 
                                                quiet = TRUE, 
                                                control = list(numiter.em=1000), 
-                                               optmethod = 'mixSQP')) # "apeglm" doesn't work with contrasts in this form 
+                                               optmethod = 'mixSQP')) # 'apeglm' doesn't work with contrasts in this form 
     }
     res_dt = data.table::data.table(gene_id = rownames(counts), 
                                     log2FoldChange = res$log2FoldChange,
@@ -170,6 +182,14 @@ transcript_timewise_da = function(tissue,
                                    rdata_outfile = NULL,
                                    overwrite = FALSE,
                                    verbose = FALSE){
+  
+  if(!requireNamespace("DESeq2", quietly = TRUE)){
+    stop(
+      "Package 'DESeq2' must be installed to run 'transcript_timewise_da()'.",
+      call. = FALSE
+    )
+  }
+  
   .tissue = tissue # data.table workaround
   
   check_da_args(.tissue, rdata_outfile, overwrite)
@@ -376,7 +396,6 @@ transcript_timewise_da = function(tissue,
 #' 
 #' @export
 #' @importFrom metap sumlog
-#' @importFrom DESeq2 DESeqDataSetFromMatrix DESeq estimateSizeFactors estimateDispersions nbinomLRT results
 #'
 #' @examples
 #' \dontrun{
@@ -395,6 +414,13 @@ transcript_training_da = function(tissue,
                                   rdata_outfile = NULL,
                                   overwrite = FALSE,
                                   verbose = FALSE){
+  
+  if(!requireNamespace("DESeq2", quietly = TRUE)){
+    stop(
+      "Package 'DESeq2' must be installed to run 'transcript_training_da()'.",
+      call. = FALSE
+    )
+  }
   
   .tissue = tissue # data.table workaround
   
