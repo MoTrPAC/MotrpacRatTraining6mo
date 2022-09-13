@@ -17,7 +17,7 @@ atac_prep_data(
 )
 }
 \arguments{
-\item{tissue}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
+\item{tissue}{character, tissue abbreviation, one of "BAT", "HEART", "HIPPOC", "KIDNEY", "LIVER", "LUNG", "SKM-GN", "WAT-SC"}
 
 \item{sex}{character, one of 'male' or 'female'}
 

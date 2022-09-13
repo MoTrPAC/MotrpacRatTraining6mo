@@ -17,7 +17,8 @@ Google Cloud Storage. Current working directory by default.}
 data frame. See \link[MotrpacRatTraining6moData:ATAC_FEATURE_ANNOT]{MotrpacRatTraining6moData::ATAC_FEATURE_ANNOT} for details.
 }
 \description{
-Load ATAC feature annotation
+Load ATAC feature annotation from Google Cloud Storage.
+See \link{ATAC_FEATURE_ANNOT} for more details.
 }
 \examples{
 \dontrun{

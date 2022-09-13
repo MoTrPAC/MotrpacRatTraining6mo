@@ -220,7 +220,7 @@ fix_covariates = function(covar, meta, center_scale = FALSE){
 #' 
 #' Retrieve and format ATAC-seq sample-level data and metadata for a given tissue. 
 #'
-#' @param tissue `r tissue()`
+#' @param tissue character, tissue abbreviation, one of "BAT", "HEART", "HIPPOC", "KIDNEY", "LIVER", "LUNG", "SKM-GN", "WAT-SC" 
 #' @param scratchdir character, local directory in which to download data from 
 #'   Google Cloud Storage. Current working directory by default. 
 #' @param sex `r sex()`
@@ -471,9 +471,37 @@ load_sample_data = function(tissue,
 }
 
 
-#' Load raw METHYL data
+#' Load epigenetic differential analysis results 
+#' 
+#' Load ATAC or METHYL timewise differential analysis results for a tissue from 
+#' Google Cloud Storage. See [MotrpacRatTraining6mo::ATAC_DA] and [MotrpacRatTraining6mo::METHYL_DA]
+#' for more details. 
 #'
-#' @param tissue `r tissue()`
+#' @param tissue character, tissue abbreviation, one of "BAT", "HEART", "HIPPOC", "KIDNEY", "LIVER", "LUNG", "SKM-GN", "WAT-SC" 
+#' @param assay character, one of "METHYL" (RRBS) or "ATAC"
+#' @param scratchdir character, local directory in which to download data from 
+#'   Google Cloud Storage. Current working directory by default.
+#'
+#' @return data frame. See [MotrpacRatTraining6mo::ATAC_DA] and [MotrpacRatTraining6mo::METHYL_DA] for details. 
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Return ATAC-seq differential analysis results for gastrocnemius skeletal muscle
+#' load_epigen_da("SKM-GN", "METHYL")
+#' }
+load_epigen_da = function(tissue, assay, scratchdir="."){
+  data = get_rdata_from_url(tissue=tissue, assay=assay, suffix="DA", scratchdir=scratchdir)
+  return(data)
+}
+
+
+#' Load raw METHYL data
+#' 
+#' Load METHYL raw data for a tissue from Google Cloud Storage. 
+#' See [MotrpacRatTraining6mo::METHYL_RAW_DATA] for more details. 
+#'
+#' @param tissue character, tissue abbreviation, one of "BAT", "HEART", "HIPPOC", "KIDNEY", "LIVER", "LUNG", "SKM-GN", "WAT-SC" 
 #' @param scratchdir character, local directory in which to download data from 
 #'   Google Cloud Storage. Current working directory by default.
 #'
@@ -498,6 +526,9 @@ load_methyl_raw_data = function(tissue, scratchdir = "."){
 
 
 #' Load METHYL feature annotation 
+#' 
+#' Load METHYL feature annotation from Google Cloud Storage. 
+#' See [MotrpacRatTraining6mo::METHYL_FEATURE_ANNOT] for more details. 
 #'
 #' @param scratchdir character, local directory in which to download data from 
 #'   Google Cloud Storage. Current working directory by default.
@@ -519,6 +550,9 @@ load_methyl_feature_annotation = function(scratchdir = "."){
 
 
 #' Load ATAC feature annotation 
+#' 
+#' Load ATAC feature annotation from Google Cloud Storage. 
+#' See [MotrpacRatTraining6mo::ATAC_FEATURE_ANNOT] for more details. 
 #'
 #' @param scratchdir character, local directory in which to download data from 
 #'   Google Cloud Storage. Current working directory by default.
@@ -560,6 +594,10 @@ load_atac_feature_annotation = function(scratchdir = "."){
 #' 
 #' @export
 #' @importFrom utils download.file 
+#'
+#' @details 
+#' See the readme for this repository for all available files:
+#' <https://github.com/MoTrPAC/MotrpacRatTraining6moData/blob/main/README.md>
 #' 
 #' @examples
 #' \dontrun{
@@ -644,8 +682,8 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
 #' Filter a list of outliers to those belonging to the specified dataset. 
 #' Used to specify sex-specific outliers within differential analysis functions. 
 #'
-#' @param TISSUE optional `r tissue()` 
-#' @param SEX optional `r sex()` 
+#' @param tissue optional `r tissue()` 
+#' @param sex optional `r sex()` 
 #' @param outliers vector of vial labels to consider as outliers.
 #'   Defaults to vial labels in [MotrpacRatTraining6moData::OUTLIERS].
 #'
@@ -655,9 +693,11 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
 #' @export
 #'
 #' @examples
-#' curr_outliers = filter_outliers(TISSUE="HIPPOC")
-#' curr_outliers = filter_outliers(TISSUE="HIPPOC", SEX="male")
-filter_outliers = function(TISSUE=NULL, SEX=NULL, outliers=MotrpacRatTraining6moData::OUTLIERS$viallabel){
+#' curr_outliers = filter_outliers(tissue="HIPPOC")
+#' curr_outliers = filter_outliers(tissue="HIPPOC", sex="male")
+filter_outliers = function(tissue=NULL, sex=NULL, outliers=MotrpacRatTraining6moData::OUTLIERS$viallabel){
+  TISSUE = tissue 
+  SEX = sex
   outliers = as.character(outliers)
   if(length(outliers) == 0){
     return(character(0))

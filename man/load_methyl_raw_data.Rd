@@ -7,7 +7,7 @@
 load_methyl_raw_data(tissue, scratchdir = ".")
 }
 \arguments{
-\item{tissue}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
+\item{tissue}{character, tissue abbreviation, one of "BAT", "HEART", "HIPPOC", "KIDNEY", "LIVER", "LUNG", "SKM-GN", "WAT-SC"}
 
 \item{scratchdir}{character, local directory in which to download data from
 Google Cloud Storage. Current working directory by default.}
@@ -21,7 +21,8 @@ named list of three items:
 }
 }
 \description{
-Load raw METHYL data
+Load METHYL raw data for a tissue from Google Cloud Storage.
+See \link{METHYL_RAW_DATA} for more details.
 }
 \examples{
 \dontrun{

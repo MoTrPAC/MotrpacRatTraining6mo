@@ -5,15 +5,15 @@
 \title{Filter outliers}
 \usage{
 filter_outliers(
-  TISSUE = NULL,
-  SEX = NULL,
+  tissue = NULL,
+  sex = NULL,
   outliers = MotrpacRatTraining6moData::OUTLIERS$viallabel
 )
 }
 \arguments{
-\item{TISSUE}{optional character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
+\item{tissue}{optional character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
 
-\item{SEX}{optional character, one of 'male' or 'female'}
+\item{sex}{optional character, one of 'male' or 'female'}
 
 \item{outliers}{vector of vial labels to consider as outliers.
 Defaults to vial labels in \link[MotrpacRatTraining6moData:OUTLIERS]{MotrpacRatTraining6moData::OUTLIERS}.}
@@ -27,6 +27,6 @@ Filter a list of outliers to those belonging to the specified dataset.
 Used to specify sex-specific outliers within differential analysis functions.
 }
 \examples{
-curr_outliers = filter_outliers(TISSUE="HIPPOC")
-curr_outliers = filter_outliers(TISSUE="HIPPOC", SEX="male")
+curr_outliers = filter_outliers(tissue="HIPPOC")
+curr_outliers = filter_outliers(tissue="HIPPOC", sex="male")
 }

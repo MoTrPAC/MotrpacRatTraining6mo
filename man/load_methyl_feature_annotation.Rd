@@ -17,7 +17,8 @@ Google Cloud Storage. Current working directory by default.}
 data frame. See \link[MotrpacRatTraining6moData:METHYL_FEATURE_ANNOT]{MotrpacRatTraining6moData::METHYL_FEATURE_ANNOT} for details.
 }
 \description{
-Load METHYL feature annotation
+Load METHYL feature annotation from Google Cloud Storage.
+See \link{METHYL_FEATURE_ANNOT} for more details.
 }
 \examples{
 \dontrun{

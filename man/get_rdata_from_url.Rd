@@ -40,6 +40,10 @@ Function to download RData from the web. Intended to download
 epigenetic data from Google Cloud Storage but can be used for any public URL
 that points to an RData file.
 }
+\details{
+See the readme for this repository for all available files:
+\url{https://github.com/MoTrPAC/MotrpacRatTraining6moData/blob/main/README.md}
+}
 \examples{
 \dontrun{
 # return gastrocnemius chromatin accessibility differential analysis results 
