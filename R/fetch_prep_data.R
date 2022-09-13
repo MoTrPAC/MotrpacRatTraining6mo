@@ -491,7 +491,7 @@ load_sample_data = function(tissue,
 #' data = load_methyl_raw_data("SKM-GN", "/tmp")
 #' }
 load_methyl_raw_data = function(tissue, scratchdir = "."){
-  url = sprintf("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/%s_raw.RData", tissue)
+  url = sprintf("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_%s_RAW_DATA.rda", tissue)
   data = get_rdata_from_url(url = url, scratchdir = scratchdir)
   return(data)
 }
@@ -514,6 +514,27 @@ load_methyl_raw_data = function(tissue, scratchdir = "."){
 load_methyl_feature_annotation = function(scratchdir = "."){
   fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda",
                    scratchdir = scratchdir)
+  return(fa)
+}
+
+
+#' Load ATAC feature annotation 
+#'
+#' @param scratchdir character, local directory in which to download data from 
+#'   Google Cloud Storage. Current working directory by default.
+#'
+#' @return data frame. See [MotrpacRatTraining6moData::ATAC_FEATURE_ANNOT] for details. 
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' feature_annot = load_atac_feature_annotation("/tmp")
+#' }
+#' 
+#' @source <https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/ATAC_FEATURE_ANNOT.rda> 
+load_atac_feature_annotation = function(scratchdir = "."){
+  fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/ATAC_FEATURE_ANNOT.rda",
+                          scratchdir = scratchdir)
   return(fa)
 }
 
