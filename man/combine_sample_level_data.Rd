@@ -18,12 +18,12 @@ combine_sample_level_data(
 \item{training_regulated_only}{bool, whether to return data only for training-regulated features}
 }
 \value{
-data frame... TODO
+data frame with features in rows and Participant IDs (PIDs) in columns
 }
 \description{
 Combine data from the specified tissues and omes(s)/assay(s).
 If no tissues or omes are specified, all data is returned.
 }
 \examples{
-print("TODO")
+#TODO
 }

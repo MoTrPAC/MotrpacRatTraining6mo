@@ -630,8 +630,10 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
     dir.create(scratchdir, recursive = TRUE)
   }
   
-  if(!is.null(assay) & !assay %in% c("ATAC","METHYL")){
-    warning("Only ATAC and METHYL data are currently available in GCS.")
+  if(!is.null(assay)){
+    if(!assay %in% c("ATAC","METHYL")){
+      warning("Only ATAC and METHYL data are currently available in GCS.")
+    }
   }
   
   possible_tissues = c(
@@ -644,8 +646,10 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
     'SKM-GN',
     'WAT-SC'
   )
-  if(!is.null(tissue) & !tissue %in% possible_tissues){
-    warning(sprintf("Epigenetic data are only available for the following tissues:\n %s", paste(possible_tissues, collapse=", ")))
+  if(!is.null(tissue)){
+    if(!tissue %in% possible_tissues){
+      warning(sprintf("Epigenetic data are only available for the following tissues:\n %s", paste(possible_tissues, collapse=", ")))
+    }
   }
   
   if(is.null(url)){

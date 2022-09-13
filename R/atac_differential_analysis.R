@@ -90,7 +90,7 @@ atac_training_da = function(tissue,
     # subset counts and meta
     curr_meta = meta_df[meta_df$sex==SEX,]
     curr_counts = filt_counts[,curr_meta$viallabel]
-    curr_outliers = filter_outliers(TISSUE=tissue, SEX=SEX, outliers=data$outliers)
+    curr_outliers = filter_outliers(tissue=tissue, sex=SEX, outliers=data$outliers)
     
     full = paste0(c("~ 1", "group", covariates), collapse=" + ")
     reduced = paste0(c("~ 1", covariates), collapse=" + ")
@@ -255,7 +255,7 @@ atac_timewise_da = function(tissue,
     
     curr_meta = meta_df[meta_df$sex==SEX,]
     curr_counts = filt_counts[,curr_meta$viallabel]
-    curr_outliers = filter_outliers(TISSUE=tissue, SEX=SEX, outliers=data$outliers)
+    curr_outliers = filter_outliers(tissue=tissue, sex=SEX, outliers=data$outliers)
     
     full = paste0(c("~ 0", "group", covariates), collapse=" + ")
     reduced = paste0(c("~ 0", covariates), collapse=" + ")
