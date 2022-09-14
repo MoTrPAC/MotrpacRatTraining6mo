@@ -11,7 +11,8 @@ load_sample_data(
   training_regulated_only = FALSE,
   exclude_outliers = FALSE,
   scratchdir = ".",
-  nrows = Inf
+  nrows = Inf,
+  warnings = TRUE
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ load_sample_data(
 Google Cloud Storage. Current working directory by default. Only applies if \code{assay} is ATAC or METHYL.}
 
 \item{nrows}{integer, number of rows to return. Defaults to Inf. Useful to return a subset of a large data frame for tests.}
+
+\item{warnings}{bool, whether to print warnings to the console. \code{TRUE} by default.}
 }
 \value{
 a data.frame where features are in rows and numeric columns correspond to sample identifiers (vial labels)
@@ -56,4 +59,7 @@ data = load_sample_data("HIPPOC",
                         normalized = FALSE, 
                         scratchdir = "/tmp")
 }
+}
+\seealso{
+\code{\link[=combine_normalized_data]{combine_normalized_data()}}
 }

@@ -1,171 +1,186 @@
 # TODO
-#' Combine sample-level data
-#' 
-#' Combine data from the specified tissues and omes(s)/assay(s). 
-#' If no tissues or omes are specified, all data is returned. 
-#' 
-#' @param tissues optional character vector of tissue abbreviations, one of [MotrpacRatTraining6moData::TISSUE_ABBREV].
-#' @param assays optional character vector of assay abbreviations, one of [MotrpacRatTraining6moData::ASSAY_ABBREV]
-#' @param training_regulated_only bool, whether to return data only for training-regulated features
-#' 
-#' @export
-#' 
-#' @return data frame with features in rows and Participant IDs (PIDs) in columns
-#' 
-#' @examples
-#' #TODO
-combine_sample_level_data = function(tissues=NULL, 
-                                     assays=NULL,
-                                     training_regulated_only=TRUE){
-  return()
-}
-
-
-#' Combine differential analysis results 
-#' 
-#' Combine differential analysis results from the specified tissues and omes(s)/assay(s). 
-#' If no tissues or omes are specified, all differential analysis results are returned. 
-#'
-#' @param tissues optional character vector of tissue abbreviations, 
-#'   one of [MotrpacRatTraining6moData::TISSUE_ABBREV].
-#' @param assays optional character vector of assay abbreviations, 
-#'   one of [MotrpacRatTraining6moData::ASSAY_ABBREV]
-#' @param metareg bool, whether to use the meta-regression results for METAB.
-#'   Use the upstream differential analysis results in \code{FALSE}.
-#'   \code{TRUE} by default. 
-#' @param include_epigen bool, whether to include the full ATAC or METHYL 
-#'   differential analysis results from Google Cloud Storage. 
-#'   Only relevant if \code{assays} includes "ATAC" or "METHYL".
-#'   \code{FALSE} by default. 
-#' @param scratchdir character, local directory in which to download data from the web. 
-#'   Current working directory by default. Only relevant if \code{assays} includes "ATAC" or "METHYL".
-#' 
-#' @export
-#' 
-#' @return data frame. Depending on the specified assays, some of these columns may not be included:
-#' \describe{
-#'   \item{\code{feature}}{`r feature()`}
-#'   \item{\code{assay}}{`r assay()`}
-#'   \item{\code{assay_code}}{`r assay_code()`}
-#'   \item{\code{tissue}}{`r tissue()`}
-#'   \item{\code{tissue_code}}{`r tissue_code()`}
-#'   \item{\code{feature_ID}}{`r feature_ID()`}
-#'   \item{\code{sex}}{`r sex()`}
-#'   \item{\code{comparison_group}}{`r comparison_group()`}
-#'   \item{\code{p_value}}{`r p_value_da()`}
-#'   \item{\code{adj_p_value}}{`r adj_p_value_da()`}
-#'   \item{\code{logFC}}{`r logFC()`}
-#'   \item{\code{logFC_se}}{`r logFC_se()`}
-#'   \item{\code{tscore}}{`r tscore()`}
-#'   \item{\code{covariates}}{`r covariates()`}
-#'   \item{\code{numNAs}}{`r numNAs()`}
-#'   \item{\code{comparison_average_intensity}}{`r comparison_average_intensity()`}
-#'   \item{\code{reference_average_intensity}}{`r reference_average_intensity()`}
-#'   \item{\code{selection_fdr}}{`r selection_fdr()`}
-#'   \item{\code{dataset}}{character, immune panel, metabolomics platform, or ATAC-seq dataset name}
-#'   \item{\code{site}}{character, Chemical Analysis Site (CAS) name. METAB only}
-#'   \item{\code{is_targeted}}{logical, is this a targeted platform? METAB only}
-#'   \item{\code{metabolite_refmet}}{character, RefMet name of metabolite. METAB only}
-#'   \item{\code{cv}}{double, feature coefficient of variation in the dataset. METAB only}
-#'   \item{\code{metabolite}}{character, name of metabolite as appears in the CAS's data. METAB only}
-#'   \item{\code{control_cv}}{double, feature coefficient of variation in the dataset. METAB only}
-#'   \item{\code{mz}}{double, mass over charge. METAB only}
-#'   \item{\code{rt}}{double, retention time. METAB only}
-#'   \item{\code{neutral_mass}}{double, neutral mass. METAB only}
-#'   \item{\code{meta_reg_het_p}}{`r meta_reg_het_p()` METAB only}
-#'   \item{\code{meta_reg_pvalue}}{`r meta_reg_pvalue()` METAB only}
-#'   \item{\code{shrunk_logFC}}{double, log fold-change with shrinkage applied}
-#'   \item{\code{shrunk_logFC_se}}{double, standard error of the shrunken log fold-change}
-#'   \item{\code{zscore}}{`r zscore()`}
-#'   \item{\code{removed_samples}}{`r removed_samples()`}
-#'   \item{\code{comparison_average_intensity_se}}{`r comparison_average_intensity_se()`}
-#'   \item{\code{reference_average_intensity_se}}{`r comparison_average_intensity_se()`} 
-#'   \item{\code{Chr}}{integer, chromosome. METHYL only}
-#'   \item{\code{Locus}}{character, base pair range of feature. METHYL only}
-#'   \item{\code{EntrezID}}{character, Entrez ID of closest gene. METHYL only}
-#'   \item{\code{Symbol}}{character, gene symbol of closest gene. METHYL only}
-#' }
-#' 
-#' @examples
-#' # Return all non-epigenetic differential analysis results, 
-#' # including meta-regression results for metabolomics
-#' combine_da_results()
-#' 
-#' # Return all global proteomics differential analysis results
-#' combine_da_results(assays="PROT")
-#' 
-#' \dontrun{
-#' # Return METHYL and ATAC differential analysis results for gastrocnemius 
-#' combine_da_results(tissues="SKM-GN", 
-#'                    assays=c("ATAC","METHYL"),
-#'                    include_epigen=TRUE)
-#' }
-combine_da_results = function(tissues = MotrpacRatTraining6moData::TISSUE_ABBREV, 
-                              assays = MotrpacRatTraining6moData::ASSAY_ABBREV, 
-                              metareg = TRUE,
-                              include_epigen = FALSE,
-                              scratchdir = "."){
-  
-  if( ("ATAC" %in% assays | "METHYL" %in% assays) & !include_epigen){
-    warning("'include_epigen' is FALSE. Excluding ATAC and METHYL results.")
-    assays = assays[!assays %in% c("ATAC","METHYL")]
-  }
-  
-  available_data = list_available_data("MotrpacRatTraining6moData")
-  # add available epigen data
-  possible_tissues = c(
-    'BAT',
-    'HEART',
-    'HIPPOC',
-    'KIDNEY',
-    'LIVER',
-    'LUNG',
-    'SKMGN',
-    'WATSC'
-  )
-  available_data = c(available_data, paste0(rep(c("ATAC", "METHYL"), each=8), "_", rep(possible_tissues,2), "_DA"))
-  
-  reslist = list()
-  i = 1
-  for(a in assays){
-    for(t in tissues){
-      if(a == "METAB" & metareg){
-        object_name = sprintf("%s_%s_DA_METAREG", a, gsub("-","",t))
-      }else{
-        object_name = sprintf("%s_%s_DA", a, gsub("-","",t))
-      }
-      # check if object exists
-      if(object_name %in% available_data){
-        message(object_name)
-        if (a %in% c("ATAC","METHYL")){
-          # load from URL
-          data = get_rdata_from_url(tissue=t, assay=a, suffix="DA", scratchdir=scratchdir)
-        }else{
-          data = fetch_object(object_name)
-        }
-        if ("removed_samples" %in% colnames(data)){
-          data$removed_samples = as.character(data$removed_samples)
-        }
-        reslist[[i]] = data
-        i = i+1
-      }
-    }
-  }
-  if(length(reslist) == 0){
-    warning("No results returned.")
-    return()
-  }
-  data = data.table::rbindlist(reslist, fill=TRUE)
-  return(data)
-}
-
-
-# TODO
 plot_feature_normalized_data = function(){}
 
 # TODO
 plot_feature_logfc = function(){}
 
-# TODO
-# formerly plot_group_mean_trajectories
-plot_cluster_trajectory = function(){}
+
+#' Plot feature trajectories 
+#' 
+#' Plot group means of a set of features from normalized sample-level data.
+#' 
+#' @param features character vector of features to plot in the format 
+#'   '[MotrpacRatTraining6moData::ASSAY_ABBREV];[MotrpacRatTraining6moData::TISSUE_ABBREV];feature_ID'
+#' @param exclude_outliers bool, whether to remove sample outliers specified by [MotrpacRatTraining6moData::OUTLIERS].
+#'   \code{TRUE} by default. 
+#' @param center bool, whether to center the trajectories. \code{TRUE} by default.
+#' @param scale bool, whether to scale the trajectories. \code{TRUE} by default.
+#' @param title optional character, plot title
+#' @param return_data bool, whether to return the normalized sample-level data 
+#'   corresponding to \code{features} instead of a plot. \code{FALSE} by default. 
+#' @param scratchdir character, local directory in which to download data from the web. 
+#'   Current working directory by default. Only relevant if \code{features} includes ATAC or METHYL features. 
+#' 
+#' @return a [ggplot2::ggplot()] object if \code{return_data=FALSE} or a data frame otherwise
+#' 
+#' @examples 
+#' # Pick largest cluster in gastrocnemius 
+#' clust = extract_tissue_sets("SKM-GN", k=1, add_week8=FALSE)
+#' # Extract features 
+#' names(clust)
+#' features = clust[["1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1"]]
+#' plot_feature_trajectories(features)
+plot_feature_trajectories = function(features, exclude_outliers=TRUE, center=TRUE, scale=TRUE, title=NULL, return_data=FALSE, scratchdir="."){
+  
+  if(!requireNamespace("viridis", quietly = TRUE) | !requireNamespace("viridisLite", quietly = TRUE)){
+    stop(
+      "Packages 'viridis' and 'viridisLite' must be installed to run 'plot_feature_trajectories()'.",
+      call. = FALSE
+    )
+  }
+  
+  message("Identifying data sets...")
+  features = unique(features)
+  feature_dt = data.table::as.data.table(check_cluster_res_format(data.frame(feature=features, cluster="dummy")))
+  datasets = unique(feature_dt[,.(ome, tissue)])
+  omes = unique(datasets[,ome])
+  
+  # choose which epigenetic dataset to use 
+  training_regulated_only = FALSE
+  if("ATAC" %in% omes | "METHYL" %in% omes){
+    epigen_input = feature_dt[ome %in% c("ATAC","METHYL"), feature]
+    epigen_training_reg = MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES$feature[TRAINING_REGULATED_FEATURES$assay %in% c("METHYL", "ATAC")]
+    if(all(epigen_input %in% epigen_training_reg)){
+      training_regulated_only = TRUE
+    }
+  }
+  
+  message("Compiling sample-level data...")
+  res = list()
+  for(i in 1:nrow(datasets)){
+    .ome = datasets[i, ome]
+    .tissue = datasets[i, tissue]
+    data = NULL
+    # get sample-level data 
+    if (.ome %in% c("ATAC","METHYL")){
+      data = load_sample_data(.tissue, 
+                              .ome, 
+                              normalized=TRUE, 
+                              training_regulated_only=training_regulated_only, 
+                              exclude_outliers=exclude_outliers, 
+                              scratchdir=scratchdir,
+                              warnings=TRUE)
+    }else{
+      data = load_sample_data(.tissue, 
+                              .ome, 
+                              normalized=TRUE, 
+                              training_regulated_only=FALSE, 
+                              exclude_outliers=exclude_outliers, 
+                              scratchdir=scratchdir,
+                              warnings=TRUE)
+    }
+    if(is.null(data)) next
+    # convert colnames to PID
+    viallabel_cols = colnames(data)[grepl("^9", colnames(data))]
+    if(length(viallabel_cols)>0){
+      pids = viallabel_to_pid(viallabel_cols)
+      stopifnot(length(pids) == length(viallabel_cols))
+      stopifnot(length(pids) == length(unique(pids)))
+      # rename columns 
+      new_colnames = as.character(unname(pids[viallabel_cols]))
+      colnames(data)[grepl("^[0-9]", colnames(data))] = new_colnames
+    }
+    # add new feature column 
+    data = data.table::as.data.table(data)
+    data[,new_feature := sprintf("%s;%s;%s", assay, tissue, feature_ID)]
+    # select features 
+    curr_feat = feature_dt[ome==.ome & tissue==.tissue, feature]
+    data = data[feature %in% curr_feat | new_feature %in% curr_feat]
+    data[,feature := ifelse(feature %in% curr_feat, feature, new_feature)]
+    data[,new_feature := NULL]
+    if(nrow(data)>0){
+      # add to result
+      res[[sprintf("%s_%s",.ome,.tissue)]] = data
+    }else{
+      warning(sprintf("No unfiltered features for %s %s.", .ome, .tissue))
+    }
+  }
+  if(length(res)==0){
+    warning(sprintf("No normalized data returned for datasets %s.",
+                    paste(paste(datasets[,ome], datasets[,tissue], sep=";"), collapse=", ")))
+    return()
+  }
+  
+  sample_level_data = data.table::rbindlist(res, fill=TRUE)
+  
+  # check if features are present 
+  if(!all(features %in% sample_level_data[,feature])){
+    # what's missing?
+    missing = features[!features %in% sample_level_data[,feature]]
+    warning(sprintf("%s out of %s features were not found in the normalized sample-level data:\n%s", 
+                    length(missing), 
+                    length(features), 
+                    paste(missing, collapse="\n")))
+  }
+  
+  # handle duplicate row names 
+  sample_level_data[,feature := paste0("feature", 1:nrow(sample_level_data))]
+  
+  # melt
+  sample_cols = colnames(sample_level_data)[grepl("^[0-9]", colnames(sample_level_data))]
+  melted_subset = data.table::melt(sample_level_data, 
+                                   id.vars=c('feature'), 
+                                   measure.vars=sample_cols, 
+                                   variable.name='sample')
+  melted_subset = melted_subset[!is.na(value)]
+  melted_subset[,sample := as.integer(as.character(sample))]
+  
+  meta = data.table::as.data.table(MotrpacRatTraining6moData::PHENO)
+  
+  # merge by pid 
+  meta = unique(meta[,.(group,sex,pid)])
+  subset_meta = merge(melted_subset, meta, by.x='sample', by.y='pid')
+  
+  bygroup = subset_meta[,list(expr = mean(value, na.rm=T)),
+                        by=.(sex, group, feature)]
+  tmm_wide = data.frame(data.table::dcast(bygroup, feature ~ sex + group, value.var='expr'))
+  rownames(tmm_wide) = tmm_wide$feature
+  tmm_wide$feature = NULL
+  
+  if(center | scale){
+    tmm_wide = as.data.frame(t(scale(t(tmm_wide), center=center, scale=scale)))
+  }
+  ylab = "Normalized value"
+  
+  tmm_wide = data.table::data.table(cbind(data.table(feature=rownames(tmm_wide)), tmm_wide))
+  
+  tmm_melt = data.table::melt(tmm_wide, id.vars="feature")
+  tmm_melt[,sex := gsub('_.*','',variable)]
+  tmm_melt[,group := gsub('.*_','',variable)]
+  means = tmm_melt[,list(value = mean(value, na.rm=T)), by=c('sex','group')]
+  
+  # calculate distance to average
+  m2 = data.table::data.table(merge(tmm_melt, means, by=c('sex','group'), suffixes = c('_feature','_mean')))
+  distances = m2[,list(ss = sum((value_feature - value_mean)^2)), by=feature]
+  tmm_melt = merge(tmm_melt, distances, by='feature')
+  
+  if(return_data){
+    return(list(norm_melt=tmm_melt,
+                centroids=means))
+  }
+  
+  g = ggplot2::ggplot() +
+    ggplot2::geom_line(data=tmm_melt, alpha=0.5, ggplot2::aes(x=group, y=value, colour=log(ss), group=feature)) +
+    ggplot2::geom_line(data=means, ggplot2::aes(x=group, y=value, group=sex)) +
+    ggplot2::facet_wrap(~sex) +
+    ggplot2::theme_classic() +
+    ggplot2::scale_x_discrete(limits=c('control','1w','2w','fill','4w',rep('fill',3),'8w'),
+                              breaks=c('control','1w','2w','4w','8w'),
+                              labels=c('0','1','2','4','8')) +
+    ggplot2::labs(x='Time trained (weeks)', y=ylab, title=title) +
+    viridis::scale_color_viridis(direction = 1, option = "magma", guide='none') +
+    ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(),
+                   panel.grid.minor.y = ggplot2::element_blank())
+  
+  return(g)
+}

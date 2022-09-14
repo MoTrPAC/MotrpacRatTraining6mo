@@ -18,8 +18,8 @@ feature ID and cluster:
 }
 }
 \description{
-Return a data frame with features from the 2 largest nodes, 2 largest edges,
-and 10 largest non-null paths from the graphical representation of training-regulated
+Return a data frame with features from the 2 largest nodes, 2 largest edges, 10 largest non-null paths,
+and all 8-week nodes from the graphical representation of training-regulated
 features in each tissue. This code replicates the graphical clusters for which
 pathway enrichment was performed for the landscape manuscript.
 }
