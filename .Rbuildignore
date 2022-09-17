@@ -3,3 +3,4 @@
 setup.R
 ^LICENSE\.md$
 unofficial_tests.R
+devnotes.md
