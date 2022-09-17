@@ -1,6 +1,5 @@
 # MotrpacRatTraining6mo
 
-## Overview 
 ## Table of Contents
 * [Overview](#overview)
   * [About this package](#about-this-package)
