@@ -213,7 +213,7 @@ transcript_timewise_da = function(tissue,
     # subset counts and meta
     curr_meta = meta[sex == SEX]
     curr_counts = counts[,meta[,viallabel]]
-    curr_outliers = filter_outliers(TISSUE=tissue, SEX=SEX, outliers=data$outliers)
+    curr_outliers = filter_outliers(tissue=tissue, sex=SEX, outliers=data$outliers)
     
     contrasts = list()
     i = 1
@@ -444,7 +444,7 @@ transcript_training_da = function(tissue,
     # subset counts and meta
     curr_meta = meta[sex == SEX]
     curr_counts = counts[,curr_meta[,viallabel]]
-    curr_outliers = filter_outliers(TISSUE=tissue, SEX=SEX, outliers=data$outliers)
+    curr_outliers = filter_outliers(tissue=tissue, sex=SEX, outliers=data$outliers)
     curr_meta[,group := as.factor(group)]
     
     full = paste0('~', paste0(c(covariates, 'group'), collapse=' + '))

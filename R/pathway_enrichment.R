@@ -1007,11 +1007,7 @@ pathway_hypergeom_test = function(feature_to_gene,
 }
 
 
-# not sure if this is used?
+# TODO
+# low priority 
 plot_top_enrichments_per_cluster = function(){}
-# not currently used
-
-# not sure if this is used?
-plot_enrichments_for_pathway = function(){}
-
 

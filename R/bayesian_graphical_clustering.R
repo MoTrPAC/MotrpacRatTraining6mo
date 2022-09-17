@@ -1174,8 +1174,8 @@ get_all_trajectories = function(edge_sets = MotrpacRatTraining6moData::GRAPH_COM
 
 #' Extract main graphical clusters
 #' 
-#' Return a data frame with features from the 2 largest nodes, 2 largest edges, 
-#' and 10 largest non-null paths from the graphical representation of training-regulated
+#' Return a data frame with features from the 2 largest nodes, 2 largest edges, 10 largest non-null paths,
+#' and all 8-week nodes from the graphical representation of training-regulated
 #' features in each tissue. This code replicates the graphical clusters for which
 #' pathway enrichment was performed for the landscape manuscript. 
 #' 
@@ -1213,6 +1213,7 @@ extract_main_clusters = function(){
   
   # Add top 2 nodes, edges, paths from each cluster 
   # Note that null nodes and edges are currently INCLUDED 
+  # All 8-week nodes are also included 
   for(tissue in tissues){
     curr_sets = extract_tissue_sets(tissue,
                                     k = 2,
@@ -1370,9 +1371,112 @@ annotate_cluster_res = function(cluster_res){
 }
 
 
-# TODO
-features_per_cluster = function(){}
-
-
-# TODO
-plot_cluster_trajectories = function(){}
+#' Plot feature composition of clusters 
+#' 
+#' Plot number of features in each cluster and fractions of features that belong to each ome and tissue. 
+#' 
+#' @param cluster_res Either a data frame or a list of lists. 
+#'   If a data frame, it needs at least two columns: "feature" and "cluster". 
+#'   The "feature" column should be in the format 
+#'   '[MotrpacRatTraining6moData::ASSAY_ABBREV];[MotrpacRatTraining6moData::TISSUE_ABBREV];feature_ID'. 
+#'   If a list of lists, each sublist must be named with the cluster name (character string), 
+#'   and the values must be features in the format 
+#'   '[MotrpacRatTraining6moData::ASSAY_ABBREV];[MotrpacRatTraining6moData::TISSUE_ABBREV];feature_ID'. 
+#' 
+#' @export 
+#' 
+#' @return [ggplot2::ggplot()] object
+#' 
+#' @examples 
+#' # Get top 10 largest paths, nodes, edges in gastrocnemius 
+#' # Exclude additional 8-week nodes
+#' clusters = extract_tissue_sets("SKM-GN", k=10, add_week8=FALSE)
+#' # Select paths only 
+#' clusters = clusters[grepl("->", names(clusters))]
+#' 
+#' # Plot distribution of features
+#' plot_features_per_cluster(clusters)
+#' 
+plot_features_per_cluster = function(cluster_res){
+  
+  cluster_res = check_cluster_res_format(cluster_res)
+  
+  # type = total, tissue, ome
+  c1 = as.data.frame(table(cluster_res$cluster), stringsAsFactors=F)
+  colnames(c1) = c('cluster','N')
+  c1$colour = 'none'
+  c1$type = 'total'
+  
+  # tissue
+  c2 = as.data.frame(table(cluster_res$tissue, cluster_res$cluster), stringsAsFactors=F)
+  colnames(c2) = c('colour','cluster','N')
+  c2 = merge(c2, c1[,c('cluster','N')], by='cluster')
+  c2$N = c2$N.x/c2$N.y*100
+  c2$type = 'tissue'
+  
+  # ome
+  c3 = as.data.frame(table(cluster_res$ome, cluster_res$cluster), stringsAsFactors=F)
+  colnames(c3) = c('colour','cluster','N')
+  c3$type = 'ome'
+  c3 = merge(c3, c1[,c('cluster','N')], by='cluster')
+  c3$N = c3$N.x/c3$N.y*100
+  c = rbindlist(list(c1,c2,c3), use.names=T, fill=T)
+  c$type = factor(c$type, levels=c('total','ome','tissue'))
+  
+  tissues = unique(cluster_res$tissue)
+  tissues = tissues[order(tissues)]
+  omes = unique(cluster_res$ome)
+  omes = omes[order(omes)]
+  
+  # always use the same assay colors
+  assay_cols = MotrpacRatTraining6moData::ASSAY_COLORS
+  assay_cols = assay_cols[omes]
+  
+  c$colour = factor(c$colour, levels=c(rev(omes), rev(tissues), 'none'))
+  c$cluster = factor(as.character(c$cluster))
+  
+  # order by N
+  c = c[order(c$N, decreasing=T),]
+  order = unique(c$cluster[c$type=='total'])
+  
+  # remove "tissue" or "ome" facet if there is only one present  
+  fill_vals = c(MotrpacRatTraining6moData::TISSUE_COLORS,
+                MotrpacRatTraining6moData::ASSAY_COLORS,
+                none='black')
+  breaks = c(omes, 'none', tissues)
+  labels = c(omes, '----------', tissues)
+  if(length(unique(cluster_res$tissue))==1){
+    c = c[type!="tissue"]
+    fill_vals = c(assay_cols,none='black')
+    breaks = c(omes)
+    labels = c(omes)
+  }
+  if(length(unique(cluster_res$ome))==1){
+    c = c[type!="ome"]
+    fill_vals = c(MotrpacRatTraining6moData::TISSUE_COLORS,none='black')
+    breaks = c(tissues)
+    labels = c(tissues)
+  }
+  
+  c[type=="total", type := "Total N features"]
+  c[type=="tissue", type := "% of feat. by tissue"]
+  c[type=="ome", type := "% of feat. by ome"]
+  g = ggplot2::ggplot(c, aes(x=cluster, y=N, fill=colour)) +
+    ggplot2::geom_bar(stat='identity') +
+    ggplot2::theme_classic() +
+    ggplot2::facet_wrap(~type, ncol=3, scales='free_x') +
+    ggplot2::scale_fill_manual(values = fill_vals,
+                               breaks = breaks,
+                               labels = labels) +
+    ggplot2::coord_flip() +
+    ggplot2::labs(x='Cluster') +
+    ggplot2::theme(legend.title = ggplot2::element_blank(),
+                   axis.title.x = ggplot2::element_blank()) +
+    ggplot2::scale_x_discrete(limits=rev(order))
+  
+  # # make nicer data
+  # data = data.table::data.table(table(cluster_res$cluster, cluster_res$ome, cluster_res$tissue), stringsAsFactors = F)
+  # colnames(data) = c('cluster','ome','tissue','N')
+  
+  return(g)
+}

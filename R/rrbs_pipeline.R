@@ -109,41 +109,38 @@ merge_sites_by_clusters<-function(yall,new_clusters){
 #' takes the "M matrix" which contains the integrated values of these columns (see examples). This matrix
 #' is used for computing the correlations of the loci, and then we use the Markov Clustering algorithm (MCL)
 #' for identifying homogeneous clusters within a window. 
-#' MCL(Markov clustering) details from: https://www.micans.org/mcl/intro.html
-#' MCL: Expansion coincides with taking the power of a stochastic matrix
+#' 
+#' MCL (Markov clustering) details from <https://www.micans.org/mcl/intro.html>. 
+#' **MCL:** Expansion coincides with taking the power of a stochastic matrix
 #' using the normal matrix product (i.e. matrix squaring). 
 #' Inflation corresponds with taking the Hadamard power of a matrix 
 #' (taking powers entrywise), followed by a scaling step, such that the resulting matrix is stochastic again, 
 #' i.e. the matrix elements (on each column) correspond to probability values.
-#' Inflation parameter: strengthen intra-region connections and promote cluster homogeneity.
+#' **Inflation parameter:** strengthen intra-region connections and promote cluster homogeneity.
 #' 
 #' @examples 
 #' \dontrun{
-#' # Raw data in RData file is available through Google Cloud.  
-#' # The main URL is https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS
-#' # The files that are available through this URL are by tissue:
+#' # Raw data by tissue are available as RData files in Google Cloud Storage with the following URLs:   
 #' # Brown adipose:
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_BAT_RAW_DATA.rda
 #' # Heart: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HEART_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_HEART_RAW_DATA.rda
 #' # Hippocampus: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HIPPOC_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_HIPPOC_RAW_DATA.rda
 #' # Kidney: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/KIDNEY_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_KIDNEY_RAW_DATA.rda
 #' # Lung: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LUNG_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_LUNG_RAW_DATA.rda
 #' # Liver: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LIVER_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_LIVER_RAW_DATA.rda
 #' # Gastrocnemius: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_SKMGN_RAW_DATA.rda
 #' # White adipose: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/WATSC_raw.RData
-#' # download the gastrocnemius data and load the data object into this session
-#' f = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData"
-#' system(sprintf("wget %s", f))
-#' yall = get(load("SKMGN_raw.RData"))
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_WATSC_RAW_DATA.rda
 #' 
-#' # TODO: add links to the data using GCP URLs
+#' # load_methyl_raw_data() can be used to download data for a tissue, e.g.,
+#' # download the gastrocnemius data and load the data object into this session:
+#' yall = load_methyl_raw_data("SKM-GN")
 #' 
 #' # remove control samples
 #' is_sample = grepl("^9",colnames(yall),perl=TRUE)
@@ -327,30 +324,27 @@ analyze_tile <- function(tile_name,
 #' data(PHENO)
 #' data(METHYL_META)
 #' 
-#' # Raw data in RData file is available through Google Cloud.  
-#' # The main URL is https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS
-#' # The files that are available through this URL are by tissue:
-#' # Brown adipose: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData
+#' # Raw data by tissue are available as RData files in Google Cloud Storage with the following URLs:   
+#' # Brown adipose:
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_BAT_RAW_DATA.rda
 #' # Heart: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HEART_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_HEART_RAW_DATA.rda
 #' # Hippocampus: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/HIPPOC_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_HIPPOC_RAW_DATA.rda
 #' # Kidney: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/KIDNEY_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_KIDNEY_RAW_DATA.rda
 #' # Lung: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LUNG_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_LUNG_RAW_DATA.rda
 #' # Liver: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/LIVER_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_LIVER_RAW_DATA.rda
 #' # Gastrocnemius: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_SKMGN_RAW_DATA.rda
 #' # White adipose: 
-#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/WATSC_raw.RData
+#' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_WATSC_RAW_DATA.rda
 #' 
-#' # Example: download the gastrocnemius data and load the data object into this session
-#' f = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/SKMGN_raw.RData"
-#' system(sprintf("wget %s", f))
-#' yall = get(load("SKMGN_raw.RData"))
+#' # load_methyl_raw_data() can be used to download data for a tissue, e.g.,
+#' # download the gastrocnemius data and load the data object into this session:
+#' yall = load_methyl_raw_data("SKM-GN")
 #'
 #' # for the simplicity of this example, we subset the data to 5000 loci
 #' y = yall[1:5000,]
@@ -361,14 +355,13 @@ analyze_tile <- function(tile_name,
 #' # Alternatively, you can use the processed datasets.
 #' # These are also available through the Google Cloud directory:
 #' # https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/
-#' # File formats are `METHYL_XXX_NORM_DATA.rda` and `METHYL_XXX_DA.rda` 
+#' # File formats are \code{METHYL_XXX_NORM_DATA.rda} and \code{METHYL_XXX_DA.rda} 
 #' # where XXX is the tissue name:
 #' # BAT (brown adipose), HEART, HIPPOC (hippocampus), KIDNEY, LUNG, LIVER, 
 #' # SKMGN (gastrocnemius skeletal muscle), and WATSC (white adipose)
-#'
-#' f = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_SKMGN_NORM_DATA.rda"
-#' system(sprintf("wget %s", f))
-#' y_processed = get(load("METHYL_SKMGN_NORM_DATA.rda"))
+#' 
+#' # You can use load_sample_data() to download and load the normalized data, e.g.:
+#' y_processed = load_sample_data("SKM-GN", "METHYL", normalized = TRUE)
 #' # again, for the simplicity of this example, we subset the data to 5000 loci
 #' y = y_processed[1:5000,-c(1:4)]
 #' da_res = rrbs_differential_analysis(y, adj_pct_unaligned=TRUE)

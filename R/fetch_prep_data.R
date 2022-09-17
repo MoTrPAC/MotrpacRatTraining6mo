@@ -220,7 +220,7 @@ fix_covariates = function(covar, meta, center_scale = FALSE){
 #' 
 #' Retrieve and format ATAC-seq sample-level data and metadata for a given tissue. 
 #'
-#' @param tissue `r tissue()`
+#' @param tissue character, tissue abbreviation, one of "BAT", "HEART", "HIPPOC", "KIDNEY", "LIVER", "LUNG", "SKM-GN", "WAT-SC" 
 #' @param scratchdir character, local directory in which to download data from 
 #'   Google Cloud Storage. Current working directory by default. 
 #' @param sex `r sex()`
@@ -370,8 +370,11 @@ atac_prep_data = function(tissue,
 #' @param scratchdir character, local directory in which to download data from 
 #'   Google Cloud Storage. Current working directory by default. Only applies if \code{assay} is ATAC or METHYL. 
 #' @param nrows integer, number of rows to return. Defaults to Inf. Useful to return a subset of a large data frame for tests. 
+#' @param warnings bool, whether to print warnings to the console. \code{TRUE} by default. 
 #'
 #' @return a data.frame where features are in rows and numeric columns correspond to sample identifiers (vial labels)
+#' 
+#' @seealso [combine_normalized_data()]
 #' 
 #' @export
 #'
@@ -399,7 +402,8 @@ load_sample_data = function(tissue,
                             training_regulated_only = FALSE, 
                             exclude_outliers = FALSE, 
                             scratchdir = ".", 
-                            nrows = Inf){
+                            nrows = Inf,
+                            warnings = TRUE){
   
   # check inputs 
   if(!tissue %in% MotrpacRatTraining6moData::TISSUE_ABBREV){
@@ -409,40 +413,94 @@ load_sample_data = function(tissue,
     stop(sprintf("'assay' must be one of ASSAY_ABBREV: \n %s", paste(MotrpacRatTraining6moData::ASSAY_ABBREV, collapse=", ")))
   }
   
+  available_data = list_available_data("MotrpacRatTraining6moData")
+  # add available epigen data
+  possible_tissues = c(
+    'BAT',
+    'HEART',
+    'HIPPOC',
+    'KIDNEY',
+    'LIVER',
+    'LUNG',
+    'SKMGN',
+    'WATSC'
+  )
+  # norm data 
+  available_data = c(available_data, paste0(rep(c("ATAC", "METHYL"), each=8), "_", rep(possible_tissues,2), "_NORM_DATA"))
+  # counts
+  available_data = c(available_data, paste0(rep(c("ATAC", "METHYL"), each=8), "_", rep(possible_tissues,2), "_RAW_COUNTS"))
+  
+  data = NULL
   if(normalized){
     # normalized data
     if(assay %in% c("METHYL","ATAC")){
       if(training_regulated_only){
         obj_name = sprintf("%s_%s_NORM_DATA_05FDR", assay, gsub("-","",tissue))
-        data = fetch_object(obj_name)
+        if(obj_name %in% available_data){
+          message(obj_name)
+          data = fetch_object(obj_name)
+        }
       }else{
         # download from GCS
-        data = get_rdata_from_url(tissue=tissue, assay=assay, suffix="NORM_DATA", scratchdir=scratchdir, nrows=nrows)
+        obj_name = sprintf("%s_%s_NORM_DATA", assay, gsub("-","",tissue))
+        if(obj_name %in% available_data){
+          message(obj_name)
+          data = get_rdata_from_url(tissue=tissue, assay=assay, suffix="NORM_DATA", scratchdir=scratchdir, nrows=nrows)
+        }
       }
     }else if(assay == "METAB"){
       # get combined sample-level data
+      message(sprintf("METAB %s normalized data from METAB_NORM_DATA_FLAT", tissue))
       data = MotrpacRatTraining6moData::METAB_NORM_DATA_FLAT
+      # filter to this tissue
+      data = data[data$tissue == tissue,]
+      # remove all-NA columns 
+      data[,names(colSums(is.na(data))[colSums(is.na(data)) == nrow(data)])] = NULL
+    }else if(assay == "IMMUNO"){
+      # get combined sample-level data
+      message(sprintf("IMMUNO %s normalized data from IMMUNO_NORM_DATA_FLAT", tissue))
+      data = MotrpacRatTraining6moData::IMMUNO_NORM_DATA_FLAT
       # filter to this tissue
       data = data[data$tissue == tissue,]
       # remove all-NA columns 
       data[,names(colSums(is.na(data))[colSums(is.na(data)) == nrow(data)])] = NULL
     }else{
       obj_name = sprintf("%s_%s_NORM_DATA", assay, gsub("-","",tissue))
-      data = fetch_object(obj_name)
+      if(obj_name %in% available_data){
+        message(obj_name)
+        data = fetch_object(obj_name)
+      }
     }
   }else{
     # raw data 
     if(assay %in% c("METHYL","ATAC","TRNSCRPT")){
       if(assay %in% c("METHYL","ATAC")){
         # download from GCS
-        data = get_rdata_from_url(tissue=tissue, assay=assay, suffix="RAW_COUNTS", scratchdir=scratchdir, nrows=nrows)
+        obj_name = sprintf("%s_%s_RAW_COUNTS", assay, gsub("-","",tissue))
+        if(obj_name %in% available_data){
+          message(obj_name)
+          data = get_rdata_from_url(tissue=tissue, assay=assay, suffix="RAW_COUNTS", scratchdir=scratchdir, nrows=nrows)
+        }
       }else{
         obj_name = sprintf("%s_%s_RAW_COUNTS", assay, gsub("-","",tissue))
-        data = fetch_object(obj_name)
+        if(obj_name %in% available_data){
+          message(obj_name)
+          data = fetch_object(obj_name)
+        }
       }
     }else{
-      stop(sprintf("Non-normalized data not available for %s. Set 'normalized' to TRUE to get normalized sample-level data.", assay))
+      if(warnings){
+        warning(sprintf("Non-normalized data not available for %s. Set 'normalized' to TRUE to get normalized sample-level data.", assay))
+      }
+      return()
     }
+  }
+  
+  if(is.null(data)){
+    if(warnings){
+      warning(sprintf("No data returned for tissue %s and assay %s with current arguments.", tissue, assay))
+    }
+    return()
   }
   
   # apply optional filters
@@ -462,6 +520,7 @@ load_sample_data = function(tissue,
     if(.tissue == "VENACV"){
       curr_outliers = c(curr_outliers, na.omit(outliers[tissue == .tissue, viallabel]))
     }
+    curr_outliers = unique(curr_outliers)
     if(length(curr_outliers)>0){
       data[,curr_outliers] = NULL
     }
@@ -471,9 +530,37 @@ load_sample_data = function(tissue,
 }
 
 
-#' Load raw METHYL data
+#' Load epigenetic differential analysis results 
+#' 
+#' Load ATAC or METHYL timewise differential analysis results for a tissue from 
+#' Google Cloud Storage. See [MotrpacRatTraining6mo::ATAC_DA] and [MotrpacRatTraining6mo::METHYL_DA]
+#' for more details. 
 #'
-#' @param tissue `r tissue()`
+#' @param tissue character, tissue abbreviation, one of "BAT", "HEART", "HIPPOC", "KIDNEY", "LIVER", "LUNG", "SKM-GN", "WAT-SC" 
+#' @param assay character, one of "METHYL" (RRBS) or "ATAC"
+#' @param scratchdir character, local directory in which to download data from 
+#'   Google Cloud Storage. Current working directory by default.
+#'
+#' @return data frame. See [MotrpacRatTraining6mo::ATAC_DA] and [MotrpacRatTraining6mo::METHYL_DA] for details. 
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Return ATAC-seq differential analysis results for gastrocnemius skeletal muscle
+#' load_epigen_da("SKM-GN", "METHYL")
+#' }
+load_epigen_da = function(tissue, assay, scratchdir="."){
+  data = get_rdata_from_url(tissue=tissue, assay=assay, suffix="DA", scratchdir=scratchdir)
+  return(data)
+}
+
+
+#' Load raw METHYL data
+#' 
+#' Load METHYL raw data for a tissue from Google Cloud Storage. 
+#' See [MotrpacRatTraining6mo::METHYL_RAW_DATA] for more details. 
+#'
+#' @param tissue character, tissue abbreviation, one of "BAT", "HEART", "HIPPOC", "KIDNEY", "LIVER", "LUNG", "SKM-GN", "WAT-SC" 
 #' @param scratchdir character, local directory in which to download data from 
 #'   Google Cloud Storage. Current working directory by default.
 #'
@@ -491,13 +578,16 @@ load_sample_data = function(tissue,
 #' data = load_methyl_raw_data("SKM-GN", "/tmp")
 #' }
 load_methyl_raw_data = function(tissue, scratchdir = "."){
-  url = sprintf("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/%s_raw.RData", tissue)
+  url = sprintf("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_%s_RAW_DATA.rda", tissue)
   data = get_rdata_from_url(url = url, scratchdir = scratchdir)
   return(data)
 }
 
 
 #' Load METHYL feature annotation 
+#' 
+#' Load METHYL feature annotation from Google Cloud Storage. 
+#' See [MotrpacRatTraining6mo::METHYL_FEATURE_ANNOT] for more details. 
 #'
 #' @param scratchdir character, local directory in which to download data from 
 #'   Google Cloud Storage. Current working directory by default.
@@ -514,6 +604,30 @@ load_methyl_raw_data = function(tissue, scratchdir = "."){
 load_methyl_feature_annotation = function(scratchdir = "."){
   fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda",
                    scratchdir = scratchdir)
+  return(fa)
+}
+
+
+#' Load ATAC feature annotation 
+#' 
+#' Load ATAC feature annotation from Google Cloud Storage. 
+#' See [MotrpacRatTraining6mo::ATAC_FEATURE_ANNOT] for more details. 
+#'
+#' @param scratchdir character, local directory in which to download data from 
+#'   Google Cloud Storage. Current working directory by default.
+#'
+#' @return data frame. See [MotrpacRatTraining6moData::ATAC_FEATURE_ANNOT] for details. 
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' feature_annot = load_atac_feature_annotation("/tmp")
+#' }
+#' 
+#' @source <https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/ATAC_FEATURE_ANNOT.rda> 
+load_atac_feature_annotation = function(scratchdir = "."){
+  fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/ATAC_FEATURE_ANNOT.rda",
+                          scratchdir = scratchdir)
   return(fa)
 }
 
@@ -539,6 +653,10 @@ load_methyl_feature_annotation = function(scratchdir = "."){
 #' 
 #' @export
 #' @importFrom utils download.file 
+#'
+#' @details 
+#' See the readme for this repository for all available files:
+#' <https://github.com/MoTrPAC/MotrpacRatTraining6moData/blob/main/README.md>
 #' 
 #' @examples
 #' \dontrun{
@@ -571,8 +689,10 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
     dir.create(scratchdir, recursive = TRUE)
   }
   
-  if(!is.null(assay) & !assay %in% c("ATAC","METHYL")){
-    warning("Only ATAC and METHYL data are currently available in GCS.")
+  if(!is.null(assay)){
+    if(!assay %in% c("ATAC","METHYL")){
+      warning("Only ATAC and METHYL data are currently available in GCS.")
+    }
   }
   
   possible_tissues = c(
@@ -585,8 +705,10 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
     'SKM-GN',
     'WAT-SC'
   )
-  if(!is.null(tissue) & !tissue %in% possible_tissues){
-    warning(sprintf("Epigenetic data are only available for the following tissues:\n %s", paste(possible_tissues, collapse=", ")))
+  if(!is.null(tissue)){
+    if(!tissue %in% possible_tissues){
+      warning(sprintf("Epigenetic data are only available for the following tissues:\n %s", paste(possible_tissues, collapse=", ")))
+    }
   }
   
   if(is.null(url)){
@@ -623,8 +745,8 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
 #' Filter a list of outliers to those belonging to the specified dataset. 
 #' Used to specify sex-specific outliers within differential analysis functions. 
 #'
-#' @param TISSUE optional `r tissue()` 
-#' @param SEX optional `r sex()` 
+#' @param tissue optional `r tissue()` 
+#' @param sex optional `r sex()` 
 #' @param outliers vector of vial labels to consider as outliers.
 #'   Defaults to vial labels in [MotrpacRatTraining6moData::OUTLIERS].
 #'
@@ -634,9 +756,11 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
 #' @export
 #'
 #' @examples
-#' curr_outliers = filter_outliers(TISSUE="HIPPOC")
-#' curr_outliers = filter_outliers(TISSUE="HIPPOC", SEX="male")
-filter_outliers = function(TISSUE=NULL, SEX=NULL, outliers=MotrpacRatTraining6moData::OUTLIERS$viallabel){
+#' curr_outliers = filter_outliers(tissue="HIPPOC")
+#' curr_outliers = filter_outliers(tissue="HIPPOC", sex="male")
+filter_outliers = function(tissue=NULL, sex=NULL, outliers=MotrpacRatTraining6moData::OUTLIERS$viallabel){
+  TISSUE = tissue 
+  SEX = sex
   outliers = as.character(outliers)
   if(length(outliers) == 0){
     return(character(0))
@@ -650,4 +774,249 @@ filter_outliers = function(TISSUE=NULL, SEX=NULL, outliers=MotrpacRatTraining6mo
   }
   curr_outliers = pheno[viallabel %in% outliers, viallabel]
   return(curr_outliers)
+}
+
+
+#' Combine normalized sample-level data
+#' 
+#' Combine normalized sample-level data from the specified tissues and omes(s)/assay(s). 
+#' If no tissues or omes are specified, all data is returned. 
+#' In order to combine data from different tissues and data types, sample-specific vial labels 
+#' are converted to animal-specific Participant IDs (PIDs).
+#' 
+#' @param tissues optional character vector of tissue abbreviations, 
+#'   one of [MotrpacRatTraining6moData::TISSUE_ABBREV].
+#' @param assays optional character vector of assay abbreviations, 
+#'   one of [MotrpacRatTraining6moData::ASSAY_ABBREV]
+#' @param include_epigen bool, whether to include the full ATAC or METHYL 
+#'   differential analysis results from Google Cloud Storage. 
+#'   Only relevant if \code{assays} includes "ATAC" or "METHYL".
+#'   \code{FALSE} by default. 
+#' @param scratchdir character, local directory in which to download data from the web. 
+#'   Current working directory by default. Only relevant if \code{assays} includes "ATAC" or "METHYL".
+#' @param training_regulated_only bool, whether to filter features down to those training-regulated at 5% FDR
+#' @param exclude_outliers bool, whether to remove sample outliers specified by [MotrpacRatTraining6moData::OUTLIERS]
+#' @param nrows integer, number of rows to return from each dataset. Defaults to Inf. 
+#'   Useful to return a subset of a large data frame for tests. 
+#' 
+#' @export
+#' 
+#' @seealso [load_sample_data()], [viallabel_to_pid()]
+#' 
+#' @return data frame with features in rows and Participant IDs (PIDs) in columns
+#' 
+#' @examples
+#' # Return all normalized RNA-seq data
+#' combine_normalized_data(assays = "TRNSCRPT")
+#' 
+#' # Return all normalized proteomics data. Exclude outliers 
+#' combine_normalized_data(assays = c("PROT","UBIQ","PHOSPHO","ACETYL"),
+#'                         exclude_outliers = TRUE)
+#' 
+#' # Return normalized ATAC-seq data for training-regulated features 
+#' combine_normalized_data(assays = "ATAC", training_regulated_only = TRUE)
+#' 
+#' # Return normalized ATAC-seq data for the first 1000 features in each tissue 
+#' combine_normalized_data(assays = "ATAC", nrows = 1000, scratchdir = "/tmp", include_epigen = TRUE)
+#'
+#' # Return all normalized metabolomics data 
+#' combine_normalized_data(assays = "METAB")
+combine_normalized_data = function(tissues = MotrpacRatTraining6moData::TISSUE_ABBREV, 
+                                   assays = MotrpacRatTraining6moData::ASSAY_ABBREV, 
+                                   include_epigen = FALSE,
+                                   scratchdir = ".", 
+                                   training_regulated_only = FALSE, 
+                                   exclude_outliers = FALSE, 
+                                   nrows = Inf){
+  
+  if( ("ATAC" %in% assays | "METHYL" %in% assays) & !include_epigen & !training_regulated_only){
+    warning("'include_epigen' is FALSE. Excluding ATAC and METHYL data.")
+    assays = assays[!assays %in% c("ATAC","METHYL")]
+  }
+  
+  # get current list of objects
+  current_env = ls()
+  
+  res = list()
+  for(a in assays){
+    for(t in tissues){
+      data = load_sample_data(t, a, 
+                              normalized=TRUE, 
+                              training_regulated_only=training_regulated_only, 
+                              exclude_outliers=exclude_outliers, 
+                              nrows=nrows, 
+                              scratchdir=scratchdir,
+                              warnings=FALSE)
+      if(is.null(data)) next
+      # convert colnames to PID
+      viallabel_cols = colnames(data)[grepl("^9", colnames(data))]
+      if(length(viallabel_cols)>0){
+        pids = viallabel_to_pid(viallabel_cols)
+        stopifnot(length(pids) == length(viallabel_cols))
+        stopifnot(length(pids) == length(unique(pids)))
+        # rename columns 
+        new_colnames = as.character(unname(pids[viallabel_cols]))
+        colnames(data)[grepl("^[0-9]", colnames(data))] = new_colnames
+      }
+      # add to result
+      res[[sprintf("%s_%s",a,t)]] = data
+    }
+  }
+  if(length(res)==0){
+    warning(sprintf("No normalized data returned for tissues %s and assays %s.",
+                    paste(tissues, collapse=", "),
+                    paste(assays, collapse=", ")))
+    return()
+  }
+  
+  ## this doesn't work within the function 
+  # # get current list of objects
+  # new_env = ls()
+  # 
+  # # remove new ones to save space
+  # remove = setdiff(new_env, current_env)
+  # remove = remove[grepl(paste(assays,collapse="|"), remove)]
+  # rm(list=remove)
+  
+  res = as.data.frame(data.table::rbindlist(res, fill=TRUE))
+  return(res)
+}
+
+
+#' Combine differential analysis results 
+#' 
+#' Combine differential analysis results from the specified tissues and omes(s)/assay(s). 
+#' If no tissues or omes are specified, all differential analysis results are returned. 
+#'
+#' @param tissues optional character vector of tissue abbreviations, 
+#'   one of [MotrpacRatTraining6moData::TISSUE_ABBREV].
+#' @param assays optional character vector of assay abbreviations, 
+#'   one of [MotrpacRatTraining6moData::ASSAY_ABBREV]
+#' @param metareg bool, whether to use the meta-regression results for METAB.
+#'   Use the upstream differential analysis results in \code{FALSE}.
+#'   \code{TRUE} by default. 
+#' @param include_epigen bool, whether to include the full ATAC or METHYL 
+#'   differential analysis results from Google Cloud Storage. 
+#'   Only relevant if \code{assays} includes "ATAC" or "METHYL".
+#'   \code{FALSE} by default. 
+#' @param scratchdir character, local directory in which to download data from the web. 
+#'   Current working directory by default. Only relevant if \code{assays} includes "ATAC" or "METHYL".
+#' 
+#' @export
+#' 
+#' @return data frame. Depending on the specified assays, some of these columns may not be included:
+#' \describe{
+#'   \item{\code{feature}}{`r feature()`}
+#'   \item{\code{assay}}{`r assay()`}
+#'   \item{\code{assay_code}}{`r assay_code()`}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{tissue_code}}{`r tissue_code()`}
+#'   \item{\code{feature_ID}}{`r feature_ID()`}
+#'   \item{\code{sex}}{`r sex()`}
+#'   \item{\code{comparison_group}}{`r comparison_group()`}
+#'   \item{\code{p_value}}{`r p_value_da()`}
+#'   \item{\code{adj_p_value}}{`r adj_p_value_da()`}
+#'   \item{\code{logFC}}{`r logFC()`}
+#'   \item{\code{logFC_se}}{`r logFC_se()`}
+#'   \item{\code{tscore}}{`r tscore()`}
+#'   \item{\code{covariates}}{`r covariates()`}
+#'   \item{\code{numNAs}}{`r numNAs()`}
+#'   \item{\code{comparison_average_intensity}}{`r comparison_average_intensity()`}
+#'   \item{\code{reference_average_intensity}}{`r reference_average_intensity()`}
+#'   \item{\code{selection_fdr}}{`r selection_fdr()`}
+#'   \item{\code{dataset}}{character, immune panel, metabolomics platform, or ATAC-seq dataset name}
+#'   \item{\code{site}}{character, Chemical Analysis Site (CAS) name. METAB only}
+#'   \item{\code{is_targeted}}{logical, is this a targeted platform? METAB only}
+#'   \item{\code{metabolite_refmet}}{character, RefMet name of metabolite. METAB only}
+#'   \item{\code{cv}}{double, feature coefficient of variation in the dataset. METAB only}
+#'   \item{\code{metabolite}}{character, name of metabolite as appears in the CAS's data. METAB only}
+#'   \item{\code{control_cv}}{double, feature coefficient of variation in the dataset. METAB only}
+#'   \item{\code{mz}}{double, mass over charge. METAB only}
+#'   \item{\code{rt}}{double, retention time. METAB only}
+#'   \item{\code{neutral_mass}}{double, neutral mass. METAB only}
+#'   \item{\code{meta_reg_het_p}}{`r meta_reg_het_p()` METAB only}
+#'   \item{\code{meta_reg_pvalue}}{`r meta_reg_pvalue()` METAB only}
+#'   \item{\code{shrunk_logFC}}{double, log fold-change with shrinkage applied}
+#'   \item{\code{shrunk_logFC_se}}{double, standard error of the shrunken log fold-change}
+#'   \item{\code{zscore}}{`r zscore()`}
+#'   \item{\code{removed_samples}}{`r removed_samples()`}
+#'   \item{\code{comparison_average_intensity_se}}{`r comparison_average_intensity_se()`}
+#'   \item{\code{reference_average_intensity_se}}{`r comparison_average_intensity_se()`} 
+#'   \item{\code{Chr}}{integer, chromosome. METHYL only}
+#'   \item{\code{Locus}}{character, base pair range of feature. METHYL only}
+#'   \item{\code{EntrezID}}{character, Entrez ID of closest gene. METHYL only}
+#'   \item{\code{Symbol}}{character, gene symbol of closest gene. METHYL only}
+#' }
+#' 
+#' @examples
+#' # Return all non-epigenetic differential analysis results, 
+#' # including meta-regression results for metabolomics
+#' combine_da_results()
+#' 
+#' # Return all global proteomics differential analysis results
+#' combine_da_results(assays="PROT")
+#' 
+#' \dontrun{
+#' # Return METHYL and ATAC differential analysis results for gastrocnemius 
+#' combine_da_results(tissues="SKM-GN", 
+#'                    assays=c("ATAC","METHYL"),
+#'                    include_epigen=TRUE)
+#' }
+combine_da_results = function(tissues = MotrpacRatTraining6moData::TISSUE_ABBREV, 
+                              assays = MotrpacRatTraining6moData::ASSAY_ABBREV, 
+                              metareg = TRUE,
+                              include_epigen = FALSE,
+                              scratchdir = "."){
+  
+  if( ("ATAC" %in% assays | "METHYL" %in% assays) & !include_epigen){
+    warning("'include_epigen' is FALSE. Excluding ATAC and METHYL results.")
+    assays = assays[!assays %in% c("ATAC","METHYL")]
+  }
+  
+  available_data = list_available_data("MotrpacRatTraining6moData")
+  # add available epigen data
+  possible_tissues = c(
+    'BAT',
+    'HEART',
+    'HIPPOC',
+    'KIDNEY',
+    'LIVER',
+    'LUNG',
+    'SKMGN',
+    'WATSC'
+  )
+  available_data = c(available_data, paste0(rep(c("ATAC", "METHYL"), each=8), "_", rep(possible_tissues,2), "_DA"))
+  
+  reslist = list()
+  i = 1
+  for(a in assays){
+    for(t in tissues){
+      if(a == "METAB" & metareg){
+        object_name = sprintf("%s_%s_DA_METAREG", a, gsub("-","",t))
+      }else{
+        object_name = sprintf("%s_%s_DA", a, gsub("-","",t))
+      }
+      # check if object exists
+      if(object_name %in% available_data){
+        message(object_name)
+        if (a %in% c("ATAC","METHYL")){
+          # load from URL
+          data = get_rdata_from_url(tissue=t, assay=a, suffix="DA", scratchdir=scratchdir)
+        }else{
+          data = fetch_object(object_name)
+        }
+        if ("removed_samples" %in% colnames(data)){
+          data$removed_samples = as.character(data$removed_samples)
+        }
+        reslist[[i]] = data
+        i = i+1
+      }
+    }
+  }
+  if(length(reslist) == 0){
+    warning("No results returned.")
+    return()
+  }
+  data = data.table::rbindlist(reslist, fill=TRUE)
+  return(data)
 }
