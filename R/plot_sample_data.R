@@ -23,6 +23,8 @@ plot_feature_logfc = function(){}
 #' 
 #' @return a [ggplot2::ggplot()] object if \code{return_data=FALSE} or a data frame otherwise
 #' 
+#' @export 
+#' 
 #' @examples 
 #' # Pick largest cluster in gastrocnemius 
 #' clust = extract_tissue_sets("SKM-GN", k=1, add_week8=FALSE)
@@ -49,7 +51,7 @@ plot_feature_trajectories = function(features, exclude_outliers=TRUE, center=TRU
   training_regulated_only = FALSE
   if("ATAC" %in% omes | "METHYL" %in% omes){
     epigen_input = feature_dt[ome %in% c("ATAC","METHYL"), feature]
-    epigen_training_reg = MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES$feature[TRAINING_REGULATED_FEATURES$assay %in% c("METHYL", "ATAC")]
+    epigen_training_reg = MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES$feature[MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES$assay %in% c("METHYL", "ATAC")]
     if(all(epigen_input %in% epigen_training_reg)){
       training_regulated_only = TRUE
     }

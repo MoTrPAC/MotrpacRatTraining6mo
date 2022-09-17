@@ -1453,7 +1453,7 @@ plot_features_per_cluster = function(cluster_res){
   }
   if(length(unique(cluster_res$ome))==1){
     c = c[type!="ome"]
-    fill_vals = c(tissue_cols,none='black')
+    fill_vals = c(MotrpacRatTraining6moData::TISSUE_COLORS,none='black')
     breaks = c(tissues)
     labels = c(tissues)
   }

@@ -126,5 +126,15 @@ utils::globalVariables(
     "relationship_to_gene",
     "short_annotation",
     "start",
-    "intersection_ensembl" # pathway_hypergeom_test()
+    "intersection_ensembl", # pathway_hypergeom_test()
+    ########################################### plot_feature_trajectories()
+    "new_feature",
+    "variable",
+    "value_feature",
+    "value_mean",
+    "ss",
+    ########################################### plot_features_per_cluster()
+    "type",
+    "N",
+    "colour"
   ))

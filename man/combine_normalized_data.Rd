@@ -29,6 +29,8 @@ Only relevant if \code{assays} includes "ATAC" or "METHYL".
 \item{scratchdir}{character, local directory in which to download data from the web.
 Current working directory by default. Only relevant if \code{assays} includes "ATAC" or "METHYL".}
 
+\item{training_regulated_only}{bool, whether to filter features down to those training-regulated at 5\% FDR}
+
 \item{exclude_outliers}{bool, whether to remove sample outliers specified by \link[MotrpacRatTraining6moData:OUTLIERS]{MotrpacRatTraining6moData::OUTLIERS}}
 
 \item{nrows}{integer, number of rows to return from each dataset. Defaults to Inf.
@@ -55,7 +57,7 @@ combine_normalized_data(assays = c("PROT","UBIQ","PHOSPHO","ACETYL"),
 combine_normalized_data(assays = "ATAC", training_regulated_only = TRUE)
 
 # Return normalized ATAC-seq data for the first 1000 features in each tissue 
-combine_normalized_data(assays = "ATAC", nrows = 1000, scratchdir = "\tmp", include_epigen = TRUE)
+combine_normalized_data(assays = "ATAC", nrows = 1000, scratchdir = "/tmp", include_epigen = TRUE)
 
 # Return all normalized metabolomics data 
 combine_normalized_data(assays = "METAB")

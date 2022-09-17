@@ -794,6 +794,7 @@ filter_outliers = function(tissue=NULL, sex=NULL, outliers=MotrpacRatTraining6mo
 #'   \code{FALSE} by default. 
 #' @param scratchdir character, local directory in which to download data from the web. 
 #'   Current working directory by default. Only relevant if \code{assays} includes "ATAC" or "METHYL".
+#' @param training_regulated_only bool, whether to filter features down to those training-regulated at 5% FDR
 #' @param exclude_outliers bool, whether to remove sample outliers specified by [MotrpacRatTraining6moData::OUTLIERS]
 #' @param nrows integer, number of rows to return from each dataset. Defaults to Inf. 
 #'   Useful to return a subset of a large data frame for tests. 
@@ -816,7 +817,7 @@ filter_outliers = function(tissue=NULL, sex=NULL, outliers=MotrpacRatTraining6mo
 #' combine_normalized_data(assays = "ATAC", training_regulated_only = TRUE)
 #' 
 #' # Return normalized ATAC-seq data for the first 1000 features in each tissue 
-#' combine_normalized_data(assays = "ATAC", nrows = 1000, scratchdir = "\tmp", include_epigen = TRUE)
+#' combine_normalized_data(assays = "ATAC", nrows = 1000, scratchdir = "/tmp", include_epigen = TRUE)
 #'
 #' # Return all normalized metabolomics data 
 #' combine_normalized_data(assays = "METAB")
