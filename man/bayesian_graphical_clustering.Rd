@@ -8,6 +8,7 @@ bayesian_graphical_clustering(
   zscores,
   min_analyte_posterior_thr = 0.5,
   min_prior_for_config = 0.001,
+  df = 20,
   naive_edge_sets = TRUE
 )
 }
@@ -17,6 +18,8 @@ bayesian_graphical_clustering(
 \item{min_analyte_posterior_thr}{A number. The minimal value of sum of posteriors for including an analyte.}
 
 \item{min_prior_for_config}{A number. The minimal prior probability on the configuration priors.}
+
+\item{df}{Integer. Parameter for \code{\link[repfdr:ztobins]{repfdr::ztobins()}}. Degrees of freedom for fitting the estimated density f(z).}
 
 \item{naive_edge_sets}{A logical. TRUE: edge sets are extracted by taking simple intersection of nodes.
 FALSE: edge sets are extracted from the repfdr solution.}
@@ -81,7 +84,7 @@ zscores = matrix(rnorm(80000), ncol=8, dimnames = list(1:10000,zcolnames))
 zscores[1:500,1:4] = zscores[1:500,1:4] + 5 
 
 # run the clustering solution wrapper
-clustering_sol = bayesian_graphical_clustering(zscores)
+clustering_sol = bayesian_graphical_clustering(zscores, df=10)
 # check if the clustering solution correctly assigns the first 500 rows 
 # (with high prob) to the right nodes
 length(intersect(1:500,clustering_sol$node_sets$`1w_F1_M0`))/500 > 0.95

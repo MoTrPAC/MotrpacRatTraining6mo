@@ -2,13 +2,14 @@
 title: "Tutorial for MotrpacRatTraining6mo R package"
 author: "Nicole R. Gay, David Amar, Pierre Jean Beltran"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette:
-  toc: true
-  code_folding: show 
-  toc_depth: 4
-  toc_float:
-    collapsed: false
-    smooth_scroll: false
+output: 
+  rmarkdown::html_document:
+    toc: true
+    code_folding: show 
+    toc_depth: 4
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
 
 vignette: >
   %\VignetteIndexEntry{Tutorial for MotrpacRatTraining6mo R package}
@@ -26,13 +27,18 @@ knitr::opts_chunk$set(
 
 ## Introduction 
 
+> This vignette is under construction. If something is unclear or obviously missing, 
+please submit an issue [here](https://github.com/MoTrPAC/MotrpacRatTraining6mo/issues). 
+
 ### About this package 
 This package provides functions to fetch, explore, and reproduce the processed 
 data and downstream analysis results presented in the main paper for the first 
 large-scale multi-omic multi-tissue endurance exercise training study conducted 
 in young adult rats by the Molecular Transducers of Physical Activity Consortium 
 (MoTrPAC). *A [bioRxiv](https://www.biorxiv.org/) link to the corresponding 
-preprint will be added shortly.* 
+preprint will be added shortly.* **We highly recommend skimming the preprint 
+before using this package as it provides important context and much greater detail
+than we can provide here.**
 
 While some of the functions in this package can be used by themselves, they
 were primarily written to analyze data in the 
@@ -121,41 +127,403 @@ R package.
 
 Here is a brief summary of the kinds of data included in 
 [MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData):
+
+* Assay, tissue, sex, and training group abbreviations, codes, colors, and order used in plots
+* Phenotypic data, `PHENO`  
+* Mapping between various feature identifiers, i.e., `FEATURE_TO_GENE`, `RAT_TO_HUMAN_GENE`  
+* Ome-specific feature annotation, i.e., `METAB_FEATURE_ID_MAP`, `METHYL_FEATURE_ANNOT` (GCP only), `ATAC_FEATURE_ANNOT` (GCP only)
+* Ome-specific sample-level metadata, i.e., `TRNSCRPT_META`, `ATAC_META`, `METHYL_META`, `IMMUNO_META`, `PHOSPHO_META`, `PROT_META`, `ACETYL_META`, `UBIQ_META`  
 * Raw counts for RNA-Seq (TRNSCRPT), ATAC-Seq (ATAC), and RRBS (METHYL) data, 
 e.g., `TRNSCRPT_LIVER_RAW_COUNTS`.
 Note that epigenetic data (ATAC and METHYL) must be downloaded from Google Cloud Storage.  
 * Normalized sample-level data, e.g., `TRNSCRPT_SKMGN_NORM_DATA`   
 * Differential analysis results, e.g., `HEART_PROT_DA` (see more details below)  
-* 
-
-This package includes several functions to easily fetch and compile data from 
-specified tissues and assays.
-
-```{r}
-
-```
-
-
-For the data-specific tutorial, see TODO. 
-`list_available_data("MotrpacRatTraining6moData")`
+* Sample outliers excluded from differential analysis, `OUTLIERS`  
+* Table of training-regulated features at 5% FDR, `TRAINING_REGULATED_FEATURES`  
+* Bayesian graphical analysis inputs and results (see more details below)  
+* Pathway enrichment of main graphical clusters, `GRAPH_PW_ENRICH`  
 
 For more details about the [MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData)
-R package, see its vignette (TODO).
+R package, see its vignette (TODO). The remainder of this vignette will focus on
+functions available in [MotrpacRatTraining6mo](https://github.com/MoTrPAC/MotrpacRatTraining6mo).  
+
+[MotrpacRatTraining6mo](https://github.com/MoTrPAC/MotrpacRatTraining6mo) 
+includes several functions to easily fetch and compile data from 
+[MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData). 
+
+Use `load_sample_data()` to load sample-level data for a specific ome and tissue. 
+Here we fetch various forms of the sample-level RNA-Seq (TRNSCRPT) data for brown adipose tissue (BAT) as an example. 
+
+```{r load sample data}
+# Load RNA-seq raw counts for brown adipose tissue 
+data = load_sample_data("BAT", "TRNSCRPT", normalized = FALSE)
+
+# Load the normalized RNA-seq data for brown adipose tissue instead
+data = load_sample_data("BAT", "TRNSCRPT")
+
+# Load the normalized RNA-seq data for brown adipose tissue, but exclude sample outliers 
+data = load_sample_data("BAT", "TRNSCRPT", exclude_outliers = TRUE)
+
+# Load the normalized RNA-seq data for brown adipose tissue for training-regulated features only
+data = load_sample_data("BAT", "TRNSCRPT", training_regulated_only = TRUE)
+```
+
+`load_sample_data()` will tell you if the specified dataset doesn't exist. 
+```{r}
+data = load_sample_data("VENACV", "PROT")
+```
+
+`load_sample_data()` will also download epigenetic data from Google Cloud Storage.
+
+> Note: Epigenetic data require substantially more memory than other omes. 
+
+```{r}
+# Load ATAC-seq raw counts for hippocampus, excluding outliers 
+data = load_sample_data("HIPPOC", 
+                        "ATAC", 
+                        exclude_outliers = TRUE, 
+                        normalized = FALSE, 
+                        scratchdir = "/tmp")
+```
+
+`combine_normalized_data()` is a wrapper for `load_sample_data()` that returns 
+combined sample-level normalized data for multiple datasets. Note that the sample-specific 
+vial labels used as column names for most of the sample-level data are replaced
+with rat-specific participant IDs (PIDs) to allow measurements from multiple
+datasets for the same animal to be concatenated. 
+```{r combine normalized data}
+# Return all normalized RNA-seq data
+data = combine_normalized_data(assays = "TRNSCRPT")
+
+# Return all normalized proteomics data. Exclude outliers 
+data = combine_normalized_data(assays = c("PROT","UBIQ","PHOSPHO","ACETYL"),
+                               exclude_outliers = TRUE)
+
+# Return normalized ATAC-seq data for training-regulated features 
+data = combine_normalized_data(assays = "ATAC", 
+                               training_regulated_only = TRUE)
+
+# Return all non-epigenetic data
+# Note that the "include_epigen" argument is FALSE by default
+data = combine_normalized_data()
+```
+
+Similarly, `combine_da_results()` concatenates differential analysis results 
+for multiple datasets. 
+```{r combine da results}
+# Return all non-epigenetic differential analysis results, 
+# including meta-regression results for metabolomics
+res = combine_da_results()
+
+# Return METHYL and ATAC differential analysis results for gastrocnemius 
+res = combine_da_results(tissues="SKM-GN", 
+                         assays=c("ATAC","METHYL"),
+                         include_epigen=TRUE)
+```
+
+`transcript_prep_data()` and `atac_prep_data()` are functions used within the 
+differential analysis functions for TRNSCRPT and ATAC data. 
+They collect the filtered raw counts, normalized sample-level data, 
+phenotypic data, and ome-specific sample metadata, covariates, and outliers 
+associated with a given tissue. 
+
+A few additional functions are provided to fetch epigenetic data from Google Cloud Storage:   
+
+* **load_methyl_raw_data():** Return the unfiltered raw counts for a given tissue.  
+* **load_methyl_feature_annotation():** Return the METHYL feature annotation file.  
+* **load_atac_feature_annotation():** Return the ATAC feature annotation file.  
+* **get_rdata_from_url():** If you know the URL for a specific RData file in GCS,
+you can use this function to return the object using the `url` argument. Full URLs
+for all of the epigenetic data are available in the [README for the MotrpacRatTraining6moData package](https://github.com/MoTrPAC/MotrpacRatTraining6moData#access-epigenomics-data-through-google-cloud-storage).  
+
+Finally, `list_available_data()` returns a list of all of the available data 
+objects in the specified package. 
+
+```{r list available data}
+list_available_data("MotrpacRatTraining6moData")
+```
 
 ## Differential analysis 
+More details about the differential analysis methods are available in the 
+supplementary methods of the preprint (TODO: add link). Simply put, the *training* differential 
+analysis considers all training groups for each sex (sedentary controls and 4
+training time points) to determine if the analyte significantly changes in either 
+sex at any point during the training time course. The adjusted p-values from this analysis 
+were used to determine the set of analytes that are regulated by endurance 
+exercise training at 5% IHW FDR, referred to as the *training-regulated features*. 
+The *timewise* differential analysis performs pairwise contrasts between trained 
+animals at each time point (1, 2, 4, or 8 weeks) and the sex-matched sedentary
+control animals. This gives us sex- and time- specific p-values and effect sizes, 
+referred to as the *timewise summary statistics*. 
 
-i.e., *timewise* summary statistics (pairwise contrasts between each group of 
-trained animals at a given time point and the sex-matched sedentary control animals) and *training* and adjusted p-values from the 
+We provide the following functions to replicate our *timewise* and *training* 
+differential analysis results for each dataset. Look at the corresponding 
+documentation for each function for more details, e.g. `?transcript_timewise_da`. 
+
+* Proteomics (ACETYL, PHOSPHO, PROT, UBIQ)  
+  * `proteomics_timewise_da()`  
+  * `proteomics_training_da()`  
+* ATAC  
+  * `atac_training_da()`  
+  * `atac_timewise_da()`  
+* IMMUNO  
+  * `immuno_timewise_da()`  
+  * `immuno_training_da()`  
+* METAB  
+  * `metab_timewise_da()`  
+  * `metab_training_da()`  
+* METHYL  
+  * `rrbs_differential_analysis()`   
+* TRNSCRPT  
+  * `transcript_timewise_da()`  
+  * `transcript_training_da()`  
+
+> Note: The functions to reproduce the metabolomics meta-regression for metabolites
+with multiple measurements have not yet been added. 
+
+Here, we replicate the protein acetylation timewise differential
+analysis results provided in [MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData).
+
+```{r replicate prot}
+timewiseList = list()
+for (tissue in c("HEART","LIVER")){
+  timewiseList[[tissue]] = proteomics_timewise_da("ACETYL", tissue)
+}
+timewise = do.call("rbind", timewiseList)
+
+# merge with version of results in MotrpacRatTraining6moData
+original = combine_da_results(assays="ACETYL")
+merged = merge(original, timewise, 
+               by=c("feature_ID","assay","assay_code","tissue","tissue_code","sex","comparison_group"),
+               suffixes=c("_orginal","_reproduced"))
+
+# plot 
+plot(-log10(merged$p_value_orginal), 
+     -log10(merged$p_value_reproduced), 
+     type="p", cex=0.5,
+     xlab="Original timewise p-value (-log10)",
+     ylab="Reproduced timewise p-value (-log10)",
+     main="Timewise DA results for ACETYL data")
+```
 
 ## Bayesian graphical clustering 
 
-### Reproduce our results or run your own analysis 
+### Summary 
+After performing differential analysis between trained animals and sedentary control animals 
+to identify training-regulated features across datasets,
+we wanted to characterize groups of these features that had similar trajectories
+over the training time course and compare them within and between tissues. 
+
+To do this, we clustered the 34,244 training-regulated features with complete timewise summary 
+statistics (that is, from all four training time points in both sexes) using their 
+timewise z-scores with the expectation-maximization (EM) clustering algorithm of 
+`repfdr` [(Heller et al., 2014)](https://doi.org/10.1093/bioinformatics/btu434). 
+This algorithm assumes that each timewise z-score can take one of three latent states: 
+-1 for down-regulation, 1 for up-regulation, and 0 for null (i.e., unchanged 
+relative to the sedentary control group). The algorithm computes the posterior 
+probabilities for each combination of states (-1/down, 1/up, or 0/null) 
+over all experimental groups (8 groups: 1-, 2-, 4-, and 8-week time points in females and males). 
+We used these posterior probabilities to effectively assign continuous z-scores 
+to simplified states. For example, a feature with the following z-scores would be 
+assigned to the corresponding states with high probability:
+
+|     | Female 1w | Male 1w | Female 2w | Male 2w | Female 4w | Male 4w | Female 8w | Male 8w |
+| --- | ----------| ------- | ----------| ------- | ----------| ------- | ----------| ------- |
+| z-score | -5.7  | 0.1     | 0.65      | -0.06   | 0.09      | 6.7     | 0.21      | 5       |
+| state   | -1    | 0       | 0         | 0       | 0         | 1       | 0         | 1       |
+| --- | ----------| ------- | ----------| ------- | ----------| ------- | ----------| ------- |
+
+We then combine the male and female states for a given time point using the following notation:
+
+|     | 1 week | 2 weeks | 4 weeks | 8 weeks |
+| --- | -------| ------- | --------| ------- | 
+| notation | `1w_F-1_M0` | `2w_F0_M0` | `4w_F0_M1` | `8w_F0_M1` |
+| --- | -------| ------- | --------| ------- | 
+
+Descriptively, this feature is down-regulated in females 
+(`F-1`) at 1 week of training (`1w`), null in both sexes (`F0_M0`) at 
+2 weeks of training (`2w`), and up-regulated in males only (`F0_M1`) at 4 and 8 weeks of training.  
+
+One major advantage of this approach is that we can use the time points and discrete states
+to construct a graph, where each point (or "node") in the graph represents a state at a given time point (e.g., `1w_F-1_M0`). 
+Then for each feature of interest, we can draw a path through the graph to represent 
+its trajectory over the training time course. We can use the paths and nodes in the graph
+to define clusters of features with similar temporal behavior and characterize the underlying biology. 
+
+For example, we can represent the complete path of the above feature over the training time course as follows: 
+`1w_F-1_M0->2w_F0_M0->4w_F0_M1->8w_F0_M1`. 
+This path is made by connecting the `1w_F-1_M0` node to the 
+`2w_F0_M0` node to the `4w_F0_M1` node to the `8w_F0_M1` node. The connection 
+between a single pair of consecutive nodes is called an edge. For example, the 
+`1w_F-1_M0---2w_F0_M0` edge represents features that are down-regulated only in females
+after 1 week of training and null in both sexes after 2 weeks of training. 
+The `1w_F-1_M0->2w_F0_M0->4w_F0_M1->8w_F0_M1` path is constructed from 3 edges, 
+each represented by `->` in the notation. 
+
+We herein refer to our approach of using `repfdr` to construct a graph of the 
+dynamic multi-omic responses to endurance exercise training across tissues as *graphical clustering*.
+The following sections describe how to reproduce our graphical clustering analysis,
+run `repfdr` on your own data, and explore and visualize the nodes, edges, and paths 
+(collectively referred to as clusters) in the resulting graph. 
+For additional details and advantages of this approach over traditional clustering methods, 
+see the supplementary methods in the preprint (TODO: link). 
+If you are more interested in exploring the existing pathway enrichment results, skip to 
+[Visualization of pathway enrichment results](#vizEnrich). 
+
+### (Re-)run `repfdr` to determine states
+`MotrpacRatTraining6moData::REPFDR_INPUTS` provides the inputs for our analysis
+with `repfdr`, which can be replicated with `bayesian_graphical_clustering()`. 
+The raw results are provided in `MotrpacRatTraining6moData::REPFDR_RES`. 
+```{r bayesian_graphical_clustering, eval=F}
+data(REPFDR_INPUTS, package="MotrpacRatTraining6moData")
+zscores = REPFDR_INPUTS$zs_smoothed
+res = bayesian_graphical_clustering(zscores)
+```
+
+`bayesian_graphical_clustering()` is a study-specific wrapper for `repfdr_wrapper()`. 
+`repfdr_wrapper()` can be used to analyze any set of z-scores. 
+Here we show an example with simulated data. 
+```{r}
+# Simulate data with a single null cluster
+# Toy experiment with 8 groups 
+zcolnames = paste("Exp", 1:8)
+zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
+# Add a cluster with a strong signal,
+# i.e. assign a z-score of ~5 to the first 4 groups for the first 500 features
+zscores[1:500,1:4] = zscores[1:500,1:4] + 5
+# Run the repfdr wrapper
+repfdr_results = repfdr_wrapper(zscores, df=10)
+
+# Now we expect the first 500 features to belong to cluster 11110000 (up-regulated in the first 4 groups)
+# and the remaining 9500 to belong to cluster 00000000 (null in all groups)
+hist(repfdr_results$repfdr_cluster_posteriors[,"00000000"], 
+     breaks=20, 
+     main="Posterior probability of null cluster for all features")
+hist(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"], 
+     breaks=20, 
+     main="Posterior probability of 11110000 cluster for first 500 features")
+```
 
 ### Explore graphical clustering results
+The graph representation of the `repfdr` results are provided in 
+`MotrpacRatTraining6moData::GRAPH_COMPONENTS` (node and edge lists) and 
+`MotrpacRatTraining6moData::GRAPH_STATES` (data frame representation).
+```{r graph}
+data("GRAPH_STATES", package="MotrpacRatTraining6moData")
+head(GRAPH_STATES)
+```
+
+> Note: Features are specified in the format "[ASSAY_ABBREV];[TISSUE_ABBREV];[feature_ID]",
+e.g. "PHOSPHO;SKM-GN;NP_001006973.1_S34s", "METAB;SKM-GN;1-methylnicotinamide"
+
+We can extract node, edge, and path feature sets from a given tissue using `extract_tissue_sets()`. 
+Here we extract training-regulated features in the three (`k=3`) largest nodes, edges, and paths
+in the gastrocnemius (`tissues="SKM-GN"`) that have at least 20 features (`min_size=20`).
+We also add the feature lists for all 8-week nodes (`add_week8=TRUE`). 
+```{r extract tissue sets}
+gastroc_sets = extract_tissue_sets(tissues="SKM-GN",
+                                   k=3,
+                                   min_size=20,
+                                   add_week8=TRUE)
+names(gastroc_sets)
+
+# look at the list of features in the "1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1" path
+head(gastroc_sets$`1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1`)
+```
+
+`get_all_trajectories()` returns *all* non-empty paths in the results.
+```{r get all trajectories}
+paths = get_all_trajectories()
+head(names(paths))
+hist(unlist(lapply(paths, length)), breaks=100)
+```
+
+### Plot graph of training-regulated features 
+We can use `get_tree_plot_for_tissue()` to draw this graph for a given set of training-regulated features. 
+
+First, let's look at the graph of all differential features in the liver. 
+The sizes of the edges and nodes are proportional to the number of training-regulated features
+that were assigned to the corresponding states. Nodes are arranged in rows by states
+(e.g., "F only up") and in columns by training time points. The node at the intersection of
+"F only up" and "week 1" represents features that are null in males and up-regulated in 
+females after one week of endurance exercise training (i.e., `1w_F1_M0` in the notation above). 
+```{r tree plot, fig.width = 10, fig.height = 6, warnings=FALSE}
+get_tree_plot_for_tissue(
+  tissues=c("LIVER"),
+  min_size = 1
+)
+```
+
+This is messy, so let's look at just the 5 largest paths instead. 
+```{r, fig.width = 10, fig.height = 6, warnings=FALSE}
+get_tree_plot_for_tissue(
+  tissues=c("LIVER"),
+  max_trajectories = 5
+)
+```
+
+Further, let's split these edges by data type (assay/ome) to see what features are represented. 
+We can change the curvature and alpha range to make the edges easier to see. 
+```{r, fig.width = 10, fig.height = 6, warnings=FALSE}
+get_tree_plot_for_tissue(
+  tissues=c("LIVER"),
+  max_trajectories = 5,
+  parallel_edges_by_ome = TRUE,
+  curvature = 0.5,
+  edge_alpha_range = c(0.5,1)
+)
+```
+
+This is too busy with edges split by ome. Let's look at just the largest path and only RNA-Seq and proteomics assays. 
+```{r, fig.width = 10, fig.height = 6, warnings=FALSE}
+get_tree_plot_for_tissue(
+  omes=c("PROT","ACETYL","UBIQ","PHOSPHO","TRNSCRPT"),
+  tissues=c("LIVER"),
+  max_trajectories = 1,
+  parallel_edges_by_ome = TRUE,
+  curvature = 0.8,
+  edge_alpha_range = c(0.5,1)
+)
+```
+
+From this plot, we can see that most of the differential features that follow this path in the liver are protein acetlysites. 
+This path represents features that are up-regulated only in males ("M only up") through the first four weeks of training and then in both
+males and females by eight weeks of training ("Both up"). 
+
+We can also look at multi-tissue graphs. For example, let's look at the three largest paths of training-regulated
+transcripts in the three muscle tissues. Now instead of splitting edges by ome, we can split them by tissue. 
+```{r, fig.width = 10, fig.height = 6, warnings=FALSE}
+get_tree_plot_for_tissue(
+  tissues=c("SKM-GN","HEART","SKM-VL"),
+  omes="TRNSCRPT",
+  parallel_edges_by_tissue = TRUE,
+  max_trajectories = 3,
+  edge_alpha_range = c(0.5,1),
+  curvature = 0.6
+)
+```
+
+From this plot, we can see that a large number of training-regulated transcripts are up-regulated in both sexes at all four training time points
+in all three muscle tissues. Perhaps some interesting shared biology is represented in muscle features that follow this path. 
+
+To visualize the representation of features from different tissues and/or omes for a given set of clusters, 
+we can also use `plot_features_per_cluster()`.
+```{r plot_features_per_cluster, fig.height=2, fig.width=6}
+# Get top 10 largest paths, nodes, edges in gastrocnemius
+# Exclude additional 8-week nodes
+clusters = extract_tissue_sets("SKM-GN", k=10, add_week8=FALSE)
+# Select paths only
+clusters = clusters[grepl("->", names(clusters))]
+# Plot distribution of features
+plot_features_per_cluster(clusters)
+```
 
 ## Pathway enrichment of clusters
+GENE_UNIVERSES
 
-## Visualization of pathway enrichment results 
+GRAPH_PW_ENRICH
+
+## Visualization of pathway enrichment results {#vizEnrich}
 
 ## Getting help 
 For questions, bug reporting, and feature requests for this package, please 

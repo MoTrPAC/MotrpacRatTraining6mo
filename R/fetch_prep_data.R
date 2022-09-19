@@ -558,7 +558,7 @@ load_epigen_da = function(tissue, assay, scratchdir="."){
 #' Load raw METHYL data
 #' 
 #' Load METHYL raw data for a tissue from Google Cloud Storage. 
-#' See [MotrpacRatTraining6mo::METHYL_RAW_DATA] for more details. 
+#' See [MotrpacRatTraining6moData::METHYL_RAW_DATA] for more details. 
 #'
 #' @param tissue character, tissue abbreviation, one of "BAT", "HEART", "HIPPOC", "KIDNEY", "LIVER", "LUNG", "SKM-GN", "WAT-SC" 
 #' @param scratchdir character, local directory in which to download data from 

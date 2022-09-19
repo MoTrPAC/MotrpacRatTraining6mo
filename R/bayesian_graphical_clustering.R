@@ -7,6 +7,7 @@
 #' @param zscores A numeric matrix. Rows are analytes, columns are conditions (e.g., male week 1). Entries are z-scores.
 #' @param min_analyte_posterior_thr A number. The minimal value of sum of posteriors for including an analyte.
 #' @param min_prior_for_config A number. The minimal prior probability on the configuration priors.
+#' @param df Integer. Parameter for [repfdr::ztobins()]. Degrees of freedom for fitting the estimated density f(z). 
 #' @param naive_edge_sets A logical. TRUE: edge sets are extracted by taking simple intersection of nodes. 
 #'   FALSE: edge sets are extracted from the repfdr solution.
 #' 
@@ -62,11 +63,11 @@
 #'   paste("male",c("1w","2w","4w","8w"),sep="_")
 #' )
 #' zscores = matrix(rnorm(80000), ncol=8, dimnames = list(1:10000,zcolnames))
-#' # now add a cluster with a strong signal and rerun
+#' # now add a cluster with a strong signal 
 #' zscores[1:500,1:4] = zscores[1:500,1:4] + 5 
 #' 
 #' # run the clustering solution wrapper
-#' clustering_sol = bayesian_graphical_clustering(zscores)
+#' clustering_sol = bayesian_graphical_clustering(zscores, df=10)
 #' # check if the clustering solution correctly assigns the first 500 rows 
 #' # (with high prob) to the right nodes
 #' length(intersect(1:500,clustering_sol$node_sets$`1w_F1_M0`))/500 > 0.95
@@ -102,6 +103,7 @@
 bayesian_graphical_clustering <- function(zscores, 
                                           min_analyte_posterior_thr=0.5,
                                           min_prior_for_config=0.001,
+                                          df=20,
                                           naive_edge_sets=TRUE){
   
   if (!requireNamespace("repfdr", quietly = TRUE)){
@@ -115,7 +117,7 @@ bayesian_graphical_clustering <- function(zscores,
     stop("Input zscore matrix does not fit the required input. See documentation for details.")
   }
   
-  repfdr_results = repfdr_wrapper(zscores,min_prior_for_config=min_prior_for_config)
+  repfdr_results = repfdr_wrapper(zscores,min_prior_for_config=min_prior_for_config,df=df)
   repfdr_clusters = repfdr_results$repfdr_clusters
   repfdr_cluster_posteriors = repfdr_results$repfdr_cluster_posteriors
   
@@ -220,6 +222,7 @@ bayesian_graphical_clustering <- function(zscores,
 #' 
 #' @param zscores A numeric matrix. Rows are analytes, columns are conditions (e.g., male week 1). Entries are z-scores.
 #' @param min_prior_for_config A number. The minimal prior probability on the configuration priors.
+#' @param df Integer. Degrees of freedom for fitting the estimated density f(z)
 #' 
 #' @return A named list with two objects:
 #' \describe{
@@ -239,20 +242,20 @@ bayesian_graphical_clustering <- function(zscores,
 #'   paste("female",c("1w","2w","4w","8w"),sep="_")
 #' )
 #' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
-#' repfdr_results = repfdr_wrapper(zscores)
+#' repfdr_results = repfdr_wrapper(zscores, df=10)
 #' # in this example all configurations are null, 
 #' # thus the  posteriors of the null cluster (all zeroes) are very high:
 #' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"])
 #' # now add a cluster with a strong signal and rerun
 #' zscores[1:500,1:4] = zscores[1:500,1:4] + 5
-#' repfdr_results = repfdr_wrapper(zscores)
+#' repfdr_results = repfdr_wrapper(zscores, df=10)
 #' # look at the null cluster after adding the signal above
 #' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"],probs=c(0.05,0.1,0.5))
 #' # now the posteriors of the first 500 rows, 
 #' # with respect to the "planted" cluster should have high posteriors:
 #' quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
 #' }
-repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
+repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001, df = 20){
   
   if (!requireNamespace("repfdr", quietly = TRUE)){
     stop(
@@ -269,7 +272,7 @@ repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
   if(nrow(zscores) > 20000){
     # use the paper config only in very large datasets
     ztobins_res = repfdr::ztobins(zscores,
-                                  df=20,
+                                  df=df,
                                   type=1,
                                   n.bins=nbins,
                                   central.prop = 0.25,
@@ -278,14 +281,14 @@ repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001){
   }
   else{
     # for med to small data sizes use the default with increased df
-    ztobins_res = repfdr::ztobins(zscores,df=20,n.bins=nbins)
+    ztobins_res = repfdr::ztobins(zscores,df=df,n.bins=nbins)
   }
   
   # Step 2 in repfdr: estimate the repfdr model using the EM algorithm
   repfdr_res = repfdr::repfdr(ztobins_res$pdf.binned.z,
                               ztobins_res$binned.z.mat,
                               non.null = 'replication',
-                              control = repfdr::em.control(max.iter = 500,tol=1e-06,nr.threads = 4))
+                              control = repfdr::em.control(max.iter = 500,tol=1e-06))
   # sanity check
   configs = repfdr::hconfigs(ncol(zscores))
   if(!all(configs == repfdr_res$Pi[,1:ncol(zscores)])){
