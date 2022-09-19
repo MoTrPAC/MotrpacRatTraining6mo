@@ -269,26 +269,39 @@ repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001, df = 20){
   # In our work we examined the diagnostic plots manually. The results look reasonable,
   # especially for the qqplots, so we decided to use the current estimation with df=20
   nbins = round(min(150,sqrt(nrow(zscores))-1))
-  if(nrow(zscores) > 20000){
-    # use the paper config only in very large datasets
-    ztobins_res = repfdr::ztobins(zscores,
-                                  df=df,
-                                  type=1,
-                                  n.bins=nbins,
-                                  central.prop = 0.25,
-                                  plot.diagnostics = FALSE,
-                                  force.bin.number = TRUE)
-  }
-  else{
-    # for med to small data sizes use the default with increased df
-    ztobins_res = repfdr::ztobins(zscores,df=df,n.bins=nbins)
+  # In some cases, if the df is too high then the EM will not run properly.
+  # When this happens, the EM will complete after a single iteration and the 
+  # priors will not change. In this loop we check if this has occurred and if so
+  # then we lower the df until the EM runs.
+  while(df > 4){
+    if(nrow(zscores) > 20000){
+      # use the paper config only in very large datasets
+      ztobins_res = repfdr::ztobins(zscores,
+                                    df=df,
+                                    type=1,
+                                    n.bins=nbins,
+                                    central.prop = 0.25,
+                                    plot.diagnostics = FALSE,
+                                    force.bin.number = TRUE)
+    }
+    else{
+      # for med to small data sizes use the default with increased df
+      ztobins_res = repfdr::ztobins(zscores,df=df,n.bins=nbins)
+    }
+    
+    # Step 2 in repfdr: estimate the repfdr model using the EM algorithm
+    repfdr_res = repfdr::repfdr(ztobins_res$pdf.binned.z,
+                                ztobins_res$binned.z.mat,
+                                non.null = 'replication',
+                                control = repfdr::em.control(max.iter = 500,tol=1e-06))
+    
+    # check if the EM process ran
+    curr_Pi_non_null = repfdr_res$Pi[-1,]
+    num_unique_non_null_priors = length(unique(curr_Pi_non_null[,ncol(curr_Pi_non_null)]))
+    if(num_unique_non_null_priors > 3){break}
+    df = df-1
   }
   
-  # Step 2 in repfdr: estimate the repfdr model using the EM algorithm
-  repfdr_res = repfdr::repfdr(ztobins_res$pdf.binned.z,
-                              ztobins_res$binned.z.mat,
-                              non.null = 'replication',
-                              control = repfdr::em.control(max.iter = 500,tol=1e-06))
   # sanity check
   configs = repfdr::hconfigs(ncol(zscores))
   if(!all(configs == repfdr_res$Pi[,1:ncol(zscores)])){
