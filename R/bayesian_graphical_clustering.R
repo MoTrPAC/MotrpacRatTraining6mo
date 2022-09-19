@@ -56,7 +56,6 @@
 #' }
 #' 
 #' @examples 
-#' \dontrun{
 #' ### Example 1: Simulate data with a single cluster
 #' zcolnames = c(
 #'   paste("female",c("1w","2w","4w","8w"),sep="_"),
@@ -66,8 +65,11 @@
 #' # now add a cluster with a strong signal 
 #' zscores[1:500,1:4] = zscores[1:500,1:4] + 5 
 #' 
-#' # run the clustering solution wrapper
-#' clustering_sol = bayesian_graphical_clustering(zscores, df=10)
+#' # Run the clustering solution wrapper.
+#' # When the data are "clean" (e.g., a mixture of two gaussians), we do not
+#' # need a high df in the two-groups model estimation
+#' # (default is 20, consider at least 10 when analyzing real data)
+#' clustering_sol = bayesian_graphical_clustering(zscores, df=20)
 #' # check if the clustering solution correctly assigns the first 500 rows 
 #' # (with high prob) to the right nodes
 #' length(intersect(1:500,clustering_sol$node_sets$`1w_F1_M0`))/500 > 0.95
@@ -85,6 +87,7 @@
 #' min_cluster_size = 10
 #' get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
 #' 
+#' \dontrun{
 #' ### Example 2: real data
 #' data(REPFDR_INPUTS, package="MotrpacRatTraining6moData")
 #' zscores = REPFDR_INPUTS$zs_smoothed
@@ -235,7 +238,6 @@ bayesian_graphical_clustering <- function(zscores,
 #' To extract the fuzzy clustering solution, we exclude configurations whose prior probability is lower than min_prior_for_config.
 #' 
 #' @examples 
-#' \dontrun{
 #' # Simulate data with a single cluster
 #' zcolnames = c(
 #'   paste("male",c("1w","2w","4w","8w"),sep="_"),
@@ -251,13 +253,12 @@ bayesian_graphical_clustering <- function(zscores,
 #' # When the data are "clean" (e.g., a mixture of two gaussians), we do not
 #' # need a high df in the two-groups model estimation
 #' # (default is 20, consider at least 10 when analyzing real data)
-#' repfdr_results = repfdr_wrapper(zscores, df=5)
+#' repfdr_results = repfdr_wrapper(zscores, df=10)
 #' # look at the null cluster after adding the signal above
 #' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"],probs=c(0.05,0.1,0.5))
 #' # now the posteriors of the first 500 rows, 
 #' # with respect to the "planted" cluster should have high posteriors:
 #' quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
-#' }
 repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001, df = 20){
   
   if (!requireNamespace("repfdr", quietly = TRUE)){
