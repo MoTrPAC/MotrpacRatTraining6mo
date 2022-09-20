@@ -86,7 +86,7 @@ zscores[1:500,1:4] = zscores[1:500,1:4] + 5
 # When the data are "clean" (e.g., a mixture of two gaussians), we do not
 # need a high df in the two-groups model estimation
 # (default is 20, consider at least 10 when analyzing real data)
-repfdr_results = repfdr_wrapper(zscores, df=5)
+clustering_sol = bayesian_graphical_clustering(zscores, df=5)
 # check if the clustering solution correctly assigns the first 500 rows 
 # (with high prob) to the right nodes
 length(intersect(1:500,clustering_sol$node_sets$`1w_F1_M0`))/500 > 0.95

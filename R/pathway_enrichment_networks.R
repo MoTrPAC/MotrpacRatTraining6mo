@@ -6,9 +6,9 @@
 #'   May be a subset of [MotrpacRatTraining6moData::GRAPH_PW_ENRICH] 
 #'   or a data frame returned from [cluster_pathway_enrichment()].
 #'   Columns must include "adj_p_value", "ome", "tissue", "intersection", "computed_p_value", 
-#'   "term_size", "query_size", "intersection_size", "term_name", "term_id". 
+#'   "term_name", "term_id". 
 #' @param feature_to_gene data frame, map between \code{intersection_id_type} and gene symbols. 
-#'   Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
+#'   Columns must include "gene_symbol" and "ensembl_gene" if \code{intersection_id_type == "ensembl_gene"}.
 #'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default. 
 #' @param intersection_id_type character, type of gene identifier used to define 
 #'   \code{pw_enrich_res$intersection}, either "ensembl_gene" or "gene_symbol"
@@ -18,19 +18,24 @@
 #'   the network if the corresponding adjusted p-value (\code{pw_enrich_res$adj_p_value}) 
 #'   is less than this value. 0.1 (10% FDR) by default. 
 #' @param title character, plot title. \code{NULL} by default. 
+#' @param label_nodes boolean, whether to label groups at all. \code{TRUE} by default.
+#'   If \code{label_nodes = FALSE}, \code{add_group_label_nodes} is ignored. 
 #' @param add_group_label_nodes boolean, whether to label groups with nodes. 
 #'   If \code{FALSE}, use a standard legend instead. 
 #' @param parent_pathways named list, map of KEGG and REAC pathway term ID to parent pathway.
 #'   Used to create labels for clusters of pathway enrichments. 
 #'   List names must correspond to values in \code{pw_enrich_res$term_id}. 
 #'   [MotrpacRatTraining6moData::PATHWAY_PARENTS] by default. 
+#'   If NULL, then only the pathway names are used to create cluster labels, which
+#'   is quite meaningless is all pathway names are unique. In that case,
+#'   it is recommended to set \code{label_nodes} to \code{FALSE}.
 #' @param multitissue_pathways_only boolean. If \code{TRUE}, only include pathways 
 #'   in the network if they are significantly enriched in more than one tissue
 #'   in \code{pw_enrich_res}.
 #' @param include_metab_singletons boolean. If \code{TRUE}, include pathways enriched only 
 #'   by metabolites (ome METAB) as singleton nodes
 #' @param similarity_scores_file character or \code{NULL}, path in which to save 
-#'   pairwise pathway similarity scores as RData. If this file exists, the pairwise 
+#'   pairwise pathway similarity scores as an RDS file. If this file exists, the pairwise 
 #'   similarity scores are loaded from the file instead of being recalculated. 
 #'   \code{NULL} by default. 
 #' @param out_html character, output file for HTML. "/dev/null" by default. 
@@ -95,6 +100,7 @@ enrichment_network_vis = function(pw_enrich_res,
                                   similarity_cutoff = 0.375,
                                   adj_pval_cutoff = 0.1,
                                   title = NULL,
+                                  label_nodes = TRUE, 
                                   add_group_label_nodes = FALSE,
                                   parent_pathways = MotrpacRatTraining6moData::PATHWAY_PARENTS,
                                   multitissue_pathways_only = FALSE,
@@ -122,17 +128,18 @@ enrichment_network_vis = function(pw_enrich_res,
   
   # check format of enrich_res 
   sub_enrich = data.table::data.table(pw_enrich_res)
-  req_cols = c("adj_p_value", "ome", "tissue", "intersection", "computed_p_value", 
-               "term_size", "query_size", "intersection_size", "term_name", "term_id")
+  req_cols = c("adj_p_value", "ome", "tissue", "intersection", "computed_p_value", "term_name", "term_id")
   if(!all(req_cols %in% colnames(sub_enrich))){
-    stop("The input is missing required columns. Did you generate it using 'cluster_pathway_enrichment()'?")
+    stop(sprintf("The input is missing at least one of the required columns:\n $s", paste(req_cols, collapse=", ")))
   }
   
   # check format of feature_to_gene
   feature_to_gene = data.table::data.table(feature_to_gene)
-  req_cols = c("feature_ID", "gene_symbol", "ensembl_gene", "kegg_id")
-  if(!all(req_cols %in% colnames(feature_to_gene))){
-    stop("The feature-to-gene map is missing required columns. Did you use 'MotrpacRatTraining6moData::FEATURE_TO_GENE'?")
+  if(!"gene_symbol" %in% colnames(feature_to_gene)){
+    stop("The feature-to-gene map is missing the required column 'gene_symbol'.")
+  }
+  if(intersection_id_type == 'ensembl_gene' & !"ensembl_gene" %in% colnames(feature_to_gene)){
+    stop("The feature-to-gene map is missing the column 'ensembl_gene'. This column is required when `intersection_id_type == 'ensembl_gene'`.")
   }
   
   curr_tissues = unique(sub_enrich[,tissue])
@@ -190,8 +197,8 @@ enrichment_network_vis = function(pw_enrich_res,
                                         genes = paste0(genes, collapse=', '),
                                         intersection_original = paste0(intersection, collapse=','), 
                                         sumlog_p = collapse_p(computed_p_value),
-                                        term_size = sum(term_size),
-                                        query_size = sum(query_size),
+                                        #term_size = sum(term_size),
+                                        #query_size = sum(query_size),
                                         omes = paste0(unique(ome), collapse=', '),
                                         tissues = paste0(unique(tissue), collapse=', '),
                                         datasets = paste0(dataset, collapse='; '),
@@ -267,8 +274,13 @@ enrichment_network_vis = function(pw_enrich_res,
           if(v1_members == "NA" & v2_members == "NA"){
             # both are METAB PWs
             # draw an edge if at least one word overlaps between name and parents
-            v1_parent = gsub(".*; ","",parent_pathways[[v1_pw]])
-            v2_parent = gsub(".*; ","",parent_pathways[[v2_pw]])
+            if(!is.null(parent_pathways)){
+              v1_parent = gsub(".*; ","",parent_pathways[[v1_pw]])
+              v2_parent = gsub(".*; ","",parent_pathways[[v2_pw]])
+            }else{
+              v1_parent = ""
+              v2_parent = ""
+            }
             v1_words = cleanup(paste(clust1sig_collapsed[term_id == v1_pw, term_name], v1_parent))
             v2_words = cleanup(paste(clust1sig_collapsed[term_id == v2_pw, term_name], v2_parent))
             if(length(intersect(v1_words, v2_words))>0){
@@ -375,11 +387,6 @@ enrichment_network_vis = function(pw_enrich_res,
                                             color.highlight = "#545454",
                                             labelHighlightBold = T)
   
-  # # remove nodes without an edge before clustering
-  # viznetwork_nodes = viznetwork_nodes[id %in% c(viznetwork_edges[,from], viznetwork_edges[,to])]
-  
-  #if(verbose) message("Identify clusters in the graph...")
-  
   # remove edges without any nodes
   viznetwork_edges = viznetwork_edges[from %in% viznetwork_nodes[,id] & to %in% viznetwork_nodes[,id]]
   
@@ -390,53 +397,32 @@ enrichment_network_vis = function(pw_enrich_res,
   
   #if(verbose) message("Clean up nodes...")
   
-  # remove pathways when they're cluster singletons 
+  # make cluster singletons all their own cluster 0
   clust_sizes = as.list(table(clust_to_pw$membership))
   singletons = names(clust_sizes)[clust_sizes==1]
-  #viznetwork_nodes = viznetwork_nodes[!group %in% clust_to_remove]
-  # put singletons in group 0
   viznetwork_nodes[group %in% singletons, group := '0']
-  
-  # if(nrow(viznetwork_nodes)==0){
-  #   message("No non-singleton pathways.")
-  #   return()
-  # }
   
   # use most common subclass for group name
   # use these in the legend 
   viznetwork_nodes[,group_number := group]
-  group_labels = sapply(unique(viznetwork_nodes[,group_number]), function(x){
-    # get corresponding subclasses
-    subclass = viznetwork_nodes[group_number == x, pathway_subclass]
-    if(all(subclass=="NULL")){
-      return(sprintf("%s: NULL", x))
-    }
-    subclass = subclass[!is.na(subclass)]
-    subclass = subclass[!is.null(subclass)]
-    subclass = subclass[subclass!="NULL"]
-    subclass_counts = unlist(table(subclass))
-    subclass_counts = subclass_counts[order(subclass_counts, decreasing=T)]
-    maxclass = names(subclass_counts)[1]
-    return(sprintf("%s: %s (%s/%s)", x, maxclass, subclass_counts[[maxclass]], sum(subclass_counts)))
-  })
-  
-  # add to node data.table
-  viznetwork_nodes[,group := group_labels[group_number]]
-  
-  # if(include_metab_singletons){
-  #   # do we have METAB-only enrichments?
-  #   if('METAB' %in% points[,omes]){
-  #     # find the group with all of the orphan METAB enrichments 
-  #     metab_only_ids = points[omes=="METAB", Var]
-  #     metab_group = unique(viznetwork_nodes[id %in% metab_only_ids, group])
-  #     if(length(metab_group) > 1){
-  #       message(sprintf("I'm surprised there's more than one METAB cluster: %s", paste0(metab_group, collapse=', ')))
-  #     }
-  #     viznetwork_nodes[group == metab_group, group := sprintf('%s: METAB-specific enrichments', group_number)]
-  #   }
-  # }
-  
-  #if(verbose) message("Assigning colors to groups...")
+  if(label_nodes){
+    group_labels = sapply(unique(viznetwork_nodes[,group_number]), function(x){
+      # get corresponding subclasses
+      subclass = viznetwork_nodes[group_number == x, pathway_subclass]
+      if(all(subclass=="NULL")){
+        return(sprintf("%s: NULL", x))
+      }
+      subclass = subclass[!is.na(subclass)]
+      subclass = subclass[!is.null(subclass)]
+      subclass = subclass[subclass!="NULL"]
+      subclass_counts = unlist(table(subclass))
+      subclass_counts = subclass_counts[order(subclass_counts, decreasing=T)]
+      maxclass = names(subclass_counts)[1]
+      return(sprintf("%s: %s (%s/%s)", x, maxclass, subclass_counts[[maxclass]], sum(subclass_counts)))
+    })
+    # add to node data.table
+    viznetwork_nodes[,group := group_labels[group_number]]
+  }
   
   # help by initializing 
   vn0 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges) %>%
@@ -518,82 +504,84 @@ enrichment_network_vis = function(pw_enrich_res,
   }
   
   # add group label nodes
-  if(add_group_label_nodes){
-    # create additional nodes with a strong weight to a random member of that group 
-    group_nodes = data.table::data.table(id = names(hex),
-                                         value = max(viznetwork_nodes[,value])*2, 
-                                         shape = "box",
-                                         label = names(hex),
-                                         title = names(hex), 
-                                         group = names(hex),
-                                         physics = F,
-                                         labelHighlightBold = F, 
-                                         color.background = unname(hex),
-                                         color.highlight.background = unname(hex),
-                                         color.highlight.border = unname(hex),
-                                         color.border = unname(hex),
-                                         borderWidthSelected = 0, 
-                                         borderWidth = 1, 
-                                         shadow = T)
-    group_nodes = group_nodes[!grepl("^0: ", id)] # remove label for singleton clusters 
-    
-    viznetwork_nodes = data.table::rbindlist(list(viznetwork_nodes, group_nodes), fill=T)
-    
-    # add edges
-    # for each group, pick node (smallest pval) where the category is also the label
-    rowselect = viznetwork_nodes[,grepl(pathway_subclass, group, fixed = TRUE), by=1:nrow(viznetwork_nodes)][,V1]
-    # # add row for "METAB-specific enrichments"
-    # if(any(grepl("METAB-specific enrichments", viznetwork_nodes[,group]))){
-    #   # add a row for this group. connect to any pathway 
-    #   # change first METAB row to T
-    #   rowselect[grep("METAB-specific enrichments", viznetwork_nodes[,group])[1]] = TRUE
-    # }
-    
-    sub = viznetwork_nodes[rowselect]
-    sub = sub[order(value, decreasing=T)]
-    sub = sub[!duplicated(group)]
-    
-    group_edges = data.table(from = sub[,id],
-                             to = sub[,group],
-                             labelHighlightBold = F, 
-                             color = sub[,color.background],
-                             value = max(viznetwork_edges[,value]),
-                             labelHighlightBold = F,  
-                             title = NULL,
-                             physics = F,
-                             shadow = T)
-    group_edges = group_edges[!grepl("^0: ", to)]
-    viznetwork_edges = data.table::rbindlist(list(viznetwork_edges, group_edges), fill=T)
-    
-    v1 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
-      visNetwork::visInteraction(tooltipDelay = 10,
-                                 tooltipStay = Inf,
-                                 hideEdgesOnZoom = T) %>%
-      visNetwork::visIgraphLayout(layout = "layout_nicely") 
+  if(label_nodes){
+    if(add_group_label_nodes){
+      # create additional nodes with a strong weight to a random member of that group 
+      group_nodes = data.table::data.table(id = names(hex),
+                                           value = max(viznetwork_nodes[,value])*2, 
+                                           shape = "box",
+                                           label = names(hex),
+                                           title = names(hex), 
+                                           group = names(hex),
+                                           physics = F,
+                                           labelHighlightBold = F, 
+                                           color.background = unname(hex),
+                                           color.highlight.background = unname(hex),
+                                           color.highlight.border = unname(hex),
+                                           color.border = unname(hex),
+                                           borderWidthSelected = 0, 
+                                           borderWidth = 1, 
+                                           shadow = T)
+      group_nodes = group_nodes[!grepl("^0: ", id)] # remove label for singleton clusters 
+      
+      viznetwork_nodes = data.table::rbindlist(list(viznetwork_nodes, group_nodes), fill=T)
+      
+      # add edges
+      # for each group, pick node (smallest pval) where the category is also the label
+      rowselect = viznetwork_nodes[,grepl(pathway_subclass, group, fixed = TRUE), by=1:nrow(viznetwork_nodes)][,V1]
+      
+      sub = viznetwork_nodes[rowselect]
+      sub = sub[order(value, decreasing=T)]
+      sub = sub[!duplicated(group)]
+      
+      group_edges = data.table(from = sub[,id],
+                               to = sub[,group],
+                               labelHighlightBold = F, 
+                               color = sub[,color.background],
+                               value = max(viznetwork_edges[,value]),
+                               labelHighlightBold = F,  
+                               title = NULL,
+                               physics = F,
+                               shadow = T)
+      group_edges = group_edges[!grepl("^0: ", to)]
+      viznetwork_edges = data.table::rbindlist(list(viznetwork_edges, group_edges), fill=T)
+      
+      v1 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
+        visNetwork::visInteraction(tooltipDelay = 10,
+                                   tooltipStay = Inf,
+                                   hideEdgesOnZoom = T) %>%
+        visNetwork::visIgraphLayout(layout = "layout_nicely") 
+    }else{
+      # nodes for legend
+      # order by cluster number
+      nums = as.numeric(gsub(":.*","",names(hex)))
+      names(nums) = names(hex)
+      nums = nums[order(nums, decreasing=F)]
+      hex = hex[names(nums)]
+      lnodes = data.frame(label = names(hex),
+                          shape = c("box"), 
+                          color = unname(hex),
+                          physics = F)
+      
+      v1 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
+        visNetwork::visLegend(zoom = F,
+                              addNodes = lnodes,
+                              useGroups = F,
+                              width = 0.3,
+                              stepY = 40) %>%
+        visNetwork::visInteraction(tooltipDelay = 10,
+                                   tooltipStay = Inf,
+                                   hideEdgesOnZoom = T) %>%
+        visNetwork::visIgraphLayout(layout = "layout_nicely") 
+    }
   }else{
-    # nodes for legend
-    # order by cluster number
-    nums = as.numeric(gsub(":.*","",names(hex)))
-    names(nums) = names(hex)
-    nums = nums[order(nums, decreasing=F)]
-    hex = hex[names(nums)]
-    lnodes = data.frame(label = names(hex),
-                        shape = c("box"), 
-                        color = unname(hex),
-                        physics = F)
-    
     v1 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
-      visNetwork::visLegend(zoom = F,
-                            addNodes = lnodes,
-                            useGroups = F,
-                            width = 0.3,
-                            stepY = 40) %>%
       visNetwork::visInteraction(tooltipDelay = 10,
                                  tooltipStay = Inf,
                                  hideEdgesOnZoom = T) %>%
       visNetwork::visIgraphLayout(layout = "layout_nicely") 
   }
-  
+    
   if(out_html != "/dev/null"){ 
     if( (file.exists(out_html) & overwrite_html) | !file.exists(out_html)){
       visNetwork::visSave(v1, file = out_html)

@@ -34,7 +34,7 @@ zcolnames = c(
   paste("female",c("1w","2w","4w","8w"),sep="_")
 )
 zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
-repfdr_results = repfdr_wrapper(zscores, df=10)
+repfdr_results = repfdr_wrapper(zscores, df=5)
 # in this example all configurations are null, 
 # thus the  posteriors of the null cluster (all zeroes) are very high:
 quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"])

@@ -70,6 +70,6 @@ across time points. Analysis is performed separately for males and females.
 da = atac_training_da("BAT")
 
 # Same as above but save the [limma::eBayes] MArrayLM objects in an RData file 
-da = atac_training_da("BAT", rdata_outfile = "~/test/BAT_ATAC_training-da.RData", overwrite = TRUE)
+da = atac_training_da("BAT", rdata_outfile = "/tmp/BAT_ATAC_training-da.RData", overwrite = TRUE)
 }
 }

@@ -158,7 +158,7 @@ cluster_pathway_enrichment = function(cluster_res,
       loadMatrix = c("hypergeom","diffusion"))
   }
   
-  cluster_res = annotate_cluster_res(cluster_res)
+  cluster_res = check_cluster_res_format(cluster_res)
   
   if(!requireNamespace("IHW", quietly = TRUE)){
     if(length(unique(cluster_res$tissue)) > 1){

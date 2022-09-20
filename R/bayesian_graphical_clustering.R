@@ -69,7 +69,7 @@
 #' # When the data are "clean" (e.g., a mixture of two gaussians), we do not
 #' # need a high df in the two-groups model estimation
 #' # (default is 20, consider at least 10 when analyzing real data)
-#' clustering_sol = bayesian_graphical_clustering(zscores, df=20)
+#' clustering_sol = bayesian_graphical_clustering(zscores, df=5)
 #' # check if the clustering solution correctly assigns the first 500 rows 
 #' # (with high prob) to the right nodes
 #' length(intersect(1:500,clustering_sol$node_sets$`1w_F1_M0`))/500 > 0.95
@@ -244,7 +244,7 @@ bayesian_graphical_clustering <- function(zscores,
 #'   paste("female",c("1w","2w","4w","8w"),sep="_")
 #' )
 #' zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
-#' repfdr_results = repfdr_wrapper(zscores, df=10)
+#' repfdr_results = repfdr_wrapper(zscores, df=5)
 #' # in this example all configurations are null, 
 #' # thus the  posteriors of the null cluster (all zeroes) are very high:
 #' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"])
@@ -253,7 +253,7 @@ bayesian_graphical_clustering <- function(zscores,
 #' # When the data are "clean" (e.g., a mixture of two gaussians), we do not
 #' # need a high df in the two-groups model estimation
 #' # (default is 20, consider at least 10 when analyzing real data)
-#' repfdr_results = repfdr_wrapper(zscores, df=10)
+#' repfdr_results = repfdr_wrapper(zscores, df=5)
 #' # look at the null cluster after adding the signal above
 #' quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"],probs=c(0.05,0.1,0.5))
 #' # now the posteriors of the first 500 rows, 
@@ -277,7 +277,7 @@ repfdr_wrapper <- function(zscores, min_prior_for_config = 0.001, df = 20){
   # When this happens, the EM will complete after a single iteration and the 
   # priors will not change. In this loop we check if this has occurred and if so
   # then we lower the df until the EM runs.
-  while(df > 4){
+  while(df > 2){
     if(nrow(zscores) > 20000){
       # use the paper config only in very large datasets
       ztobins_res = repfdr::ztobins(zscores,
