@@ -23,6 +23,7 @@ Description: The goal of the Molecular Transducers of Physical Activity
     study in 6-month-old rats.
 License: MIT + file LICENSE
 URL: https://github.com/MoTrPAC/MotrpacRatTraining6mo
+biocViews:
 Imports: 
     data.table,
     dplyr,
