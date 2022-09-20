@@ -8,6 +8,7 @@ bayesian_graphical_clustering(
   zscores,
   min_analyte_posterior_thr = 0.5,
   min_prior_for_config = 0.001,
+  df = 20,
   naive_edge_sets = TRUE
 )
 }
@@ -17,6 +18,8 @@ bayesian_graphical_clustering(
 \item{min_analyte_posterior_thr}{A number. The minimal value of sum of posteriors for including an analyte.}
 
 \item{min_prior_for_config}{A number. The minimal prior probability on the configuration priors.}
+
+\item{df}{Integer. Parameter for \code{\link[repfdr:ztobins]{repfdr::ztobins()}}. Degrees of freedom for fitting the estimated density f(z).}
 
 \item{naive_edge_sets}{A logical. TRUE: edge sets are extracted by taking simple intersection of nodes.
 FALSE: edge sets are extracted from the repfdr solution.}
@@ -70,18 +73,20 @@ Example 2: \code{1w_F1_M-1} means up-regulation in females week 1 and down-regul
 The edge set object is a named list of string vectors. The name of an edge is \code{[node_id]---[node_id]}.
 }
 \examples{
-\dontrun{
 ### Example 1: Simulate data with a single cluster
 zcolnames = c(
   paste("female",c("1w","2w","4w","8w"),sep="_"),
   paste("male",c("1w","2w","4w","8w"),sep="_")
 )
 zscores = matrix(rnorm(80000), ncol=8, dimnames = list(1:10000,zcolnames))
-# now add a cluster with a strong signal and rerun
+# now add a cluster with a strong signal 
 zscores[1:500,1:4] = zscores[1:500,1:4] + 5 
 
-# run the clustering solution wrapper
-clustering_sol = bayesian_graphical_clustering(zscores)
+# Run the clustering solution wrapper.
+# When the data are "clean" (e.g., a mixture of two gaussians), we do not
+# need a high df in the two-groups model estimation
+# (default is 20, consider at least 10 when analyzing real data)
+clustering_sol = bayesian_graphical_clustering(zscores, df=5)
 # check if the clustering solution correctly assigns the first 500 rows 
 # (with high prob) to the right nodes
 length(intersect(1:500,clustering_sol$node_sets$`1w_F1_M0`))/500 > 0.95
@@ -99,6 +104,7 @@ sapply(clustering_sol$edge_sets,length)
 min_cluster_size = 10
 get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
 
+\dontrun{
 ### Example 2: real data
 data(REPFDR_INPUTS, package="MotrpacRatTraining6moData")
 zscores = REPFDR_INPUTS$zs_smoothed

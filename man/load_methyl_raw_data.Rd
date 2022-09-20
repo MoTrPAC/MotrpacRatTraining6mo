@@ -22,7 +22,7 @@ named list of three items:
 }
 \description{
 Load METHYL raw data for a tissue from Google Cloud Storage.
-See \link{METHYL_RAW_DATA} for more details.
+See \link[MotrpacRatTraining6moData:METHYL_RAW_DATA]{MotrpacRatTraining6moData::METHYL_RAW_DATA} for more details.
 }
 \examples{
 \dontrun{

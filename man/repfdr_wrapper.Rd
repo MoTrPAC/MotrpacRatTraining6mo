@@ -4,12 +4,14 @@
 \alias{repfdr_wrapper}
 \title{\code{repfdr} wrapper}
 \usage{
-repfdr_wrapper(zscores, min_prior_for_config = 0.001)
+repfdr_wrapper(zscores, min_prior_for_config = 0.001, df = 20)
 }
 \arguments{
 \item{zscores}{A numeric matrix. Rows are analytes, columns are conditions (e.g., male week 1). Entries are z-scores.}
 
 \item{min_prior_for_config}{A number. The minimal prior probability on the configuration priors.}
+
+\item{df}{Integer. Degrees of freedom for fitting the estimated density f(z)}
 }
 \value{
 A named list with two objects:
@@ -26,24 +28,25 @@ This wrapper runs inference for the two groups model in each column of zscores, 
 To extract the fuzzy clustering solution, we exclude configurations whose prior probability is lower than min_prior_for_config.
 }
 \examples{
-\dontrun{
 # Simulate data with a single cluster
 zcolnames = c(
   paste("male",c("1w","2w","4w","8w"),sep="_"),
   paste("female",c("1w","2w","4w","8w"),sep="_")
 )
 zscores = matrix(rnorm(80000),ncol=8,dimnames = list(1:10000,zcolnames))
-repfdr_results = repfdr_wrapper(zscores)
+repfdr_results = repfdr_wrapper(zscores, df=5)
 # in this example all configurations are null, 
 # thus the  posteriors of the null cluster (all zeroes) are very high:
 quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"])
 # now add a cluster with a strong signal and rerun
 zscores[1:500,1:4] = zscores[1:500,1:4] + 5
-repfdr_results = repfdr_wrapper(zscores)
+# When the data are "clean" (e.g., a mixture of two gaussians), we do not
+# need a high df in the two-groups model estimation
+# (default is 20, consider at least 10 when analyzing real data)
+repfdr_results = repfdr_wrapper(zscores, df=5)
 # look at the null cluster after adding the signal above
 quantile(repfdr_results$repfdr_cluster_posteriors[,"00000000"],probs=c(0.05,0.1,0.5))
 # now the posteriors of the first 500 rows, 
 # with respect to the "planted" cluster should have high posteriors:
 quantile(repfdr_results$repfdr_cluster_posteriors[1:500,"11110000"])
-}
 }

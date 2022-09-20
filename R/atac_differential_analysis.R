@@ -49,7 +49,7 @@
 #' da = atac_training_da("BAT")
 #' 
 #' # Same as above but save the [limma::eBayes] MArrayLM objects in an RData file 
-#' da = atac_training_da("BAT", rdata_outfile = "~/test/BAT_ATAC_training-da.RData", overwrite = TRUE)
+#' da = atac_training_da("BAT", rdata_outfile = "/tmp/BAT_ATAC_training-da.RData", overwrite = TRUE)
 #' }
 atac_training_da = function(tissue, 
                             covariates = c("Sample_batch", "peak_enrich.frac_reads_in_peaks.macs2.frip"), 
@@ -119,15 +119,15 @@ atac_training_da = function(tissue,
     ebayes_list[[SEX]] = eb_Ftest
     res = limma::topTable(eb_Ftest, n=Inf, coef=colnames(design)[grepl('group',colnames(design))], sort.by = "none")
     dt = data.table::data.table(feature_ID=rownames(res),
-                    assay="ATAC",
-                    assay_code='epigen-atac-seq',
-                    tissue=tissue,
-                    tissue_code=MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[[tissue]], 
-                    removed_samples=ifelse(length(curr_outliers)>0, paste0(curr_outliers, collapse=','), NA_character_),
-                    fscore=res$`F`,
-                    p_value = res$P.Value,
-                    full_model=gsub(' ','',full),
-                    reduced_model=gsub(' ','',reduced))
+                                assay="ATAC",
+                                assay_code='epigen-atac-seq',
+                                tissue=tissue,
+                                tissue_code=MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[[tissue]], 
+                                removed_samples=ifelse(length(curr_outliers)>0, paste0(curr_outliers, collapse=','), NA_character_),
+                                fscore=res$`F`,
+                                p_value = res$P.Value,
+                                full_model=gsub(' ','',full),
+                                reduced_model=gsub(' ','',reduced))
     sex_res[[SEX]] = dt
   }
   
@@ -141,12 +141,12 @@ atac_training_da = function(tissue,
   
   # merge 
   merged = data.table::data.table(merge(sex_res[['male']], sex_res[['female']], 
-                            by=c("feature_ID","assay","assay_code","tissue","tissue_code"), 
-                            suffixes=c('_male','_female')))
+                                        by=c("feature_ID","assay","assay_code","tissue","tissue_code"), 
+                                        suffixes=c('_male','_female')))
   
   # get a single meta p-value per feature using the male- and female- specific p-values 
   merged[,p_value := metap::sumlog(c(p_value_male, p_value_female))$p, by=seq_len(nrow(merged))]
-
+  
   # reorder columns
   merged = merged[,.(
     feature_ID,

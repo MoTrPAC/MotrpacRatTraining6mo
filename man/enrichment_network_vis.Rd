@@ -11,6 +11,7 @@ enrichment_network_vis(
   similarity_cutoff = 0.375,
   adj_pval_cutoff = 0.1,
   title = NULL,
+  label_nodes = TRUE,
   add_group_label_nodes = FALSE,
   parent_pathways = MotrpacRatTraining6moData::PATHWAY_PARENTS,
   multitissue_pathways_only = FALSE,
@@ -28,10 +29,10 @@ enrichment_network_vis(
 May be a subset of \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}
 or a data frame returned from \code{\link[=cluster_pathway_enrichment]{cluster_pathway_enrichment()}}.
 Columns must include "adj_p_value", "ome", "tissue", "intersection", "computed_p_value",
-"term_size", "query_size", "intersection_size", "term_name", "term_id".}
+"term_name", "term_id".}
 
 \item{feature_to_gene}{data frame, map between \code{intersection_id_type} and gene symbols.
-Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
+Columns must include "gene_symbol" and "ensembl_gene" if \code{intersection_id_type == "ensembl_gene"}.
 \link[MotrpacRatTraining6moData:FEATURE_TO_GENE]{MotrpacRatTraining6moData::FEATURE_TO_GENE} by default.}
 
 \item{intersection_id_type}{character, type of gene identifier used to define
@@ -46,13 +47,19 @@ is less than this value. 0.1 (10\% FDR) by default.}
 
 \item{title}{character, plot title. \code{NULL} by default.}
 
+\item{label_nodes}{boolean, whether to label groups at all. \code{TRUE} by default.
+If \code{label_nodes = FALSE}, \code{add_group_label_nodes} is ignored.}
+
 \item{add_group_label_nodes}{boolean, whether to label groups with nodes.
 If \code{FALSE}, use a standard legend instead.}
 
 \item{parent_pathways}{named list, map of KEGG and REAC pathway term ID to parent pathway.
 Used to create labels for clusters of pathway enrichments.
 List names must correspond to values in \code{pw_enrich_res$term_id}.
-\link[MotrpacRatTraining6moData:PATHWAY_PARENTS]{MotrpacRatTraining6moData::PATHWAY_PARENTS} by default.}
+\link[MotrpacRatTraining6moData:PATHWAY_PARENTS]{MotrpacRatTraining6moData::PATHWAY_PARENTS} by default.
+If NULL, then only the pathway names are used to create cluster labels, which
+is quite meaningless is all pathway names are unique. In that case,
+it is recommended to set \code{label_nodes} to \code{FALSE}.}
 
 \item{multitissue_pathways_only}{boolean. If \code{TRUE}, only include pathways
 in the network if they are significantly enriched in more than one tissue
@@ -62,7 +69,7 @@ in \code{pw_enrich_res}.}
 by metabolites (ome METAB) as singleton nodes}
 
 \item{similarity_scores_file}{character or \code{NULL}, path in which to save
-pairwise pathway similarity scores as RData. If this file exists, the pairwise
+pairwise pathway similarity scores as an RDS file. If this file exists, the pairwise
 similarity scores are loaded from the file instead of being recalculated.
 \code{NULL} by default.}
 

@@ -4,3 +4,6 @@ setup.R
 ^LICENSE\.md$
 unofficial_tests.R
 devnotes.md
+
+# because of build issue on SCG when vignettes are included
+vignettes/
