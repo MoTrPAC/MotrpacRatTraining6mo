@@ -7,3 +7,6 @@ devnotes.md
 
 # because of build issue on SCG when vignettes are included
 vignettes/
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

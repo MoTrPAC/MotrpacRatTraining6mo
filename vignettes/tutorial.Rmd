@@ -39,6 +39,15 @@ div.blue {
   padding-bottom: 10px; 
   margin-bottom: 20px; 
 }
+div.yellow {
+  background-color: #fff5e6; 
+  border-radius: 10px; 
+  padding-top: 20px; 
+  padding-right: 20px; 
+  padding-left: 20px; 
+  padding-bottom: 10px; 
+  margin-bottom: 20px; 
+}
 #TOC {
   top: 1%;
   opacity: 0.5;
@@ -53,7 +62,7 @@ div.blue {
 
 ## Introduction 
 
-<div class = "blue">
+<div class = "yellow">
 
 This vignette is under construction. If something is unclear or obviously missing, 
 please submit an issue [here](https://github.com/MoTrPAC/MotrpacRatTraining6mo/issues). 
@@ -65,8 +74,8 @@ This package provides functions to fetch, explore, and reproduce the processed
 data and downstream analysis results presented in the main paper for the first 
 large-scale multi-omic multi-tissue endurance exercise training study conducted 
 in young adult rats by the Molecular Transducers of Physical Activity Consortium 
-(MoTrPAC). *A [bioRxiv](https://www.biorxiv.org/) link to the corresponding 
-preprint will be added shortly.* **We highly recommend skimming the preprint 
+(MoTrPAC). A [bioRxiv](https://www.biorxiv.org/) link to the corresponding 
+preprint will be added shortly. **We highly recommend skimming the preprint 
 before using this package as it provides important context and much greater detail
 than we can provide here.**
 
@@ -79,8 +88,6 @@ R package. See examples of how these data can be analyzed *without* this package
 [MotrpacRatTraining6moData vignette](https://motrpac.github.io/MotrpacRatTraining6moData/).
 
 </div>
-
- 
 
 ### About MoTrPAC 
 MoTrPAC is a national research consortium designed to discover and perform 
@@ -117,10 +124,25 @@ library(MotrpacRatTraining6mo)
 For the sake of easily loading and looking up documentation for data objects, 
 let's also load the [MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData) 
 package. 
-```{r}
+```{r data lib}
 library(MotrpacRatTraining6moData)
 ```
 
+We will also load several suggested packages, which are required to run some of the 
+examples in this vignette. 
+```{r suggests}
+suggests = c("gprofiler2","IHW","FELLA","foreach","KEGGREST","repfdr")
+need_to_install = c()
+for (p in suggests){
+  if (!requireNamespace(p, quietly = TRUE)){
+    need_to_install = c(need_to_install,p)
+  }
+}
+if(length(need_to_install)>0){
+  stop(sprintf("The following packages must be installed to run examples in this vignette:\n %s",
+               paste(need_to_install, collapse=", ")))
+}
+```
 
 <div class = "blue">
 
@@ -212,7 +234,7 @@ Note that epigenetic data (ATAC and METHYL) must be downloaded from Google Cloud
 * Pathway enrichment of main graphical clusters, `GRAPH_PW_ENRICH`  
 
 For more details about the [MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData)
-R package, see its vignette (TODO). The remainder of this vignette will focus on
+R package, see its [vignette](https://motrpac.github.io/MotrpacRatTraining6moData/). The remainder of this vignette will focus on
 functions available in [MotrpacRatTraining6mo](https://github.com/MoTrPAC/MotrpacRatTraining6mo).  
 
 [MotrpacRatTraining6mo](https://github.com/MoTrPAC/MotrpacRatTraining6mo) 
@@ -237,20 +259,20 @@ data = load_sample_data("BAT", "TRNSCRPT", training_regulated_only = TRUE)
 ```
 
 `load_sample_data()` will tell you if the specified dataset doesn't exist. 
-```{r}
+```{r load sample data 2}
 data = load_sample_data("VENACV", "PROT")
 ```
 
 `load_sample_data()` will also download epigenetic data from Google Cloud Storage.
 
 
-<div class = "blue">
+<div class = "yellow">
 
 **Note:** Epigenetic data require substantially more memory than other omes. 
 
 </div>
 
-```{r}
+```{r load epigen sample data}
 # Load ATAC-seq raw counts for hippocampus, excluding outliers 
 data = load_sample_data("HIPPOC", 
                         "ATAC", 
@@ -356,7 +378,7 @@ documentation for each function for more details, e.g. `?transcript_timewise_da`
   * `transcript_timewise_da()`  
   * `transcript_training_da()`  
 
-<div class = "blue">
+<div class = "yellow">
 
 **Note:** The functions to reproduce the metabolomics meta-regression for metabolites
 with multiple measurements have not yet been added.
@@ -465,7 +487,10 @@ res = bayesian_graphical_clustering(zscores)
 `bayesian_graphical_clustering()` is a study-specific wrapper for `repfdr_wrapper()`. 
 `repfdr_wrapper()` can be used to analyze any set of z-scores. 
 Here we show an example with simulated data. 
-```{r, warning=FALSE, message=FALSE}
+```{r repfdr_wrapper, warning=FALSE, message=FALSE}
+# load required library for this function
+library(repfdr)
+
 # Simulate data with a single null cluster
 # Toy experiment with 8 groups 
 zcolnames = paste("Exp", 1:8)
@@ -568,7 +593,7 @@ that were assigned to the corresponding states. Nodes are arranged in rows by st
 (e.g., "F only up") and in columns by training time points. The node at the intersection of
 "F only up" and "week 1" represents features that are null in males and up-regulated in 
 females after one week of endurance exercise training (i.e., `1w_F1_M0` in the notation above). 
-```{r tree plot, fig.width = 10, fig.height = 6, warning=FALSE}
+```{r tree plot 1, fig.width = 10, fig.height = 6, warning=FALSE}
 get_tree_plot_for_tissue(
   tissues=c("LIVER"),
   min_size = 1
@@ -576,7 +601,7 @@ get_tree_plot_for_tissue(
 ```
 
 This is messy, so let's look at just the 5 largest paths instead. 
-```{r, fig.width = 10, fig.height = 6, warning=FALSE}
+```{r tree plot 2, fig.width = 10, fig.height = 6, warning=FALSE}
 get_tree_plot_for_tissue(
   tissues=c("LIVER"),
   max_trajectories = 5
@@ -585,7 +610,7 @@ get_tree_plot_for_tissue(
 
 Further, let's split these edges by data type (assay/ome) to see what features are represented. 
 We can change the curvature and alpha range to make the edges easier to see. 
-```{r, fig.width = 10, fig.height = 6, warning=FALSE}
+```{r tree plot 3, fig.width = 10, fig.height = 6, warning=FALSE}
 get_tree_plot_for_tissue(
   tissues=c("LIVER"),
   max_trajectories = 5,
@@ -596,7 +621,7 @@ get_tree_plot_for_tissue(
 ```
 
 This is too busy with edges split by ome. Let's look at just the largest path and only RNA-Seq and proteomics assays. 
-```{r, fig.width = 10, fig.height = 6, warning=FALSE}
+```{r tree plot 4, fig.width = 10, fig.height = 6, warning=FALSE}
 get_tree_plot_for_tissue(
   omes=c("PROT","ACETYL","UBIQ","PHOSPHO","TRNSCRPT"),
   tissues=c("LIVER"),
@@ -613,7 +638,7 @@ males and females by eight weeks of training ("Both up").
 
 We can also look at multi-tissue graphs. For example, let's look at the three largest paths of training-regulated
 transcripts in the three muscle tissues. Now instead of splitting edges by ome, we can split them by tissue. 
-```{r, fig.width = 10, fig.height = 6, warning=FALSE}
+```{r tree plot 5, fig.width = 10, fig.height = 6, warning=FALSE}
 get_tree_plot_for_tissue(
   tissues=c("SKM-GN","HEART","SKM-VL"),
   omes="TRNSCRPT",
@@ -720,7 +745,10 @@ lapply(paths, head)
 Now perform pathway enrichment. First, we will run the function without specifying
 `kegg_db_destination`, which will force it to ignore metabolites. By default, KEGG
 and REACTOME pathways are queried. 
-```{r}
+```{r pw enrich}
+# load required libraries for this function
+library(gprofiler2)
+library(foreach)
 # to learn more about the arguments and default parameters, look at `?cluster_pathway_enrichment`
 res1 = cluster_pathway_enrichment(paths)
 ```
@@ -767,7 +795,10 @@ If necessary, `make_kegg_db()` is called within `cluster_pathway_enrichment()` t
 install the KEGG database. If you have already installed the KEGG database, 
 `kegg_db_destination` should point to its parent directory. For this example, 
 assume the KEGG database has already been installed in `~/kegg/20220919`. 
-```{r}
+```{r metab enrich}
+# load required libraries for pathway enrichment with metabolites
+library(FELLA)
+library(KEGGREST)
 # to learn more about the arguments and default parameters, look at `?cluster_pathway_enrichment`
 res2 = cluster_pathway_enrichment(paths,
                                   kegg_db_destination = "~/kegg/20220919",
@@ -795,7 +826,7 @@ e.g. "PHOSPHO;SKM-GN;NP_001006973.1_S34s", "METAB;SKM-GN;1-methylnicotinamide",
 where feature IDs are included in the supplied `feature_to_gene` map 
 (`FEATURE_TO_GENE` by default). The `universe`/background must also be specified
 using the same kind of gene identifier as the pathway annotation (rat gene symbols in this case). 
-```{r}
+```{r custom pw enrich}
 # Use graphical clusters as an example
 cluster_res = extract_main_clusters()
 # Pick a single graphical cluster
@@ -863,7 +894,7 @@ namely the genes and datasets driving the pathway enrichment.
 Here we show the interactive network of pathway enrichments corresponding to 
 training-regulated features that are up-regulated in the gastrocnemius in both
 sexes at the 8-week time point, i.e. `SKM-GN:8w_F1_M1`. 
-```{r, fig.width=10}
+```{r viznetwork1, fig.width=10}
 # Extract pathway enrichments for this cluster
 data(GRAPH_PW_ENRICH)
 pw = GRAPH_PW_ENRICH[GRAPH_PW_ENRICH$cluster == "SKM-GN:8w_F1_M1",]
@@ -885,7 +916,7 @@ in any of our three muscle tissues (heart, gastrocnemius, vastus lateralis).
 If we are specifically interested in pathways that are significantly enriched in
 multiple tissues, we can set `multitissue_pathways_only` to `TRUE`. This removes 
 any pathways that are not enriched in more than one tissue (in at least one ome). 
-```{r, fig.width=10}
+```{r viznetwork2, fig.width=10}
 pw = GRAPH_PW_ENRICH[grepl(":8w_F1_M1", GRAPH_PW_ENRICH$cluster) & 
                        GRAPH_PW_ENRICH$tissue %in% c("HEART","SKM-GN","SKM-VL"),]
 
@@ -903,12 +934,12 @@ By default, the color-coded node group labels are shown on the left side
 of the plot. To make it easier to match labels to groups of pathways, 
 we can set the `add_group_label_nodes` argument to `TRUE`. 
 If you're zoomed out, hover over a label to display it in larger font. 
-```{r, fig.width=10}
+```{r viznetwork3, fig.width=10}
 enrichment_network_vis(pw, add_group_label_nodes = TRUE)
 ```
 
 You can also remove group labels entirely with `label_nodes = FALSE`. 
-```{r, fig.width=10}
+```{r viznetwork4, fig.width=10}
 enrichment_network_vis(pw, label_nodes = FALSE)
 ```
 
@@ -925,7 +956,14 @@ the scores are computed and saved to the given RDS file.
 Then future calls to this function with `similarity_scores_file`
 set to an existing file will load the scores from the file instead of re-computing them. 
 Notice the dramatic difference in elapsed time for these two function calls. 
-```{r}
+
+```{r, include=FALSE}
+if(file.exists("/tmp/SKM-GN_8w_F1_M1_scores.RDS")){
+  file.remove("/tmp/SKM-GN_8w_F1_M1_scores.RDS")
+}
+```
+
+```{r viznetwork5}
 system.time(
   enrichment_network_vis(pw, similarity_scores_file = "/tmp/SKM-GN_8w_F1_M1_scores.RDS", verbose=FALSE)
 )
@@ -941,7 +979,7 @@ If two pathways are driven exclusively by metabolites, an artificial edge is dra
 them if at least one non-stopword overlaps between the pathway names or parent pathway names. 
 Otherwise, the pathways are represented as singleton nodes. 
 To exclude pathways enriched only by differential metabolites set `include_metab_singletons` to `FALSE`.
-```{r, fig.width=10}
+```{r viznetwork6, fig.width=10}
 enrichment_network_vis(pw, include_metab_singletons=FALSE)
 ```
 
@@ -951,7 +989,7 @@ of publication-ready figures. You can export a network to Cytoscape to manually
 polish it. For this code to work, you need to install the 
 [RCy3 R package](https://bioconductor.org/packages/release/bioc/html/RCy3.html) 
 and have Cytoscape running locally. 
-```{r, eval=FALSE}
+```{r viznetwork7, eval=FALSE}
 library(RCy3)
 vn = enrichment_network_vis(pw,
                             title = "SKM-GN:8w_F1_M1",
@@ -967,7 +1005,7 @@ either tissue or ome. For example:
 ![](example.png)
 
 ### Printing networks within a loop
-Rendering `visNetwork` outputs within a loop has some known challenges. See solutions [here](https://stackoverflow.com/questions/47577894/r-markdown-visnetwork-not-displayed-in-html-output-when-using-for-loops-or-fun/). 
+Rendering `visNetwork` objects within a loop has some known challenges. See solutions [here](https://stackoverflow.com/questions/47577894/r-markdown-visnetwork-not-displayed-in-html-output-when-using-for-loops-or-fun/). 
 
 ## Getting help 
 For questions, bug reporting, and feature requests for this package, please 
@@ -985,6 +1023,6 @@ Digestive and Kidney Diseases (NIDDK), National Institute of Arthritis and Muscu
 Diseases (NIAMS), and National Institute on Aging (NIA). 
 
 ## Session Info 
-```{r}
+```{r session info}
 sessionInfo()
 ```
