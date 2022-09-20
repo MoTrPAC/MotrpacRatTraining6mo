@@ -83,9 +83,9 @@ than we can provide here.**
 
 While some of the functions in this package can be used by themselves, they
 were primarily written to analyze data in the 
-[MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData)
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData)
 R package. See examples of how these data can be analyzed *without* this package in the 
-[MotrpacRatTraining6moData vignette](https://motrpac.github.io/MotrpacRatTraining6moData/).
+[MotrpacRatTraining6moData vignette](https://motrpac.github.io/MotrpacRatTraining6moData/articles/tutorial.html).
 
 </div>
 
@@ -109,10 +109,10 @@ if (!require("devtools", quietly = TRUE)){
 devtools::install_github("MoTrPAC/MotrpacRatTraining6mo")
 ```
 
-[MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData)
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData)
 is a critical dependency for this package. If the above command has issues installing
-this dependency, follow [these instructions](https://github.com/MoTrPAC/MotrpacRatTraining6moData#installation) to install 
-[MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData)
+this dependency, follow [these instructions](https://motrpac.github.io/MotrpacRatTraining6moData/index.html#installation) to install 
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData)
 separately before re-running the above command to install this package and its
 other dependencies. 
 
@@ -122,7 +122,7 @@ library(MotrpacRatTraining6mo)
 ```
 
 For the sake of easily loading and looking up documentation for data objects, 
-let's also load the [MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData) 
+let's also load the [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData) 
 package. 
 ```{r data lib}
 library(MotrpacRatTraining6moData)
@@ -146,7 +146,7 @@ if(length(need_to_install)>0){
 
 <div class = "blue">
 
-**Note:** Data objects from the [MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData) 
+**Note:** Data objects from the [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData) 
 package are indicated as variable names in all caps, e.g. `PHENO`, `TRNSCRPT_LIVER_RAW_COUNTS`. 
 
 </div>
@@ -155,7 +155,8 @@ package are indicated as variable names in all caps, e.g. `PHENO`, `TRNSCRPT_LIV
 <div class = "blue">
 
 **Tip:** To learn more about any data object or function, use `?` to retrieve the documentation,
-e.g., `?METAB_FEATURE_ID_MAP`, `?load_sample_data`. Note that both `MotrpacRatTraining6mo` and 
+e.g., [`?METAB_FEATURE_ID_MAP`](https://motrpac.github.io/MotrpacRatTraining6moData/reference/METAB_FEATURE_ID_MAP.html), 
+`?load_sample_data`. Note that both `MotrpacRatTraining6mo` and 
 `MotrpacRatTraining6moData` must be installed and loaded with `library()` for this to work. 
 
 </div>
@@ -212,11 +213,11 @@ are also available in `TISSUE_ABBREV` and `ASSAY_ABBREV`.
 ## Data in MotrpacRatTraining6moData 
 While some of the functions in this package can be used by themselves, they
 were primarily written to analyze data in the 
-[MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData)
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData/)
 R package. 
 
 Here is a brief summary of the kinds of data included in 
-[MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData):
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData/):
 
 * Assay, tissue, sex, and training group abbreviations, codes, colors, and order used in plots
 * Phenotypic data, `PHENO`
@@ -233,13 +234,13 @@ Note that epigenetic data (ATAC and METHYL) must be downloaded from Google Cloud
 * Bayesian graphical analysis inputs and results (see more details below)  
 * Pathway enrichment of main graphical clusters, `GRAPH_PW_ENRICH`  
 
-For more details about the [MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData)
-R package, see its [vignette](https://motrpac.github.io/MotrpacRatTraining6moData/). The remainder of this vignette will focus on
-functions available in [MotrpacRatTraining6mo](https://github.com/MoTrPAC/MotrpacRatTraining6mo).  
+For more details about the [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData)
+R package, see its [vignette](https://motrpac.github.io/MotrpacRatTraining6moData/articles/tutorial.html). The remainder of this vignette will focus on
+functions available in [MotrpacRatTraining6mo](https://motrpac.github.io/MotrpacRatTraining6mo).  
 
-[MotrpacRatTraining6mo](https://github.com/MoTrPAC/MotrpacRatTraining6mo) 
+[MotrpacRatTraining6mo](https://motrpac.github.io/MotrpacRatTraining6mo) 
 includes several functions to easily fetch and compile data from 
-[MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData). 
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData). 
 
 Use `load_sample_data()` to load sample-level data for a specific ome and tissue. 
 Here we fetch various forms of the sample-level RNA-Seq (TRNSCRPT) data for brown adipose tissue (BAT) as an example. 
@@ -329,7 +330,7 @@ A few additional functions are provided to fetch epigenetic data from Google Clo
 * **load_atac_feature_annotation():** Return the ATAC feature annotation file.  
 * **get_rdata_from_url():** If you know the URL for a specific RData file in GCS,
 you can use this function to return the object using the `url` argument. Full URLs
-for all of the epigenetic data are available in the [README for the MotrpacRatTraining6moData package](https://github.com/MoTrPAC/MotrpacRatTraining6moData#access-epigenomics-data-through-google-cloud-storage).  
+for all of the epigenetic data are available in the [README for the MotrpacRatTraining6moData package](https://motrpac.github.io/MotrpacRatTraining6moData/#access-epigenomics-data-through-google-cloud-storage).  
 
 Finally, `list_available_data()` returns a list of all of the available data 
 objects in the specified package. 
@@ -338,8 +339,9 @@ objects in the specified package.
 list_available_data("MotrpacRatTraining6moData")
 ```
 
-If the [MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData) library
-is loaded, you can learn more about any of these data objects with `?`, e.g., `?TISSUE_COLORS`,
+If the [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData/) library
+is loaded, you can learn more about any of these data objects with `?`, e.g., 
+[`?TISSUE_COLORS`](https://motrpac.github.io/MotrpacRatTraining6moData/reference/TISSUE_COLORS.html),
 and you can load data objects into your environment using `data()`, e.g., 
 `data(TRAINING_REGULATED_FEATURES)`. 
 
@@ -386,7 +388,7 @@ with multiple measurements have not yet been added.
 </div>
 
 Here, we replicate the protein acetylation timewise differential
-analysis results provided in [MotrpacRatTraining6moData](https://github.com/MoTrPAC/MotrpacRatTraining6moData).
+analysis results provided in [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData/).
 
 ```{r replicate prot}
 timewiseList = list()
