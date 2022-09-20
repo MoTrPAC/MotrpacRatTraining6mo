@@ -1,5 +1,7 @@
 # MotrpacRatTraining6mo
 
+**Tutorial:** <https://motrpac.github.io/MotrpacRatTraining6mo/articles/tutorial.html>
+
 ## Table of Contents
 * [Overview](#overview)
   * [About this package](#about-this-package)
@@ -15,12 +17,10 @@ This package provides functions to fetch, explore, and reproduce the processed d
 analysis results presented in the main paper for the first 
 large-scale multi-omic multi-tissue endurance exercise training study conducted 
 in young adult rats by the Molecular Transducers of Physical Activity Consortium 
-(MoTrPAC). A [bioRxiv](https://www.biorxiv.org/) link to the corresponding 
+(MoTrPAC). 
+**See the [vignette](https://motrpac.github.io/MotrpacRatTraining6mo/articles/tutorial.html) for examples of how to use this package.**
+A [bioRxiv](https://www.biorxiv.org/) link to the corresponding 
 preprint will be added shortly. 
-
-```
-See the [vignette](https://motrpac.github.io/MotrpacRatTraining6mo/articles/tutorial.html) for examples of how to use this package. 
-```
 
 While some of the functions in this package can be used by themselves, they
 were primarily written to analyze data in the 
@@ -49,7 +49,9 @@ devtools::install_github("MoTrPAC/MotrpacRatTraining6mo")
 ```
 
 ## Getting help 
-For questions, bug reporting, and feature requests for this package, please 
+**See the [vignette](https://motrpac.github.io/MotrpacRatTraining6mo/articles/tutorial.html) 
+for examples of how to use this package.**
+Still have questions? For questions, bug reporting, and feature requests for this package, please 
 [submit a new issue](https://github.com/MoTrPAC/MotrpacRatTraining6mo/issues) 
 and include as many details as possible. 
 
