@@ -47,20 +47,23 @@ are converted to animal-specific Participant IDs (PIDs).
 }
 \examples{
 # Return all normalized RNA-seq data
-combine_normalized_data(assays = "TRNSCRPT")
+data = combine_normalized_data(assays = "TRNSCRPT")
 
 # Return all normalized proteomics data. Exclude outliers 
-combine_normalized_data(assays = c("PROT","UBIQ","PHOSPHO","ACETYL"),
-                        exclude_outliers = TRUE)
+data = combine_normalized_data(assays = c("PROT","UBIQ","PHOSPHO","ACETYL"),
+                               exclude_outliers = TRUE)
 
 # Return normalized ATAC-seq data for training-regulated features 
-combine_normalized_data(assays = "ATAC", training_regulated_only = TRUE)
+data = combine_normalized_data(assays = "ATAC", training_regulated_only = TRUE)
 
 # Return normalized ATAC-seq data for the first 1000 features in each tissue 
-combine_normalized_data(assays = "ATAC", nrows = 1000, scratchdir = "/tmp", include_epigen = TRUE)
+data = combine_normalized_data(assays = "ATAC", 
+                               nrows = 1000, 
+                               scratchdir = "/tmp", 
+                               include_epigen = TRUE)
 
 # Return all normalized metabolomics data 
-combine_normalized_data(assays = "METAB")
+data = combine_normalized_data(assays = "METAB")
 }
 \seealso{
 \code{\link[=load_sample_data]{load_sample_data()}}, \code{\link[=viallabel_to_pid]{viallabel_to_pid()}}

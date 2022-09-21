@@ -34,6 +34,6 @@ females.
 }
 \examples{
 # Perform timewise differential analysis for metabolites in heart tissue
-metab_timewise_da("HEART")
+res = metab_timewise_da("HEART")
 
 }

@@ -40,5 +40,5 @@ across time points. Analysis is performed separately for males and females.
 }
 \examples{
 # Run training differential analysis for heart proteins
-proteomics_training_da("PROT","HEART")
+res = proteomics_training_da("PROT","HEART")
 }

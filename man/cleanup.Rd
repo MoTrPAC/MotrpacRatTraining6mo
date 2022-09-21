@@ -20,3 +20,4 @@ Function used internally in \code{\link[=enrichment_network_vis]{enrichment_netw
 \seealso{
 \code{\link[=enrichment_network_vis]{enrichment_network_vis()}}
 }
+\keyword{internal}

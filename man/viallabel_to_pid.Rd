@@ -18,6 +18,7 @@ Vial labels are unique per sample; PIDs are unique per animal.
 Multiple vial labels correspond to different aliquots of the same tissue sample.
 }
 \examples{
-viallabel_to_pid(c("90416015402", "90416015403", "90416015302"))
-viallabel_to_pid(c(90416015402, 90416015403, 90416015302))
+map = viallabel_to_pid(c("90416015402", "90416015403", "90416015302"))
+map = viallabel_to_pid(c(90416015402, 90416015403, 90416015302))
+map 
 }

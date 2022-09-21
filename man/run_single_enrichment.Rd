@@ -65,3 +65,4 @@ NOT intended to be run directly. Run within \code{\link[=cluster_pathway_enrichm
 \seealso{
 \code{\link[=cluster_pathway_enrichment]{cluster_pathway_enrichment()}}, \code{\link[=run_fella]{run_fella()}}
 }
+\keyword{internal}

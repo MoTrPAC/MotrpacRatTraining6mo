@@ -93,7 +93,7 @@ transcript_prep_data = function(tissue,
   # filter counts by genes in normalized data 
   rownames(counts) = counts$feature_ID
   counts[,c("feature","feature_ID","tissue","assay")] = NULL
-  counts = counts[rownames(counts),]
+  counts = counts[rownames(tmm),]
   
   # format metadata
   pheno = data.table::as.data.table(MotrpacRatTraining6moData::PHENO)

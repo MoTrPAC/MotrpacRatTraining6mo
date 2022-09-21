@@ -43,5 +43,5 @@ Analysis is performed separately for males and females.
 }
 \examples{
 # Run timewise differential analysis for heart proteins
-proteomics_timewise_da("PROT","HEART")
+res = proteomics_timewise_da("PROT","HEART")
 }

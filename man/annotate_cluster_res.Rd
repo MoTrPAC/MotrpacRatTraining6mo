@@ -22,3 +22,4 @@ Run within \code{\link[=check_cluster_res_format]{check_cluster_res_format()}}.
 \seealso{
 \code{\link[=check_cluster_res_format]{check_cluster_res_format()}}
 }
+\keyword{internal}

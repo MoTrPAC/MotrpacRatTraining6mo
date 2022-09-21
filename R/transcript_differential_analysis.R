@@ -268,7 +268,7 @@ transcript_timewise_da = function(tissue,
     
     # add some columns
     res[,sex := SEX]
-    res[,removed_samples = ifelse(length(curr_outliers)>0, paste0(curr_outliers, collapse=','), NA_character_)]
+    res[,removed_samples := ifelse(length(curr_outliers)>0, paste0(curr_outliers, collapse=','), NA_character_)]
     # res[,covariates := paste0(covariates, collapse=',')] added within run_deseq()
     
     # add average intensities 

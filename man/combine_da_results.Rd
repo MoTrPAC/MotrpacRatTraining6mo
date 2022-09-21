@@ -83,15 +83,15 @@ If no tissues or omes are specified, all differential analysis results are retur
 \examples{
 # Return all non-epigenetic differential analysis results, 
 # including meta-regression results for metabolomics
-combine_da_results()
+data = combine_da_results()
 
 # Return all global proteomics differential analysis results
-combine_da_results(assays="PROT")
+data = combine_da_results(assays="PROT")
 
 \dontrun{
 # Return METHYL and ATAC differential analysis results for gastrocnemius 
-combine_da_results(tissues="SKM-GN", 
-                   assays=c("ATAC","METHYL"),
-                   include_epigen=TRUE)
+data = combine_da_results(tissues="SKM-GN", 
+                          assays=c("ATAC","METHYL"),
+                          include_epigen=TRUE)
 }
 }
