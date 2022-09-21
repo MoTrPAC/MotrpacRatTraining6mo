@@ -1,7 +1,5 @@
 # MotrpacRatTraining6mo
 
-**Tutorial:** <https://motrpac.github.io/MotrpacRatTraining6mo/articles/tutorial.html>
-
 ## Table of Contents
 * [Overview](#overview)
   * [About this package](#about-this-package)
