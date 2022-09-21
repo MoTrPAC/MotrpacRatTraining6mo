@@ -19,3 +19,4 @@ numeric vector of standard errors for effect sizes
 \description{
 Extract standard errors from \code{limma} results
 }
+\keyword{internal}

@@ -36,3 +36,13 @@ Get and fix peak annotations from \code{\link[ChIPseeker:annotatePeak]{ChIPseeke
 It is 0 if the feature has any overlap with the gene.
 "custom_annotation" fixes many issues with the \code{ChIPseeker} annotation (v1.22.1).
 }
+\examples{
+\dontrun{
+# Load raw ATAC-seq counts for one tissue 
+raw_counts = load_sample_data("SKM-GN",
+                              "ATAC",
+                              normalized = FALSE,
+                              scratchdir = "/tmp")
+pa = get_peak_annotations(raw_counts)
+}
+}

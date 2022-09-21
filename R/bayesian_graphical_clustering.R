@@ -1380,6 +1380,8 @@ check_cluster_res_format = function(cluster_res){
 #'   
 #' @seealso [check_cluster_res_format()]
 #' 
+#' @keywords internal
+#' 
 annotate_cluster_res = function(cluster_res){
   cluster_res = as.data.frame(cluster_res, stringsAsFactors = F, check.names = F)
   cluster_res$cluster = as.character(cluster_res$cluster) # keep it from being a factor

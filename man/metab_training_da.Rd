@@ -35,6 +35,6 @@ p-value using sum of logs.
 }
 \examples{
 # Perform training differential analysis for metabolites in heart tissue
-metab_training_da("HEART")
+res = metab_training_da("HEART")
 
 }

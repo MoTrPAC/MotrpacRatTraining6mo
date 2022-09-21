@@ -22,3 +22,4 @@ Function is used internally in \code{\link[=enrichment_network_vis]{enrichment_n
 \seealso{
 \code{\link[=enrichment_network_vis]{enrichment_network_vis()}}
 }
+\keyword{internal}

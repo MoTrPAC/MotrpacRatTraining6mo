@@ -19,3 +19,4 @@ Function is used internally in \code{\link[=enrichment_network_vis]{enrichment_n
 \seealso{
 \code{\link[=enrichment_network_vis]{enrichment_network_vis()}}, \code{\link[=add_line_breaks]{add_line_breaks()}}
 }
+\keyword{internal}

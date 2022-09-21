@@ -25,6 +25,6 @@ for more details.
 \examples{
 \dontrun{
 # Return ATAC-seq differential analysis results for gastrocnemius skeletal muscle
-load_epigen_da("SKM-GN", "METHYL")
+data = load_epigen_da("SKM-GN", "METHYL")
 }
 }

@@ -168,20 +168,20 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' # with default parameters, i.e., outliers and covariates used for the manuscript; 
 #' # calculate both standard and shrunk log fold-changes
 #' da = transcript_timewise_da("BAT")
-#' 
+#' }
 #' # Same as above but don't calculate shrunk log fold-changes
 #' da = transcript_timewise_da("BAT", add_shrunk_logfc = FALSE)
-#' 
+#' \dontrun{
 #' # Same as the first example but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
 #' da = transcript_timewise_da("BAT", rdata_outfile = "~/test/BAT_RNA_DA.RData", overwrite = TRUE)
 #' }
 transcript_timewise_da = function(tissue, 
-                                   covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
-                                   outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
-                                   add_shrunk_logfc = TRUE, 
-                                   rdata_outfile = NULL,
-                                   overwrite = FALSE,
-                                   verbose = FALSE){
+                                  covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
+                                  outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
+                                  add_shrunk_logfc = TRUE, 
+                                  rdata_outfile = NULL,
+                                  overwrite = FALSE,
+                                  verbose = FALSE){
   
   if(!requireNamespace("DESeq2", quietly = TRUE)){
     stop(
@@ -268,7 +268,7 @@ transcript_timewise_da = function(tissue,
     
     # add some columns
     res[,sex := SEX]
-    res[,removed_samples = ifelse(length(curr_outliers)>0, paste0(curr_outliers, collapse=','), NA_character_)]
+    res[,removed_samples := ifelse(length(curr_outliers)>0, paste0(curr_outliers, collapse=','), NA_character_)]
     # res[,covariates := paste0(covariates, collapse=',')] added within run_deseq()
     
     # add average intensities 

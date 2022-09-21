@@ -67,10 +67,10 @@ females.
 # with default parameters, i.e., outliers and covariates used for the manuscript; 
 # calculate both standard and shrunk log fold-changes
 da = transcript_timewise_da("BAT")
-
+}
 # Same as above but don't calculate shrunk log fold-changes
 da = transcript_timewise_da("BAT", add_shrunk_logfc = FALSE)
-
+\dontrun{
 # Same as the first example but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
 da = transcript_timewise_da("BAT", rdata_outfile = "~/test/BAT_RNA_DA.RData", overwrite = TRUE)
 }

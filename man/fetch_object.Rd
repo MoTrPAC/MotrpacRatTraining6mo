@@ -22,3 +22,4 @@ after loading the \code{MotrpacRatTraining6moData} package.
 \seealso{
 \code{\link[=load_sample_data]{load_sample_data()}}
 }
+\keyword{internal}

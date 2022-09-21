@@ -88,3 +88,4 @@ Not intended to be run independently.
 \seealso{
 \code{\link[=custom_cluster_pathway_enrichment]{custom_cluster_pathway_enrichment()}}
 }
+\keyword{internal}

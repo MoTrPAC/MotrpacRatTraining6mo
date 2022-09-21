@@ -18,3 +18,4 @@ check_da_args(tissue, outfile, overwrite, outfile_is_rdata = TRUE)
 \description{
 Internal function used to check arguments for differential analysis functions
 }
+\keyword{internal}

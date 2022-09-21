@@ -93,7 +93,7 @@ transcript_prep_data = function(tissue,
   # filter counts by genes in normalized data 
   rownames(counts) = counts$feature_ID
   counts[,c("feature","feature_ID","tissue","assay")] = NULL
-  counts = counts[rownames(counts),]
+  counts = counts[rownames(tmm),]
   
   # format metadata
   pheno = data.table::as.data.table(MotrpacRatTraining6moData::PHENO)
@@ -547,7 +547,7 @@ load_sample_data = function(tissue,
 #' @examples
 #' \dontrun{
 #' # Return ATAC-seq differential analysis results for gastrocnemius skeletal muscle
-#' load_epigen_da("SKM-GN", "METHYL")
+#' data = load_epigen_da("SKM-GN", "METHYL")
 #' }
 load_epigen_da = function(tissue, assay, scratchdir="."){
   data = get_rdata_from_url(tissue=tissue, assay=assay, suffix="DA", scratchdir=scratchdir)
@@ -807,20 +807,23 @@ filter_outliers = function(tissue=NULL, sex=NULL, outliers=MotrpacRatTraining6mo
 #' 
 #' @examples
 #' # Return all normalized RNA-seq data
-#' combine_normalized_data(assays = "TRNSCRPT")
+#' data = combine_normalized_data(assays = "TRNSCRPT")
 #' 
 #' # Return all normalized proteomics data. Exclude outliers 
-#' combine_normalized_data(assays = c("PROT","UBIQ","PHOSPHO","ACETYL"),
-#'                         exclude_outliers = TRUE)
+#' data = combine_normalized_data(assays = c("PROT","UBIQ","PHOSPHO","ACETYL"),
+#'                                exclude_outliers = TRUE)
 #' 
 #' # Return normalized ATAC-seq data for training-regulated features 
-#' combine_normalized_data(assays = "ATAC", training_regulated_only = TRUE)
+#' data = combine_normalized_data(assays = "ATAC", training_regulated_only = TRUE)
 #' 
 #' # Return normalized ATAC-seq data for the first 1000 features in each tissue 
-#' combine_normalized_data(assays = "ATAC", nrows = 1000, scratchdir = "/tmp", include_epigen = TRUE)
+#' data = combine_normalized_data(assays = "ATAC", 
+#'                                nrows = 1000, 
+#'                                scratchdir = "/tmp", 
+#'                                include_epigen = TRUE)
 #'
 #' # Return all normalized metabolomics data 
-#' combine_normalized_data(assays = "METAB")
+#' data = combine_normalized_data(assays = "METAB")
 combine_normalized_data = function(tissues = MotrpacRatTraining6moData::TISSUE_ABBREV, 
                                    assays = MotrpacRatTraining6moData::ASSAY_ABBREV, 
                                    include_epigen = FALSE,
@@ -951,16 +954,16 @@ combine_normalized_data = function(tissues = MotrpacRatTraining6moData::TISSUE_A
 #' @examples
 #' # Return all non-epigenetic differential analysis results, 
 #' # including meta-regression results for metabolomics
-#' combine_da_results()
+#' data = combine_da_results()
 #' 
 #' # Return all global proteomics differential analysis results
-#' combine_da_results(assays="PROT")
+#' data = combine_da_results(assays="PROT")
 #' 
 #' \dontrun{
 #' # Return METHYL and ATAC differential analysis results for gastrocnemius 
-#' combine_da_results(tissues="SKM-GN", 
-#'                    assays=c("ATAC","METHYL"),
-#'                    include_epigen=TRUE)
+#' data = combine_da_results(tissues="SKM-GN", 
+#'                           assays=c("ATAC","METHYL"),
+#'                           include_epigen=TRUE)
 #' }
 combine_da_results = function(tissues = MotrpacRatTraining6moData::TISSUE_ABBREV, 
                               assays = MotrpacRatTraining6moData::ASSAY_ABBREV, 

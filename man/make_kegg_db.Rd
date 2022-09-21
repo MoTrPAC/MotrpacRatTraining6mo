@@ -14,6 +14,11 @@ database. Parent directories are created if they do not yet exist.}
 Make KEGG database for \code{FELLA} pathway enrichment with metabolites.
 Run internally in \code{\link[=cluster_pathway_enrichment]{cluster_pathway_enrichment()}}.
 }
+\examples{
+\dontrun{
+make_kegg_db("KEGGDB/20220921")
+}
+}
 \seealso{
 \code{\link[=cluster_pathway_enrichment]{cluster_pathway_enrichment()}}, \code{\link[=run_fella]{run_fella()}}
 }

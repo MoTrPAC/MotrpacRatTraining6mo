@@ -29,3 +29,4 @@ Format a string of comma-separated gene symbols for use in \code{\link[=enrichme
 \seealso{
 \code{\link[=enrichment_network_vis]{enrichment_network_vis()}}
 }
+\keyword{internal}
