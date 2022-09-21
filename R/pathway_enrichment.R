@@ -327,6 +327,8 @@ cluster_pathway_enrichment = function(cluster_res,
 #' 
 #' @return data table with enrichment results, or NULL if no enrichment results were returned 
 #' 
+#' @keywords internal
+#' 
 run_single_enrichment = function(feature_to_gene_map, 
                                  universe, 
                                  cluster_res, 
@@ -580,6 +582,10 @@ run_fella = function(input, background, fella.data, method="hypergeom", niter=1e
 #'   database. Parent directories are created if they do not yet exist. 
 #' @export
 #' @seealso [cluster_pathway_enrichment()], [run_fella()]
+#' @examples 
+#' \dontrun{
+#' make_kegg_db("KEGGDB/20220921")
+#' }
 make_kegg_db = function(kegg_db_destination){
   if(!requireNamespace("FELLA", quietly = TRUE)){
     stop(
@@ -881,6 +887,8 @@ custom_cluster_pathway_enrichment = function(cluster_res,
 #' }
 #' 
 #' @seealso [custom_cluster_pathway_enrichment()]
+#' 
+#' @keywords internal
 #' 
 pathway_hypergeom_test = function(feature_to_gene,
                                   universe,

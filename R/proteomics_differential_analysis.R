@@ -39,7 +39,7 @@
 #'
 #' @examples
 #' # Run timewise differential analysis for heart proteins
-#' proteomics_timewise_da("PROT","HEART")
+#' res = proteomics_timewise_da("PROT","HEART")
 proteomics_timewise_da  = function(assay, tissue, exclude_outliers=TRUE){
   
   tpDA_split_sex = c() # keep the timewise results
@@ -221,7 +221,7 @@ proteomics_timewise_da  = function(assay, tissue, exclude_outliers=TRUE){
 #'
 #' @examples
 #' # Run training differential analysis for heart proteins
-#' proteomics_training_da("PROT","HEART")
+#' res = proteomics_training_da("PROT","HEART")
 proteomics_training_da = function(assay, tissue, exclude_outliers=TRUE){
   
   ftest_res_split_sex = c() # keeps all ftest results

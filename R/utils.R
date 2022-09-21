@@ -10,8 +10,9 @@
 #' @export
 #'
 #' @examples
-#' viallabel_to_pid(c("90416015402", "90416015403", "90416015302"))
-#' viallabel_to_pid(c(90416015402, 90416015403, 90416015302))
+#' map = viallabel_to_pid(c("90416015402", "90416015403", "90416015302"))
+#' map = viallabel_to_pid(c(90416015402, 90416015403, 90416015302))
+#' map 
 viallabel_to_pid = function(viallabels){
   pheno = data.table::as.data.table(MotrpacRatTraining6moData::PHENO)
   pheno = unique(pheno[,.(viallabel, pid)])
@@ -54,6 +55,8 @@ list_available_data = function(package=NULL){
 #' @param overwrite bool, whether to overwrite \code{outfile} if it exists
 #' @param outfile_is_rdata bool, whether \code{outfile} is intended to save RData
 #'
+#' @keywords internal
+#' 
 check_da_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
   # check arguments 
   if(length(tissue)>1){
@@ -105,6 +108,15 @@ check_da_args = function(tissue, outfile, overwrite, outfile_is_rdata = TRUE){
 #'   It is 0 if the feature has any overlap with the gene. 
 #'   "custom_annotation" fixes many issues with the \code{ChIPseeker} annotation (v1.22.1). 
 #'   
+#' @examples 
+#' \dontrun{
+#' # Load raw ATAC-seq counts for one tissue 
+#' raw_counts = load_sample_data("SKM-GN",
+#'                               "ATAC",
+#'                               normalized = FALSE,
+#'                               scratchdir = "/tmp")
+#' pa = get_peak_annotations(raw_counts)
+#' }
 get_peak_annotations = function(counts, species="Rattus norvegicus", release=96, txdb=NULL){
 
   for (pkg in c('GenomeInfoDb','GenomicRanges','ChIPseeker','IRanges')){
@@ -235,6 +247,9 @@ get_peak_annotations = function(counts, species="Rattus norvegicus", release=96,
 #' @return specified object 
 #' 
 #' @seealso [load_sample_data()]
+#' 
+#' @keywords internal
+#' 
 fetch_object = function(name_as_string){
   do.call("data", list(as.name(name_as_string),
                               package = "MotrpacRatTraining6moData"))
@@ -252,7 +267,7 @@ fetch_object = function(name_as_string){
 #'
 #' @return numeric vector of standard errors for effect sizes
 #' 
-#' @export
+#' @keywords internal
 #'
 limma_res_extract_se = function(limma_res,
                                 effect_col="logFC",

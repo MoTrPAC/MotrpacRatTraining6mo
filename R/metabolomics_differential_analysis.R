@@ -33,7 +33,7 @@
 #' 
 #' @examples
 #' # Perform training differential analysis for metabolites in heart tissue
-#' metab_training_da("HEART")
+#' res = metab_training_da("HEART")
 #' 
 metab_training_da = function(tissue){
   
@@ -173,7 +173,7 @@ metab_training_da = function(tissue){
 #' 
 #' @examples
 #' # Perform timewise differential analysis for metabolites in heart tissue
-#' metab_timewise_da("HEART")
+#' res = metab_timewise_da("HEART")
 #' 
 metab_timewise_da <- function(tissue){
   

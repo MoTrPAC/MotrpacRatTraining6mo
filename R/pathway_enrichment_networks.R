@@ -618,6 +618,8 @@ enrichment_network_vis = function(pw_enrich_res,
 #' 
 #' @seealso [enrichment_network_vis()]
 #' 
+#' @keywords internal
+#' 
 calc_similarity_metric = function(string1, string2){
   # use Cytoscape Enrichment Map similarity score:
   # jaccard = [size of (A intersect B)] / [size of (A union B)]
@@ -654,6 +656,8 @@ calc_similarity_metric = function(string1, string2){
 #'   depending on the values of \code{return_N} and \code{collapse}. 
 #'   
 #' @seealso [enrichment_network_vis()]
+#' 
+#' @keywords internal
 #' 
 replace_ensembl_with_symbol = function(x, 
                                        map, 
@@ -715,6 +719,8 @@ replace_ensembl_with_symbol = function(x,
 #'   depending on the values of \code{return_N} and \code{collapse}. 
 #'   
 #' @seealso [enrichment_network_vis()]
+#' 
+#' @keywords internal
 #'
 format_gene_symbols = function(x, return_N = TRUE, collapse = TRUE){
   symbols = unlist(unname(strsplit(x, ',')))
@@ -759,6 +765,8 @@ format_gene_symbols = function(x, return_N = TRUE, collapse = TRUE){
 #' 
 #' @seealso [enrichment_network_vis()]
 #' 
+#' @keywords internal
+#' 
 edge_intersection = function(symbol1, symbol2){
   symbol1 = unique(unname(unlist(strsplit(symbol1, ', '))))
   symbol2 = unique(unname(unlist(strsplit(symbol2, ', '))))
@@ -779,6 +787,8 @@ edge_intersection = function(symbol1, symbol2){
 #' @importFrom metap sumlog
 #' 
 #' @seealso [enrichment_network_vis()]
+#' 
+#' @keywords internal
 #' 
 collapse_p = function(ps){
   if(length(ps) == 1){
@@ -802,6 +812,8 @@ collapse_p = function(ps){
 #' @return string with additional \<br\> if necessary 
 #' 
 #' @seealso [enrichment_network_vis()]
+#' 
+#' @keywords internal
 #' 
 add_line_breaks = function(x, max_char=50, sep=','){
   if(nchar(x) > max_char){
@@ -830,6 +842,8 @@ add_line_breaks = function(x, max_char=50, sep=','){
 #' 
 #' @seealso [enrichment_network_vis()], [add_line_breaks()]
 #' 
+#' @keywords internal
+#' 
 format_gene_lists = function(x){
   if(grepl("(METAB)", x)) return(x)
   splits = unname(unlist(strsplit(x, "<br>")))
@@ -849,6 +863,8 @@ format_gene_lists = function(x){
 #' @return vector of candidate words to determine overlap 
 #' 
 #' @seealso [enrichment_network_vis()]
+#' 
+#' @keywords internal
 #' 
 cleanup = function(x){
   x1 = gsub(":|-|;|'|[0-9]|,","",x)
