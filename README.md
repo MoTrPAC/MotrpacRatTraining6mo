@@ -7,6 +7,8 @@
 * [Installation](#installation)
 * [Getting help](#getting-help)
 * [Acknowledgements](#acknowledgements)
+* [Data use agreement](#data-use-agreement)
+* [Citing MoTrPAC data](#citing-motrpac-data)
 
 ## Overview
 
