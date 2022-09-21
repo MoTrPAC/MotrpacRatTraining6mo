@@ -161,8 +161,6 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' }
 #' 
 #' @export 
-#' 
-#' @importFrom DESeq2 counts
 #'
 #' @examples
 #' \dontrun{
@@ -504,7 +502,7 @@ transcript_training_da = function(tissue,
     complete = merged[!is.na(p_value_male) & !is.na(p_value_female)]
     complete[, p_value := metap::sumlog(c(p_value_male, p_value_female))$p, by=seq(1, nrow(complete))]
     missing[, p_value := ifelse(is.na(p_value_male), p_value_female, p_value_male)]
-    res_dt = rbindlist(list(complete, missing))
+    res_dt = data.table::rbindlist(list(complete, missing))
   }else{
     res_dt = sex_res[[1]]
     cols = c('removed_samples','lrt','p_value','full_model','reduced_model')
