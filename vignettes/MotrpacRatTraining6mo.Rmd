@@ -75,7 +75,7 @@ data and downstream analysis results presented in the main paper for the first
 large-scale multi-omic multi-tissue endurance exercise training study conducted 
 in young adult rats by the Molecular Transducers of Physical Activity Consortium 
 (MoTrPAC). A [bioRxiv](https://www.biorxiv.org/) link to the corresponding 
-preprint will be added shortly. **We highly recommend skimming the preprint 
+preprint will be added [here](https://motrpac.github.io/MotrpacRatTraining6mo/#citing-motrpac-data) shortly. **We highly recommend skimming the preprint 
 before using this package as it provides important context and much greater detail
 than we can provide here.**
 
@@ -85,7 +85,7 @@ While some of the functions in this package can be used by themselves, they
 were primarily written to analyze data in the 
 [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData)
 R package. See examples of how these data can be analyzed *without* this package in the 
-[MotrpacRatTraining6moData vignette](https://motrpac.github.io/MotrpacRatTraining6moData/articles/tutorial.html).
+[MotrpacRatTraining6moData vignette](https://motrpac.github.io/MotrpacRatTraining6moData/articles/MotrpacRatTraining6moData.html).
 
 </div>
 
@@ -163,7 +163,7 @@ e.g., [`?METAB_FEATURE_ID_MAP`](https://motrpac.github.io/MotrpacRatTraining6moD
 
 ## Study design 
 Details of the experimental design can be found in the supplementary methods 
-of the bioRxiv preprint (TODO: add link). Briefly, 6-month-old young adult rats 
+of the [bioRxiv preprint](https://motrpac.github.io/MotrpacRatTraining6mo/#citing-motrpac-data). Briefly, 6-month-old young adult rats 
 were subjected to progressive endurance exercise training
 for 1, 2, 4, or 8 weeks, with tissues collected 48 hours after the last training bout. 
 Sex-matched sedentary, untrained rats were used as controls. Whole blood, plasma, 
@@ -235,7 +235,7 @@ Note that epigenetic data (ATAC and METHYL) must be downloaded from Google Cloud
 * Pathway enrichment of main graphical clusters, `GRAPH_PW_ENRICH`  
 
 For more details about the [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData)
-R package, see its [vignette](https://motrpac.github.io/MotrpacRatTraining6moData/articles/tutorial.html). The remainder of this vignette will focus on
+R package, see its [vignette](https://motrpac.github.io/MotrpacRatTraining6moData/articles/MotrpacRatTraining6moData.html). The remainder of this vignette will focus on
 functions available in [MotrpacRatTraining6mo](https://motrpac.github.io/MotrpacRatTraining6mo).  
 
 [MotrpacRatTraining6mo](https://motrpac.github.io/MotrpacRatTraining6mo) 
@@ -347,7 +347,8 @@ and you can load data objects into your environment using `data()`, e.g.,
 
 ## Differential analysis 
 More details about the differential analysis methods are available in the 
-supplementary methods of the preprint (TODO: add link). Simply put, the *training* differential 
+supplementary methods of the [bioRxiv preprint](https://motrpac.github.io/MotrpacRatTraining6mo/#citing-motrpac-data). 
+Simply put, the *training* differential 
 analysis considers all training groups for each sex (sedentary controls and 4
 training time points) to determine if the analyte significantly changes in either 
 sex at any point during the training time course. The adjusted p-values from this analysis 
@@ -472,7 +473,7 @@ The following sections describe how to reproduce our graphical clustering analys
 run `repfdr` on your own data, and explore and visualize the nodes, edges, and paths 
 (collectively referred to as clusters) in the resulting graph. 
 For additional details and advantages of this approach over traditional clustering methods, 
-see the supplementary methods in the preprint (TODO: link). 
+see the supplementary methods in the [bioRxiv preprint](https://motrpac.github.io/MotrpacRatTraining6mo/#citing-motrpac-data). 
 If you are more interested in exploring the existing pathway enrichment results, skip to 
 [Visualization of pathway enrichment results](#vizEnrich). 
 
@@ -553,7 +554,7 @@ hist(unlist(lapply(paths, length)), breaks=100)
 ```
 
 `extract_main_clusters()` returns the subset of graphical clusters for which pathway 
-enrichment was performed for the preprint (TODO: link), namely the 2 largest nodes, 
+enrichment was performed for the [preprint](https://motrpac.github.io/MotrpacRatTraining6mo/#citing-motrpac-data), namely the 2 largest nodes, 
 2 largest edges, 10 largest non-null paths, and all 8-week nodes from the graphical 
 representation of training-regulated features in each tissue.  
 ```{r extract main clusters}
@@ -712,7 +713,7 @@ Pathway enrichment results were adjusted over *all* tests using
 [IHW](https://www.nature.com/articles/nmeth.3885) with tissue as a covariate. 
 
 Pathway enrichment results for graphical clusters of interest presented in the 
-preprint (TODO: link) are provided in `GRAPH_PW_ENRICH`. 
+[preprint](https://motrpac.github.io/MotrpacRatTraining6mo/#citing-motrpac-data) are provided in `GRAPH_PW_ENRICH`. 
 
 ### Enrichment with standard PWs 
 `cluster_pathway_enrichment()` is a wrapper for 

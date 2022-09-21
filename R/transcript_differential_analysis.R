@@ -161,6 +161,8 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' }
 #' 
 #' @export 
+#' 
+#' @importFrom DESeq2 counts
 #'
 #' @examples
 #' \dontrun{
@@ -272,7 +274,7 @@ transcript_timewise_da = function(tissue,
     # res[,covariates := paste0(covariates, collapse=',')] added within run_deseq()
     
     # add average intensities 
-    norm_counts = as.data.frame(counts(deseq_res$dds, normalized=TRUE))
+    norm_counts = as.data.frame(DESeq2::counts(deseq_res$dds, normalized=TRUE))
     ref_sub = norm_counts[,as.character(curr_meta[group == 'control', viallabel])]
     ref_means = rowMeans(ref_sub, na.rm=TRUE)
     ref_se = apply(ref_sub, 1, function(x) stats::sd(x)/sqrt(sum(!is.na(x))) )

@@ -7,4 +7,4 @@ devnotes.md
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-cytoscape/
+^cytoscape$
