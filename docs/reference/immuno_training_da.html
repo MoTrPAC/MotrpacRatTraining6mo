@@ -12,7 +12,7 @@ across time points. Analysis is performed separately for males and females."><!-
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,14 +20,11 @@ across time points. Analysis is performed separately for males and females."><!-
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/MotrpacRatTraining6mo.html">Get started</a>
 </li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/tutorial.html">Tutorial for MotrpacRatTraining6mo R package</a>
-  </div>
+<li class="active nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
@@ -118,7 +115,29 @@ across time points. Analysis is performed separately for males and females.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">immuno_training_da</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> Package 'lmtest' must be installed to run 'immuno_training_da()'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male GCSF has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male TNFA has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male IL18 has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male IL17 has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male IL4 has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male IL5 has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male LIX has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male FRACTALKINE has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male IL12P70 has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male VEGF has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male GMCSF has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male IL13 has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male MCP1 has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male RANTES has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male IL6 has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male MIP2 has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male EOTAXIN has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male IL1A has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male MIP1A has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male IL2 has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male EGF has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male KC has less than 2 values. Removing remaining samples in this group.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Group 2w in rat-mag27plex COLON male IFNY has less than 2 values. Removing remaining samples in this group.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

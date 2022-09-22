@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,14 +18,11 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/MotrpacRatTraining6mo.html">Get started</a>
 </li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/tutorial.html">Tutorial for MotrpacRatTraining6mo R package</a>
-  </div>
+<li class="active nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
@@ -155,8 +152,7 @@ The edge set object is a named list of string vectors. The name of an edge is <c
 <span class="r-in"><span><span class="co"># need a high df in the two-groups model estimation</span></span></span>
 <span class="r-in"><span><span class="co"># (default is 20, consider at least 10 when analyzing real data)</span></span></span>
 <span class="r-in"><span><span class="va">clustering_sol</span> <span class="op">=</span> <span class="fu">bayesian_graphical_clustering</span><span class="op">(</span><span class="va">zscores</span>, df<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>In column  3   female_4w ,f(z) misfit =  1.7 . Rerun with increased df</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>In column  4   female_8w ,f(z) misfit =  1.6 . Rerun with increased df</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>In column  1   female_1w ,f(z) misfit =  1.9 . Rerun with increased df</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>In column 5 male_1w the estimated fraction of nulls is 1.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 3</span>
@@ -430,234 +426,7 @@ The edge set object is a named list of string vectors. The name of an edge is <c
 <span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 271</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 272</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 273</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 274</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 275</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 276</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 277</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 278</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 279</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 280</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 281</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 282</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 283</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 284</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 285</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 286</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 287</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 288</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 289</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 290</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 291</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 292</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 293</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 294</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 295</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 296</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 297</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 298</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 299</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 301</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 302</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 303</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 304</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 305</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 306</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 307</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 308</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 309</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 310</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 311</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 312</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 313</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 314</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 315</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 316</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 317</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 318</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 319</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 320</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 321</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 322</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 323</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 324</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 325</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 326</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 327</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 328</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 329</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 330</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 331</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 332</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 334</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 335</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 336</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 337</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 338</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 339</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 340</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 341</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 342</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 343</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 344</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 345</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 346</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 347</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 348</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 349</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 350</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 351</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 352</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 353</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 354</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 355</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 356</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 357</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 358</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 359</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 360</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 361</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 362</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 363</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 364</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 365</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 366</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 367</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 368</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 369</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 370</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 371</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 372</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 373</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 374</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 375</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 376</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 377</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 378</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 379</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 380</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 381</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 382</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 383</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 384</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 385</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 386</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 387</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 388</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 389</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 390</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 391</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 392</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 393</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 394</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 395</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 396</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 397</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 398</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 399</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 400</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 401</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 402</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 403</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 404</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 405</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 406</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 407</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 408</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 409</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 410</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 411</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 412</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 413</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 414</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 415</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 416</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 417</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 418</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 419</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 420</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 421</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 422</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 423</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 424</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 425</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 426</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 427</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 428</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 429</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 431</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 432</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 433</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 434</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 435</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 436</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 437</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 438</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 439</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 441</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 442</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 443</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 445</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 446</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 447</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 448</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 449</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 450</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 451</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 452</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 453</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 454</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 455</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 456</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 457</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 458</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 459</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 460</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 461</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 462</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 463</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 464</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 465</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 466</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 467</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 468</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 469</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 470</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 471</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 472</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 473</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 474</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 475</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 476</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 477</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 478</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 479</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 480</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 481</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 482</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 483</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 484</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 485</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 486</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 487</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 489</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 490</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 491</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 492</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 493</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 494</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 495</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 496</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 497</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 498</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 499</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> EM iteration 500</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>EM did not converge within tolerance after maximum number of iterations specified.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Converged after 272 EM iterations.</span>
 <span class="r-in"><span><span class="co"># check if the clustering solution correctly assigns the first 500 rows </span></span></span>
 <span class="r-in"><span><span class="co"># (with high prob) to the right nodes</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">intersect</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">500</span>,<span class="va">clustering_sol</span><span class="op">$</span><span class="va">node_sets</span><span class="op">$</span><span class="va">`1w_F1_M0`</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fl">500</span> <span class="op">&gt;</span> <span class="fl">0.95</span></span></span>
@@ -671,38 +440,32 @@ The edge set object is a named list of string vectors. The name of an edge is <c
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># examine the node set sizes</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">clustering_sol</span><span class="op">$</span><span class="va">node_sets</span>,<span class="va">length</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1w_F0_M0  1w_F1_M0  2w_F0_M0  2w_F1_M0 4w_F0_M-1  4w_F0_M0  4w_F0_M1  4w_F1_M0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      9483       498      9483       498         0      9483         0       498 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8w_F0_M-1  8w_F0_M0  8w_F1_M0        0w </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0      9483       498     10000 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1w_F0_M0 1w_F1_M0 2w_F0_M0 2w_F1_M0 4w_F0_M0 4w_F0_M1 4w_F1_M0 8w_F0_M0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     9488      491     9488      491     9488        0      491     9488 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8w_F0_M1 8w_F1_M0       0w </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0      491    10000 </span>
 <span class="r-in"><span><span class="co"># examine the edge set sizes</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">clustering_sol</span><span class="op">$</span><span class="va">edge_sets</span>,<span class="va">length</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0w---1w_F0_M0         0w---1w_F1_M0   1w_F0_M0---2w_F0_M0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  9483                   498                  9483 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1w_F1_M0---2w_F0_M0   1w_F0_M0---2w_F1_M0   1w_F1_M0---2w_F1_M0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     0                     0                   498 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  2w_F0_M0---4w_F0_M-1  2w_F1_M0---4w_F0_M-1   2w_F0_M0---4w_F0_M0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     0                     0                  9483 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2w_F1_M0---4w_F0_M0   2w_F0_M0---4w_F0_M1   2w_F1_M0---4w_F0_M1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     0                     0                     0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2w_F0_M0---4w_F1_M0   2w_F1_M0---4w_F1_M0 4w_F0_M-1---8w_F0_M-1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     0                   498                     0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4w_F0_M0---8w_F0_M-1  4w_F0_M1---8w_F0_M-1  4w_F1_M0---8w_F0_M-1 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     0                     0                     0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4w_F0_M-1---8w_F0_M0   4w_F0_M0---8w_F0_M0   4w_F0_M1---8w_F0_M0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     0                  9483                     0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4w_F1_M0---8w_F0_M0  4w_F0_M-1---8w_F1_M0   4w_F0_M0---8w_F1_M0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     0                     0                     0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4w_F0_M1---8w_F1_M0   4w_F1_M0---8w_F1_M0 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     0                   498 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       0w---1w_F0_M0       0w---1w_F1_M0 1w_F0_M0---2w_F0_M0 1w_F1_M0---2w_F0_M0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                9488                 491                9488                   0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1w_F0_M0---2w_F1_M0 1w_F1_M0---2w_F1_M0 2w_F0_M0---4w_F0_M0 2w_F1_M0---4w_F0_M0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   0                 491                9488                   0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2w_F0_M0---4w_F0_M1 2w_F1_M0---4w_F0_M1 2w_F0_M0---4w_F1_M0 2w_F1_M0---4w_F1_M0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   0                   0                   0                 491 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4w_F0_M0---8w_F0_M0 4w_F0_M1---8w_F0_M0 4w_F1_M0---8w_F0_M0 4w_F0_M0---8w_F0_M1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                9488                   0                   0                   0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4w_F0_M1---8w_F0_M1 4w_F1_M0---8w_F0_M1 4w_F0_M0---8w_F1_M0 4w_F0_M1---8w_F1_M0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   0                   0                   0                   0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4w_F1_M0---8w_F1_M0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 491 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># extract the top full trajectories in the data</span></span></span>
 <span class="r-in"><span><span class="co"># these should be the clusters with at least 10 features</span></span></span>
 <span class="r-in"><span><span class="va">min_cluster_size</span> <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="get_trajectory_sizes_from_edge_sets.html">get_trajectory_sizes_from_edge_sets</a></span><span class="op">(</span><span class="va">clustering_sol</span><span class="op">$</span><span class="va">edge_sets</span>,min_size <span class="op">=</span> <span class="va">min_cluster_size</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   X1       X2       X3       X4       X5   X6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0w 1w_F0_M0 2w_F0_M0 4w_F0_M0 8w_F0_M0 9483</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0w 1w_F1_M0 2w_F1_M0 4w_F1_M0 8w_F1_M0  498</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0w 1w_F0_M0 2w_F0_M0 4w_F0_M0 8w_F0_M0 9488</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0w 1w_F1_M0 2w_F1_M0 4w_F1_M0 8w_F1_M0  491</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co">### Example 2: real data</span></span></span>

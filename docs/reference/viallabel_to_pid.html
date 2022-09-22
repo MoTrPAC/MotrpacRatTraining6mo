@@ -14,7 +14,7 @@ Multiple vial labels correspond to different aliquots of the same tissue sample.
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,14 +22,11 @@ Multiple vial labels correspond to different aliquots of the same tissue sample.
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/MotrpacRatTraining6mo.html">Get started</a>
 </li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/tutorial.html">Tutorial for MotrpacRatTraining6mo R package</a>
-  </div>
+<li class="active nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
@@ -81,10 +78,9 @@ Multiple vial labels correspond to different aliquots of the same tissue sample.
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">viallabel_to_pid</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"90416015402"</span>, <span class="st">"90416015403"</span>, <span class="st">"90416015302"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 90416015402 90416015403 90416015302 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    10381414    10381414    10381414 </span>
-<span class="r-in"><span><span class="fu">viallabel_to_pid</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">90416015402</span>, <span class="fl">90416015403</span>, <span class="fl">90416015302</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">map</span> <span class="op">=</span> <span class="fu">viallabel_to_pid</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"90416015402"</span>, <span class="st">"90416015403"</span>, <span class="st">"90416015302"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">map</span> <span class="op">=</span> <span class="fu">viallabel_to_pid</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">90416015402</span>, <span class="fl">90416015403</span>, <span class="fl">90416015302</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">map</span> </span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 90416015402 90416015403 90416015302 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    10381414    10381414    10381414 </span>
 </code></pre></div>

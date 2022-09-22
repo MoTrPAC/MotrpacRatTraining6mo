@@ -12,7 +12,7 @@ If no tissues or omes are specified, all differential analysis results are retur
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,14 +20,11 @@ If no tissues or omes are specified, all differential analysis results are retur
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/MotrpacRatTraining6mo.html">Get started</a>
 </li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/tutorial.html">Tutorial for MotrpacRatTraining6mo R package</a>
-  </div>
+<li class="active nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
@@ -230,7 +227,7 @@ Current working directory by default. Only relevant if <code>assays</code> inclu
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Return all non-epigenetic differential analysis results, </span></span></span>
 <span class="r-in"><span><span class="co"># including meta-regression results for metabolomics</span></span></span>
-<span class="r-in"><span><span class="fu">combine_da_results</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">=</span> <span class="fu">combine_da_results</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'include_epigen' is FALSE. Excluding ATAC and METHYL results.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ACETYL_HEART_DA</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ACETYL_LIVER_DA</span>
@@ -305,105 +302,9 @@ Current working directory by default. Only relevant if <code>assays</code> inclu
 <span class="r-msg co"><span class="r-pr">#&gt;</span> TRNSCRPT_WATSC_DA</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> UBIQ_HEART_DA</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> UBIQ_LIVER_DA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          feature  assay                assay_code tissue tissue_code</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1:    &lt;NA&gt; ACETYL                   prot-ac  HEART   t58-heart</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       2:    &lt;NA&gt; ACETYL                   prot-ac  HEART   t58-heart</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       3:    &lt;NA&gt; ACETYL                   prot-ac  HEART   t58-heart</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       4:    &lt;NA&gt; ACETYL                   prot-ac  HEART   t58-heart</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       5:    &lt;NA&gt; ACETYL                   prot-ac  HEART   t58-heart</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ---                                                            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279132:    &lt;NA&gt;   UBIQ prot-ub-protein-corrected  LIVER   t68-liver</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279133:    &lt;NA&gt;   UBIQ prot-ub-protein-corrected  LIVER   t68-liver</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279134:    &lt;NA&gt;   UBIQ prot-ub-protein-corrected  LIVER   t68-liver</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279135:    &lt;NA&gt;   UBIQ prot-ub-protein-corrected  LIVER   t68-liver</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279136:    &lt;NA&gt;   UBIQ prot-ub-protein-corrected  LIVER   t68-liver</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                 feature_ID    sex comparison_group   p_value adj_p_value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1:  AP_004896.1_K46k   male               1w 0.8916202           1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       2:  AP_004896.1_K46k   male               2w 0.6971072           1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       3:  AP_004896.1_K46k   male               4w 0.3338958           1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       4:  AP_004896.1_K46k   male               8w 0.3615084           1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       5:  AP_004896.1_K46k female               1w 0.4877300           1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ---                                                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279132: XP_221997.5_K254k   male               8w        NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279133: XP_221997.5_K254k female               1w        NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279134: XP_221997.5_K254k female               2w        NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279135: XP_221997.5_K254k female               4w        NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279136: XP_221997.5_K254k female               8w        NA          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                logFC   logFC_se     tscore covariates numNAs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1: -0.01798774 0.13051973 -0.1378163       &lt;NA&gt;      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       2: -0.04267032 0.10822124 -0.3942879       &lt;NA&gt;      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       3:  0.11163865 0.11303340  0.9876608       &lt;NA&gt;      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       4: -0.10530057 0.11303340 -0.9315881       &lt;NA&gt;      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       5:  0.04801416 0.06827064  0.7032916       &lt;NA&gt;      0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ---                                                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279132:          NA         NA         NA       &lt;NA&gt;     12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279133:          NA         NA         NA       &lt;NA&gt;     12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279134:          NA         NA         NA       &lt;NA&gt;     12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279135:          NA         NA         NA       &lt;NA&gt;     12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279136:          NA         NA         NA       &lt;NA&gt;     12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          comparison_average_intensity reference_average_intensity selection_fdr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1:                  -0.16397535                -0.145987604     0.2435669</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       2:                  -0.18865793                -0.145987604     0.2435669</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       3:                  -0.03434895                -0.145987604     0.2435669</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       4:                  -0.25128818                -0.145987604     0.2435669</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       5:                   0.04193526                -0.006078899     0.2435669</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ---                                                                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279132:                           NA                          NA     0.9447052</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279133:                           NA                          NA     0.9447052</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279134:                           NA                          NA     0.9447052</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279135:                           NA                          NA     0.9447052</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279136:                           NA                          NA     0.9447052</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          dataset site is_targeted zscore metabolite_refmet cv metabolite</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1:    &lt;NA&gt; &lt;NA&gt;          NA     NA              &lt;NA&gt; NA       &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       2:    &lt;NA&gt; &lt;NA&gt;          NA     NA              &lt;NA&gt; NA       &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       3:    &lt;NA&gt; &lt;NA&gt;          NA     NA              &lt;NA&gt; NA       &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       4:    &lt;NA&gt; &lt;NA&gt;          NA     NA              &lt;NA&gt; NA       &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       5:    &lt;NA&gt; &lt;NA&gt;          NA     NA              &lt;NA&gt; NA       &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ---                                                                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279132:    &lt;NA&gt; &lt;NA&gt;          NA     NA              &lt;NA&gt; NA       &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279133:    &lt;NA&gt; &lt;NA&gt;          NA     NA              &lt;NA&gt; NA       &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279134:    &lt;NA&gt; &lt;NA&gt;          NA     NA              &lt;NA&gt; NA       &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279135:    &lt;NA&gt; &lt;NA&gt;          NA     NA              &lt;NA&gt; NA       &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279136:    &lt;NA&gt; &lt;NA&gt;          NA     NA              &lt;NA&gt; NA       &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          control_cv mz rt neutral_mass meta_reg_het_p meta_reg_pvalue</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1:         NA NA NA           NA             NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       2:         NA NA NA           NA             NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       3:         NA NA NA           NA             NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       4:         NA NA NA           NA             NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       5:         NA NA NA           NA             NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ---                                                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279132:         NA NA NA           NA             NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279133:         NA NA NA           NA             NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279134:         NA NA NA           NA             NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279135:         NA NA NA           NA             NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279136:         NA NA NA           NA             NA              NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          shrunk_logFC shrunk_logFC_se removed_samples</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1:           NA              NA            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       2:           NA              NA            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       3:           NA              NA            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       4:           NA              NA            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       5:           NA              NA            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ---                                             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279132:           NA              NA            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279133:           NA              NA            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279134:           NA              NA            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279135:           NA              NA            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279136:           NA              NA            &lt;NA&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          comparison_average_intensity_se reference_average_intensity_se</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1:                              NA                             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       2:                              NA                             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       3:                              NA                             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       4:                              NA                             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       5:                              NA                             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ---                                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279132:                              NA                             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279133:                              NA                             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279134:                              NA                             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279135:                              NA                             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5279136:                              NA                             NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Return all global proteomics differential analysis results</span></span></span>
-<span class="r-in"><span><span class="fu">combine_da_results</span><span class="op">(</span>assays<span class="op">=</span><span class="st">"PROT"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">=</span> <span class="fu">combine_da_results</span><span class="op">(</span>assays<span class="op">=</span><span class="st">"PROT"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> PROT_CORTEX_DA</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> PROT_HEART_DA</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> PROT_KIDNEY_DA</span>
@@ -411,60 +312,12 @@ Current working directory by default. Only relevant if <code>assays</code> inclu
 <span class="r-msg co"><span class="r-pr">#&gt;</span> PROT_LUNG_DA</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> PROT_SKMGN_DA</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> PROT_WATSC_DA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         feature assay assay_code tissue       tissue_code  feature_ID    sex</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      1:    &lt;NA&gt;  PROT    prot-pr CORTEX        t53-cortex AP_004892.1   male</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      2:    &lt;NA&gt;  PROT    prot-pr CORTEX        t53-cortex AP_004892.1   male</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      3:    &lt;NA&gt;  PROT    prot-pr CORTEX        t53-cortex AP_004892.1   male</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      4:    &lt;NA&gt;  PROT    prot-pr CORTEX        t53-cortex AP_004892.1   male</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      5:    &lt;NA&gt;  PROT    prot-pr CORTEX        t53-cortex AP_004892.1 female</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ---                                                                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534196:    &lt;NA&gt;  PROT    prot-pr WAT-SC t70-white-adipose YP_665639.1   male</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534197:    &lt;NA&gt;  PROT    prot-pr WAT-SC t70-white-adipose YP_665639.1 female</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534198:    &lt;NA&gt;  PROT    prot-pr WAT-SC t70-white-adipose YP_665639.1 female</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534199:    &lt;NA&gt;  PROT    prot-pr WAT-SC t70-white-adipose YP_665639.1 female</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534200:    &lt;NA&gt;  PROT    prot-pr WAT-SC t70-white-adipose YP_665639.1 female</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         comparison_group    p_value adj_p_value       logFC   logFC_se</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      1:               1w 0.16522229           1  0.14138741 0.09855839</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      2:               2w 0.02112377           1  0.24440461 0.09855839</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      3:               4w 0.55497400           1  0.05906750 0.09855839</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      4:               8w 0.71344616           1  0.03665581 0.09855839</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      5:               1w 0.42333729           1 -0.06007221 0.07366201</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ---                                                               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534196:               8w 0.04768560           1  0.34600052 0.16711151</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534197:               1w 0.37861543           1 -0.15957201 0.17832136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534198:               2w 0.02287721           1 -0.42978938 0.17832136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534199:               4w 0.39379681           1 -0.15448337 0.17832136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534200:               8w 0.87194415           1 -0.02901243 0.17832136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             tscore covariates numNAs comparison_average_intensity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      1:  1.4345548         NA      2                   0.33459095</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      2:  2.4797951         NA      2                   0.43760815</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      3:  0.5993148         NA      2                   0.25227104</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      4:  0.3719197         NA      2                   0.22985935</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      5: -0.8155115         NA      2                   0.25880543</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ---                                                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534196:  2.0704769         NA      0                   0.18543879</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534197: -0.8948564         NA      0                  -0.22374709</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534198: -2.4101958         NA      0                  -0.49396446</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534199: -0.8663201         NA      0                  -0.21865845</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534200: -0.1626974         NA      0                  -0.09318751</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         reference_average_intensity selection_fdr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      1:                  0.19320354     1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      2:                  0.19320354     1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      3:                  0.19320354     1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      4:                  0.19320354     1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      5:                  0.31887765     1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ---                                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534196:                 -0.16056174     0.1785294</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534197:                 -0.06417508     0.1785294</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534198:                 -0.06417508     0.1785294</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534199:                 -0.06417508     0.1785294</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 534200:                 -0.06417508     0.1785294</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co"># Return METHYL and ATAC differential analysis results for gastrocnemius </span></span></span>
-<span class="r-in"><span><span class="fu">combine_da_results</span><span class="op">(</span>tissues<span class="op">=</span><span class="st">"SKM-GN"</span>, </span></span>
-<span class="r-in"><span>                   assays<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ATAC"</span>,<span class="st">"METHYL"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                   include_epigen<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">data</span> <span class="op">=</span> <span class="fu">combine_da_results</span><span class="op">(</span>tissues<span class="op">=</span><span class="st">"SKM-GN"</span>, </span></span>
+<span class="r-in"><span>                          assays<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ATAC"</span>,<span class="st">"METHYL"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          include_epigen<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

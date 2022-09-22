@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,14 +18,11 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
+      <ul class="navbar-nav me-auto"><li class="nav-item">
+  <a class="nav-link" href="../articles/MotrpacRatTraining6mo.html">Get started</a>
 </li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/tutorial.html">Tutorial for MotrpacRatTraining6mo R package</a>
-  </div>
+<li class="active nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
@@ -52,7 +49,7 @@
     </div>
 
     <div class="ref-description section level2">
-    <p>Get and fix peak annotations from <code>ChIPseeker::annotatePeak()</code></p>
+    <p>Get and fix peak annotations from <code><a href="https://rdrr.io/pkg/ChIPseeker/man/annotatePeak.html" class="external-link">ChIPseeker::annotatePeak()</a></code></p>
     </div>
 
     <div class="section level2">
@@ -74,7 +71,7 @@ for ATAC only, data frame with row names as feature IDs in the format format 'ch
 
 <dt>species</dt>
 <dd><p>character, scientific name of the organism for which to create the
-Ensembl database with <code>GenomicFeatures::makeTxDbFromEnsembl()</code></p></dd>
+Ensembl database with <code><a href="https://rdrr.io/pkg/GenomicFeatures/man/makeTxDbFromEnsembl.html" class="external-link">GenomicFeatures::makeTxDbFromEnsembl()</a></code></p></dd>
 
 
 <dt>release</dt>
@@ -83,7 +80,7 @@ If set to NA, the current release is used.</p></dd>
 
 
 <dt>txdb</dt>
-<dd><p>optional GenomicFeatures::TxDb object, in which case
+<dd><p>optional <a href="https://rdrr.io/pkg/GenomicFeatures/man/TxDb-class.html" class="external-link">GenomicFeatures::TxDb</a> object, in which case
 the database is not regenerated</p></dd>
 
 </dl></div>
@@ -91,7 +88,7 @@ the database is not regenerated</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>data frame with formatted <code>ChIPseeker::annotatePeak()</code> output
+<p>data frame with formatted <code><a href="https://rdrr.io/pkg/ChIPseeker/man/annotatePeak.html" class="external-link">ChIPseeker::annotatePeak()</a></code> output
 and additional columns "custom_annotation" and "relationship_to_gene".</p>
     </div>
     <div class="section level2">
@@ -101,6 +98,18 @@ It is 0 if the feature has any overlap with the gene.
 "custom_annotation" fixes many issues with the <code>ChIPseeker</code> annotation (v1.22.1).</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Load raw ATAC-seq counts for one tissue </span></span></span>
+<span class="r-in"><span><span class="va">raw_counts</span> <span class="op">=</span> <span class="fu"><a href="load_sample_data.html">load_sample_data</a></span><span class="op">(</span><span class="st">"SKM-GN"</span>,</span></span>
+<span class="r-in"><span>                              <span class="st">"ATAC"</span>,</span></span>
+<span class="r-in"><span>                              normalized <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                              scratchdir <span class="op">=</span> <span class="st">"/tmp"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pa</span> <span class="op">=</span> <span class="fu">get_peak_annotations</span><span class="op">(</span><span class="va">raw_counts</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

@@ -2,6 +2,6 @@ pandoc: '2.18'
 pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
-  tutorial: tutorial.html
-last_built: 2022-09-20T18:51Z
+  MotrpacRatTraining6mo: MotrpacRatTraining6mo.html
+last_built: 2022-09-21T23:34Z
 
