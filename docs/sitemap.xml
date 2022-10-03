@@ -1,234 +1,231 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/404.html</loc>
   </url>
   <url>
-    <loc>/LICENSE-text.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>/LICENSE.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/LICENSE.html</loc>
   </url>
   <url>
-    <loc>/articles/MotrpacRatTraining6mo.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/articles/MotrpacRatTraining6mo.html</loc>
   </url>
   <url>
-    <loc>/articles/index.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/articles/index.html</loc>
   </url>
   <url>
-    <loc>/articles/tutorial.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/authors.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/devnotes.html</loc>
   </url>
   <url>
-    <loc>/devnotes.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/index.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/news/index.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/STOPWORDS.html</loc>
   </url>
   <url>
-    <loc>/reference/STOPWORDS.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/add_line_breaks.html</loc>
   </url>
   <url>
-    <loc>/reference/add_line_breaks.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/analyze_tile.html</loc>
   </url>
   <url>
-    <loc>/reference/analyze_tile.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/annotate_cluster_res.html</loc>
   </url>
   <url>
-    <loc>/reference/annotate_cluster_res.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/atac_normalize_counts.html</loc>
   </url>
   <url>
-    <loc>/reference/atac_normalize_counts.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/atac_prep_data.html</loc>
   </url>
   <url>
-    <loc>/reference/atac_prep_data.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/atac_timewise_da.html</loc>
   </url>
   <url>
-    <loc>/reference/atac_timewise_da.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/atac_training_da.html</loc>
   </url>
   <url>
-    <loc>/reference/atac_training_da.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/bayesian_graphical_clustering.html</loc>
   </url>
   <url>
-    <loc>/reference/bayesian_graphical_clustering.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/calc_similarity_metric.html</loc>
   </url>
   <url>
-    <loc>/reference/calc_similarity_metric.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/call_pca_outliers.html</loc>
   </url>
   <url>
-    <loc>/reference/call_pca_outliers.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/check_cluster_res_format.html</loc>
   </url>
   <url>
-    <loc>/reference/check_cluster_res_format.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/check_da_args.html</loc>
   </url>
   <url>
-    <loc>/reference/check_da_args.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/cleanup.html</loc>
   </url>
   <url>
-    <loc>/reference/cleanup.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/cluster_pathway_enrichment.html</loc>
   </url>
   <url>
-    <loc>/reference/cluster_pathway_enrichment.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/collapse_p.html</loc>
   </url>
   <url>
-    <loc>/reference/collapse_p.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/combine_da_results.html</loc>
   </url>
   <url>
-    <loc>/reference/combine_da_results.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/combine_normalized_data.html</loc>
   </url>
   <url>
-    <loc>/reference/combine_normalized_data.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/custom_cluster_pathway_enrichment.html</loc>
   </url>
   <url>
-    <loc>/reference/custom_cluster_pathway_enrichment.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/edge_intersection.html</loc>
   </url>
   <url>
-    <loc>/reference/edge_intersection.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/enrichment_network_vis.html</loc>
   </url>
   <url>
-    <loc>/reference/enrichment_network_vis.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/extract_main_clusters.html</loc>
   </url>
   <url>
-    <loc>/reference/extract_main_clusters.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/extract_tissue_sets.html</loc>
   </url>
   <url>
-    <loc>/reference/extract_tissue_sets.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/fetch_object.html</loc>
   </url>
   <url>
-    <loc>/reference/fetch_object.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/filter_edge_sets_by_trajectories.html</loc>
   </url>
   <url>
-    <loc>/reference/filter_edge_sets_by_trajectories.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/filter_outliers.html</loc>
   </url>
   <url>
-    <loc>/reference/filter_outliers.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/fix_covariates.html</loc>
   </url>
   <url>
-    <loc>/reference/fix_covariates.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/format_gene_lists.html</loc>
   </url>
   <url>
-    <loc>/reference/format_gene_lists.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/format_gene_symbols.html</loc>
   </url>
   <url>
-    <loc>/reference/format_gene_symbols.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/get_all_trajectories.html</loc>
   </url>
   <url>
-    <loc>/reference/get_all_trajectories.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/get_peak_annotations.html</loc>
   </url>
   <url>
-    <loc>/reference/get_peak_annotations.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/get_rdata_from_url.html</loc>
   </url>
   <url>
-    <loc>/reference/get_rdata_from_url.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/get_trajectory_sizes_from_edge_sets.html</loc>
   </url>
   <url>
-    <loc>/reference/get_trajectory_sizes_from_edge_sets.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/get_tree_plot_for_tissue.html</loc>
   </url>
   <url>
-    <loc>/reference/get_tree_plot_for_tissue.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/immuno_timewise_da.html</loc>
   </url>
   <url>
-    <loc>/reference/immuno_timewise_da.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/immuno_training_da.html</loc>
   </url>
   <url>
-    <loc>/reference/immuno_training_da.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/limit_sets_by_regex.html</loc>
   </url>
   <url>
-    <loc>/reference/limit_sets_by_regex.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/limma_res_extract_se.html</loc>
   </url>
   <url>
-    <loc>/reference/limma_res_extract_se.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/list_available_data.html</loc>
   </url>
   <url>
-    <loc>/reference/list_available_data.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_atac_feature_annotation.html</loc>
   </url>
   <url>
-    <loc>/reference/load_atac_feature_annotation.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_epigen_da.html</loc>
   </url>
   <url>
-    <loc>/reference/load_epigen_da.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_methyl_feature_annotation.html</loc>
   </url>
   <url>
-    <loc>/reference/load_methyl_feature_annotation.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_methyl_raw_data.html</loc>
   </url>
   <url>
-    <loc>/reference/load_methyl_raw_data.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_sample_data.html</loc>
   </url>
   <url>
-    <loc>/reference/load_sample_data.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/make_kegg_db.html</loc>
   </url>
   <url>
-    <loc>/reference/make_kegg_db.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/merge_sites_by_clusters.html</loc>
   </url>
   <url>
-    <loc>/reference/merge_sites_by_clusters.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/metab_timewise_da.html</loc>
   </url>
   <url>
-    <loc>/reference/metab_timewise_da.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/metab_training_da.html</loc>
   </url>
   <url>
-    <loc>/reference/metab_training_da.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/pathway_hypergeom_test.html</loc>
   </url>
   <url>
-    <loc>/reference/pathway_hypergeom_test.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/plot_feature_trajectories.html</loc>
   </url>
   <url>
-    <loc>/reference/plot_feature_trajectories.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/plot_features_per_cluster.html</loc>
   </url>
   <url>
-    <loc>/reference/plot_features_per_cluster.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/plot_pcs.html</loc>
   </url>
   <url>
-    <loc>/reference/plot_pcs.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/proteomics_timewise_da.html</loc>
   </url>
   <url>
-    <loc>/reference/proteomics_timewise_da.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/proteomics_training_da.html</loc>
   </url>
   <url>
-    <loc>/reference/proteomics_training_da.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/repfdr_wrapper.html</loc>
   </url>
   <url>
-    <loc>/reference/repfdr_wrapper.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/replace_ensembl_with_symbol.html</loc>
   </url>
   <url>
-    <loc>/reference/replace_ensembl_with_symbol.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/rrbs_differential_analysis.html</loc>
   </url>
   <url>
-    <loc>/reference/rrbs_differential_analysis.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/run_deseq.html</loc>
   </url>
   <url>
-    <loc>/reference/run_deseq.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/run_fella.html</loc>
   </url>
   <url>
-    <loc>/reference/run_fella.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/run_single_enrichment.html</loc>
   </url>
   <url>
-    <loc>/reference/run_single_enrichment.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/transcript_call_outliers.html</loc>
   </url>
   <url>
-    <loc>/reference/transcript_call_outliers.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/transcript_normalize_counts.html</loc>
   </url>
   <url>
-    <loc>/reference/transcript_normalize_counts.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/transcript_prep_data.html</loc>
   </url>
   <url>
-    <loc>/reference/transcript_prep_data.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/transcript_timewise_da.html</loc>
   </url>
   <url>
-    <loc>/reference/transcript_timewise_da.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/transcript_training_da.html</loc>
   </url>
   <url>
-    <loc>/reference/transcript_training_da.html</loc>
-  </url>
-  <url>
-    <loc>/reference/viallabel_to_pid.html</loc>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/viallabel_to_pid.html</loc>
   </url>
 </urlset>
