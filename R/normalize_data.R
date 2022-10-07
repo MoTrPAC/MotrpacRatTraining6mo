@@ -53,7 +53,9 @@ transcript_normalize_counts = function(tissue, min_cpm = 0.5, min_num_samples = 
 #' @seealso [MotrpacRatTraining6moData::ATAC_NORM_DATA]
 #'
 #' @examples
+#' \dontrun{
 #' norm_data = atac_normalize_counts("BAT", scratchdir = "/tmp")
+#' }
 atac_normalize_counts = function(tissue, scratchdir = ".", n_samples = 4, min_count = 10){
   
   # load raw counts 

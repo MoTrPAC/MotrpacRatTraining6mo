@@ -886,7 +886,7 @@ namely the genes and datasets driving the pathway enrichment.
 Here we show the interactive network of pathway enrichments corresponding to 
 training-regulated features that are up-regulated in the gastrocnemius in both
 sexes at the 8-week time point, i.e. `SKM-GN:8w_F1_M1`. 
-```{r viznetwork1, fig.width=10}
+```{r viznetwork1, fig.width=8}
 # Extract pathway enrichments for this cluster
 data(GRAPH_PW_ENRICH)
 pw = GRAPH_PW_ENRICH[GRAPH_PW_ENRICH$cluster == "SKM-GN:8w_F1_M1",]
@@ -908,7 +908,7 @@ in any of our three muscle tissues (heart, gastrocnemius, vastus lateralis).
 If we are specifically interested in pathways that are significantly enriched in
 multiple tissues, we can set `multitissue_pathways_only` to `TRUE`. This removes 
 any pathways that are not enriched in more than one tissue (in at least one ome). 
-```{r viznetwork2, fig.width=10}
+```{r viznetwork2, fig.width=8}
 pw = GRAPH_PW_ENRICH[grepl(":8w_F1_M1", GRAPH_PW_ENRICH$cluster) & 
                        GRAPH_PW_ENRICH$tissue %in% c("HEART","SKM-GN","SKM-VL"),]
 
@@ -926,12 +926,12 @@ By default, the color-coded node group labels are shown on the left side
 of the plot. To make it easier to match labels to groups of pathways, 
 we can set the `add_group_label_nodes` argument to `TRUE`. 
 If you're zoomed out, hover over a label to display it in larger font. 
-```{r viznetwork3, fig.width=10}
+```{r viznetwork3, fig.width=8}
 enrichment_network_vis(pw, add_group_label_nodes = TRUE)
 ```
 
 You can also remove group labels entirely with `label_nodes = FALSE`. 
-```{r viznetwork4, fig.width=10}
+```{r viznetwork4, fig.width=8}
 enrichment_network_vis(pw, label_nodes = FALSE)
 ```
 
