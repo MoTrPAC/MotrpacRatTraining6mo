@@ -262,44 +262,6 @@ enrichment_network_vis = function(pw_enrich_res,
   }
   
   if(generate_scores){
-    # # iterate through the rows
-    # for(i in 1:nrow(pairs)){
-    #   v1_pw = pairs[i, V1]
-    #   v2_pw = pairs[i, V2]
-    #   # get string1
-    #   v1_members = clust1sig_collapsed[term_id == v1_pw, intersection_original]
-    #   # get string2
-    #   v2_members = clust1sig_collapsed[term_id == v2_pw, intersection_original]
-    #   if(v1_members == "NA" | v2_members == "NA"){
-    #     if(include_metab_singletons){
-    #       if(v1_members == "NA" & v2_members == "NA"){
-    #         # both are METAB PWs
-    #         # draw an edge if at least one word overlaps between name and parents
-    #         if(!is.null(parent_pathways)){
-    #           v1_parent = gsub(".*; ","",parent_pathways[[v1_pw]])
-    #           v2_parent = gsub(".*; ","",parent_pathways[[v2_pw]])
-    #         }else{
-    #           v1_parent = ""
-    #           v2_parent = ""
-    #         }
-    #         v1_words = cleanup(paste(clust1sig_collapsed[term_id == v1_pw, term_name], v1_parent))
-    #         v2_words = cleanup(paste(clust1sig_collapsed[term_id == v2_pw, term_name], v2_parent))
-    #         if(length(intersect(v1_words, v2_words))>0){
-    #           s = similarity_cutoff
-    #         }else{
-    #           s = 0
-    #         }
-    #       }else{
-    #         s = 0
-    #       }
-    #     }else{
-    #       s = 0
-    #     }
-    #   }else{
-    #     s = calc_similarity_metric(v1_members, v2_members)
-    #   }
-    #   pairs[i,similarity_score := s]
-    # }
     
     # make a feature:integer hashmap, where features are from the "intersection_original" column 
     # this hashmap is only used to quickly check if a feature has already been assigned an integer 
