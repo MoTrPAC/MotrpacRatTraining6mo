@@ -1,5 +1,9 @@
 # MotrpacRatTraining6mo
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/MoTrPAC/MotrpacRatTraining6mo/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MoTrPAC/MotrpacRatTraining6mo/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 ## Table of Contents
 * [Overview](#overview)
   * [About this package](#about-this-package)
