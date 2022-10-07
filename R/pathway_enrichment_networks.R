@@ -327,7 +327,7 @@ enrichment_network_vis = function(pw_enrich_res,
     # calculate the similarities
     sims = apply(pairs, 
                  1, 
-                 calc_sim_simple, 
+                 calc_similarity_metric, 
                  fid_lists, 
                  include_metab_singletons, 
                  parent_pathways, 
@@ -672,12 +672,12 @@ enrichment_network_vis = function(pw_enrich_res,
 #'
 #' @keywords internal
 #'
-calc_sim_simple = function(pws, 
-                           fid_lists, 
-                           include_metab_singletons, 
-                           parent_pathways, 
-                           clust1sig_collapsed, 
-                           similarity_cutoff){
+calc_similarity_metric = function(pws,
+                                  fid_lists, 
+                                  include_metab_singletons, 
+                                  parent_pathways, 
+                                  clust1sig_collapsed, 
+                                  similarity_cutoff){
   # use Cytoscape Enrichment Map similarity score:
   # jaccard = [size of (A intersect B)] / [size of (A union B)]
   # overlap = [size of (A intersect B)] / [size of (minimum( A , B))]
