@@ -245,7 +245,7 @@ includes several functions to easily fetch and compile data from
 Use `load_sample_data()` to load sample-level data for a specific ome and tissue. 
 Here we fetch various forms of the sample-level RNA-Seq (TRNSCRPT) data for brown adipose tissue (BAT) as an example. 
 
-```{r load sample data}
+```{r load sample data, eval=F}
 # Load RNA-seq raw counts for brown adipose tissue 
 data = load_sample_data("BAT", "TRNSCRPT", normalized = FALSE)
 
@@ -273,7 +273,7 @@ data = load_sample_data("VENACV", "PROT")
 
 </div>
 
-```{r load epigen sample data}
+```{r load epigen sample data, eval=F}
 # Load ATAC-seq raw counts for hippocampus, excluding outliers 
 data = load_sample_data("HIPPOC", 
                         "ATAC", 
@@ -287,7 +287,7 @@ combined sample-level normalized data for multiple datasets. Note that the sampl
 vial labels used as column names for most of the sample-level data are replaced
 with rat-specific participant IDs (PIDs) to allow measurements from multiple
 datasets for the same animal to be concatenated. 
-```{r combine normalized data}
+```{r combine normalized data, eval=F}
 # Return all normalized RNA-seq data
 data = combine_normalized_data(assays = "TRNSCRPT")
 
@@ -306,7 +306,7 @@ data = combine_normalized_data()
 
 Similarly, `combine_da_results()` concatenates differential analysis results 
 for multiple datasets. 
-```{r combine da results}
+```{r combine da results, eval=F}
 # Return all non-epigenetic differential analysis results, 
 # including meta-regression results for metabolomics
 res = combine_da_results()
@@ -798,7 +798,7 @@ If necessary, `make_kegg_db()` is called within `cluster_pathway_enrichment()` t
 install the KEGG database. If you have already installed the KEGG database, 
 `kegg_db_destination` should point to its parent directory. For this example, 
 assume the KEGG database has already been installed in `~/kegg/20220919`. 
-```{r metab enrich}
+```{r metab enrich, eval=F}
 # load required libraries for pathway enrichment with metabolites
 library(FELLA)
 library(KEGGREST)
@@ -806,16 +806,7 @@ library(KEGGREST)
 res2 = cluster_pathway_enrichment(paths,
                                   kegg_db_destination = "~/kegg/20220919",
                                   fella_method = "hypergeom") # "hypergeom" or "diffusion"
-
-nrow(res2[res2$adj_p_value < 0.05,])
-# split by tissue and ome
-significant = res2[res2$adj_p_value < 0.05,]
-table(significant$tissue, significant$ome)
 ```
-
-Note that the number of significantly enriched pathways for some non-METAB omes is 
-less than in the previous example. This is a necessary consequence of performing 
-multiple testing adjustment with more tests. 
 
 ### Enrichment with custom PWs  
 If you want to query pathways not available through `gProfiler`,
@@ -890,8 +881,6 @@ datasets; thicker edges indicate higher similarity between the pathways.
 Best of all, these networks are interactive! Use your cursor to zoom and drag,
 and hover over nodes and edges to see more information about the underlying data, 
 namely the genes and datasets driving the pathway enrichment. 
-
-
 
 ### Minimal example: single tissue 
 Here we show the interactive network of pathway enrichments corresponding to 
@@ -974,6 +963,7 @@ system.time(
   enrichment_network_vis(pw, similarity_scores_file = "/tmp/SKM-GN_8w_F1_M1_scores.RDS", verbose=FALSE)
 )
 ```
+
 #### Remove METAB-only enrichments
 Since metabolites are not readily mapped to genes, they cannot easily be incorporated
 into this network where pathway similarity is calculated using the overlap of gene symbols. 
