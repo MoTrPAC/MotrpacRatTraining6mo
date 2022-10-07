@@ -86,6 +86,7 @@
 #' This function was used to generate [MotrpacRatTraining6moData::GRAPH_PW_ENRICH]. 
 #' 
 #' @examples 
+#' \dontrun{
 #' # Use graphical clusters as an example
 #' cluster_res = extract_main_clusters()
 #' # Pick a single graphical cluster
@@ -95,7 +96,6 @@
 #' # Example 1: Run pathway enrichment for this cluster on a single core
 #' pw_enrich = cluster_pathway_enrichment(cluster_res)
 #' 
-#' \dontrun{
 #' # Example 2: Run pathway enrichment for this cluster on 4 cores
 #' pw_enrich = cluster_pathway_enrichment(cluster_res, num_cores = 4)
 #' 

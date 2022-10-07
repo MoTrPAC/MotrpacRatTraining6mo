@@ -121,6 +121,7 @@ all other omes assuming features have been mapped to genes.
 This function was used to generate \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}.
 }
 \examples{
+\dontrun{
 # Use graphical clusters as an example
 cluster_res = extract_main_clusters()
 # Pick a single graphical cluster
@@ -130,7 +131,6 @@ cluster_res = cluster_res[cluster_res$cluster == "SKM-GN:8w_F1_M1",]
 # Example 1: Run pathway enrichment for this cluster on a single core
 pw_enrich = cluster_pathway_enrichment(cluster_res)
 
-\dontrun{
 # Example 2: Run pathway enrichment for this cluster on 4 cores
 pw_enrich = cluster_pathway_enrichment(cluster_res, num_cores = 4)
 

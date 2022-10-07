@@ -46,13 +46,16 @@ In order to combine data from different tissues and data types, sample-specific 
 are converted to animal-specific Participant IDs (PIDs).
 }
 \examples{
+\dontrun{
 # Return all normalized RNA-seq data
 data = combine_normalized_data(assays = "TRNSCRPT")
+}
 
 # Return all normalized proteomics data. Exclude outliers 
 data = combine_normalized_data(assays = c("PROT","UBIQ","PHOSPHO","ACETYL"),
                                exclude_outliers = TRUE)
 
+\dontrun{
 # Return normalized ATAC-seq data for training-regulated features 
 data = combine_normalized_data(assays = "ATAC", training_regulated_only = TRUE)
 
@@ -61,6 +64,7 @@ data = combine_normalized_data(assays = "ATAC",
                                nrows = 1000, 
                                scratchdir = "/tmp", 
                                include_epigen = TRUE)
+}
 
 # Return all normalized metabolomics data 
 data = combine_normalized_data(assays = "METAB")

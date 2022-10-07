@@ -60,8 +60,8 @@ gastroc_data1 = atac_prep_data("SKM-GN")
 
 # Same as above but do not remove outliers if they exist 
 gastroc_data2 = atac_prep_data("SKM-GN", outliers = NULL)
-}
+
 # Same as above but only return data from male samples
 gastroc_data3 = atac_prep_data("SKM-GN", outliers = NULL, sex = "male")
-
+}
 }

@@ -73,6 +73,7 @@ Example 2: \code{1w_F1_M-1} means up-regulation in females week 1 and down-regul
 The edge set object is a named list of string vectors. The name of an edge is \code{[node_id]---[node_id]}.
 }
 \examples{
+\dontrun{
 ### Example 1: Simulate data with a single cluster
 zcolnames = c(
   paste("female",c("1w","2w","4w","8w"),sep="_"),
@@ -104,7 +105,6 @@ sapply(clustering_sol$edge_sets,length)
 min_cluster_size = 10
 get_trajectory_sizes_from_edge_sets(clustering_sol$edge_sets,min_size = min_cluster_size)
 
-\dontrun{
 ### Example 2: real data
 data(REPFDR_INPUTS, package="MotrpacRatTraining6moData")
 zscores = REPFDR_INPUTS$zs_smoothed
