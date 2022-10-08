@@ -100,30 +100,16 @@ investment of funds into the mechanisms of how physical activity improves health
 and prevents disease. See [motrpac.org](https://www.motrpac.org/) and 
 [motrpac-data.org](https://motrpac-data.org/) for more details. 
 
-### Installation
-Install this package with `devtools`:
-```r
-if (!require("devtools", quietly = TRUE)){
-  install.packages("devtools")
-}
-devtools::install_github("MoTrPAC/MotrpacRatTraining6mo")
-```
-
-[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData)
-is a critical dependency for this package. If the above command has issues installing
-this dependency, follow [these instructions](https://motrpac.github.io/MotrpacRatTraining6moData/index.html#installation) to install 
-[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData)
-separately before re-running the above command to install this package and its
-other dependencies. 
-
-Once we install this package, we can load the library. 
-```{r setup}
+### Setup
+If you have not yet installed this R package, follow instructions
+[here](https://motrpac.github.io/MotrpacRatTraining6mo/#installation). Then load the library.
+```{r this lib}
 library(MotrpacRatTraining6mo)
 ```
 
 For the sake of easily loading and looking up documentation for data objects, 
 let's also load the [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData) 
-package. 
+package, which is installed as a dependency when you install this package. 
 ```{r data lib}
 library(MotrpacRatTraining6moData)
 ```
