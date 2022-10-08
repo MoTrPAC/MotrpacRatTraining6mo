@@ -45,8 +45,9 @@ and prevents disease. See [motrpac.org](https://www.motrpac.org/) and
 
 ## Installation
 Install this package with `devtools`. Because installing this package also installs 
-`MotrpacRatTraining6moData` as a dependency, Mac users should additionally extend their `timeout` to 
-prevent an error when installing this dependency. 
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData) as a dependency, 
+Mac users should additionally extend their `timeout` to prevent an error caused by the amount of time
+it takes to download `MoTrPAC/MotrpacRatTraining6moData@HEAD`. 
 ```r
 options(timeout=1e5) # recommended for Mac users
 if (!require("devtools", quietly = TRUE)){
@@ -54,6 +55,12 @@ if (!require("devtools", quietly = TRUE)){
 }
 devtools::install_github("MoTrPAC/MotrpacRatTraining6mo")
 ```
+
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData)
+is a critical dependency for this package. If the above command has issues installing
+this dependency, follow [these instructions](https://motrpac.github.io/MotrpacRatTraining6moData/index.html#installation) to install 
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData)
+separately. 
 
 ## Getting help 
 **See the [vignette](https://motrpac.github.io/MotrpacRatTraining6mo/articles/MotrpacRatTraining6mo.html) 
