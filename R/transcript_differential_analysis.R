@@ -168,10 +168,10 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' # with default parameters, i.e., outliers and covariates used for the manuscript; 
 #' # calculate both standard and shrunk log fold-changes
 #' da = transcript_timewise_da("BAT")
-#' }
+#' 
 #' # Same as above but don't calculate shrunk log fold-changes
 #' da = transcript_timewise_da("BAT", add_shrunk_logfc = FALSE)
-#' \dontrun{
+#' 
 #' # Same as the first example but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
 #' da = transcript_timewise_da("BAT", rdata_outfile = "~/test/BAT_RNA_DA.RData", overwrite = TRUE)
 #' }
@@ -398,10 +398,11 @@ transcript_timewise_da = function(tissue,
 #' @importFrom metap sumlog
 #'
 #' @examples
+#' \dontrun{
 #' # Perform differential analysis for expressed genes in brown adipose tissue 
 #' # with default parameters, i.e., outliers and covariates used for the manuscript
 #' da = transcript_training_da("BAT")
-#' \dontrun{
+#' 
 #' # Same as above but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
 #' da = transcript_training_da("BAT", 
 #'                             rdata_outfile = "~/test/BAT_RNA_training-da.RData", 

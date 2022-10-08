@@ -253,10 +253,10 @@ fix_covariates = function(covar, meta, center_scale = FALSE){
 #' 
 #' # Same as above but do not remove outliers if they exist 
 #' gastroc_data2 = atac_prep_data("SKM-GN", outliers = NULL)
-#' }
+#' 
 #' # Same as above but only return data from male samples
 #' gastroc_data3 = atac_prep_data("SKM-GN", outliers = NULL, sex = "male")
-#' 
+#' }
 atac_prep_data = function(tissue, 
                           sex = NULL, 
                           covariates = c("Sample_batch", "peak_enrich.frac_reads_in_peaks.macs2.frip"), 
@@ -806,13 +806,16 @@ filter_outliers = function(tissue=NULL, sex=NULL, outliers=MotrpacRatTraining6mo
 #' @return data frame with features in rows and Participant IDs (PIDs) in columns
 #' 
 #' @examples
+#' \dontrun{
 #' # Return all normalized RNA-seq data
 #' data = combine_normalized_data(assays = "TRNSCRPT")
+#' }
 #' 
 #' # Return all normalized proteomics data. Exclude outliers 
 #' data = combine_normalized_data(assays = c("PROT","UBIQ","PHOSPHO","ACETYL"),
 #'                                exclude_outliers = TRUE)
 #' 
+#' \dontrun{
 #' # Return normalized ATAC-seq data for training-regulated features 
 #' data = combine_normalized_data(assays = "ATAC", training_regulated_only = TRUE)
 #' 
@@ -821,7 +824,8 @@ filter_outliers = function(tissue=NULL, sex=NULL, outliers=MotrpacRatTraining6mo
 #'                                nrows = 1000, 
 #'                                scratchdir = "/tmp", 
 #'                                include_epigen = TRUE)
-#'
+#' }
+#' 
 #' # Return all normalized metabolomics data 
 #' data = combine_normalized_data(assays = "METAB")
 combine_normalized_data = function(tissues = MotrpacRatTraining6moData::TISSUE_ABBREV, 
@@ -952,6 +956,7 @@ combine_normalized_data = function(tissues = MotrpacRatTraining6moData::TISSUE_A
 #' }
 #' 
 #' @examples
+#' \dontrun{
 #' # Return all non-epigenetic differential analysis results, 
 #' # including meta-regression results for metabolomics
 #' data = combine_da_results()
@@ -959,7 +964,6 @@ combine_normalized_data = function(tissues = MotrpacRatTraining6moData::TISSUE_A
 #' # Return all global proteomics differential analysis results
 #' data = combine_da_results(assays="PROT")
 #' 
-#' \dontrun{
 #' # Return METHYL and ATAC differential analysis results for gastrocnemius 
 #' data = combine_da_results(tissues="SKM-GN", 
 #'                           assays=c("ATAC","METHYL"),

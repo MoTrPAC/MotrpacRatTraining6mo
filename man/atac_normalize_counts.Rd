@@ -24,7 +24,9 @@ Download raw counts from Google Cloud Storage and return the filtered and
 quantile-normalized data.
 }
 \examples{
+\dontrun{
 norm_data = atac_normalize_counts("BAT", scratchdir = "/tmp")
+}
 }
 \seealso{
 \link[MotrpacRatTraining6moData:ATAC_NORM_DATA]{MotrpacRatTraining6moData::ATAC_NORM_DATA}

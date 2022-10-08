@@ -54,10 +54,11 @@ Use DESeq2 to perform a likelihood ratio test to test the effect of training
 across time points. Analysis is performed separately for males and females.
 }
 \examples{
+\dontrun{
 # Perform differential analysis for expressed genes in brown adipose tissue 
 # with default parameters, i.e., outliers and covariates used for the manuscript
 da = transcript_training_da("BAT")
-\dontrun{
+
 # Same as above but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
 da = transcript_training_da("BAT", 
                             rdata_outfile = "~/test/BAT_RNA_training-da.RData", 

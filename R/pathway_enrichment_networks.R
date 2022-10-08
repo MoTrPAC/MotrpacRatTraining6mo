@@ -59,6 +59,7 @@
 #' @importFrom igraph graph_from_data_frame cluster_louvain
 #' @importFrom visNetwork visNetwork visGroups visInteraction visIgraphLayout visLegend visSave
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom r2r hashmap
 #' 
 #' @seealso Ancillary functions include [calc_similarity_metric()], [replace_ensembl_with_symbol()],
 #'   [format_gene_symbols()], [edge_intersection()], [collapse_p()], [add_line_breaks()], 
@@ -195,7 +196,7 @@ enrichment_network_vis = function(pw_enrich_res,
   
   clust1sig_collapsed = clust1sig[,list(intersection_formatted = paste0(genes, collapse=', '),
                                         genes = paste0(genes, collapse=', '),
-                                        intersection_original = paste0(intersection, collapse=','), 
+                                        intersection_original = paste0(intersection, collapse=','), # includes duplicates 
                                         sumlog_p = collapse_p(computed_p_value),
                                         #term_size = sum(term_size),
                                         #query_size = sum(query_size),
@@ -245,7 +246,7 @@ enrichment_network_vis = function(pw_enrich_res,
   allpw = unique(clust1sig_collapsed[,term_id])
   pairs = data.table::data.table(t(utils::combn(allpw, 2, simplify = T)))
   pairs = pairs[V1 != V2]
-  pairs[,similarity_score := NA_real_]
+  #pairs[,similarity_score := NA_real_]
   
   generate_scores = T
   if(!is.null(similarity_scores_file)){
@@ -256,49 +257,46 @@ enrichment_network_vis = function(pw_enrich_res,
     }
     if(file.exists(similarity_scores_file)){
       pairs = data.table::as.data.table(readRDS(file = similarity_scores_file))
-      generate_scores = F
+      generate_scores = FALSE 
     }
   }
   
   if(generate_scores){
-    # iterate through the rows
-    for(i in 1:nrow(pairs)){
-      v1_pw = pairs[i, V1]
-      v2_pw = pairs[i, V2]
-      # get string1
-      v1_members = clust1sig_collapsed[term_id == v1_pw, intersection_original]
-      # get string2
-      v2_members = clust1sig_collapsed[term_id == v2_pw, intersection_original]
-      if(v1_members == "NA" | v2_members == "NA"){
-        if(include_metab_singletons){
-          if(v1_members == "NA" & v2_members == "NA"){
-            # both are METAB PWs
-            # draw an edge if at least one word overlaps between name and parents
-            if(!is.null(parent_pathways)){
-              v1_parent = gsub(".*; ","",parent_pathways[[v1_pw]])
-              v2_parent = gsub(".*; ","",parent_pathways[[v2_pw]])
-            }else{
-              v1_parent = ""
-              v2_parent = ""
-            }
-            v1_words = cleanup(paste(clust1sig_collapsed[term_id == v1_pw, term_name], v1_parent))
-            v2_words = cleanup(paste(clust1sig_collapsed[term_id == v2_pw, term_name], v2_parent))
-            if(length(intersect(v1_words, v2_words))>0){
-              s = similarity_cutoff
-            }else{
-              s = 0
-            }
-          }else{
-            s = 0
-          }
-        }else{
-          s = 0
-        }
-      }else{
-        s = calc_similarity_metric(v1_members, v2_members)
-      }
-      pairs[i,similarity_score := s]
+    
+    # make a feature:integer hashmap, where features are from the "intersection_original" column 
+    # this hashmap is only used to quickly check if a feature has already been assigned an integer 
+    fid_map = r2r::hashmap(list('root', 0))
+    
+    # map all features to an integer
+    feature_to_idx = function(x){
+      sapply(unname(unlist(strsplit(clust1sig_collapsed[term_id == x, intersection_original], ","))), 
+             function(fid){
+               if(fid == 'NA'){
+                 return()
+               }
+               idx = fid_map[[fid]]
+               if(is.null(idx)){
+                 idx = length(fid_map) + 1
+                 fid_map[[fid]] = idx  
+               }
+               return(idx)
+             }, 
+             USE.NAMES = FALSE)
     }
+    
+    fid_lists = sapply(allpw, feature_to_idx)
+
+    # calculate the similarities
+    sims = apply(pairs, 
+                 1, 
+                 calc_similarity_metric, 
+                 fid_lists, 
+                 include_metab_singletons, 
+                 parent_pathways, 
+                 clust1sig_collapsed, 
+                 similarity_cutoff)
+    
+    pairs[, similarity_score := sims]
     
     if(!is.null(similarity_scores_file)){
       saveRDS(pairs, file = similarity_scores_file)
@@ -549,7 +547,8 @@ enrichment_network_vis = function(pw_enrich_res,
       v1 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
         visNetwork::visInteraction(tooltipDelay = 10,
                                    tooltipStay = Inf,
-                                   hideEdgesOnZoom = T) %>%
+                                   hideEdgesOnZoom = FALSE,
+                                   zoomSpeed = 0.3) %>% 
         visNetwork::visIgraphLayout(layout = "layout_nicely") 
     }else{
       # nodes for legend
@@ -571,14 +570,16 @@ enrichment_network_vis = function(pw_enrich_res,
                               stepY = 40) %>%
         visNetwork::visInteraction(tooltipDelay = 10,
                                    tooltipStay = Inf,
-                                   hideEdgesOnZoom = T) %>%
+                                   hideEdgesOnZoom = FALSE,
+                                   zoomSpeed = 0.3) %>% 
         visNetwork::visIgraphLayout(layout = "layout_nicely") 
     }
   }else{
     v1 = visNetwork::visNetwork(viznetwork_nodes, viznetwork_edges, main=title) %>%
       visNetwork::visInteraction(tooltipDelay = 10,
                                  tooltipStay = Inf,
-                                 hideEdgesOnZoom = T) %>%
+                                 hideEdgesOnZoom = FALSE,
+                                 zoomSpeed = 0.3) %>% 
       visNetwork::visIgraphLayout(layout = "layout_nicely") 
   }
     
@@ -605,34 +606,83 @@ enrichment_network_vis = function(pw_enrich_res,
 }
 
 
-#' Calculate pathway similarity metric 
-#' 
+#' Calculate pathway similarity metric
+#'
 #' Calculate EnrichmentMap's similarity metric for pathways, which is 50% Jaccard
 #' index and 50% overlap score.
-#' Function is used internally in [enrichment_network_vis()]. 
-#' 
-#' @param string1 character, comma-separated list of intersection with pathway1
-#' @param string2 character, comma-separated list of intersection with pathway2
-#' 
+#' Function is used internally in [enrichment_network_vis()].
+#'
+#' @param pws character vector of pathway term IDs, length 2
+#' @param fid_lists named list where names are pathway terms IDs and values are lists of integers 
+#'   corresponding to unique feature IDs 
+#' @param include_metab_singletons boolean. If \code{TRUE}, include pathways enriched only 
+#'   by metabolites (ome METAB) as singleton nodes
+#' @param parent_pathways named list, map of KEGG and REAC pathway term ID to parent pathway.
+#'   Used to create labels for clusters of pathway enrichments. 
+#'   List names must correspond to values in \code{pw_enrich_res$term_id}. 
+#'   [MotrpacRatTraining6moData::PATHWAY_PARENTS] by default. 
+#'   If NULL, then only the pathway names are used to create cluster labels, which
+#'   is quite meaningless is all pathway names are unique. In that case,
+#'   it is recommended to set \code{label_nodes} to \code{FALSE}.
+#' @param clust1sig_collapsed data table of merged pathway enrichment results passed by [enrichment_network_vis()]
+#' @param similarity_cutoff numeric, edges are drawn between pairs of pathways if they have 
+#'   a similarity metric above this value
+#'
 #' @return numeric similarity score
-#' 
+#'
 #' @seealso [enrichment_network_vis()]
-#' 
+#'
 #' @keywords internal
-#' 
-calc_similarity_metric = function(string1, string2){
+#'
+calc_similarity_metric = function(pws,
+                                  fid_lists, 
+                                  include_metab_singletons, 
+                                  parent_pathways, 
+                                  clust1sig_collapsed, 
+                                  similarity_cutoff){
   # use Cytoscape Enrichment Map similarity score:
   # jaccard = [size of (A intersect B)] / [size of (A union B)]
   # overlap = [size of (A intersect B)] / [size of (minimum( A , B))]
   # similarity_score = 0.5*jaccard + 0.5*overlap
-  set1 = unname(unlist(strsplit(string1, ',')))
-  set2 = unname(unlist(strsplit(string2, ',')))
+  pw1 = pws[['V1']]
+  pw2 = pws[['V2']]  
   
-  jaccard = length(intersect(set1, set2)) / length(union(set1, set2))
-  overlap = length(intersect(set1, set2)) / min(length(set1), length(set2))
-  similarity_score = 0.5*jaccard + 0.5*overlap
+  fids1 = fid_lists[[pw1]]
+  fids2 = fid_lists[[pw2]]
   
-  return(similarity_score)
+  fids1_is_valid = typeof(fids1) == 'double'   
+  fids2_is_valid = typeof(fids2) == 'double'   
+  
+  if(!fids1_is_valid  & !fids2_is_valid){
+    if(include_metab_singletons){
+      # both are METAB PWs
+      # draw an edge if at least one word overlaps between name and parents
+      if(!is.null(parent_pathways)){
+        v1_parent = gsub(".*; ","",parent_pathways[[pw1]])
+        v2_parent = gsub(".*; ","",parent_pathways[[pw2]])
+      }else{
+        v1_parent = ""
+        v2_parent = ""
+      }
+      v1_words = cleanup(paste(clust1sig_collapsed[term_id == pw1, term_name], v1_parent))
+      v2_words = cleanup(paste(clust1sig_collapsed[term_id == pw2, term_name], v2_parent))
+      if(length(intersect(v1_words, v2_words))>0){
+        return(similarity_cutoff)
+      }
+    }
+  }else if(fids1_is_valid & fids2_is_valid){
+    # both are valid
+    shared_size = length(intersect(fids1, fids2)) 
+    s1 = length(unique(fids1))
+    s2 = length(unique(fids2))
+    
+    jaccard = shared_size / (s1 + s2 - shared_size)
+    overlap = shared_size / min(s1, s2)
+    similarity_score = (jaccard + overlap)/2
+    
+    return(similarity_score)
+  }
+  return(0)
 }
 
 

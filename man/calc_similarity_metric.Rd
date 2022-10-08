@@ -4,12 +4,36 @@
 \alias{calc_similarity_metric}
 \title{Calculate pathway similarity metric}
 \usage{
-calc_similarity_metric(string1, string2)
+calc_similarity_metric(
+  pws,
+  fid_lists,
+  include_metab_singletons,
+  parent_pathways,
+  clust1sig_collapsed,
+  similarity_cutoff
+)
 }
 \arguments{
-\item{string1}{character, comma-separated list of intersection with pathway1}
+\item{pws}{character vector of pathway term IDs, length 2}
 
-\item{string2}{character, comma-separated list of intersection with pathway2}
+\item{fid_lists}{named list where names are pathway terms IDs and values are lists of integers
+corresponding to unique feature IDs}
+
+\item{include_metab_singletons}{boolean. If \code{TRUE}, include pathways enriched only
+by metabolites (ome METAB) as singleton nodes}
+
+\item{parent_pathways}{named list, map of KEGG and REAC pathway term ID to parent pathway.
+Used to create labels for clusters of pathway enrichments.
+List names must correspond to values in \code{pw_enrich_res$term_id}.
+\link[MotrpacRatTraining6moData:PATHWAY_PARENTS]{MotrpacRatTraining6moData::PATHWAY_PARENTS} by default.
+If NULL, then only the pathway names are used to create cluster labels, which
+is quite meaningless is all pathway names are unique. In that case,
+it is recommended to set \code{label_nodes} to \code{FALSE}.}
+
+\item{clust1sig_collapsed}{data table of merged pathway enrichment results passed by \code{\link[=enrichment_network_vis]{enrichment_network_vis()}}}
+
+\item{similarity_cutoff}{numeric, edges are drawn between pairs of pathways if they have
+a similarity metric above this value}
 }
 \value{
 numeric similarity score
