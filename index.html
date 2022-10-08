@@ -104,7 +104,7 @@
 <div class="section level3">
 <h3 id="about-this-package">About this package<a class="anchor" aria-label="anchor" href="#about-this-package"></a>
 </h3>
-<p>This package provides functions to fetch, explore, and reproduce the processed data and downstream analysis results presented in the main paper for the first large-scale multi-omic multi-tissue endurance exercise training study conducted in young adult rats by the Molecular Transducers of Physical Activity Consortium (MoTrPAC). <strong>See the <a href="https://motrpac.github.io/MotrpacRatTraining6mo/articles/MotrpacRatTraining6mo.html">vignette</a> for examples of how to use this package.</strong> A <a href="https://www.biorxiv.org/" class="external-link">bioRxiv</a> link to the corresponding preprint will be added shortly.</p>
+<p>This package provides functions to fetch, explore, and reproduce the processed data and downstream analysis results presented in the main paper for the first large-scale multi-omic multi-tissue endurance exercise training study conducted in young adult rats by the Molecular Transducers of Physical Activity Consortium (MoTrPAC). Find the <a href="https://www.biorxiv.org/content/10.1101/2022.09.21.508770v2" class="external-link">preprint on bioRxiv</a>. <strong>See the <a href="https://motrpac.github.io/MotrpacRatTraining6mo/articles/MotrpacRatTraining6mo.html">vignette</a> for examples of how to use this package.</strong></p>
 <p>While some of the functions in this package can be used by themselves, they were primarily written to analyze data in the <a href="https://motrpac.github.io/MotrpacRatTraining6moData">MotrpacRatTraining6moData</a> R package. See examples of how these data can be analyzed <em>without</em> this package in the <a href="https://motrpac.github.io/MotrpacRatTraining6moData/articles/MotrpacRatTraining6moData.html">MotrpacRatTraining6moData vignette</a>.</p>
 </div>
 <div class="section level3">
@@ -116,12 +116,14 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install this package with <code>devtools</code>:</p>
+<p>Install this package with <code>devtools</code>. Because installing this package also installs <a href="https://motrpac.github.io/MotrpacRatTraining6moData">MotrpacRatTraining6moData</a> as a dependency, Mac users should additionally extend their <code>timeout</code> to prevent an error caused by the amount of time it takes to download <code>MoTrPAC/MotrpacRatTraining6moData@HEAD</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>timeout<span class="op">=</span><span class="fl">1e5</span><span class="op">)</span> <span class="co"># recommended for Mac users</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"MoTrPAC/MotrpacRatTraining6mo"</span><span class="op">)</span></span></code></pre></div>
+<p><a href="https://motrpac.github.io/MotrpacRatTraining6moData">MotrpacRatTraining6moData</a> is a critical dependency for this package. If the above command has issues installing this dependency, follow <a href="https://motrpac.github.io/MotrpacRatTraining6moData/index.html#installation">these instructions</a> to install <a href="https://motrpac.github.io/MotrpacRatTraining6moData">MotrpacRatTraining6moData</a> separately.</p>
 </div>
 <div class="section level2">
 <h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
@@ -146,7 +148,7 @@
 <div class="section level2">
 <h2 id="citing-motrpac-data">Citing MoTrPAC data<a class="anchor" aria-label="anchor" href="#citing-motrpac-data"></a>
 </h2>
-<p>A citation will be added when the preprint is available on <a href="https://www.biorxiv.org/" class="external-link">bioRxiv</a>.</p>
+<p>MoTrPAC Study Group. 2022. Temporal dynamics of the multi-omic response to endurance exercise training across tissues. bioRxiv doi: 10.1101/2022.09.21.508770</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -159,8 +161,9 @@
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
 
