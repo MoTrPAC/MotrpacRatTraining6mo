@@ -44,8 +44,11 @@ and prevents disease. See [motrpac.org](https://www.motrpac.org/) and
 [motrpac-data.org](https://motrpac-data.org/) for more details. 
 
 ## Installation
-Install this package with `devtools`:
+Install this package with `devtools`. Because installing this package also installs 
+`MotrpacRatTraining6moData` as a dependency, Mac users should additionally extend their `timeout` to 
+prevent an error when installing this dependency. 
 ```r
+options(timeout=1e5) # recommended for Mac users
 if (!require("devtools", quietly = TRUE)){
   install.packages("devtools")
 }
