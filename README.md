@@ -1,7 +1,9 @@
 # MotrpacRatTraining6mo
 
 <!-- badges: start -->
+![R package version](https://img.shields.io/github/r-package/v/MoTrPAC/MotrpacRatTraining6mo?label=R%20package)
 [![R-CMD-check](https://github.com/MoTrPAC/MotrpacRatTraining6mo/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MoTrPAC/MotrpacRatTraining6mo/actions/workflows/R-CMD-check.yaml)
+![Last commit](https://img.shields.io/github/last-commit/MoTrPAC/MotrpacRatTraining6mo/main)
 <!-- badges: end -->
 
 ## Table of Contents
