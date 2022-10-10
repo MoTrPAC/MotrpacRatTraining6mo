@@ -2,7 +2,7 @@
 % Please edit documentation in R/call_outliers.R
 \name{transcript_call_outliers}
 \alias{transcript_call_outliers}
-\title{Call RNA-seq outliers}
+\title{Call RNA-seq sample outliers}
 \usage{
 transcript_call_outliers(tissues)
 }
@@ -24,11 +24,11 @@ components that explain at least 5\% of variance in each tissue. Use only the 10
 This specifies RNA-seq outliers excluded from differential analysis by MoTrPAC.
 }
 \examples{
-transcript_call_outliers("SKM-GN")
+transcript_call_outliers("SKM-VL")
+\dontrun{
 transcript_call_outliers(c("SKM-GN","BLOOD"))
-
+}
 }
 \seealso{
-\code{\link[=call_pca_outliers]{call_pca_outliers()}} for workhorse function, \code{\link[=plot_pcs]{plot_pcs()}} for plotting function,
-\link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV} for tissue abbrevations
+\code{\link[=call_pca_outliers]{call_pca_outliers()}} for workhorse function and \code{\link[=plot_pcs]{plot_pcs()}} for plotting function
 }

@@ -2,3 +2,135 @@ url: https://motrpac.github.io/MotrpacRatTraining6mo/
 template:
   bootstrap: 5
 
+home:
+  links:
+    - text: Preprint
+      href: https://www.biorxiv.org/content/10.1101/2022.09.21.508770v2 
+
+
+reference:
+
+- title: Load data  
+  desc: Load data and analysis results used in the preprint 
+  contents:
+    - list_available_data
+
+- subtitle: Load sample-level molecular data  
+  contents:
+    - load_sample_data
+    - combine_normalized_data
+
+- subtitle: Load differential analysis results 
+  contents: 
+    - combine_da_results
+
+- subtitle: Load epigenetic data
+  desc: Load full epigenetic datasets from Google Cloud Storage
+  contents: 
+    - load_epigen_da
+    - load_atac_feature_annotation
+    - load_methyl_feature_annotation
+    - load_methyl_raw_data
+    - get_rdata_from_url
+
+
+
+- title: Perform differential analysis 
+
+- subtitle: Wrapper functions 
+  desc: Main functions to perform differential analysis for each data type 
+  contents:
+    - atac_timewise_da
+    - atac_training_da
+    - immuno_timewise_da
+    - immuno_training_da
+    - metab_timewise_da
+    - metab_training_da
+    - proteomics_timewise_da
+    - proteomics_training_da
+    - rrbs_differential_analysis
+    - transcript_timewise_da
+    - transcript_training_da
+
+- subtitle: Ancillary functions
+  desc: Ancillary functions used within the above wrapper functions 
+  contents:
+    - atac_prep_data
+    - analyze_tile
+    - fix_covariates
+    - merge_sites_by_clusters
+    - run_deseq
+    - transcript_prep_data
+
+
+
+- title: Graphical clustering 
+  desc: >
+    Perform and explore the Bayesian graphical clustering 
+    analysis effectively used to transforms continuous 
+    z-scores (normalized effect sizes) into discrete states 
+    to summarize trajectories of differential features in a graph. 
+
+- subtitle: Perform Bayesian graphical clustering  
+  contents:
+    - bayesian_graphical_clustering
+    - repfdr_wrapper
+
+- subtitle: Extract graphical clusters  
+  contents:
+    - extract_main_clusters
+    - get_all_trajectories
+    - extract_tissue_sets
+    - filter_edge_sets_by_trajectories
+    - get_trajectory_sizes_from_edge_sets
+    - limit_sets_by_regex
+
+- subtitle: Plot graphical clusters 
+  contents: 
+    - get_tree_plot_for_tissue
+    - plot_features_per_cluster
+    - plot_feature_trajectories
+
+
+
+- title: Pathway enrichment   
+
+- subtitle: Perform pathway enrichment analysis  
+  contents:
+    - cluster_pathway_enrichment
+    - custom_cluster_pathway_enrichment
+    - run_fella
+    - make_kegg_db 
+
+- subtitle: Visualize pathway enrichment results 
+  contents: 
+    - enrichment_network_vis
+    - check_cluster_res_format
+
+
+
+- title: Manipulate data 
+
+- subtitle: Normalize data 
+  contents:
+    - atac_normalize_counts
+    - transcript_normalize_counts
+
+- subtitle: Call sample outliers 
+  desc: Call sample outliers in principal component space 
+  contents:
+    - call_pca_outliers
+    - plot_pcs
+    - matches("call_outliers")
+
+- subtitle: Miscellaneous  
+  contents:
+    - get_peak_annotations
+    - filter_outliers
+    - viallabel_to_pid
+
+
+
+- title: Built-in data objects 
+  contents:
+    - STOPWORDS

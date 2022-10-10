@@ -227,7 +227,7 @@ fix_covariates = function(covar, meta, center_scale = FALSE){
 #' @param covariates character vector of covariates that correspond to column names of [MotrpacRatTraining6moData::ATAC_META].
 #'   Defaults to covariates that were used for the manuscript. 
 #' @param outliers vector of viallabels to exclude from the returned data. Defaults
-#'   to \code{[MotrpacRatTraining6moData::OUTLIERS]$viallabel}
+#'   to \code{\link[MotrpacRatTraining6moData]{OUTLIERS}$viallabel}
 #' @param nrows integer, number of rows to return. Defaults to Inf. Useful to return a subset of a large data frame for tests. 
 #' @param filter_counts bool, whether to return filtered raw counts
 #' @param return_normalized_data bool, whether to also return normalized data 
@@ -314,9 +314,6 @@ atac_prep_data = function(tissue,
   }
   counts = counts[,meta[,viallabel]]
   
-  meta = as.data.frame(meta)
-  rownames(meta) = meta$viallabel
-  
   # normalized data
   norm = NULL
   if(return_normalized_data){
@@ -332,6 +329,9 @@ atac_prep_data = function(tissue,
     norm[,c("feature","feature_ID","tissue","assay")] = NULL
     norm = norm[,meta[,viallabel]]
   }
+  
+  meta = as.data.frame(meta)
+  rownames(meta) = meta$viallabel
   
   # filter counts
   if(filter_counts){

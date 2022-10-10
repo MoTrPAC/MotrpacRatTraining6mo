@@ -1,3 +1,8 @@
+# MotrpacRatTraining6mo 1.1.2 (2022-10-10)
+
+* Add `atac_call_outliers()` 
+* Bug fix in `atac_prep_data()` 
+
 # MotrpacRatTraining6mo 1.0.2 (2022-10-08)
 
 * Use a hashmap to speed up calculation of similarity scores in `enrichment_network_viz()` (thanks, Jay Yu)

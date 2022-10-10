@@ -32,7 +32,7 @@ Defaults to covariates that were used for the manuscript.}
 Google Cloud Storage. Current working directory by default.}
 
 \item{outliers}{vector of viallabels to exclude from the returned data. Defaults
-to \code{[MotrpacRatTraining6moData::OUTLIERS]$viallabel}}
+to \code{\link[MotrpacRatTraining6moData]{OUTLIERS}$viallabel}}
 
 \item{nrows}{integer, number of rows to return. Defaults to Inf. Useful to return a subset of a large data frame for tests.}
 }
