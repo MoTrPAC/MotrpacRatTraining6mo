@@ -34,6 +34,5 @@ atac_call_outliers(c("LIVER","BAT"),"/tmp")
 }
 }
 \seealso{
-\code{\link[=call_pca_outliers]{call_pca_outliers()}} for workhorse function, \code{\link[=plot_pcs]{plot_pcs()}} for plotting function,
-\link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV} for tissue abbreviations
+\code{\link[=call_pca_outliers]{call_pca_outliers()}} for workhorse function and \code{\link[=plot_pcs]{plot_pcs()}} for plotting function
 }
