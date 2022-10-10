@@ -1,4 +1,4 @@
-# MotrpacRatTraining6mo 1.1.2 (2022-10-10)
+# MotrpacRatTraining6mo 1.1.0 (2022-10-10)
 
 * Add `atac_call_outliers()` 
 * Bug fix in `atac_prep_data()` 
