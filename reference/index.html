@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,445 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="load-data">Load data<a class="anchor" aria-label="anchor" href="#load-data"></a></h2>
+      
+      <p class="section-desc"></p><p>Load data and analysis results used in the preprint</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="list_available_data.html">list_available_data()</a></code> 
+        </dt>
+        <dd>List available data</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="load-sample-level-molecular-data">Load sample-level molecular data<a class="anchor" aria-label="anchor" href="#load-sample-level-molecular-data"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="load_sample_data.html">load_sample_data()</a></code> 
+        </dt>
+        <dd>Load sample-level data</dd>
+      </dl><dl><dt>
+          
+          <code><a href="combine_normalized_data.html">combine_normalized_data()</a></code> 
+        </dt>
+        <dd>Combine normalized sample-level data</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="load-differential-analysis-results">Load differential analysis results<a class="anchor" aria-label="anchor" href="#load-differential-analysis-results"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="combine_da_results.html">combine_da_results()</a></code> 
+        </dt>
+        <dd>Combine differential analysis results</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="load-epigenetic-data">Load epigenetic data<a class="anchor" aria-label="anchor" href="#load-epigenetic-data"></a></h3>
+      <p class="section-desc"></p><p>Load full epigenetic datasets from Google Cloud Storage</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="load_epigen_da.html">load_epigen_da()</a></code> 
+        </dt>
+        <dd>Load epigenetic differential analysis results</dd>
+      </dl><dl><dt>
+          
+          <code><a href="load_atac_feature_annotation.html">load_atac_feature_annotation()</a></code> 
+        </dt>
+        <dd>Load ATAC feature annotation</dd>
+      </dl><dl><dt>
+          
+          <code><a href="load_methyl_feature_annotation.html">load_methyl_feature_annotation()</a></code> 
+        </dt>
+        <dd>Load METHYL feature annotation</dd>
+      </dl><dl><dt>
+          
+          <code><a href="load_methyl_raw_data.html">load_methyl_raw_data()</a></code> 
+        </dt>
+        <dd>Load raw METHYL data</dd>
+      </dl><dl><dt>
+          
+          <code><a href="get_rdata_from_url.html">get_rdata_from_url()</a></code> 
+        </dt>
+        <dd>Load RData from GCS</dd>
+      </dl></div><div class="section level2">
+      <h2 id="perform-differential-analysis">Perform differential analysis<a class="anchor" aria-label="anchor" href="#perform-differential-analysis"></a></h2>
+      
+      
+
+      
+    </div><div class="section level2">
+      
+      <h3 id="wrapper-functions">Wrapper functions<a class="anchor" aria-label="anchor" href="#wrapper-functions"></a></h3>
+      <p class="section-desc"></p><p>Main functions to perform differential analysis for each data type</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="atac_timewise_da.html">atac_timewise_da()</a></code> 
+        </dt>
+        <dd>ATAC-seq timewise differential analysis</dd>
+      </dl><dl><dt>
+          
+          <code><a href="atac_training_da.html">atac_training_da()</a></code> 
+        </dt>
+        <dd>ATAC-seq training differential analysis</dd>
+      </dl><dl><dt>
+          
+          <code><a href="immuno_timewise_da.html">immuno_timewise_da()</a></code> 
+        </dt>
+        <dd>Immunoassay timewise differential analysis</dd>
+      </dl><dl><dt>
+          
+          <code><a href="immuno_training_da.html">immuno_training_da()</a></code> 
+        </dt>
+        <dd>Immunoassay training differential analysis</dd>
+      </dl><dl><dt>
+          
+          <code><a href="metab_timewise_da.html">metab_timewise_da()</a></code> 
+        </dt>
+        <dd>Metabolomics timewise differential analysis</dd>
+      </dl><dl><dt>
+          
+          <code><a href="metab_training_da.html">metab_training_da()</a></code> 
+        </dt>
+        <dd>Metabolomics training differential analysis</dd>
+      </dl><dl><dt>
+          
+          <code><a href="proteomics_timewise_da.html">proteomics_timewise_da()</a></code> 
+        </dt>
+        <dd>Proteomics timewise differential analysis</dd>
+      </dl><dl><dt>
+          
+          <code><a href="proteomics_training_da.html">proteomics_training_da()</a></code> 
+        </dt>
+        <dd>Proteomics training differential analysis</dd>
+      </dl><dl><dt>
+          
+          <code><a href="rrbs_differential_analysis.html">rrbs_differential_analysis()</a></code> 
+        </dt>
+        <dd>RRBS differential anlaysis</dd>
+      </dl><dl><dt>
+          
+          <code><a href="transcript_timewise_da.html">transcript_timewise_da()</a></code> 
+        </dt>
+        <dd>RNA-seq timewise differential analysis</dd>
+      </dl><dl><dt>
+          
+          <code><a href="transcript_training_da.html">transcript_training_da()</a></code> 
+        </dt>
+        <dd>RNA-seq training differential analysis</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="ancillary-functions">Ancillary functions<a class="anchor" aria-label="anchor" href="#ancillary-functions"></a></h3>
+      <p class="section-desc"></p><p>Ancillary functions used within the above wrapper functions</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="atac_prep_data.html">atac_prep_data()</a></code> 
+        </dt>
+        <dd>Prepare ATAC-seq dataset</dd>
+      </dl><dl><dt>
+          
+          <code><a href="analyze_tile.html">analyze_tile()</a></code> 
+        </dt>
+        <dd>Analyze genome tiles</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fix_covariates.html">fix_covariates()</a></code> 
+        </dt>
+        <dd>Format covariates for differential analysis</dd>
+      </dl><dl><dt>
+          
+          <code><a href="merge_sites_by_clusters.html">merge_sites_by_clusters()</a></code> 
+        </dt>
+        <dd>Merge sites by cluster</dd>
+      </dl><dl><dt>
+          
+          <code><a href="run_deseq.html">run_deseq()</a></code> 
+        </dt>
+        <dd>Wrapper for <code><a href="https://rdrr.io/pkg/DESeq2/man/DESeq.html" class="external-link">DESeq2::DESeq()</a></code></dd>
+      </dl><dl><dt>
+          
+          <code><a href="transcript_prep_data.html">transcript_prep_data()</a></code> 
+        </dt>
+        <dd>Preprocess RNA-seq data</dd>
+      </dl></div><div class="section level2">
+      <h2 id="graphical-clustering">Graphical clustering<a class="anchor" aria-label="anchor" href="#graphical-clustering"></a></h2>
+      
+      <p class="section-desc"></p><p>Perform and explore the Bayesian graphical clustering analysis effectively used to transforms continuous z-scores (normalized effect sizes) into discrete states to summarize trajectories of differential features in a graph.</p>
+
+      
+    </div><div class="section level2">
+      
+      <h3 id="perform-bayesian-graphical-clustering">Perform Bayesian graphical clustering<a class="anchor" aria-label="anchor" href="#perform-bayesian-graphical-clustering"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="bayesian_graphical_clustering.html">bayesian_graphical_clustering()</a></code> 
+        </dt>
+        <dd>Bayesian graphical clustering</dd>
+      </dl><dl><dt>
+          
+          <code><a href="repfdr_wrapper.html">repfdr_wrapper()</a></code> 
+        </dt>
+        <dd><code>repfdr</code> wrapper</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="extract-graphical-clusters">Extract graphical clusters<a class="anchor" aria-label="anchor" href="#extract-graphical-clusters"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="extract_main_clusters.html">extract_main_clusters()</a></code> 
+        </dt>
+        <dd>Extract main graphical clusters</dd>
+      </dl><dl><dt>
+          
+          <code><a href="get_all_trajectories.html">get_all_trajectories()</a></code> 
+        </dt>
+        <dd>Remove all non-empty trajectories</dd>
+      </dl><dl><dt>
+          
+          <code><a href="extract_tissue_sets.html">extract_tissue_sets()</a></code> 
+        </dt>
+        <dd>An auxiliary function for getting the top analyte sets for a set of tissues.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="filter_edge_sets_by_trajectories.html">filter_edge_sets_by_trajectories()</a></code> 
+        </dt>
+        <dd>Filter edge sets to largest trajectories</dd>
+      </dl><dl><dt>
+          
+          <code><a href="get_trajectory_sizes_from_edge_sets.html">get_trajectory_sizes_from_edge_sets()</a></code> 
+        </dt>
+        <dd>Get trajectory sizes</dd>
+      </dl><dl><dt>
+          
+          <code><a href="limit_sets_by_regex.html">limit_sets_by_regex()</a></code> 
+        </dt>
+        <dd>Reduce a list of sets by a regex</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="plot-graphical-clusters">Plot graphical clusters<a class="anchor" aria-label="anchor" href="#plot-graphical-clusters"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="get_tree_plot_for_tissue.html">get_tree_plot_for_tissue()</a></code> 
+        </dt>
+        <dd>Graph representation of feature trajectories</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_features_per_cluster.html">plot_features_per_cluster()</a></code> 
+        </dt>
+        <dd>Plot feature composition of clusters</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_feature_trajectories.html">plot_feature_trajectories()</a></code> 
+        </dt>
+        <dd>Plot feature trajectories</dd>
+      </dl></div><div class="section level2">
+      <h2 id="pathway-enrichment">Pathway enrichment<a class="anchor" aria-label="anchor" href="#pathway-enrichment"></a></h2>
+      
+      
+
+      
+    </div><div class="section level2">
+      
+      <h3 id="perform-pathway-enrichment-analysis">Perform pathway enrichment analysis<a class="anchor" aria-label="anchor" href="#perform-pathway-enrichment-analysis"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="cluster_pathway_enrichment.html">cluster_pathway_enrichment()</a></code> 
+        </dt>
+        <dd>Pathway enrichment for graphical clusters</dd>
+      </dl><dl><dt>
+          
+          <code><a href="custom_cluster_pathway_enrichment.html">custom_cluster_pathway_enrichment()</a></code> 
+        </dt>
+        <dd>Custom pathway enrichment for graphical clusters</dd>
+      </dl><dl><dt>
+          
+          <code><a href="run_fella.html">run_fella()</a></code> 
+        </dt>
+        <dd>Metabolomics pathway enrichment</dd>
+      </dl><dl><dt>
+          
+          <code><a href="make_kegg_db.html">make_kegg_db()</a></code> 
+        </dt>
+        <dd>Make KEGG database</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="visualize-pathway-enrichment-results">Visualize pathway enrichment results<a class="anchor" aria-label="anchor" href="#visualize-pathway-enrichment-results"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="enrichment_network_vis.html">enrichment_network_vis()</a></code> 
+        </dt>
+        <dd>Pathway enrichment network</dd>
+      </dl><dl><dt>
+          
+          <code><a href="check_cluster_res_format.html">check_cluster_res_format()</a></code> 
+        </dt>
+        <dd>Check clustering results format</dd>
+      </dl></div><div class="section level2">
+      <h2 id="manipulate-data">Manipulate data<a class="anchor" aria-label="anchor" href="#manipulate-data"></a></h2>
+      
+      
+
+      
+    </div><div class="section level2">
+      
+      <h3 id="normalize-data">Normalize data<a class="anchor" aria-label="anchor" href="#normalize-data"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="atac_normalize_counts.html">atac_normalize_counts()</a></code> 
+        </dt>
+        <dd>Filter and normalize raw ATAC-seq counts</dd>
+      </dl><dl><dt>
+          
+          <code><a href="transcript_normalize_counts.html">transcript_normalize_counts()</a></code> 
+        </dt>
+        <dd>Filter and normalize raw RNA-seq counts</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="call-sample-outliers">Call sample outliers<a class="anchor" aria-label="anchor" href="#call-sample-outliers"></a></h3>
+      <p class="section-desc"></p><p>Call sample outliers in principal component space</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="call_pca_outliers.html">call_pca_outliers()</a></code> 
+        </dt>
+        <dd>Call PCA outliers</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_pcs.html">plot_pcs()</a></code> 
+        </dt>
+        <dd>Plot 2D scatter plot of principal components</dd>
+      </dl><dl><dt>
+          
+          <code><a href="atac_call_outliers.html">atac_call_outliers()</a></code> 
+        </dt>
+        <dd>Call ATAC-seq sample outliers</dd>
+      </dl><dl><dt>
+          
+          <code><a href="transcript_call_outliers.html">transcript_call_outliers()</a></code> 
+        </dt>
+        <dd>Call RNA-seq sample outliers</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="miscellaneous">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="get_peak_annotations.html">get_peak_annotations()</a></code> 
+        </dt>
+        <dd>Get genomic peak annotations</dd>
+      </dl><dl><dt>
+          
+          <code><a href="filter_outliers.html">filter_outliers()</a></code> 
+        </dt>
+        <dd>Filter outliers</dd>
+      </dl><dl><dt>
+          
+          <code><a href="viallabel_to_pid.html">viallabel_to_pid()</a></code> 
+        </dt>
+        <dd>Map vial labels to PIDs</dd>
+      </dl></div><div class="section level2">
+      <h2 id="built-in-data-objects">Built-in data objects<a class="anchor" aria-label="anchor" href="#built-in-data-objects"></a></h2>
       
       
 
@@ -62,263 +500,9 @@
           <code><a href="STOPWORDS.html">STOPWORDS</a></code> 
         </dt>
         <dd>Stop words</dd>
-      </dl><dl><dt>
-          
-          <code><a href="analyze_tile.html">analyze_tile()</a></code> 
-        </dt>
-        <dd>Analyze genome tiles</dd>
-      </dl><dl><dt>
-          
-          <code><a href="atac_normalize_counts.html">atac_normalize_counts()</a></code> 
-        </dt>
-        <dd>Filter and normalize raw ATAC-seq counts</dd>
-      </dl><dl><dt>
-          
-          <code><a href="atac_prep_data.html">atac_prep_data()</a></code> 
-        </dt>
-        <dd>Prepare ATAC-seq dataset</dd>
-      </dl><dl><dt>
-          
-          <code><a href="atac_timewise_da.html">atac_timewise_da()</a></code> 
-        </dt>
-        <dd>ATAC-seq timewise differential analysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="atac_training_da.html">atac_training_da()</a></code> 
-        </dt>
-        <dd>ATAC-seq training differential analysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="bayesian_graphical_clustering.html">bayesian_graphical_clustering()</a></code> 
-        </dt>
-        <dd>Bayesian graphical clustering</dd>
-      </dl><dl><dt>
-          
-          <code><a href="call_pca_outliers.html">call_pca_outliers()</a></code> 
-        </dt>
-        <dd>Call PCA outliers</dd>
-      </dl><dl><dt>
-          
-          <code><a href="check_cluster_res_format.html">check_cluster_res_format()</a></code> 
-        </dt>
-        <dd>Check clustering results format</dd>
-      </dl><dl><dt>
-          
-          <code><a href="cluster_pathway_enrichment.html">cluster_pathway_enrichment()</a></code> 
-        </dt>
-        <dd>Pathway enrichment for graphical clusters</dd>
-      </dl><dl><dt>
-          
-          <code><a href="combine_da_results.html">combine_da_results()</a></code> 
-        </dt>
-        <dd>Combine differential analysis results</dd>
-      </dl><dl><dt>
-          
-          <code><a href="combine_normalized_data.html">combine_normalized_data()</a></code> 
-        </dt>
-        <dd>Combine normalized sample-level data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="custom_cluster_pathway_enrichment.html">custom_cluster_pathway_enrichment()</a></code> 
-        </dt>
-        <dd>Custom pathway enrichment for graphical clusters</dd>
-      </dl><dl><dt>
-          
-          <code><a href="enrichment_network_vis.html">enrichment_network_vis()</a></code> 
-        </dt>
-        <dd>Pathway enrichment network</dd>
-      </dl><dl><dt>
-          
-          <code><a href="extract_main_clusters.html">extract_main_clusters()</a></code> 
-        </dt>
-        <dd>Extract main graphical clusters</dd>
-      </dl><dl><dt>
-          
-          <code><a href="extract_tissue_sets.html">extract_tissue_sets()</a></code> 
-        </dt>
-        <dd>An auxiliary function for getting the top analyte sets for a set of tissues.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="filter_edge_sets_by_trajectories.html">filter_edge_sets_by_trajectories()</a></code> 
-        </dt>
-        <dd>Filter edge sets to largest trajectories</dd>
-      </dl><dl><dt>
-          
-          <code><a href="filter_outliers.html">filter_outliers()</a></code> 
-        </dt>
-        <dd>Filter outliers</dd>
-      </dl><dl><dt>
-          
-          <code><a href="fix_covariates.html">fix_covariates()</a></code> 
-        </dt>
-        <dd>Format covariates for differential analysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="get_all_trajectories.html">get_all_trajectories()</a></code> 
-        </dt>
-        <dd>Remove all non-empty trajectories</dd>
-      </dl><dl><dt>
-          
-          <code><a href="get_peak_annotations.html">get_peak_annotations()</a></code> 
-        </dt>
-        <dd>Get genomic peak annotations</dd>
-      </dl><dl><dt>
-          
-          <code><a href="get_rdata_from_url.html">get_rdata_from_url()</a></code> 
-        </dt>
-        <dd>Load RData from GCS</dd>
-      </dl><dl><dt>
-          
-          <code><a href="get_trajectory_sizes_from_edge_sets.html">get_trajectory_sizes_from_edge_sets()</a></code> 
-        </dt>
-        <dd>Get trajectory sizes</dd>
-      </dl><dl><dt>
-          
-          <code><a href="get_tree_plot_for_tissue.html">get_tree_plot_for_tissue()</a></code> 
-        </dt>
-        <dd>Graph representation of feature trajectories</dd>
-      </dl><dl><dt>
-          
-          <code><a href="immuno_timewise_da.html">immuno_timewise_da()</a></code> 
-        </dt>
-        <dd>Immunoassay timewise differential analysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="immuno_training_da.html">immuno_training_da()</a></code> 
-        </dt>
-        <dd>Immunoassay training differential analysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="limit_sets_by_regex.html">limit_sets_by_regex()</a></code> 
-        </dt>
-        <dd>Reduce a list of sets by a regex</dd>
-      </dl><dl><dt>
-          
-          <code><a href="list_available_data.html">list_available_data()</a></code> 
-        </dt>
-        <dd>List available data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="load_atac_feature_annotation.html">load_atac_feature_annotation()</a></code> 
-        </dt>
-        <dd>Load ATAC feature annotation</dd>
-      </dl><dl><dt>
-          
-          <code><a href="load_epigen_da.html">load_epigen_da()</a></code> 
-        </dt>
-        <dd>Load epigenetic differential analysis results</dd>
-      </dl><dl><dt>
-          
-          <code><a href="load_methyl_feature_annotation.html">load_methyl_feature_annotation()</a></code> 
-        </dt>
-        <dd>Load METHYL feature annotation</dd>
-      </dl><dl><dt>
-          
-          <code><a href="load_methyl_raw_data.html">load_methyl_raw_data()</a></code> 
-        </dt>
-        <dd>Load raw METHYL data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="load_sample_data.html">load_sample_data()</a></code> 
-        </dt>
-        <dd>Load sample-level data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="make_kegg_db.html">make_kegg_db()</a></code> 
-        </dt>
-        <dd>Make KEGG database</dd>
-      </dl><dl><dt>
-          
-          <code><a href="merge_sites_by_clusters.html">merge_sites_by_clusters()</a></code> 
-        </dt>
-        <dd>Merge sites by cluster</dd>
-      </dl><dl><dt>
-          
-          <code><a href="metab_timewise_da.html">metab_timewise_da()</a></code> 
-        </dt>
-        <dd>Metabolomics timewise differential analysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="metab_training_da.html">metab_training_da()</a></code> 
-        </dt>
-        <dd>Metabolomics training differential analysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="plot_feature_trajectories.html">plot_feature_trajectories()</a></code> 
-        </dt>
-        <dd>Plot feature trajectories</dd>
-      </dl><dl><dt>
-          
-          <code><a href="plot_features_per_cluster.html">plot_features_per_cluster()</a></code> 
-        </dt>
-        <dd>Plot feature composition of clusters</dd>
-      </dl><dl><dt>
-          
-          <code><a href="plot_pcs.html">plot_pcs()</a></code> 
-        </dt>
-        <dd>Plot 2D scatter plot of principal components</dd>
-      </dl><dl><dt>
-          
-          <code><a href="proteomics_timewise_da.html">proteomics_timewise_da()</a></code> 
-        </dt>
-        <dd>Proteomics timewise differential analysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="proteomics_training_da.html">proteomics_training_da()</a></code> 
-        </dt>
-        <dd>Proteomics training differential analysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="repfdr_wrapper.html">repfdr_wrapper()</a></code> 
-        </dt>
-        <dd><code>repfdr</code> wrapper</dd>
-      </dl><dl><dt>
-          
-          <code><a href="rrbs_differential_analysis.html">rrbs_differential_analysis()</a></code> 
-        </dt>
-        <dd>RRBS differential anlaysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="run_deseq.html">run_deseq()</a></code> 
-        </dt>
-        <dd>Wrapper for <code><a href="https://rdrr.io/pkg/DESeq2/man/DESeq.html" class="external-link">DESeq2::DESeq()</a></code></dd>
-      </dl><dl><dt>
-          
-          <code><a href="run_fella.html">run_fella()</a></code> 
-        </dt>
-        <dd>Metabolomics pathway enrichment</dd>
-      </dl><dl><dt>
-          
-          <code><a href="transcript_call_outliers.html">transcript_call_outliers()</a></code> 
-        </dt>
-        <dd>Call RNA-seq outliers</dd>
-      </dl><dl><dt>
-          
-          <code><a href="transcript_normalize_counts.html">transcript_normalize_counts()</a></code> 
-        </dt>
-        <dd>Filter and normalize raw RNA-seq counts</dd>
-      </dl><dl><dt>
-          
-          <code><a href="transcript_prep_data.html">transcript_prep_data()</a></code> 
-        </dt>
-        <dd>Preprocess RNA-seq data</dd>
-      </dl><dl><dt>
-          
-          <code><a href="transcript_timewise_da.html">transcript_timewise_da()</a></code> 
-        </dt>
-        <dd>RNA-seq timewise differential analysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="transcript_training_da.html">transcript_training_da()</a></code> 
-        </dt>
-        <dd>RNA-seq training differential analysis</dd>
-      </dl><dl><dt>
-          
-          <code><a href="viallabel_to_pid.html">viallabel_to_pid()</a></code> 
-        </dt>
-        <dd>Map vial labels to PIDs</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
