@@ -106,7 +106,9 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
   
   # save as many PCs that explain at least X variance
   explain_vars = summary(pca)[["importance"]][2,1:ncol(summary(pca)[["importance"]])]
-  if(verbose){print(summary(pca)[["importance"]][2,1:ncol(summary(pca)[["importance"]])][1:10])}
+  if(verbose){
+    print(summary(pca)[["importance"]][2,1:ncol(summary(pca)[["importance"]])][1:10])
+  }
   explain_var = explain_vars[explain_vars > min_pc_ve]
   num_pcs = length(explain_var)
   if(num_pcs == 0){
@@ -114,7 +116,9 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
     explain_var[explain_vars[1]]
   }
   
-  if(verbose){cat(sprintf("The first %s PCs were selected to identify outliers.\n", num_pcs))}
+  if(verbose){
+    message(sprintf("The first %s PCs were selected to identify outliers.", num_pcs))
+  }
   pcax = pca$x[,1:max(2, num_pcs)]
   
   # ID outliers 
@@ -135,9 +139,9 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
   }
   if(verbose){
     if(length(pca_outliers) == 0){
-      cat("No PC outliers.\n")
+      message("No PC outliers.")
     }else{
-      cat("PC outliers:\n")
+      message("PC outliers:")
       colnames(pca_outliers_report) = c('PC','viallabel','PC value')
       print(pca_outliers_report)
     }
@@ -145,12 +149,18 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
   
   if(plot){
     # plot before
-    cat("Plotting PCs with any outliers flagged...\n")
+    if(length(pca_outliers) > 0){
+      if(verbose) message("Plotting PCs with outliers flagged...")
+    }else{
+      if(verbose) message("Plotting PCs. No outliers flagged.")
+    }
     for(i in 2:max(2,num_pcs)){
       print(plot_pcs("PC1", paste0("PC", i), pcax, names(pca_outliers), pca, title=sprintf('%s before outlier removal',title)))
     }
+    
+    # plot after 
     if(length(pca_outliers) > 0){
-      cat("Plotting PCs with outliers removed...\n")
+      if(verbose) message("Plotting PCs with outliers removed...")
       # plot after 
       filt_norm = norm[,!colnames(norm) %in% names(pca_outliers)]
       # remove features with 0 variance 
@@ -173,7 +183,7 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
 }
 
 
-#' Call RNA-seq outliers
+#' Call RNA-seq sample outliers
 #' 
 #' Identify samples that are outside of 5 times the interquartile range of principal
 #' components that explain at least 5% of variance in each tissue. Use only the 1000 most variable genes. 
@@ -192,12 +202,13 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
 #' @seealso [call_pca_outliers()] for workhorse function, [plot_pcs()] for plotting function, 
 #'     [MotrpacRatTraining6moData::TISSUE_ABBREV] for tissue abbrevations 
 #'
-#' @examples
-#' transcript_call_outliers("SKM-GN")
-#' transcript_call_outliers(c("SKM-GN","BLOOD"))
-#'
 #' @export
 #'
+#' @examples
+#' transcript_call_outliers("SKM-VL")
+#' \dontrun{
+#' transcript_call_outliers(c("SKM-GN","BLOOD"))
+#' }
 transcript_call_outliers = function(tissues){
   pca_outliers_list = list()
   for(.tissue in tissues){
@@ -224,6 +235,67 @@ transcript_call_outliers = function(tissues){
   out = pca_outliers[,list(tissue=.tissue,
                            reason=paste0(PC, collapse=',')),
                      by = viallabel]
+  out = unique(out)
+  return(as.data.frame(out))
+}
+
+
+#' Call ATAC-seq sample outliers
+#' 
+#' Identify samples that are outside of 3 times the interquartile range of principal
+#' components that explain at least 7.5% of variance in each tissue. Use only the 10,000 most variable peaks. 
+#' Outlier calling is performed separately in each sex.  
+#' This specifies ATAC-seq outliers excluded from differential analysis by MoTrPAC.  
+#' 
+#' @param tissues character vector of tissue abbreviations for which to call ATAC-seq outliers, 
+#'   one of "BAT", "HEART", "HIPPOC", "KIDNEY", "LIVER", "LUNG", "SKM-GN", "WAT-SC" 
+#' @param scratchdir character, local directory in which to download data from Google Cloud Storage. 
+#'   Current working directory by default.
+#' 
+#' @return NULL if there are no outliers, or a data frame with three columns and one row per outlier:
+#' \describe{
+#'   \item{\code{viallabel}}{character, `r viallabel()`}
+#'   \item{\code{tissue}}{`r tissue()`}
+#'   \item{\code{reason}}{character, PC(s) in which the sample was flagged}
+#' }
+#'
+#' @seealso [call_pca_outliers()] for workhorse function, [plot_pcs()] for plotting function, 
+#'     [MotrpacRatTraining6moData::TISSUE_ABBREV] for tissue abbreviations 
+#'
+#' @export 
+#'
+#' @examples
+#' \dontrun{
+#' atac_call_outliers("LIVER","/tmp")
+#' atac_call_outliers(c("LIVER","BAT"),"/tmp")
+#' }
+atac_call_outliers = function(tissues, scratchdir = "."){
+  pca_outliers_list = list()
+  for(.tissue in tissues){
+    
+    data = atac_prep_data(.tissue, covariates = NULL, outliers = NULL, return_normalized_data = TRUE, scratchdir = scratchdir)
+    meta = data.table::data.table(data$metadata)
+    tmm = data$norm_data
+    
+    for(s in unique(meta[,sex])){
+      dataset = sprintf("%s %s", .tissue, s)
+      message(dataset)
+      sub_quant = tmm[,meta[sex == s,viallabel]]
+      pca_out = call_pca_outliers(sub_quant, 0.075, plot=TRUE, verbose=TRUE, iqr_coef=3, title=dataset, M=10000)
+      if(length(pca_out$pca_outliers)>0){
+        rep = data.table::as.data.table(pca_out$pc_outliers_report)
+        rep[,tissue := .tissue]
+        pca_outliers_list[[dataset]] = rep
+      }
+    }
+  }
+  
+  pca_outliers = rbindlist(pca_outliers_list)
+  if(nrow(pca_outliers)==0){
+    return(NULL)
+  }
+  out = pca_outliers[,list(reason=paste0(PC, collapse=',')),
+                     by = .(tissue, viallabel)]
   out = unique(out)
   return(as.data.frame(out))
 }

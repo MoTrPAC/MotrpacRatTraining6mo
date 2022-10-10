@@ -1,4 +1,3 @@
-# R related
 **.Rproj.user
 **.Rhistory
 **.RData
@@ -6,12 +5,10 @@
 **.Rapp.history
 **.Rprofile
 **.Rproj
-
-# Mac OS
 **.DS_Store
-
 .Rproj.user
 inst/doc
-
-setup.R
+**setup.R
 **unofficial_tests.R
+docs/
+
