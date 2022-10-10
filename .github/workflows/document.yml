@@ -3,8 +3,9 @@
 on:
   push:
     paths: ["R/**"]
+    tags-ignore: '**'
   pull_request:
-    paths: ["R/**"]
+    paths: ["R/**"]  
 
 name: document
 
