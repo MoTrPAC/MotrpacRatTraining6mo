@@ -199,8 +199,7 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
 #'   \item{\code{reason}}{character, PC(s) in which the sample was flagged}
 #' }
 #'
-#' @seealso [call_pca_outliers()] for workhorse function, [plot_pcs()] for plotting function, 
-#'     [MotrpacRatTraining6moData::TISSUE_ABBREV] for tissue abbrevations 
+#' @seealso [call_pca_outliers()] for workhorse function and [plot_pcs()] for plotting function
 #'
 #' @export
 #'
@@ -259,8 +258,7 @@ transcript_call_outliers = function(tissues){
 #'   \item{\code{reason}}{character, PC(s) in which the sample was flagged}
 #' }
 #'
-#' @seealso [call_pca_outliers()] for workhorse function, [plot_pcs()] for plotting function, 
-#'     [MotrpacRatTraining6moData::TISSUE_ABBREV] for tissue abbreviations 
+#' @seealso [call_pca_outliers()] for workhorse function and [plot_pcs()] for plotting function
 #'
 #' @export 
 #'
