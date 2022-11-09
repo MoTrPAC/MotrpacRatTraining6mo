@@ -106,108 +106,212 @@ split data frames.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [82] "treering"              "trees"                 "uspop"                </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [85] "volcano"               "warpbreaks"            "women"                </span>
 <span class="r-in"><span><span class="fu">list_available_data</span><span class="op">(</span><span class="st">"MotrpacRatTraining6moData"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "ACETYL_HEART_DA"               "ACETYL_HEART_NORM_DATA"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3] "ACETYL_LIVER_DA"               "ACETYL_LIVER_NORM_DATA"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [5] "ACETYL_META"                   "ASSAY_ABBREV"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] "ASSAY_ABBREV_TO_CODE"          "ASSAY_CODE_TO_ABBREV"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [9] "ASSAY_COLORS"                  "ASSAY_ORDER"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [11] "ATAC_BAT_NORM_DATA_05FDR"      "ATAC_HEART_NORM_DATA_05FDR"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] "ATAC_HIPPOC_NORM_DATA_05FDR"   "ATAC_KIDNEY_NORM_DATA_05FDR"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [15] "ATAC_LIVER_NORM_DATA_05FDR"    "ATAC_LUNG_NORM_DATA_05FDR"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [17] "ATAC_META"                     "ATAC_SKMGN_NORM_DATA_05FDR"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] "ATAC_WATSC_NORM_DATA_05FDR"    "FEATURE_TO_GENE"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [21] "FEATURE_TO_GENE_FILT"          "GENE_UNIVERSES"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [23] "GRAPH_COMPONENTS"              "GRAPH_PW_ENRICH"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] "GRAPH_STATES"                  "GROUP_COLORS"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [27] "IMMUNO_ADRNL_DA"               "IMMUNO_BAT_DA"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [29] "IMMUNO_COLON_DA"               "IMMUNO_CORTEX_DA"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "IMMUNO_HEART_DA"               "IMMUNO_HIPPOC_DA"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [33] "IMMUNO_KIDNEY_DA"              "IMMUNO_LIVER_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [35] "IMMUNO_LUNG_DA"                "IMMUNO_META"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] "IMMUNO_NORM_DATA_FLAT"         "IMMUNO_NORM_DATA_NESTED"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [39] "IMMUNO_OVARY_DA"               "IMMUNO_PLASMA_DA"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] "IMMUNO_SKMGN_DA"               "IMMUNO_SKMVL_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] "IMMUNO_SMLINT_DA"              "IMMUNO_SPLEEN_DA"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [45] "IMMUNO_TESTES_DA"              "IMMUNO_WATSC_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [47] "METAB_ADRNL_DA"                "METAB_ADRNL_DA_METAREG"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] "METAB_BAT_DA"                  "METAB_BAT_DA_METAREG"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] "METAB_COLON_DA"                "METAB_COLON_DA_METAREG"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [53] "METAB_CORTEX_DA"               "METAB_CORTEX_DA_METAREG"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] "METAB_FEATURE_ID_MAP"          "METAB_HEART_DA"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [57] "METAB_HEART_DA_METAREG"        "METAB_HIPPOC_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [59] "METAB_HIPPOC_DA_METAREG"       "METAB_HYPOTH_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "METAB_HYPOTH_DA_METAREG"       "METAB_KIDNEY_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [63] "METAB_KIDNEY_DA_METAREG"       "METAB_LIVER_DA"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [65] "METAB_LIVER_DA_METAREG"        "METAB_LUNG_DA"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] "METAB_LUNG_DA_METAREG"         "METAB_NORM_DATA_FLAT"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [69] "METAB_NORM_DATA_NESTED"        "METAB_OVARY_DA"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [71] "METAB_OVARY_DA_METAREG"        "METAB_PLASMA_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] "METAB_PLASMA_DA_METAREG"       "METAB_SKMGN_DA"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] "METAB_SKMGN_DA_METAREG"        "METAB_SKMVL_DA"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [77] "METAB_SKMVL_DA_METAREG"        "METAB_SMLINT_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] "METAB_SMLINT_DA_METAREG"       "METAB_SPLEEN_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [81] "METAB_SPLEEN_DA_METAREG"       "METAB_TESTES_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [83] "METAB_TESTES_DA_METAREG"       "METAB_VENACV_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] "METAB_VENACV_DA_METAREG"       "METAB_WATSC_DA"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [87] "METAB_WATSC_DA_METAREG"        "METHYL_BAT_NORM_DATA_05FDR"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [89] "METHYL_HEART_NORM_DATA_05FDR"  "METHYL_HIPPOC_NORM_DATA_05FDR"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "METHYL_KIDNEY_NORM_DATA_05FDR" "METHYL_LIVER_NORM_DATA_05FDR" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [93] "METHYL_LUNG_NORM_DATA_05FDR"   "METHYL_META"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [95] "METHYL_SKMGN_NORM_DATA_05FDR"  "METHYL_WATSC_NORM_DATA_05FDR" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "OUTLIERS"                      "PATHWAY_PARENTS"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [99] "PHENO"                         "PHOSPHO_CORTEX_DA"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] "PHOSPHO_CORTEX_NORM_DATA"      "PHOSPHO_HEART_DA"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [103] "PHOSPHO_HEART_NORM_DATA"       "PHOSPHO_KIDNEY_DA"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [105] "PHOSPHO_KIDNEY_NORM_DATA"      "PHOSPHO_LIVER_DA"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [107] "PHOSPHO_LIVER_NORM_DATA"       "PHOSPHO_LUNG_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [109] "PHOSPHO_LUNG_NORM_DATA"        "PHOSPHO_META"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [111] "PHOSPHO_SKMGN_DA"              "PHOSPHO_SKMGN_NORM_DATA"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [113] "PHOSPHO_WATSC_DA"              "PHOSPHO_WATSC_NORM_DATA"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [115] "PROT_CORTEX_DA"                "PROT_CORTEX_NORM_DATA"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [117] "PROT_HEART_DA"                 "PROT_HEART_NORM_DATA"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [119] "PROT_KIDNEY_DA"                "PROT_KIDNEY_NORM_DATA"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [121] "PROT_LIVER_DA"                 "PROT_LIVER_NORM_DATA"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [123] "PROT_LUNG_DA"                  "PROT_LUNG_NORM_DATA"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [125] "PROT_META"                     "PROT_SKMGN_DA"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [127] "PROT_SKMGN_NORM_DATA"          "PROT_WATSC_DA"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [129] "PROT_WATSC_NORM_DATA"          "RAT_TO_HUMAN_GENE"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [131] "REPEATED_FEATURES"             "REPFDR_INPUTS"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [133] "REPFDR_RES"                    "SEX_COLORS"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [135] "TISSUE_ABBREV"                 "TISSUE_ABBREV_TO_CODE"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [137] "TISSUE_CODE_TO_ABBREV"         "TISSUE_COLORS"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [139] "TISSUE_ORDER"                  "TRAINING_REGULATED_FEATURES"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [141] "TRNSCRPT_ADRNL_DA"             "TRNSCRPT_ADRNL_NORM_DATA"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [143] "TRNSCRPT_ADRNL_RAW_COUNTS"     "TRNSCRPT_BAT_DA"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [145] "TRNSCRPT_BAT_NORM_DATA"        "TRNSCRPT_BAT_RAW_COUNTS"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [147] "TRNSCRPT_BLOOD_DA"             "TRNSCRPT_BLOOD_NORM_DATA"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [149] "TRNSCRPT_BLOOD_RAW_COUNTS"     "TRNSCRPT_COLON_DA"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [151] "TRNSCRPT_COLON_NORM_DATA"      "TRNSCRPT_COLON_RAW_COUNTS"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [153] "TRNSCRPT_CORTEX_DA"            "TRNSCRPT_CORTEX_NORM_DATA"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [155] "TRNSCRPT_CORTEX_RAW_COUNTS"    "TRNSCRPT_HEART_DA"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [157] "TRNSCRPT_HEART_NORM_DATA"      "TRNSCRPT_HEART_RAW_COUNTS"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [159] "TRNSCRPT_HIPPOC_DA"            "TRNSCRPT_HIPPOC_NORM_DATA"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [161] "TRNSCRPT_HIPPOC_RAW_COUNTS"    "TRNSCRPT_HYPOTH_DA"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [163] "TRNSCRPT_HYPOTH_NORM_DATA"     "TRNSCRPT_HYPOTH_RAW_COUNTS"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [165] "TRNSCRPT_KIDNEY_DA"            "TRNSCRPT_KIDNEY_NORM_DATA"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [167] "TRNSCRPT_KIDNEY_RAW_COUNTS"    "TRNSCRPT_LIVER_DA"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [169] "TRNSCRPT_LIVER_NORM_DATA"      "TRNSCRPT_LIVER_RAW_COUNTS"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [171] "TRNSCRPT_LUNG_DA"              "TRNSCRPT_LUNG_NORM_DATA"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [173] "TRNSCRPT_LUNG_RAW_COUNTS"      "TRNSCRPT_META"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [175] "TRNSCRPT_OVARY_DA"             "TRNSCRPT_OVARY_NORM_DATA"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [177] "TRNSCRPT_OVARY_RAW_COUNTS"     "TRNSCRPT_SKMGN_DA"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [179] "TRNSCRPT_SKMGN_NORM_DATA"      "TRNSCRPT_SKMGN_RAW_COUNTS"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [181] "TRNSCRPT_SKMVL_DA"             "TRNSCRPT_SKMVL_NORM_DATA"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [183] "TRNSCRPT_SKMVL_RAW_COUNTS"     "TRNSCRPT_SMLINT_DA"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [185] "TRNSCRPT_SMLINT_NORM_DATA"     "TRNSCRPT_SMLINT_RAW_COUNTS"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [187] "TRNSCRPT_SPLEEN_DA"            "TRNSCRPT_SPLEEN_NORM_DATA"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [189] "TRNSCRPT_SPLEEN_RAW_COUNTS"    "TRNSCRPT_TESTES_DA"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [191] "TRNSCRPT_TESTES_NORM_DATA"     "TRNSCRPT_TESTES_RAW_COUNTS"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [193] "TRNSCRPT_VENACV_DA"            "TRNSCRPT_VENACV_NORM_DATA"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [195] "TRNSCRPT_VENACV_RAW_COUNTS"    "TRNSCRPT_WATSC_DA"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [197] "TRNSCRPT_WATSC_NORM_DATA"      "TRNSCRPT_WATSC_RAW_COUNTS"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [199] "UBIQ_HEART_DA"                 "UBIQ_HEART_NORM_DATA"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [201] "UBIQ_LIVER_DA"                 "UBIQ_LIVER_NORM_DATA"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [203] "UBIQ_META"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "ACETYL_HEART_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [2] "ACETYL_HEART_NORM_DATA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [3] "ACETYL_LIVER_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [4] "ACETYL_LIVER_NORM_DATA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [5] "ACETYL_META"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [6] "ASSAY_ABBREV"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] "ASSAY_ABBREV_TO_CODE"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [8] "ASSAY_CODE_TO_ABBREV"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [9] "ASSAY_COLORS"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [10] "ASSAY_ORDER"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [11] "ATAC_BAT_NORM_DATA_05FDR"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [12] "ATAC_HEART_NORM_DATA_05FDR"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] "ATAC_HIPPOC_NORM_DATA_05FDR"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [14] "ATAC_KIDNEY_NORM_DATA_05FDR"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [15] "ATAC_LIVER_NORM_DATA_05FDR"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [16] "ATAC_LUNG_NORM_DATA_05FDR"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [17] "ATAC_META"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [18] "ATAC_SKMGN_NORM_DATA_05FDR"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] "ATAC_WATSC_NORM_DATA_05FDR"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [20] "FEATURE_TO_GENE"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [21] "FEATURE_TO_GENE_FILT"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [22] "GENE_UNIVERSES"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [23] "GRAPH_COMPONENTS"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [24] "GRAPH_PW_ENRICH"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] "GRAPH_STATES"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] "GROUP_COLORS"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [27] "IMMUNO_ADRNL_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [28] "IMMUNO_BAT_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [29] "IMMUNO_COLON_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [30] "IMMUNO_CORTEX_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "IMMUNO_HEART_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [32] "IMMUNO_HIPPOC_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [33] "IMMUNO_KIDNEY_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [34] "IMMUNO_LIVER_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [35] "IMMUNO_LUNG_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [36] "IMMUNO_META"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] "IMMUNO_NORM_DATA_FLAT"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [38] "IMMUNO_NORM_DATA_NESTED"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [39] "IMMUNO_OVARY_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [40] "IMMUNO_PLASMA_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] "IMMUNO_SKMGN_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [42] "IMMUNO_SKMVL_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] "IMMUNO_SMLINT_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [44] "IMMUNO_SPLEEN_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [45] "IMMUNO_TESTES_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] "IMMUNO_WATSC_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [47] "METAB_ADRNL_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [48] "METAB_ADRNL_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] "METAB_BAT_DA"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [50] "METAB_BAT_DA_METAREG"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] "METAB_COLON_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [52] "METAB_COLON_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [53] "METAB_CORTEX_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [54] "METAB_CORTEX_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] "METAB_FEATURE_ID_MAP"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [56] "METAB_HEART_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [57] "METAB_HEART_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [58] "METAB_HIPPOC_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [59] "METAB_HIPPOC_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [60] "METAB_HYPOTH_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "METAB_HYPOTH_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [62] "METAB_KIDNEY_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [63] "METAB_KIDNEY_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] "METAB_LIVER_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [65] "METAB_LIVER_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [66] "METAB_LUNG_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] "METAB_LUNG_DA_METAREG"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [68] "METAB_NORM_DATA_FLAT"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [69] "METAB_NORM_DATA_NESTED"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [70] "METAB_OVARY_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [71] "METAB_OVARY_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [72] "METAB_PLASMA_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] "METAB_PLASMA_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [74] "METAB_SKMGN_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] "METAB_SKMGN_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] "METAB_SKMVL_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [77] "METAB_SKMVL_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [78] "METAB_SMLINT_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] "METAB_SMLINT_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [80] "METAB_SPLEEN_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [81] "METAB_SPLEEN_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [82] "METAB_TESTES_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [83] "METAB_TESTES_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [84] "METAB_VENACV_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] "METAB_VENACV_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [86] "METAB_WATSC_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [87] "METAB_WATSC_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [88] "METHYL_BAT_NORM_DATA_05FDR"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [89] "METHYL_HEART_NORM_DATA_05FDR"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [90] "METHYL_HIPPOC_NORM_DATA_05FDR"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "METHYL_KIDNEY_NORM_DATA_05FDR"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [92] "METHYL_LIVER_NORM_DATA_05FDR"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [93] "METHYL_LUNG_NORM_DATA_05FDR"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [94] "METHYL_META"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [95] "METHYL_SKMGN_NORM_DATA_05FDR"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [96] "METHYL_WATSC_NORM_DATA_05FDR"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "OUTLIERS"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [98] "PATHWAY_PARENTS"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [99] "PHENO"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100] "PHOSPHO_CORTEX_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [101] "PHOSPHO_CORTEX_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [102] "PHOSPHO_HEART_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [103] "PHOSPHO_HEART_NORM_DATA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [104] "PHOSPHO_KIDNEY_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [105] "PHOSPHO_KIDNEY_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [106] "PHOSPHO_LIVER_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [107] "PHOSPHO_LIVER_NORM_DATA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [108] "PHOSPHO_LUNG_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [109] "PHOSPHO_LUNG_NORM_DATA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [110] "PHOSPHO_META"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [111] "PHOSPHO_SKMGN_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [112] "PHOSPHO_SKMGN_NORM_DATA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [113] "PHOSPHO_WATSC_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [114] "PHOSPHO_WATSC_NORM_DATA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [115] "PROT_CORTEX_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [116] "PROT_CORTEX_NORM_DATA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [117] "PROT_HEART_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [118] "PROT_HEART_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [119] "PROT_KIDNEY_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [120] "PROT_KIDNEY_NORM_DATA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [121] "PROT_LIVER_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [122] "PROT_LIVER_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [123] "PROT_LUNG_DA"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [124] "PROT_LUNG_NORM_DATA"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [125] "PROT_META"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [126] "PROT_SKMGN_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [127] "PROT_SKMGN_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [128] "PROT_WATSC_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [129] "PROT_WATSC_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [130] "RAT_TO_HUMAN_GENE"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [131] "RAT_TO_HUMAN_PHOSPHO"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [132] "REPEATED_FEATURES"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [133] "REPFDR_INPUTS"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [134] "REPFDR_RES"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [135] "SEX_COLORS"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [136] "TISSUE_ABBREV"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [137] "TISSUE_ABBREV_TO_CODE"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [138] "TISSUE_CODE_TO_ABBREV"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [139] "TISSUE_COLORS"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [140] "TISSUE_ORDER"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [141] "TRAINING_REGULATED_FEATURES"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [142] "TRAINING_REGULATED_NORM_DATA"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [143] "TRAINING_REGULATED_NORM_DATA_NO_OUTLIERS"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [144] "TRNSCRPT_ADRNL_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [145] "TRNSCRPT_ADRNL_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [146] "TRNSCRPT_ADRNL_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [147] "TRNSCRPT_BAT_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [148] "TRNSCRPT_BAT_NORM_DATA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [149] "TRNSCRPT_BAT_RAW_COUNTS"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [150] "TRNSCRPT_BLOOD_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151] "TRNSCRPT_BLOOD_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [152] "TRNSCRPT_BLOOD_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [153] "TRNSCRPT_COLON_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [154] "TRNSCRPT_COLON_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [155] "TRNSCRPT_COLON_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [156] "TRNSCRPT_CORTEX_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [157] "TRNSCRPT_CORTEX_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [158] "TRNSCRPT_CORTEX_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [159] "TRNSCRPT_HEART_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [160] "TRNSCRPT_HEART_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [161] "TRNSCRPT_HEART_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [162] "TRNSCRPT_HIPPOC_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [163] "TRNSCRPT_HIPPOC_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [164] "TRNSCRPT_HIPPOC_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [165] "TRNSCRPT_HYPOTH_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [166] "TRNSCRPT_HYPOTH_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [167] "TRNSCRPT_HYPOTH_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [168] "TRNSCRPT_KIDNEY_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [169] "TRNSCRPT_KIDNEY_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [170] "TRNSCRPT_KIDNEY_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [171] "TRNSCRPT_LIVER_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [172] "TRNSCRPT_LIVER_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [173] "TRNSCRPT_LIVER_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [174] "TRNSCRPT_LUNG_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [175] "TRNSCRPT_LUNG_NORM_DATA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [176] "TRNSCRPT_LUNG_RAW_COUNTS"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [177] "TRNSCRPT_META"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [178] "TRNSCRPT_OVARY_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [179] "TRNSCRPT_OVARY_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [180] "TRNSCRPT_OVARY_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [181] "TRNSCRPT_SKMGN_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [182] "TRNSCRPT_SKMGN_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [183] "TRNSCRPT_SKMGN_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [184] "TRNSCRPT_SKMVL_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [185] "TRNSCRPT_SKMVL_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [186] "TRNSCRPT_SKMVL_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [187] "TRNSCRPT_SMLINT_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [188] "TRNSCRPT_SMLINT_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [189] "TRNSCRPT_SMLINT_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [190] "TRNSCRPT_SPLEEN_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [191] "TRNSCRPT_SPLEEN_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [192] "TRNSCRPT_SPLEEN_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [193] "TRNSCRPT_TESTES_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [194] "TRNSCRPT_TESTES_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [195] "TRNSCRPT_TESTES_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [196] "TRNSCRPT_VENACV_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [197] "TRNSCRPT_VENACV_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [198] "TRNSCRPT_VENACV_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [199] "TRNSCRPT_WATSC_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [200] "TRNSCRPT_WATSC_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [201] "TRNSCRPT_WATSC_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [202] "UBIQ_HEART_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [203] "UBIQ_HEART_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [204] "UBIQ_LIVER_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [205] "UBIQ_LIVER_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [206] "UBIQ_META"                               </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
