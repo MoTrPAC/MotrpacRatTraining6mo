@@ -6,6 +6,7 @@
 \usage{
 plot_feature_trajectories(
   features,
+  training_regulated_only = FALSE,
   exclude_outliers = TRUE,
   center = TRUE,
   scale = TRUE,
@@ -17,6 +18,11 @@ plot_feature_trajectories(
 \arguments{
 \item{features}{character vector of features to plot in the format
 '\link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV};\link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV};feature_ID'}
+
+\item{training_regulated_only}{bool, whether all input features are training-regulated at 5\% FDR.
+\code{FALSE} by default. If \code{TRUE}, data is loaded from
+\link[MotrpacRatTraining6moData:TRAINING_REGULATED_NORM_DATA]{MotrpacRatTraining6moData::TRAINING_REGULATED_NORM_DATA} instead of with \code{\link[=load_sample_data]{load_sample_data()}},
+which dramatically improves performance.}
 
 \item{exclude_outliers}{bool, whether to remove sample outliers specified by \link[MotrpacRatTraining6moData:OUTLIERS]{MotrpacRatTraining6moData::OUTLIERS}.
 \code{TRUE} by default.}
@@ -39,11 +45,28 @@ a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object if \code{return_data=FA
 \description{
 Plot group means of a set of features from normalized sample-level data.
 }
+\details{
+Note that while features in the format
+'\link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV};\link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV};feature_ID'
+are only given for training-regulated features in the data objects provided by
+\code{MotrpacRatTraining6moData}, one could specify non-training-regulated features by
+concatenating \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV}, \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV},
+and \code{feature_ID} for features of interest (semi-colon-separated).
+}
 \examples{
 # Pick largest cluster in gastrocnemius 
 clust = extract_tissue_sets("SKM-GN", k=1, add_week8=FALSE)
 # Extract features 
 names(clust)
 features = clust[["1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1"]]
+plot_feature_trajectories(features)
+
+# Since we're only considering training-regulated features in this example,
+# set training_regulated_only to TRUE to make it slightly faster 
+plot_feature_trajectories(features, training_regulated_only=TRUE)
+
+# Plot a mix of training-regulated and non-training-regulated features
+# Note this takes longer because the original datasets are downloaded 
+features = c(features, "TRNSCRPT;SKM-GN;ENSRNOG00000000008")
 plot_feature_trajectories(features)
 }
