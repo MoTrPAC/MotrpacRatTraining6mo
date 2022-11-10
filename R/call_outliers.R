@@ -55,8 +55,9 @@ plot_pcs = function(pcA, pcB, pcax, outliers, pca, title=NULL){
 #' 
 #' @param norm feature by sample data frame of normalized data 
 #' @param min_pc_ve numeric, minimum percent variance explained by a PC to check it for outliers 
-#' @param plot bool, whether to print PC plots before and after removing outliers 
-#' @param verbose bool, whether to print descriptive strings
+#' @param scale bool, whether to scale input data before PCA. \code{TRUE} by default. 
+#' @param plot bool, whether to print PC plots before and after removing outliers. \code{TRUE} by default. 
+#' @param verbose bool, whether to print descriptive strings. \code{TRUE} by default.
 #' @param iqr_coef numeric, flag PC outliers if they are outside of IQR * \code{iqr_coef}
 #' @param M integer, select M most variable features
 #' @param title character, substring to include in PC plot titles 
@@ -73,8 +74,6 @@ plot_pcs = function(pcA, pcB, pcax, outliers, pca, title=NULL){
 #' bat_rna_data = transcript_prep_data("BAT", covariates = NULL, outliers = NULL)
 #' bat_rna_outliers = call_pca_outliers(bat_rna_data$norm_data, 
 #'                                      min_pc_ve=0.05, 
-#'                                      plot=TRUE, 
-#'                                      verbose=TRUE, 
 #'                                      iqr_coef=5, 
 #'                                      M=1000, 
 #'                                      title="Brown Adipose")
@@ -82,7 +81,7 @@ plot_pcs = function(pcA, pcB, pcax, outliers, pca, title=NULL){
 #' @export
 #' @importFrom grDevices boxplot.stats
 #'
-call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, title=NULL){
+call_pca_outliers = function(norm, min_pc_ve, scale=TRUE, plot=TRUE, verbose=TRUE, iqr_coef=3, M=Inf, title=NULL){
   
   # check input 
   norm = as.data.frame(norm)
@@ -99,7 +98,7 @@ call_pca_outliers = function(norm, min_pc_ve, plot, verbose, iqr_coef=3, M=Inf, 
   tnorm = as.data.frame(t(norm))
   novar = names(which(apply(tnorm, 2, stats::var)==0))
   tnorm[,novar] = NULL
-  pca = stats::prcomp(x = tnorm,center=TRUE,scale.=TRUE)
+  pca = stats::prcomp(x = tnorm,center=TRUE,scale.=scale)
   cum_var = summary(pca)[["importance"]][3,1:ncol(summary(pca)[["importance"]])]
   # save for later
   pca_before = pca
@@ -218,7 +217,7 @@ transcript_call_outliers = function(tissues){
     tmm = data$norm_data
     
     message(sprintf("%s:",.tissue))
-    tmm_pca_1k = call_pca_outliers(tmm, 0.05, plot=TRUE, verbose=TRUE, iqr_coef=5, M=1000, title=.tissue)
+    tmm_pca_1k = call_pca_outliers(tmm, 0.05, iqr_coef=5, M=1000, title=.tissue)
     
     if(length(tmm_pca_1k$pca_outliers)>0){
       rep = data.table::as.data.table(tmm_pca_1k$pc_outliers_report)
@@ -279,7 +278,7 @@ atac_call_outliers = function(tissues, scratchdir = "."){
       dataset = sprintf("%s %s", .tissue, s)
       message(dataset)
       sub_quant = tmm[,meta[sex == s,viallabel]]
-      pca_out = call_pca_outliers(sub_quant, 0.075, plot=TRUE, verbose=TRUE, iqr_coef=3, title=dataset, M=10000)
+      pca_out = call_pca_outliers(sub_quant, 0.075, iqr_coef=3, title=dataset, M=10000)
       if(length(pca_out$pca_outliers)>0){
         rep = data.table::as.data.table(pca_out$pc_outliers_report)
         rep[,tissue := .tissue]
