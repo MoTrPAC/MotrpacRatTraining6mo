@@ -1,3 +1,8 @@
+# MotrpacRatTraining6mo 1.1.1 (2022-11-09)
+
+* Use `MotrpacRatTraining6moData::TRAINING_REGULATED_NORM_DATA` 
+and add a `training_regulated_only` argument to speed up `plot_feature_trajectories()` 
+
 # MotrpacRatTraining6mo 1.1.0 (2022-10-10)
 
 * Add `atac_call_outliers()` 
