@@ -2,6 +2,7 @@
 
 * Use `MotrpacRatTraining6moData::TRAINING_REGULATED_NORM_DATA` 
 and add a `training_regulated_only` argument to speed up `plot_feature_trajectories()` 
+* Fix bugs in `get_tree_plot_for_tissue()` and `get_trajectory_sizes_from_edge_sets()`
 
 # MotrpacRatTraining6mo 1.1.0 (2022-10-10)
 
