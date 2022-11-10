@@ -12,7 +12,7 @@ components that explain some minimum variance."><!-- mathjax --><script src="htt
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,8 +60,9 @@ components that explain some minimum variance.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">call_pca_outliers</span><span class="op">(</span></span>
 <span>  <span class="va">norm</span>,</span>
 <span>  <span class="va">min_pc_ve</span>,</span>
-<span>  <span class="va">plot</span>,</span>
-<span>  <span class="va">verbose</span>,</span>
+<span>  scale <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  iqr_coef <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  M <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span></span>
@@ -78,12 +79,16 @@ components that explain some minimum variance.</p>
 <dd><p>numeric, minimum percent variance explained by a PC to check it for outliers</p></dd>
 
 
+<dt>scale</dt>
+<dd><p>bool, whether to scale input data before PCA. <code>TRUE</code> by default.</p></dd>
+
+
 <dt>plot</dt>
-<dd><p>bool, whether to print PC plots before and after removing outliers</p></dd>
+<dd><p>bool, whether to print PC plots before and after removing outliers. <code>TRUE</code> by default.</p></dd>
 
 
 <dt>verbose</dt>
-<dd><p>bool, whether to print descriptive strings</p></dd>
+<dd><p>bool, whether to print descriptive strings. <code>TRUE</code> by default.</p></dd>
 
 
 <dt>iqr_coef</dt>
@@ -124,8 +129,6 @@ components that explain some minimum variance.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> TRNSCRPT_BAT_NORM_DATA</span>
 <span class="r-in"><span><span class="va">bat_rna_outliers</span> <span class="op">=</span> <span class="fu">call_pca_outliers</span><span class="op">(</span><span class="va">bat_rna_data</span><span class="op">$</span><span class="va">norm_data</span>, </span></span>
 <span class="r-in"><span>                                     min_pc_ve<span class="op">=</span><span class="fl">0.05</span>, </span></span>
-<span class="r-in"><span>                                     plot<span class="op">=</span><span class="cn">TRUE</span>, </span></span>
-<span class="r-in"><span>                                     verbose<span class="op">=</span><span class="cn">TRUE</span>, </span></span>
 <span class="r-in"><span>                                     iqr_coef<span class="op">=</span><span class="fl">5</span>, </span></span>
 <span class="r-in"><span>                                     M<span class="op">=</span><span class="fl">1000</span>, </span></span>
 <span class="r-in"><span>                                     title<span class="op">=</span><span class="st">"Brown Adipose"</span><span class="op">)</span></span></span>
