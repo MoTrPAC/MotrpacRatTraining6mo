@@ -35,7 +35,7 @@ Imports:
     limma,
     magrittr,
     metap,
-    MotrpacRatTraining6moData (>= 1.6.0),
+    MotrpacRatTraining6moData (>= 1.6.1),
     purrr,
     r2r,
     RColorBrewer,
