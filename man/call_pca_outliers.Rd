@@ -7,8 +7,9 @@
 call_pca_outliers(
   norm,
   min_pc_ve,
-  plot,
-  verbose,
+  scale = TRUE,
+  plot = TRUE,
+  verbose = TRUE,
   iqr_coef = 3,
   M = Inf,
   title = NULL
@@ -19,9 +20,11 @@ call_pca_outliers(
 
 \item{min_pc_ve}{numeric, minimum percent variance explained by a PC to check it for outliers}
 
-\item{plot}{bool, whether to print PC plots before and after removing outliers}
+\item{scale}{bool, whether to scale input data before PCA. \code{TRUE} by default.}
 
-\item{verbose}{bool, whether to print descriptive strings}
+\item{plot}{bool, whether to print PC plots before and after removing outliers. \code{TRUE} by default.}
+
+\item{verbose}{bool, whether to print descriptive strings. \code{TRUE} by default.}
 
 \item{iqr_coef}{numeric, flag PC outliers if they are outside of IQR * \code{iqr_coef}}
 
@@ -46,8 +49,6 @@ components that explain some minimum variance.
 bat_rna_data = transcript_prep_data("BAT", covariates = NULL, outliers = NULL)
 bat_rna_outliers = call_pca_outliers(bat_rna_data$norm_data, 
                                      min_pc_ve=0.05, 
-                                     plot=TRUE, 
-                                     verbose=TRUE, 
                                      iqr_coef=5, 
                                      M=1000, 
                                      title="Brown Adipose")

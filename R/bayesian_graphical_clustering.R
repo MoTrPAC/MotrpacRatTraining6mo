@@ -466,21 +466,26 @@ limit_sets_by_regex <- function(sets, regs, append_semicol = TRUE){
 #' get_trajectory_sizes_from_edge_sets()
 get_trajectory_sizes_from_edge_sets <- function(edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets, 
                                                 min_size = 10){
-  node_names = unique(unlist(strsplit(names(edge_sets),split="---")))
+  sorted_names = sort(names(edge_sets))
+  arrs = strsplit(sorted_names, split="---")
+  # arrs = strsplit(names(edge_sets),split="---")
+  node_names = unique(unlist(arrs))
+  # node_names = unique(unlist(strsplit(names(edge_sets),split="---")))
   node_weeks = sapply(node_names,function(x)strsplit(x,split="_")[[1]][1])
   full_path_size = length(unique(node_weeks))
-  arrs = strsplit(names(edge_sets),split="---")
+
   prevs = sapply(arrs,function(x)x[1])
   nexts = sapply(arrs,function(x)x[2])
   l = list()
   l_sets = c()
-  for(j in 1:length(edge_sets)){
-    if(length(edge_sets[[j]])<min_size){next}
+  for(j in 1:length(sorted_names)){
+    edge_set = edge_sets[[sorted_names[[j]]]]
+    if(length(edge_set)<min_size){next}
     ind = length(l)+1
     curr_prev = prevs[j]
     curr_next = nexts[j]
     l[[ind]] = c(curr_prev,curr_next)
-    l_sets[[ind]] = edge_sets[[j]]
+    l_sets[[ind]] = edge_set
     for(j2 in 1:length(l)){
       j2_arr = l[[j2]]
       # here the path of j2 starts with the current edge next
@@ -489,7 +494,7 @@ get_trajectory_sizes_from_edge_sets <- function(edge_sets = MotrpacRatTraining6m
       if(j2_arr[1] == curr_next){
         new_ind = length(l)+1
         l[[new_ind]] = c(curr_prev,j2_arr)
-        l_sets[[new_ind]] = intersect(l_sets[[j2]],edge_sets[[j]])
+        l_sets[[new_ind]] = intersect(l_sets[[j2]],edge_set)
       }
       # here the path of j2 end with the current edge prev/start
       # so the edge represented by j can extend the path j2
@@ -497,7 +502,7 @@ get_trajectory_sizes_from_edge_sets <- function(edge_sets = MotrpacRatTraining6m
       if(j2_arr[length(j2_arr)]==curr_prev){
         new_ind = length(l)+1
         l[[new_ind]] = c(j2_arr,curr_next)
-        l_sets[[new_ind]] = intersect(l_sets[[j2]],edge_sets[[j]])
+        l_sets[[new_ind]] = intersect(l_sets[[j2]],edge_set)
       }
     }
     keep = sapply(l_sets,length) >= min_size
@@ -916,7 +921,7 @@ get_tree_plot_for_tissue <- function(
     d_g_our_layout[grepl(n,d_g_our_layout$name),"y"] = l_y_lim[1] + (j-1)*yjump
   }
   # make sure that the 0w node is in the same line as of the no response
-  d_g_our_layout[1,"y"] = d_g_our_layout[grepl("F0_M0",d_g_our_layout$name),"y"][1]
+  d_g_our_layout[d_g_our_layout$name == "0w","y"] = d_g_our_layout[grepl("F0_M0",d_g_our_layout$name),"y"][1]
   # set node sizes and other features
   igraph::V(d_g)$setsize = d_nodes[V(d_g)$name,"size"]
   igraph::V(d_g)$setsize[V(d_g)$name == "0w"] = stats::median(igraph::V(d_g)$setsize)
