@@ -642,7 +642,7 @@ load_atac_feature_annotation = function(scratchdir = "."){
 #' @param assay `r assay()`. Only used if \code{url} is NULL. 
 #' @param suffix character, object suffix. Only used if \code{url} is NULL. 
 #' @param scratchdir character, local directory in which to download data from 
-#'   the web. Current working directory by default.
+#'   the web. Current working directory by default. Downloaded files are deleted before returning the result. 
 #' @param url character, RData URL. Optional if URL cannot be constructed from 
 #'   \code{tissue}, \code{assay}, and \code{suffix}. 
 #' @param obj_name character, name of object saved within RData file. Only required
@@ -736,6 +736,51 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
   # delete local copy
   file.remove(local)
 
+  return(data)
+}
+
+
+#' Load file from GCS
+#'
+#' Function to download a text file from the web. 
+#'
+#' @param url character, Google Cloud Storage URL, e.g., "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/metabolomics-da/pass1b-06_t31-plasma_metab_timewise-dea-fdr_20211006.txt"
+#' @param scratchdir character, local directory in which to download data from 
+#'   the web. Current working directory by default. Downloaded files are deleted before returning the result. 
+#' @param return_data_table bool, whether to return a data table. If FALSE, return a data frame. FALSE by default. 
+#'
+#' @return data frame, or data table if \code{return_data_table = TRUE}
+#' @importFrom utils download.file 
+#' @export
+#'
+#' @examples
+#' # Get non-meta-analyzed metabolomics timewise differential analysis results for blood plasma 
+#' res = get_file_from_url("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/metabolomics-da/pass1b-06_t31-plasma_metab_timewise-dea-fdr_20211006.txt")
+#'
+#' # Get non-meta-analyzed metabolomics training differential analysis results for blood plasma 
+#' res = get_file_from_url("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/metabolomics-da/pass1b-06_t31-plasma_metab_training-dea-fdr_20211006.txt")
+get_file_from_url = function(url, scratchdir=".", return_data_table=FALSE){
+  
+  # set option if default is low
+  if(getOption("timeout") < 1e3){
+    options(timeout=1e3)
+  }
+  
+  # if dir doesn't exist, try to make it
+  if(!dir.exists(scratchdir)){
+    dir.create(scratchdir, recursive = TRUE)
+  }
+
+  local = sprintf("%s/%s", scratchdir, basename(url))
+  download.file(url, local)
+  data = data.table::fread(local)
+  
+  # delete local copy
+  file.remove(local)
+  
+  if(!return_data_table){
+    return(as.data.frame(data))
+  }
   return(data)
 }
 
