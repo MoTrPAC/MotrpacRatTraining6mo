@@ -1,6 +1,3 @@
-library(metafor)
-library(gplots)
-
 #' Metabolomics timewise meta-analysis
 #' 
 #' Perform meta-analysis for repeated measurements and return non-redundant results.
@@ -10,7 +7,9 @@ library(gplots)
 #' @param tissue `r tissue()`
 #' @param input r data frame, custom input  
 #'
-#' @return a data frame: 
+#' @return a named list, where \code{res$meta_analysis_res} is a list with one [metafor::rma.uni()] object per
+#'   meta-analyzed feature, and \code{res$merged_res} is a data frame non-redundant measurements for all input features
+#'   with the following columns: 
 #' \describe{
 #'   \item{\code{feature_ID}}{`r feature_ID()`}
 #'   \item{\code{tissue}}{`r tissue_code()`}
@@ -89,7 +88,8 @@ metabolomics_meta_analysis_timewise = function(tissue, input=NULL){
   rownames(x_unique) = analysis_names[inds]
   if(length(unique_mets)==nrow(x)){
     message("No redundant measurements. Returning original summary statistics.")
-    return(x_unique)
+    return(list(meta_analysis_res = list(),
+                merged_res = x_unique))
   }
   
   # keep track of min p-values per feature
@@ -104,6 +104,7 @@ metabolomics_meta_analysis_timewise = function(tissue, input=NULL){
                     get_meta_analysis_results,
                     x_subset = subset_res[[1]],
                     subset_names = subset_res[[2]])
+  meta_res_list = meta_res
   message(paste("Computed",length(meta_res),"meta-analysis results."))
 
   # transform results to a summary data frame
@@ -144,7 +145,8 @@ metabolomics_meta_analysis_timewise = function(tissue, input=NULL){
   merged_results2 = merge(merged_results, minp, by=c("sex","comparison_group","metabolite_refmet"))
   stopifnot(nrow(merged_results2) == nrow(merged_results))
   
-  return(merged_results2)
+  return(list(meta_analysis_res = meta_res_list,
+              merged_res = merged_results2))
 }
 
 get_repeated_met_data = function(x){
@@ -190,15 +192,69 @@ get_meta_analysis_results = function(name, x_subset, subset_names){
 }
 
 
-forest_plot(results, metabolite_refmet){
+#' Print forest plot
+#' 
+#' Make a forest plot to present multiple measurements and consensus effect
+#' size from meta-analysis. 
+#'
+#' @param results named list returned by [metabolomics_meta_analysis_timewise()] 
+#' @param metabolite_refmet character, RefMet name of metabolite 
+#' @param sex `r sex()`
+#' @param timepoint `r comparison_group()`
+#' @param name character, string in the format \code{metabolite_refmet,sex,timepoint}. 
+#'   Use *either* this argument *or* \code{metabolite_refmet}, \code{sex}, and \code{timepoint}
+#'   to specify a result. 
+#'
+#' @export
+#' @importFrom metafor forest
+#' 
+#' @seealso [metabolomics_meta_analysis_timewise()] 
+#'
+#' @examples
+#' # Get meta-analysis results for gastrocnemius
+#' res = metabolomics_meta_analysis_timewise("SKM-GN")
+#' # Pick a feature
+#' res$merged_res[res$merged_res$min_nominal_p > 0.01 & 
+#'   res$merged_res$p_value < 0.001 & 
+#'   res$merged_res$I2 < 30,]
+#' forest_plot(res, metabolite_refmet="Hydroxyproline", sex="female", timepoint="8w")
+#' forest_plot(res, name="Hydroxyproline,8w,female")
+forest_plot = function(results, metabolite_refmet=NULL, sex=NULL, timepoint=NULL, name=NULL){
   
+  if(is.null(name) & any(is.null(c(metabolite_refmet, sex, timepoint)))){
+    stop("If 'name' is NULL, all other arguments must be specified.")
+  }
+  if(!is.null(name) & any(!is.null(c(metabolite_refmet, sex, timepoint)))){
+    warning("'name' is specified along with other character arguments. Using 'name' to extract the result.")
+  }
+  
+  if(is.null(name)){
+    if(!tolower(sex) %in% c("male","female")){
+      stop("'sex' must be one of 'male', 'female'.")
+    }
+    if(!tolower(timepoint) %in% paste0(c(1,2,4,8),"w")){
+      stop(sprintf("'timepoint' must be one of %s.", paste0(paste0(c(1,2,4,8),"w"), collapse=", ")))
+    }
+    name = sprintf("%s,%s,%s", metabolite_refmet, tolower(timepoint), tolower(sex))
+  }else{
+    splits = unname(unlist(strsplit(name, ',')))
+    metabolite_refmet = splits[1]
+    timepoint = splits[2]
+    sex = splits[3]
+  }
+
+  if(!name %in% names(results$meta_analysis_res)){
+    stop(sprintf("Meta-analysis results for %s are not available in these results.", name))
+  }
+  metap = unique(results$merged_res$p_value[results$merged_res$metabolite_refmet == metabolite_refmet &
+                                              results$merged_res$sex == sex &
+                                              results$merged_res$comparison_group == timepoint])
+  metap = round(metap, digits=5)
+  minp = unique(results$merged_res$min_nominal_p[results$merged_res$metabolite_refmet == metabolite_refmet &
+                                              results$merged_res$sex == sex &
+                                              results$merged_res$comparison_group == timepoint])
+  minp = round(minp, digits=5)
+  forest(results$meta_analysis_res[[name]],
+         main = sprintf("\n\n%s\nmeta-analysis p = %s\nmin p = %s", name, metap, minp),
+         col = "blue")
 }
-
-
-forest(obj[[currexample]],
-       main=paste0("\n\n",currexample,"\n",
-                   "meta-analysis p=",round(obj[[currexample]]$p_value,digits = 5),"\n",
-                   "min p=", round(minrawp[currexample],digits = 5)
-       ),
-       col = "blue"
-)
