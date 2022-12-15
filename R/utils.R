@@ -19,6 +19,10 @@ viallabel_to_pid = function(viallabels){
   pheno = pheno[viallabel %in% as.character(viallabels)]
   vl_to_pid = pheno[,pid]
   names(vl_to_pid) = pheno[,viallabel]
+  # if possible, make order same as input
+  if(length(viallabels) == length(vl_to_pid)){
+    vl_to_pid = vl_to_pid[viallabels]
+  }
   return(vl_to_pid)
 }
 
