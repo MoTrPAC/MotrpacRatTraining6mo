@@ -126,5 +126,8 @@ utils::globalVariables(
     ########################################### plot_features_per_cluster()
     "type",
     "N",
-    "colour"
+    "colour",
+    ########################################### metabolomics meta
+    "metabolite_refmet",
+    "site"
   ))

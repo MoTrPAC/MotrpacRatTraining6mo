@@ -740,25 +740,77 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
 }
 
 
+#' Load metabolomics differential analysis
+#' 
+#' Load training or timewise metabolomics differential analysis results for a single tissue.
+#' For timewise results, load from [MotrpacRatTraining6moData::METAB_DA]. For training results, 
+#' load from GCS.  
+#' These are the redundant, non-meta-analyzed differential analysis that were used as input for the
+#' metabolomics meta-analysis and meta-regression but not otherwise directly used in the manuscript.
+#' The differential analysis results provided by [MotrpacRatTraining6moData::METAB_DA_METAREG] are the 
+#' non-redundant, meta-regression analysis results used in the manuscript. 
+#'
+#' @param tissue `r tissue()`
+#' @param type character, type of differential analysis summary statistics to return. One of 'timewise', 'training'. 
+#'   Note that the adjusted p-value from \code{type="training"} is already include in \code{type="timewise"} as \code{selection_fdr}. 
+#' @param ... additional arguments passed to [get_file_from_url()] 
+#'
+#' @return data frame. For detailed column descriptions, see [MotrpacRatTraining6moData::METAB_DA] 
+#'   or [this online spreadsheet](https://docs.google.com/spreadsheets/d/10I4ofH__sMhlONrwdH8ms9S4qkXpQ_wXMjcCa1fBUyY/edit#gid=0). 
+#' 
+#' @export
+#' 
+#' @seealso [metabolomics_meta_analysis()], [metabolomics_meta_regression()], [MotrpacRatTraining6moData::METAB_DA]
+#'
+#' @examples
+#' # Get timewise differential analysis results for the liver
+#' res = load_metabolomics_da("LIVER")
+#' 
+#' # Get training differential analysis results for the liver
+#' res = load_metabolomics_da("LIVER", type="training")
+#' 
+load_metabolomics_da = function(tissue, type="timewise", ...){
+  
+  if(!tissue %in% MotrpacRatTraining6moData::TISSUE_ABBREV){
+    stop("'tissue' must be one of MotrpacRatTraining6moData::TISSUE_ABBREV.")
+  }
+  
+  if(!type %in% c("timewise","training")){
+    stop("'type' must be one of 'timewise', 'training'.")
+  }
+  
+  if(type=="timewise"){
+    data = fetch_object(sprintf("METAB_%s_DA", gsub("-","",tissue)))
+  }else{
+    # tissue code to tissue label 
+    tissue_code = MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[[tissue]]
+    # construct URL
+    url = sprintf("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/metabolomics-training-da/pass1b-06_%s_metab_%s-dea-fdr_20211006.txt",tissue_code,type)
+    # load file
+    data = get_file_from_url(url, ...)
+  }
+  
+  return(data)  
+}
+
+
 #' Load file from GCS
-#'
+#' 
 #' Function to download a text file from the web. 
-#'
-#' @param url character, Google Cloud Storage URL, e.g., "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/metabolomics-da/pass1b-06_t31-plasma_metab_timewise-dea-fdr_20211006.txt"
+#' 
+#' @param url character, Google Cloud Storage URL, e.g., "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/metabolomics-training-da/pass1b-06_t31-plasma_metab_training-dea-fdr_20211006.txt"
 #' @param scratchdir character, local directory in which to download data from 
 #'   the web. Current working directory by default. Downloaded files are deleted before returning the result. 
 #' @param return_data_table bool, whether to return a data table. If FALSE, return a data frame. FALSE by default. 
-#'
+#' 
 #' @return data frame, or data table if \code{return_data_table = TRUE}
 #' @importFrom utils download.file 
 #' @export
 #'
 #' @examples
-#' # Get non-meta-analyzed metabolomics timewise differential analysis results for blood plasma 
-#' res = get_file_from_url("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/metabolomics-da/pass1b-06_t31-plasma_metab_timewise-dea-fdr_20211006.txt")
-#'
 #' # Get non-meta-analyzed metabolomics training differential analysis results for blood plasma 
-#' res = get_file_from_url("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/metabolomics-da/pass1b-06_t31-plasma_metab_training-dea-fdr_20211006.txt")
+#' res = get_file_from_url(paste0(c("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/",
+#'   "metabolomics-training-da/pass1b-06_t31-plasma_metab_training-dea-fdr_20211006.txt"),collapse=""))
 get_file_from_url = function(url, scratchdir=".", return_data_table=FALSE){
   
   # set option if default is low
