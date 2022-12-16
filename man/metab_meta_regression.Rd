@@ -15,10 +15,10 @@ metab_meta_regression(
 \item{tissue}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
 
 \item{timewise_input}{r data frame, custom input. To see the expected format, look at
-a table returned by \code{\link[=load_metabolomics_da]{load_metabolomics_da()}} with \code{type="timewise"}.}
+a table returned by \code{\link[=load_metab_da]{load_metab_da()}} with \code{type="timewise"}.}
 
 \item{training_input}{r data frame, custom input. To see the expected format, look at
-a table returned by \code{\link[=load_metabolomics_da]{load_metabolomics_da()}} with \code{type="training"}.}
+a table returned by \code{\link[=load_metab_da]{load_metab_da()}} with \code{type="training"}.}
 
 \item{het_p_threshold}{numeric, meta-regression cases with a heterogeneity p-value
 below this are considered to have high heterogeneity. Default: 0.001}
@@ -68,5 +68,5 @@ res = metab_meta_regression("SKM-GN")
 names(res)
 }
 \seealso{
-\code{\link[=load_metabolomics_da]{load_metabolomics_da()}}, \code{\link[=metabolite_meta_regression]{metabolite_meta_regression()}}, \link[MotrpacRatTraining6moData:METAB_DA_METAREG]{MotrpacRatTraining6moData::METAB_DA_METAREG}
+\code{\link[=load_metab_da]{load_metab_da()}}, \code{\link[=metabolite_meta_regression]{metabolite_meta_regression()}}, \link[MotrpacRatTraining6moData:METAB_DA_METAREG]{MotrpacRatTraining6moData::METAB_DA_METAREG}
 }

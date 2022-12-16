@@ -10,7 +10,7 @@ metab_meta_analysis(tissue, input = NULL)
 \item{tissue}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
 
 \item{input}{r data frame, custom input. To see the expected format, look at
-a table returned by \code{\link[=load_metabolomics_da]{load_metabolomics_da()}} with \code{type="timewise"}.}
+a table returned by \code{\link[=load_metab_da]{load_metab_da()}} with \code{type="timewise"}.}
 }
 \value{
 a named list, where \code{res$meta_analysis_res} is a list with one \code{\link[metafor:rma.uni]{metafor::rma.uni()}} object per

@@ -760,16 +760,16 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
 #' 
 #' @export
 #' 
-#' @seealso [metabolomics_meta_analysis()], [metabolomics_meta_regression()], [MotrpacRatTraining6moData::METAB_DA]
+#' @seealso [metab_meta_analysis()], [metab_meta_regression()], [MotrpacRatTraining6moData::METAB_DA]
 #'
 #' @examples
 #' # Get timewise differential analysis results for the liver
-#' res = load_metabolomics_da("LIVER")
+#' res = load_metab_da("LIVER")
 #' 
 #' # Get training differential analysis results for the liver
-#' res = load_metabolomics_da("LIVER", type="training")
+#' res = load_metab_da("LIVER", type="training")
 #' 
-load_metabolomics_da = function(tissue, type="timewise", ...){
+load_metab_da = function(tissue, type="timewise", ...){
   
   if(!tissue %in% MotrpacRatTraining6moData::TISSUE_ABBREV){
     stop("'tissue' must be one of MotrpacRatTraining6moData::TISSUE_ABBREV.")

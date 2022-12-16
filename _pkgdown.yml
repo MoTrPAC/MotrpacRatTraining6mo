@@ -23,7 +23,7 @@ reference:
 - subtitle: Load differential analysis results 
   contents: 
     - combine_da_results
-    - load_metabolomics_da
+    - load_metab_da
     - get_file_from_url
 
 - subtitle: Load epigenetic data

@@ -9,9 +9,9 @@
 #'
 #' @param tissue `r tissue()`
 #' @param timewise_input r data frame, custom input. To see the expected format, look at 
-#'   a table returned by [load_metabolomics_da()] with \code{type="timewise"}. 
+#'   a table returned by [load_metab_da()] with \code{type="timewise"}. 
 #' @param training_input r data frame, custom input. To see the expected format, look at 
-#'   a table returned by [load_metabolomics_da()] with \code{type="training"}. 
+#'   a table returned by [load_metab_da()] with \code{type="training"}. 
 #' @param het_p_threshold numeric, meta-regression cases with a heterogeneity p-value 
 #'   below this are considered to have high heterogeneity. Default: 0.001
 #'
@@ -24,7 +24,7 @@
 #' 
 #' @export
 #' 
-#' @seealso [load_metabolomics_da()], [metabolite_meta_regression()], [MotrpacRatTraining6moData::METAB_DA_METAREG]
+#' @seealso [load_metab_da()], [metabolite_meta_regression()], [MotrpacRatTraining6moData::METAB_DA_METAREG]
 #' @details
 #' 
 #' We try multiple models per repeated analyte:  
@@ -84,14 +84,15 @@ metab_meta_regression = function(tissue, timewise_input = NULL, training_input =
   
   # load redundant timewise differential analysis results 
   if(is.null(timewise_input)){
-    timewise = load_metabolomics_da(tissue, type="timewise")
+    timewise = load_metab_da(tissue, type="timewise")
   }else{
     timewise = timewise_input
   }
   
   # load redundant training differential analysis results 
   if(is.null(training_input)){
-    training = load_metabolomics_da(tissue, type="training")
+    training = load_metab_da(tissue, type="training")
+    setnames(training, c("tissue","tissue_abbreviation"), c("tissue_code","tissue"))
   }else{
     training = training_input
   }
@@ -184,8 +185,8 @@ metab_meta_regression = function(tissue, timewise_input = NULL, training_input =
   # For class 2 we take the targeted data only. 
   # Finally, for class 4 we take the meta-regression results.
   
-  basic_cols_to_keep = c("feature_ID","assay","tissue",'tissue_abbreviation',
-                         "dataset","site","is_targeted","metabolite_refmet","cv","covariates","control_cv")
+  basic_cols_to_keep = c("feature_ID","assay","tissue","dataset","site","is_targeted",
+                         "metabolite_refmet","cv","covariates","control_cv")
   additional_training_cols = c(
     "fscore_male","fscore_female",
     "p_value_male","p_value_female",
@@ -549,260 +550,101 @@ metabolite_meta_regression = function(metabolite_refmet, timewise, training = NU
 }
 
 
-
-# all_meta_reg_results = meta_reg_training_dea[meta_reg_training_dea$dataset == "meta-reg",]
-# 
-# # compare p-values with and without the meta-regression
-# get_char_minp<-function(x){
-#   ps = as.numeric(strsplit(x,split=",")[[1]])
-#   return(min(ps))
-# }
-# all_meta_reg_ps = pmax(1e-20,all_meta_reg_results$p_value)
-# raw_min_p = unname(sapply(all_meta_reg_results$original_ftest_ps,get_char_minp))
-# plot(
-#   x = -log10(all_meta_reg_ps),
-#   y = -log10(raw_min_p),
-#   cex = 0.8,
-#   col="gray",pch=20,
-#   xlab = "-log 10 meta-regression p-value",ylab = "-log 10 min p-value in raw data"
-# )
-# abline(0,1)
-# 
-# print("Summary of meta-regression metabolites with training dea p-val < 0.001:")
-# print(table(all_meta_reg_ps < 0.001))
-# print("Compare the results above to the raw minimal p-value using the same 0.001 threshold:")
-# table(all_meta_reg_ps < 0.001,raw_min_p < 0.001 )
-# 
-# # examine some extreme cases
-# extreme_case = which(all_meta_reg_results$p_value < 1e-50)
-# print("Here are some meta-regression results with extremely low p-value (< 1e-50:")
-# all_meta_reg_results[extreme_case,]
-# 
-# 
-# 
-# ## Print the results to the bucket:
-# 
-# 
-# ####################################################
-# # Print the meta-regression results into the mawg bucket
-# ####################################################
-# tissues = unique(meta_reg_timewise_dea$tissue)
-# mawg_bucket = "gs://mawg-data/pass1b-06/metabolomics/dea/data-freeze/meta-regression/"
-# 
-# suffix = "_metab-meta-reg_timewise-dea_20211014.txt"
-# for(tissue in tissues){
-#   x = meta_reg_timewise_dea[meta_reg_timewise_dea$tissue == tissue,]
-#   if(is.null(x) || nrow(x)==0){next}
-#   if(grepl("t54-hypo",tissue)){x$tissue = "t54-hypothalamus"}
-#   local_fname = paste0(local_data_dir, "pass1b-06_",tissue,suffix)
-#   write.table(x,file=local_fname,sep="\t",quote=F,
-#               row.names = F,col.names = T)
-#   cmd = paste(gsutil_cmd,"cp",local_fname,mawg_bucket)
-#   system(cmd)
-# }
-# 
-# suffix = "_metab-meta-reg_training-dea_20211014.txt"
-# for(tissue in tissues){
-#   x = meta_reg_training_dea[meta_reg_training_dea$tissue == tissue,]
-#   if(is.null(x) || nrow(x)==0){next}
-#   if(grepl("t54-hypo",tissue)){x$tissue = "t54-hypothalamus"}
-#   local_fname = paste0(local_data_dir, "pass1b-06_",tissue,suffix)
-#   write.table(x,file=local_fname,sep="\t",quote=F,
-#               row.names = F,col.names = T)
-#   cmd = paste(gsutil_cmd,"cp",local_fname,mawg_bucket)
-#   system(cmd)
-# }
-# 
-# 
-# 
-# ## Print the forest plots into pdfs
-# 
-# 
-# min_rawp_sig<-function(x){return(min(x$rawdata[,"p_value"]))}
-# report_hetp_thr = het_p_threshold
-# report_pthr = 0.001
-# curr_stats = c()
-# 
-# local_fname = "pass1b-06_metab_meta-reg-significant-high-het.pdf"
-# pdf(local_fname)
-# for(tissue in names(tissue2meta_res_objects)){
-#   obj = tissue2meta_res_objects[[tissue]]
-#   minrawp = sapply(obj,min_rawp_sig)
-#   rawdsize = sapply(obj,function(x)nrow(x$rawdata))
-#   metaps = sapply(obj,function(x)x$p_value)
-#   meta_hetp = sapply(obj,function(x)x$QEp)
-#   high_het_cases =  metaps < report_pthr & meta_hetp < report_hetp_thr
-#   high_het_cases = names(which(high_het_cases))
-#   low_het_cases =  names(which(meta_hetp > report_hetp_thr & metaps < report_pthr))
-#   insignificant_res = metaps > report_pthr & minrawp > report_pthr
-#   curr_stats = rbind(curr_stats,
-#                      c(length(low_het_cases),length(high_het_cases),
-#                        sum(is.na(insignificant_res)) + sum(insignificant_res,na.rm=T)))
-#   rownames(curr_stats)[nrow(curr_stats)] = tissue
-#   if(length(high_het_cases)==0){next}
-#   for(currexample in high_het_cases){
-#     currnames = strsplit(attr(obj[[currexample]]$yi,"slab"),split = " ")
-#     currnames = t(sapply(currnames,function(x)x))
-#     curr_cvs = unique(obj[[currexample]]$rawdata[,c("site","dataset","control_cv")])
-#     obj[[currexample]]$rawdata$control_cv = round(obj[[currexample]]$rawdata$control_cv,2)
-#     curr_labels  = paste0(obj[[currexample]]$slab," (",obj[[currexample]]$rawdata$control_cv,")")
-#     forest(obj[[currexample]], slab = curr_labels,addfit = F,
-#            main=paste0( "\n\n\n\n",tissue,": ",currexample,"\n",
-#                         "meta-reg p=",format(round(obj[[currexample]]$p_value,digits = 20),digits=2),"\n",
-#                         "min p=", format(round(minrawp[currexample],digits = 20),digits=2),", ",
-#                         "meta-reg het p=",format(round(obj[[currexample]]$QEp,digits = 20),digits=2)
-#                         #"I2 = ", round(metai[currexample],digits = 2)
-#            ),top = 8,col = "blue",cex = 0.9,
-#            order = order(currnames[,2],currnames[,1],currnames[,3])
-#     )
-#   }
-# }
-# dev.off()
-# cmd = paste(gsutil_cmd,"cp",local_fname,mawg_bucket)
-# system(cmd)
-# 
-# #curr_stats
-# 
-# local_fname = "pass1b-06_metab_meta-reg-significant-low-het-lowmetap.pdf"
-# pdf(local_fname)
-# for(tissue in names(tissue2meta_res_objects)){
-#   obj = tissue2meta_res_objects[[tissue]]
-#   minrawp = sapply(obj,min_rawp_sig)
-#   rawdsize = sapply(obj,function(x)nrow(x$rawdata))
-#   metaps = sapply(obj,function(x)x$p_value)
-#   metai = sapply(obj,function(x)x$I2)
-#   meta_hetp = sapply(obj,function(x)x$QEp)
-#   low_het_cases =  names(which(meta_hetp > report_hetp_thr & metaps < report_pthr))
-#   for(currexample in low_het_cases){
-#     currnames = strsplit(attr(obj[[currexample]]$yi,"slab"),split = " ")
-#     currnames = t(sapply(currnames,function(x)x))
-#     curr_cvs = unique(obj[[currexample]]$rawdata[,c("site","dataset","control_cv")])
-#     obj[[currexample]]$rawdata$control_cv = round(obj[[currexample]]$rawdata$control_cv,2)
-#     curr_labels  = paste0(obj[[currexample]]$slab," (",obj[[currexample]]$rawdata$control_cv,")")
-#     forest(obj[[currexample]], slab = curr_labels,addfit = F,
-#            main=paste0( "\n\n\n\n",tissue,": ",currexample,"\n",
-#                         "meta-reg p=",format(round(obj[[currexample]]$p_value,digits = 20),digits=2),"\n",
-#                         "min p=", format(round(minrawp[currexample],digits = 20),digits=2),", ",
-#                         "meta-reg het p=",format(round(obj[[currexample]]$QEp,digits = 20),digits=2)
-#            ),top = 8,col = "blue",cex = 0.9,
-#            order = order(currnames[,2],currnames[,1],currnames[,3])
-#     )
-#   }
-# }
-# dev.off()
-# cmd = paste(gsutil_cmd,"cp",local_fname,mawg_bucket)
-# system(cmd)
-# 
-# local_fname = "pass1b-06_metab_meta-reg-insignificant-minrawp-significant.pdf"
-# pdf(local_fname)
-# for(tissue in names(tissue2meta_res_objects)){
-#   obj = tissue2meta_res_objects[[tissue]]
-#   minrawp = sapply(obj,min_rawp_sig)
-#   rawdsize = sapply(obj,function(x)nrow(x$rawdata))
-#   metaps = sapply(obj,function(x)x$p_value)
-#   metai = sapply(obj,function(x)x$I2)
-#   meta_hetp = sapply(obj,function(x)x$QEp)
-#   lost_results =  minrawp < report_pthr & metaps > report_pthr
-#   lost_results = names(which(lost_results))
-#   for(currexample in lost_results){
-#     currnames = strsplit(attr(obj[[currexample]]$yi,"slab"),split = " ")
-#     currnames = t(sapply(currnames,function(x)x))
-#     curr_cvs = unique(obj[[currexample]]$rawdata[,c("site","dataset","control_cv")])
-#     obj[[currexample]]$rawdata$control_cv = round(obj[[currexample]]$rawdata$control_cv,2)
-#     curr_labels  = paste0(obj[[currexample]]$slab," (",obj[[currexample]]$rawdata$control_cv,")")
-#     forest(obj[[currexample]], slab = curr_labels,addfit = F,
-#            main=paste0( "\n\n\n\n",tissue,": ",currexample,"\n",
-#                         "meta-reg p=",format(round(obj[[currexample]]$p_value,digits = 20),digits=2),"\n",
-#                         "min p=", format(round(minrawp[currexample],digits = 20),digits=2),", ",
-#                         "meta-reg het p=",format(round(obj[[currexample]]$QEp,digits = 20),digits=2)
-#            ),top = 8,col = "blue",cex = 0.9,
-#            order = order(currnames[,2],currnames[,1],currnames[,3])
-#     )
-#   }
-# }
-# dev.off()
-# cmd = paste(gsutil_cmd,"cp",local_fname,mawg_bucket)
-# system(cmd)
-# 
-# local_fname = "pass1b-06_metab_meta-reg-gained_results.pdf"
-# pdf(local_fname)
-# for(tissue in names(tissue2meta_res_objects)){
-#   obj = tissue2meta_res_objects[[tissue]]
-#   minrawp = sapply(obj,min_rawp_sig)
-#   rawdsize = sapply(obj,function(x)nrow(x$rawdata))
-#   metaps = sapply(obj,function(x)x$p_value)
-#   metai = sapply(obj,function(x)x$I2)
-#   meta_hetp = sapply(obj,function(x)x$QEp)
-#   gained_results =  minrawp > report_pthr & metaps < report_pthr
-#   gained_results = names(which(gained_results))
-#   for(currexample in gained_results){
-#     currnames = strsplit(attr(obj[[currexample]]$yi,"slab"),split = " ")
-#     currnames = t(sapply(currnames,function(x)x))
-#     curr_cvs = unique(obj[[currexample]]$rawdata[,c("site","dataset","control_cv")])
-#     obj[[currexample]]$rawdata$control_cv = round(obj[[currexample]]$rawdata$control_cv,2)
-#     curr_labels  = paste0(obj[[currexample]]$slab," (",obj[[currexample]]$rawdata$control_cv,")")
-#     forest(obj[[currexample]], slab = curr_labels,addfit = F,
-#            main=paste0( "\n\n\n\n",tissue,": ",currexample,"\n",
-#                         "meta-reg p=",format(round(obj[[currexample]]$p_value,digits = 20),digits=2),"\n",
-#                         "min p=", format(round(minrawp[currexample],digits = 20),digits=2),", ",
-#                         "meta-reg het p=",format(round(obj[[currexample]]$QEp,digits = 20),digits=2)
-#            ),top = 8,col = "blue",cex = 0.9,
-#            order = order(currnames[,2],currnames[,1],currnames[,3])
-#     )
-#   }
-# }
-# dev.off()
-# cmd = paste(gsutil_cmd,"cp",local_fname,mawg_bucket)
-# system(cmd)
-# 
-# 
-# ## Show a few forest plots
-# 
-# 
-# # add this code here once because we sometimes want to rerun the flow without running
-# # the code above that updates the buckets.
-# min_rawp_sig<-function(x){return(min(x$rawdata[,"p_value"]))}
-# 
-# # An example for the presentation
-# currexample = "CAR(18:2)"
-# tissue = "t31-plasma"
-# obj = tissue2meta_res_objects[[tissue]]
-# minrawp = sapply(obj,min_rawp_sig)
-# rawdsize = sapply(obj,function(x)nrow(x$rawdata))
-# metaps = sapply(obj,function(x)x$p_value)
-# meta_hetp = sapply(obj,function(x)x$QEp)
-# currnames = strsplit(attr(obj[[currexample]]$yi,"slab"),split = " ")
-# currnames = t(sapply(currnames,function(x)x))
-# curr_cvs = unique(obj[[currexample]]$rawdata[,c("site","dataset","control_cv")])
-# obj[[currexample]]$rawdata$control_cv = round(obj[[currexample]]$rawdata$control_cv,2)
-# curr_labels  = paste0(obj[[currexample]]$slab," (",obj[[currexample]]$rawdata$control_cv,")")
-# forest(obj[[currexample]], slab = curr_labels,addfit = F,
-#        main=paste0( "\n\n\n\n",tissue,": ",currexample,"\n",
-#                     "meta-reg p=",format(round(obj[[currexample]]$p_value,digits = 20),digits=2),"\n",
-#                     "min p=", format(round(minrawp[currexample],digits = 20),digits=2),", ",
-#                     "meta-reg het p=",format(round(obj[[currexample]]$QEp,digits = 20),digits=2)
-#        ),top = 8,col = "blue",cex = 0.9,
-#        order = order(currnames[,2],currnames[,1],currnames[,3])
-# )
-# 
-# currexample = "Aspartic acid"
-# tissue = "t69-brown-adipose"
-# obj = tissue2meta_res_objects[[tissue]]
-# minrawp = sapply(obj,min_rawp_sig)
-# rawdsize = sapply(obj,function(x)nrow(x$rawdata))
-# metaps = sapply(obj,function(x)x$p_value)
-# meta_hetp = sapply(obj,function(x)x$QEp)
-# currnames = strsplit(attr(obj[[currexample]]$yi,"slab"),split = " ")
-# currnames = t(sapply(currnames,function(x)x))
-# curr_cvs = unique(obj[[currexample]]$rawdata[,c("site","dataset","control_cv")])
-# obj[[currexample]]$rawdata$control_cv = round(obj[[currexample]]$rawdata$control_cv,2)
-# curr_labels  = paste0(obj[[currexample]]$slab," (",obj[[currexample]]$rawdata$control_cv,")")
-# forest(obj[[currexample]], slab = curr_labels,addfit = F,
-#        main=paste0( "\n\n\n\n",tissue,": ",currexample,"\n",
-#                     "meta-reg p=",format(round(obj[[currexample]]$p_value,digits = 20),digits=2),"\n",
-#                     "min p=", format(round(minrawp[currexample],digits = 20),digits=2),", ",
-#                     "meta-reg het p=",format(round(obj[[currexample]]$QEp,digits = 20),digits=2)
-#        ),top = 8,col = "blue",cex = 0.9,
-#        order = order(currnames[,2],currnames[,1],currnames[,3])
-# )
-# 
+#' Print forest plot
+#' 
+#' Make a forest plot to present multiple measurements and consensus effect
+#' size from meta-analysis or meta-regression. Note that using [metab_meta_regression()] 
+#' results as input generates a single forest plot while using [metab_meta_analysis()]
+#' generates one forest plot per sex and training time point. 
+#'
+#' @param results named list returned by [metab_meta_analysis()] or [metab_meta_regression()] 
+#' @param metabolite_refmet character, RefMet name of metabolite 
+#'
+#' @export
+#' 
+#' @seealso [metab_meta_analysis()], [metab_meta_regression()]
+#'
+#' @examples
+#' # Get meta-analysis results in gastrocnemius
+#' res = metab_meta_analysis("SKM-GN")
+#' # Pick a feature
+#' res$merged_res[res$merged_res$min_nominal_p > 0.01 & 
+#'   res$merged_res$p_value < 0.001 & 
+#'   res$merged_res$I2 < 30,]
+#' forest_plot(res, metabolite_refmet="Hydroxyproline")
+#' 
+#' # Look at meta-regression results for a feature in the plasma
+#' res = metab_meta_regression("PLASMA")
+#' forest_plot(res, metabolite_refmet="CAR(18:2)")
+#' 
+#' res = metab_meta_regression("BAT")
+#' forest_plot(res, metabolite_refmet="Aspartic acid")
+forest_plot = function(results, metabolite_refmet){
+  
+  if(!requireNamespace("metafor", quietly = TRUE)){
+    stop(
+      "Package 'metafor' must be installed to run 'forest_plot()'.",
+      call. = FALSE
+    )
+  }
+  
+  if("meta_analysis_res" %in% names(results)){
+    type = "metaanalysis"
+  }else{
+    type = "metaregression"
+  }
+  
+  if(type=="metaanalysis"){
+    names = paste0(paste0(metabolite_refmet, ",", paste0(c(1,2,4,8),"w")), ",", rep(c("male","female"),each=4))
+    for(name in names){
+      
+      splits = unname(unlist(strsplit(name, ",")))
+      metabolite_refmet = splits[1]
+      timepoint = splits[2]
+      sex = splits[3]
+      
+      if(!name %in% names(results$meta_analysis_res)){
+        warning(sprintf("Meta-analysis results for %s are not available in these results.", name))
+        next
+      }
+      metap = unique(results$merged_res$p_value[results$merged_res$metabolite_refmet == metabolite_refmet &
+                                                  results$merged_res$sex == sex &
+                                                  results$merged_res$comparison_group == timepoint])
+      metap = round(metap, digits=5)
+      minp = unique(results$merged_res$min_nominal_p[results$merged_res$metabolite_refmet == metabolite_refmet &
+                                                       results$merged_res$sex == sex &
+                                                       results$merged_res$comparison_group == timepoint])
+      minp = round(minp, digits=5)
+      metafor::forest(results$meta_analysis_res[[name]],
+                      main = sprintf("\n\n%s\nmeta-analysis p = %s\nmin p = %s", name, metap, minp),
+                      col = "blue") 
+    }
+  }else if(type=="metaregression"){
+    tissue = results$training_meta_regression$tissue[1]
+    obj = results$meta_regression_results
+    minrawp = sapply(obj, function(x){
+      return(min(x$rawdata[,"p_value"]))
+    })
+    rawdsize = sapply(obj,function(x)nrow(x$rawdata))
+    metaps = sapply(obj,function(x)x$p_value)
+    meta_hetp = sapply(obj,function(x)x$QEp)
+    currnames = strsplit(attr(obj[[metabolite_refmet]]$yi,"slab"),split = " ")
+    currnames = t(sapply(currnames,function(x)x))
+    curr_cvs = unique(obj[[metabolite_refmet]]$rawdata[,c("site","dataset","control_cv")])
+    obj[[metabolite_refmet]]$rawdata$control_cv = round(obj[[metabolite_refmet]]$rawdata$control_cv,2)
+    curr_labels  = paste0(obj[[metabolite_refmet]]$slab," (",obj[[metabolite_refmet]]$rawdata$control_cv,")")
+    metafor::forest(obj[[metabolite_refmet]], 
+                    slab = curr_labels,
+                    addfit = F,
+                    main=paste0( "\n\n\n\n",tissue,": ",metabolite_refmet,"\n",
+                                 "meta-reg p=",format(round(obj[[metabolite_refmet]]$p_value,digits = 20),digits=2),"\n",
+                                 "min p=", format(round(minrawp[metabolite_refmet],digits = 20),digits=2),", ",
+                                 "meta-reg het p=",format(round(obj[[metabolite_refmet]]$QEp,digits = 20),digits=2)),
+                    top = 8,
+                    col = "blue",
+                    cex = 0.9,
+                    order = order(currnames[,2],currnames[,1],currnames[,3]))
+  }else{
+    stop("How did we get a type other than 'metaanalysis', 'metaregression'?")
+  }
+}
