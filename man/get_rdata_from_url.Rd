@@ -22,7 +22,7 @@ get_rdata_from_url(
 \item{suffix}{character, object suffix. Only used if \code{url} is NULL.}
 
 \item{scratchdir}{character, local directory in which to download data from
-the web. Current working directory by default.}
+the web. Current working directory by default. Downloaded files are deleted before returning the result.}
 
 \item{url}{character, RData URL. Optional if URL cannot be constructed from
 \code{tissue}, \code{assay}, and \code{suffix}.}
