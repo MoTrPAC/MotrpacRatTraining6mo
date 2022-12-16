@@ -13,7 +13,7 @@ forest_plot(
 )
 }
 \arguments{
-\item{results}{named list returned by \code{\link[=metabolomics_meta_analysis]{metabolomics_meta_analysis()}}}
+\item{results}{named list returned by \code{\link[=metab_meta_analysis]{metab_meta_analysis()}}}
 
 \item{metabolite_refmet}{character, RefMet name of metabolite}
 
@@ -31,7 +31,7 @@ size from meta-analysis.
 }
 \examples{
 # Get meta-analysis results for gastrocnemius
-res = metabolomics_meta_analysis("SKM-GN")
+res = metab_meta_analysis("SKM-GN")
 # Pick a feature
 res$merged_res[res$merged_res$min_nominal_p > 0.01 & 
   res$merged_res$p_value < 0.001 & 
@@ -40,5 +40,5 @@ forest_plot(res, metabolite_refmet="Hydroxyproline", sex="female", timepoint="8w
 forest_plot(res, name="Hydroxyproline,8w,female")
 }
 \seealso{
-\code{\link[=metabolomics_meta_analysis]{metabolomics_meta_analysis()}}
+\code{\link[=metab_meta_analysis]{metab_meta_analysis()}}
 }

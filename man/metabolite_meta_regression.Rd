@@ -18,7 +18,7 @@ a named list with meta-regression results, metabolite metadata, and
 training summary statistics if \code{training} is not NULL.
 }
 \description{
-Worker function wrapped by \code{\link[=metabolomics_meta_regression]{metabolomics_meta_regression()}}.
+Worker function wrapped by \code{\link[=metab_meta_regression]{metab_meta_regression()}}.
 }
 \details{
 We try multiple models per analyte:
