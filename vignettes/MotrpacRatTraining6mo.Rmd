@@ -361,18 +361,12 @@ documentation for each function for more details, e.g. `?transcript_timewise_da`
 * METAB  
   * `metab_timewise_da()`  
   * `metab_training_da()`  
+  * `metab_meta_regression()`
 * METHYL  
   * `rrbs_differential_analysis()`   
 * TRNSCRPT  
   * `transcript_timewise_da()`  
   * `transcript_training_da()`  
-
-<div class = "yellow">
-
-**Note:** The functions to reproduce the metabolomics meta-regression for metabolites
-with multiple measurements have not yet been added.
-
-</div>
 
 Here, we replicate the protein acetylation timewise differential
 analysis results provided in [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData/).

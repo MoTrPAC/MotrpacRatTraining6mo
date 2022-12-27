@@ -7,7 +7,7 @@
 get_file_from_url(url, scratchdir = ".", return_data_table = FALSE)
 }
 \arguments{
-\item{url}{character, Google Cloud Storage URL, e.g., "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/metabolomics-training-da/pass1b-06_t31-plasma_metab_training-dea-fdr_20211006.txt"}
+\item{url}{character, Google Cloud Storage URL, e.g., "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/training-da/PHOSPHO/pass1b-06_t70-white-adipose_prot-ph_training-dea-fdr.txt"}
 
 \item{scratchdir}{character, local directory in which to download data from
 the web. Current working directory by default. Downloaded files are deleted before returning the result.}
@@ -21,7 +21,7 @@ data frame, or data table if \code{return_data_table = TRUE}
 Function to download a text file from the web.
 }
 \examples{
-# Get non-meta-analyzed metabolomics training differential analysis results for blood plasma 
+# Get phosphoproteomics training differential analysis results for white adipose 
 res = get_file_from_url(paste0(c("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/",
-  "metabolomics-training-da/pass1b-06_t31-plasma_metab_training-dea-fdr_20211006.txt"),collapse=""))
+  "training-da/PHOSPHO/pass1b-06_t70-white-adipose_prot-ph_training-dea-fdr.txt"),collapse=""))
 }

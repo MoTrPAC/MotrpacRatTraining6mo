@@ -668,13 +668,15 @@ load_atac_feature_annotation = function(scratchdir = "."){
 #' 
 #' # return DNA methylation feature annotation
 #' data = get_rdata_from_url(
-#'   url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/METHYL_FEATURE_ANNOT.rda", 
+#'   url=paste0("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/",
+#'              "epigen-rda/METHYL_FEATURE_ANNOT.rda"), 
 #'   scratchdir="/tmp"
 #' )
 #' 
 #' # return raw DNA methylation data for brown adipose
 #' data = get_rdata_from_url(
-#'   url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/METHYL_BAT_RAW_DATA.rda", 
+#'   url=paste0("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/",
+#'              "epigen-rda/METHYL_BAT_RAW_DATA.rda"), 
 #'   scratchdir="/tmp"
 #' )
 #' }
@@ -1134,7 +1136,7 @@ combine_da_results = function(tissues = MotrpacRatTraining6moData::TISSUE_ABBREV
 #'   \code{TRUE} by default. 
 #' @param ... additional arguments passed to [get_file_from_url()] 
 #'
-#' @return
+#' @return data frame, or data table with argument \code{return_data_table = TRUE}
 #' @export
 #' 
 #' @seealso [MotrpacRatTraining6moData::TRAINING_DA]

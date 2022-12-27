@@ -16,7 +16,7 @@ Note that the adjusted p-value from \code{type="training"} is already include in
 }
 \value{
 data frame. For detailed column descriptions, see \link[MotrpacRatTraining6moData:METAB_DA]{MotrpacRatTraining6moData::METAB_DA}
-or \href{https://docs.google.com/spreadsheets/d/10I4ofH__sMhlONrwdH8ms9S4qkXpQ_wXMjcCa1fBUyY/edit#gid=0}{this online spreadsheet}.
+and \link[MotrpacRatTraining6moData:TRAINING_DA]{MotrpacRatTraining6moData::TRAINING_DA}.
 }
 \description{
 Load training or timewise metabolomics differential analysis results for a single tissue.
@@ -36,5 +36,5 @@ res = load_metab_da("LIVER", type="training")
 
 }
 \seealso{
-\code{\link[=metab_meta_analysis]{metab_meta_analysis()}}, \code{\link[=metab_meta_regression]{metab_meta_regression()}}, \link[MotrpacRatTraining6moData:METAB_DA]{MotrpacRatTraining6moData::METAB_DA}
+\code{\link[=metab_meta_analysis]{metab_meta_analysis()}}, \code{\link[=metab_meta_regression]{metab_meta_regression()}}, \link[MotrpacRatTraining6moData:METAB_DA]{MotrpacRatTraining6moData::METAB_DA}, \link[MotrpacRatTraining6moData:TRAINING_DA]{MotrpacRatTraining6moData::TRAINING_DA}, \code{\link[=load_training_da]{load_training_da()}}
 }

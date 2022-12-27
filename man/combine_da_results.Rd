@@ -20,7 +20,7 @@ one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData:
 one of \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV}}
 
 \item{metareg}{bool, whether to use the meta-regression results for METAB.
-Use the upstream differential analysis results in \code{FALSE}.
+Use the upstream differential analysis results if \code{FALSE}.
 \code{TRUE} by default.}
 
 \item{include_epigen}{bool, whether to include the full ATAC or METHYL
