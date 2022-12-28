@@ -25,7 +25,6 @@ reference:
     - combine_da_results
     - load_training_da
     - load_metab_da
-    - get_file_from_url
 
 - subtitle: Load epigenetic data
   desc: Load full epigenetic datasets from Google Cloud Storage
@@ -62,7 +61,7 @@ reference:
     - transcript_training_da
 
 - subtitle: Ancillary functions
-  desc: Ancillary functions used within the above wrapper functions 
+  desc: Ancillary functions used within or after the above wrapper functions
   contents:
     - atac_prep_data
     - analyze_tile
@@ -72,6 +71,7 @@ reference:
     - transcript_prep_data
     - merge_two_dea_dfs
     - metabolite_meta_regression
+    - forest_plot
     
 - subtitle: Metabolomics meta-analysis
   desc: >
@@ -79,7 +79,6 @@ reference:
     which was abandoned in favor of meta-regression.  
   contents:
     - metab_meta_analysis
-    - forest_plot
 
 
 
