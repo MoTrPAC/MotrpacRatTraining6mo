@@ -1,3 +1,9 @@
+# MotrpacRatTraining6mo 1.2.0 (2022-12-27)
+
+* Add functions to perform meta-analysis and meta-regression of redundant metabolites. 
+* Add `load_training_da()` to load training summary statistics from GSC.  
+* Retain order of input vial labels in result of `viallabel_to_pid()`.  
+ 
 # MotrpacRatTraining6mo 1.1.1 (2022-11-09)
 
 * Use `MotrpacRatTraining6moData::TRAINING_REGULATED_NORM_DATA` 

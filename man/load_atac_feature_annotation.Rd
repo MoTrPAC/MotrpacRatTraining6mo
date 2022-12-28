@@ -4,7 +4,7 @@
 \alias{load_atac_feature_annotation}
 \title{Load ATAC feature annotation}
 \source{
-\url{https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/ATAC_FEATURE_ANNOT.rda}
+\url{https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/ATAC_FEATURE_ANNOT.rda}
 }
 \usage{
 load_atac_feature_annotation(scratchdir = ".")

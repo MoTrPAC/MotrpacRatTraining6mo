@@ -23,6 +23,8 @@ reference:
 - subtitle: Load differential analysis results 
   contents: 
     - combine_da_results
+    - load_training_da
+    - load_metab_da
 
 - subtitle: Load epigenetic data
   desc: Load full epigenetic datasets from Google Cloud Storage
@@ -31,6 +33,11 @@ reference:
     - load_atac_feature_annotation
     - load_methyl_feature_annotation
     - load_methyl_raw_data
+
+- subtitle: Load data from GCS
+  desc: Download and read in RData or text files from Google Cloud Storage
+  contents:
+    - get_file_from_url
     - get_rdata_from_url
 
 
@@ -46,6 +53,7 @@ reference:
     - immuno_training_da
     - metab_timewise_da
     - metab_training_da
+    - metab_meta_regression
     - proteomics_timewise_da
     - proteomics_training_da
     - rrbs_differential_analysis
@@ -53,7 +61,7 @@ reference:
     - transcript_training_da
 
 - subtitle: Ancillary functions
-  desc: Ancillary functions used within the above wrapper functions 
+  desc: Ancillary functions used within or after the above wrapper functions
   contents:
     - atac_prep_data
     - analyze_tile
@@ -61,6 +69,16 @@ reference:
     - merge_sites_by_clusters
     - run_deseq
     - transcript_prep_data
+    - merge_two_dea_dfs
+    - metabolite_meta_regression
+    - forest_plot
+    
+- subtitle: Metabolomics meta-analysis
+  desc: >
+    Functions used to perform metabolomics meta-analysis, 
+    which was abandoned in favor of meta-regression.  
+  contents:
+    - metab_meta_analysis
 
 
 

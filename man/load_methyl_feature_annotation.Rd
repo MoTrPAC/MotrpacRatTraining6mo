@@ -4,7 +4,7 @@
 \alias{load_methyl_feature_annotation}
 \title{Load METHYL feature annotation}
 \source{
-\url{https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda}
+\url{https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/METHYL_FEATURE_ANNOT.rda}
 }
 \usage{
 load_methyl_feature_annotation(scratchdir = ".")

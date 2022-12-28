@@ -22,7 +22,7 @@ get_rdata_from_url(
 \item{suffix}{character, object suffix. Only used if \code{url} is NULL.}
 
 \item{scratchdir}{character, local directory in which to download data from
-the web. Current working directory by default.}
+the web. Current working directory by default. Downloaded files are deleted before returning the result.}
 
 \item{url}{character, RData URL. Optional if URL cannot be constructed from
 \code{tissue}, \code{assay}, and \code{suffix}.}
@@ -54,13 +54,15 @@ data = get_rdata_from_url(tissue="BAT", assay="METHYL", suffix="RAW_COUNTS", scr
 
 # return DNA methylation feature annotation
 data = get_rdata_from_url(
-  url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda", 
+  url=paste0("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/",
+             "epigen-rda/METHYL_FEATURE_ANNOT.rda"), 
   scratchdir="/tmp"
 )
 
 # return raw DNA methylation data for brown adipose
 data = get_rdata_from_url(
-  url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData", 
+  url=paste0("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/",
+             "epigen-rda/METHYL_BAT_RAW_DATA.rda"), 
   scratchdir="/tmp"
 )
 }

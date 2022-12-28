@@ -578,7 +578,7 @@ load_epigen_da = function(tissue, assay, scratchdir="."){
 #' data = load_methyl_raw_data("SKM-GN", "/tmp")
 #' }
 load_methyl_raw_data = function(tissue, scratchdir = "."){
-  url = sprintf("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_%s_RAW_DATA.rda", tissue)
+  url = sprintf("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/METHYL_%s_RAW_DATA.rda", tissue)
   data = get_rdata_from_url(url = url, scratchdir = scratchdir)
   return(data)
 }
@@ -600,9 +600,9 @@ load_methyl_raw_data = function(tissue, scratchdir = "."){
 #' feature_annot = load_methyl_feature_annotation("/tmp")
 #' }
 #' 
-#' @source <https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda> 
+#' @source <https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/METHYL_FEATURE_ANNOT.rda> 
 load_methyl_feature_annotation = function(scratchdir = "."){
-  fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda",
+  fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/METHYL_FEATURE_ANNOT.rda",
                    scratchdir = scratchdir)
   return(fa)
 }
@@ -624,9 +624,9 @@ load_methyl_feature_annotation = function(scratchdir = "."){
 #' feature_annot = load_atac_feature_annotation("/tmp")
 #' }
 #' 
-#' @source <https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/ATAC_FEATURE_ANNOT.rda> 
+#' @source <https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/ATAC_FEATURE_ANNOT.rda> 
 load_atac_feature_annotation = function(scratchdir = "."){
-  fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/ATAC_FEATURE_ANNOT.rda",
+  fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/ATAC_FEATURE_ANNOT.rda",
                           scratchdir = scratchdir)
   return(fa)
 }
@@ -642,7 +642,7 @@ load_atac_feature_annotation = function(scratchdir = "."){
 #' @param assay `r assay()`. Only used if \code{url} is NULL. 
 #' @param suffix character, object suffix. Only used if \code{url} is NULL. 
 #' @param scratchdir character, local directory in which to download data from 
-#'   the web. Current working directory by default.
+#'   the web. Current working directory by default. Downloaded files are deleted before returning the result. 
 #' @param url character, RData URL. Optional if URL cannot be constructed from 
 #'   \code{tissue}, \code{assay}, and \code{suffix}. 
 #' @param obj_name character, name of object saved within RData file. Only required
@@ -668,13 +668,15 @@ load_atac_feature_annotation = function(scratchdir = "."){
 #' 
 #' # return DNA methylation feature annotation
 #' data = get_rdata_from_url(
-#'   url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/METHYL_FEATURE_ANNOT.rda", 
+#'   url=paste0("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/",
+#'              "epigen-rda/METHYL_FEATURE_ANNOT.rda"), 
 #'   scratchdir="/tmp"
 #' )
 #' 
 #' # return raw DNA methylation data for brown adipose
 #' data = get_rdata_from_url(
-#'   url="https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/raw/RRBS/BAT_raw.RData", 
+#'   url=paste0("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/",
+#'              "epigen-rda/METHYL_BAT_RAW_DATA.rda"), 
 #'   scratchdir="/tmp"
 #' )
 #' }
@@ -715,7 +717,7 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
     if(is.null(tissue) | is.null(assay) | is.null(suffix)){
       stop("If a URL is not provided, 'tissue', 'assay', and 'suffix' must be non-null.")
     }
-    gcs_bucket = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata"
+    gcs_bucket = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda"
     url = sprintf("%s/%s_%s_%s.rda", gcs_bucket, assay, gsub("-","",tissue), suffix)
   }
   
@@ -736,6 +738,98 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
   # delete local copy
   file.remove(local)
 
+  return(data)
+}
+
+
+#' Load metabolomics differential analysis
+#' 
+#' Load training or timewise metabolomics differential analysis results for a single tissue.
+#' For timewise results, load from [MotrpacRatTraining6moData::METAB_DA]. For training results, 
+#' load from GCS.  
+#' These are the redundant, non-meta-analyzed differential analysis that were used as input for the
+#' metabolomics meta-analysis and meta-regression but not otherwise directly used in the manuscript.
+#' The differential analysis results provided by [MotrpacRatTraining6moData::METAB_DA_METAREG] are the 
+#' non-redundant, meta-regression analysis results used in the manuscript. 
+#'
+#' @param tissue `r tissue()`
+#' @param type character, type of differential analysis summary statistics to return. One of 'timewise', 'training'. 
+#'   Note that the adjusted p-value from \code{type="training"} is already include in \code{type="timewise"} as \code{selection_fdr}. 
+#' @param ... additional arguments passed to [get_file_from_url()] 
+#'
+#' @return data frame. For detailed column descriptions, see [MotrpacRatTraining6moData::METAB_DA] 
+#'   and [MotrpacRatTraining6moData::TRAINING_DA]. 
+#' 
+#' @export
+#' 
+#' @seealso [metab_meta_analysis()], [metab_meta_regression()], [MotrpacRatTraining6moData::METAB_DA], [MotrpacRatTraining6moData::TRAINING_DA], [load_training_da()]
+#'
+#' @examples
+#' # Get timewise differential analysis results for the liver
+#' res = load_metab_da("LIVER")
+#' 
+#' # Get training differential analysis results for the liver
+#' res = load_metab_da("LIVER", type="training")
+#' 
+load_metab_da = function(tissue, type="timewise", ...){
+  
+  if(!tissue %in% MotrpacRatTraining6moData::TISSUE_ABBREV){
+    stop("'tissue' must be one of MotrpacRatTraining6moData::TISSUE_ABBREV.")
+  }
+  
+  if(!type %in% c("timewise","training")){
+    stop("'type' must be one of 'timewise', 'training'.")
+  }
+  
+  if(type=="timewise"){
+    data = fetch_object(sprintf("METAB_%s_DA", gsub("-","",tissue)))
+  }else{
+    data = load_training_da("METAB", tissue, metareg = FALSE)
+  }
+  
+  return(data)  
+}
+
+
+#' Load file from GCS
+#' 
+#' Function to download a text file from the web. 
+#' 
+#' @param url character, Google Cloud Storage URL, e.g., "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/training-da/PHOSPHO/pass1b-06_t70-white-adipose_prot-ph_training-dea-fdr.txt"
+#' @param scratchdir character, local directory in which to download data from 
+#'   the web. Current working directory by default. Downloaded files are deleted before returning the result. 
+#' @param return_data_table bool, whether to return a data table. If FALSE, return a data frame. FALSE by default. 
+#' 
+#' @return data frame, or data table if \code{return_data_table = TRUE}
+#' @importFrom utils download.file 
+#' @export
+#'
+#' @examples
+#' # Get phosphoproteomics training differential analysis results for white adipose 
+#' res = get_file_from_url(paste0(c("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/",
+#'   "training-da/PHOSPHO/pass1b-06_t70-white-adipose_prot-ph_training-dea-fdr.txt"),collapse=""))
+get_file_from_url = function(url, scratchdir=".", return_data_table=FALSE){
+  
+  # set option if default is low
+  if(getOption("timeout") < 1e3){
+    options(timeout=1e3)
+  }
+  
+  # if dir doesn't exist, try to make it
+  if(!dir.exists(scratchdir)){
+    dir.create(scratchdir, recursive = TRUE)
+  }
+
+  local = sprintf("%s/%s", scratchdir, basename(url))
+  download.file(url, local)
+  data = data.table::fread(local)
+  
+  # delete local copy
+  file.remove(local)
+  
+  if(!return_data_table){
+    return(as.data.frame(data))
+  }
   return(data)
 }
 
@@ -900,7 +994,7 @@ combine_normalized_data = function(tissues = MotrpacRatTraining6moData::TISSUE_A
 #' @param assays optional character vector of assay abbreviations, 
 #'   one of [MotrpacRatTraining6moData::ASSAY_ABBREV]
 #' @param metareg bool, whether to use the meta-regression results for METAB.
-#'   Use the upstream differential analysis results in \code{FALSE}.
+#'   Use the upstream differential analysis results if \code{FALSE}.
 #'   \code{TRUE} by default. 
 #' @param include_epigen bool, whether to include the full ATAC or METHYL 
 #'   differential analysis results from Google Cloud Storage. 
@@ -1025,5 +1119,79 @@ combine_da_results = function(tissues = MotrpacRatTraining6moData::TISSUE_ABBREV
     return()
   }
   data = data.table::rbindlist(reslist, fill=TRUE)
+  return(data)
+}
+
+
+#' Load training differential analysis results 
+#' 
+#' Load training summary statistics from differential analysis (DA) 
+#' that tests the effect of training on each feature within each sex. 
+#' Results are downloaded from a public Google Cloud Storage bucket. 
+#'
+#' @param assay `r assay()`
+#' @param tissue `r tissue()`
+#' @param metareg bool, whether to return the meta-regression results for METAB.
+#'   Return the upstream differential analysis results if \code{FALSE}.
+#'   \code{TRUE} by default. 
+#' @param ... additional arguments passed to [get_file_from_url()] 
+#'
+#' @return data frame, or data table with argument \code{return_data_table = TRUE}
+#' @export
+#' 
+#' @seealso [MotrpacRatTraining6moData::TRAINING_DA]
+#' 
+#' @examples
+#' res = load_training_da("ACETYL", "HEART")
+#' \dontrun{res = load_training_da("ATAC", "SKM-GN")}
+#' res = load_training_da("IMMUNO", "ADRNL")
+#' res = load_training_da("METAB", "SKM-GN", metareg = TRUE)
+#' res = load_training_da("METAB", "SKM-GN", metareg = FALSE)
+#' \dontrun{res = load_training_da("METHYL", "SKM-GN")}
+#' res = load_training_da("PHOSPHO", "LIVER")
+#' res = load_training_da("PROT", "KIDNEY")
+#' res = load_training_da("TRNSCRPT", "BLOOD")
+#' res = load_training_da("UBIQ", "HEART")
+load_training_da = function(assay, tissue, metareg=TRUE, ...){
+  
+  # check inputs 
+  if(!tissue %in% MotrpacRatTraining6moData::TISSUE_ABBREV){
+    stop(sprintf("'tissue' must be one of TISSUE_ABBREV: \n %s", paste(MotrpacRatTraining6moData::TISSUE_ABBREV, collapse=", ")))
+  }
+  if(!assay %in% MotrpacRatTraining6moData::ASSAY_ABBREV){
+    stop(sprintf("'assay' must be one of ASSAY_ABBREV: \n %s", paste(MotrpacRatTraining6moData::ASSAY_ABBREV, collapse=", ")))
+  }
+  
+  tissue_code = MotrpacRatTraining6moData::TISSUE_ABBREV_TO_CODE[[tissue]]
+  assay_code = MotrpacRatTraining6moData::ASSAY_ABBREV_TO_CODE[[assay]]
+  
+  # change some assay codes
+  if(assay_code == "metab" & metareg){
+    assay_code = "metab-meta-reg"
+  }else if(assay_code == "prot-ub"){
+    assay_code = "prot-ub-protein-corrected"
+  }
+  
+  if(assay == "METAB"){
+    if(metareg){
+      url = sprintf("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/training-da/%s/meta-regression/pass1b-06_%s_%s_training-dea-fdr.txt", assay, tissue_code, assay_code)
+    }else{
+      url = sprintf("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/training-da/%s/redundant/pass1b-06_%s_%s_training-dea-fdr.txt", assay, tissue_code, assay_code)
+    }
+  }else if(assay == "IMMUNO"){
+    url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/training-da/IMMUNO/pass1b-06_immunoassay_training-dea-fdr.txt"
+  }else{
+    url = sprintf("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/training-da/%s/pass1b-06_%s_%s_training-dea-fdr.txt", assay, tissue_code, assay_code)
+  }
+  
+  data = get_file_from_url(url, ...)
+  
+  # subset IMMUNO
+  if(assay == "IMMUNO"){
+    # this works for both data.frame and data.table 
+    .tissue = tissue
+    data = data[data$tissue_abbreviation == .tissue,]
+  }
+  
   return(data)
 }
