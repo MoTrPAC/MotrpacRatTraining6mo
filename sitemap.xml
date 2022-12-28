@@ -112,6 +112,9 @@
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/fix_covariates.html</loc>
   </url>
   <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/forest_plot.html</loc>
+  </url>
+  <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/format_gene_lists.html</loc>
   </url>
   <url>
@@ -119,6 +122,9 @@
   </url>
   <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/get_all_trajectories.html</loc>
+  </url>
+  <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/get_file_from_url.html</loc>
   </url>
   <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/get_peak_annotations.html</loc>
@@ -157,6 +163,9 @@
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_epigen_da.html</loc>
   </url>
   <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_metab_da.html</loc>
+  </url>
+  <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_methyl_feature_annotation.html</loc>
   </url>
   <url>
@@ -166,16 +175,31 @@
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_sample_data.html</loc>
   </url>
   <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_training_da.html</loc>
+  </url>
+  <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/make_kegg_db.html</loc>
   </url>
   <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/merge_sites_by_clusters.html</loc>
   </url>
   <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/merge_two_dea_dfs.html</loc>
+  </url>
+  <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/metab_meta_analysis.html</loc>
+  </url>
+  <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/metab_meta_regression.html</loc>
+  </url>
+  <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/metab_timewise_da.html</loc>
   </url>
   <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/metab_training_da.html</loc>
+  </url>
+  <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/metabolite_meta_regression.html</loc>
   </url>
   <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/pathway_hypergeom_test.html</loc>
