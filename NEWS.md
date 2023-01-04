@@ -1,3 +1,7 @@
+# MotrpacRatTraining6mo 1.3.0 (2023-01-?)
+
+* 
+
 # MotrpacRatTraining6mo 1.2.0 (2022-12-27)
 
 * Add functions to perform meta-analysis and meta-regression of redundant metabolites. 
