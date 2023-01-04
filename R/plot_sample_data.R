@@ -1,8 +1,347 @@
-# TODO
-plot_feature_normalized_data = function(){}
+#' Plot sample-level data for a feature
+#' 
+#' Plot normalized sample-level data for a single feature. 
+#' Points are mean values across samples in each group, 
+#' and error bars indicate standard deviations. 
+#'
+#' @param assay NULL or `r assay()`
+#' @param tissue NULL or `r tissue()`
+#' @param feature_ID NULL or `r feature_ID()`
+#' @param feature NULL or `r feature()`. If NULL, \code{assay}, \code{tissue}, and 
+#'   \code{feature_ID} must all be specified. 
+#' @param title character, plot title. By default, the plot ID is \code{feature}. 
+#'   If \code{add_gene_symbol = TRUE}, the gene symbol is also added to the plot title.
+#' @param add_gene_symbol bool, whether to add corresponding gene symbol to 
+#'   plot title. Default: FALSE
+#' @param facet_by_sex bool, whether to facet the plot by sex. If \code{TRUE},
+#'   lines are colored by tissue. If \code{FALSE}, lines are colored by sex. Default: FALSE
+#' @param return_data bool, whether to return data instead of plot. Default: FALSE
+#' @param exclude_outliers bool, whether to exclude data from sample outliers. Default: TRUE
+#'   (see [MotrpacRatTraining6moData::OUTLIERS])
+#' @param ... additional arguments passed to [load_sample_data()]
+#'
+#' @return a [ggplot2::ggplot()] object or a data frame if \code{return_data = TRUE}
+#' @export
+#'
+#' @examples
+#' # Plot a differential feature 
+#' plot_feature_normalized_data(feature = "ACETYL;HEART;NP_001003673.1_K477k",
+#'                              add_gene_symbol = TRUE)
+#' plot_feature_normalized_data(assay = "ACETYL",
+#'                              tissue = "HEART",
+#'                              feature_ID = "NP_001003673.1_K477k",
+#'                              add_gene_symbol = TRUE)
+#' plot_feature_normalized_data(assay = "ACETYL",
+#'                              tissue = "HEART",
+#'                              feature_ID = "NP_001003673.1_K477k",
+#'                              add_gene_symbol = TRUE,
+#'                              facet_by_sex = TRUE)
+#' 
+#' # Plot a redundant differential feature
+#' plot_feature_normalized_data(feature = "IMMUNO;PLASMA;BDNF",
+#'                              add_gene_symbol = FALSE)
+#' plot_feature_normalized_data(assay = "IMMUNO",
+#'                              tissue = "PLASMA",
+#'                              feature_ID = "BDNF",
+#'                              add_gene_symbol = FALSE)
+#' plot_feature_normalized_data(assay = "IMMUNO",
+#'                              tissue = "PLASMA",
+#'                              feature_ID = "BDNF",
+#'                              add_gene_symbol = FALSE,
+#'                              facet_by_sex = TRUE)
+#'                              
+#' # Plot a non-differential feature
+#' plot_feature_normalized_data(feature = "PROT;SKM-GN;YP_665629.1",
+#'                              add_gene_symbol = TRUE)
+#' plot_feature_normalized_data(assay = "PROT",
+#'                              tissue = "SKM-GN",
+#'                              feature_ID = "YP_665629.1",
+#'                              add_gene_symbol = TRUE)
+#' plot_feature_normalized_data(assay = "PROT",
+#'                              tissue = "SKM-GN",
+#'                              feature_ID = "YP_665629.1",
+#'                              add_gene_symbol = TRUE,
+#'                              facet_by_sex = TRUE)
+#'                              
+plot_feature_normalized_data = function(assay = NULL,
+                                        tissue = NULL, 
+                                        feature_ID = NULL,
+                                        feature = NULL, 
+                                        title = NULL, 
+                                        add_gene_symbol = FALSE, 
+                                        facet_by_sex = FALSE, 
+                                        return_data = FALSE,
+                                        exclude_outliers = TRUE,
+                                        ...){
+  
+  curr_feature = feature 
+  if(is.null(curr_feature)){
+    if(any(is.null(c(assay, tissue, feature_ID)))){
+      stop("If 'feature' is not specified, 'assay', 'tissue', and 'feature_ID' must all be specified.")
+    }
+    curr_feature = sprintf("%s;%s;%s", assay, tissue, feature_ID)
+  }
+  if(is.null(tissue)){
+    splits = unname(unlist(strsplit(curr_feature, ";")))
+    assay = splits[1]
+    tissue = splits[2]
+    feature_ID = splits[3]
+  }
+  # rename to avoid conflict with data.table columns
+  FEATURE_ID = feature_ID
+  ASSAY = assay 
+  TISSUE = tissue 
+  FEATURE = curr_feature 
+  redundant_feature = FEATURE
+  
+  # is this a differential feature?
+  differential = TRUE
+  if(!FEATURE %in% MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES$feature){
+    differential = FALSE
+    # check if it is a repeated feature
+    if(ASSAY %in% c("METAB", "IMMUNO")){
+      if(FEATURE %in% MotrpacRatTraining6moData::REPEATED_FEATURES$feature){
+        redundant_feature = FEATURE
+        FEATURE = MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature[MotrpacRatTraining6moData::REPEATED_FEATURES$feature == FEATURE]
+        differential = TRUE
+        # now handle FEATURE_ID. get non-redundant one
+        FEATURE_ID = MotrpacRatTraining6moData::REPEATED_FEATURES$feature_ID[MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature == FEATURE[1]]
+      }
+    }
+  }
+  
+  if(differential){
+    if(exclude_outliers){
+      all_sample_level_data = data.table::as.data.table(MotrpacRatTraining6moData::TRAINING_REGULATED_NORM_DATA_NO_OUTLIERS)
+    }else{
+      all_sample_level_data = data.table::as.data.table(MotrpacRatTraining6moData::TRAINING_REGULATED_NORM_DATA)
+    }
+    # subset data
+    sample_level_data = all_sample_level_data[feature %in% FEATURE]
+  }else{
+    message(sprintf("'%s' is not a training-regulated feature. Looking in all sample-level data.", FEATURE))
+    all_sample_level_data =  data.table::as.data.table(load_sample_data(TISSUE, ASSAY, exclude_outliers = exclude_outliers, ...))
+    if(!FEATURE_ID %in% all_sample_level_data[,feature_ID]){
+      stop(sprintf("'%s' not found in the %s %s sample-level data.", FEATURE_ID, ASSAY, TISSUE))
+    }
+    # subset data
+    sample_level_data = all_sample_level_data[feature_ID == FEATURE_ID]
+    sample_level_data[is.na(feature), feature := FEATURE]
+  }
+  
+  if(nrow(sample_level_data) > 1){
+    warning(sprintf("Multiple features correspond to %s. Plotting them together.", redundant_feature))
+  }
+  
+  if(add_gene_symbol){
+    if(ASSAY %in% c("METHYL","ATAC") & !differential){
+      feature_to_gene = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE)
+    }else{
+      feature_to_gene = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT)
+    }
+    gene_symbol = feature_to_gene[feature_ID == FEATURE_ID, gene_symbol][1]
+  }
+  
+  if(is.null(title)){
+    if(add_gene_symbol){
+      title = sprintf("%s (%s)", redundant_feature, gene_symbol)
+    }else{
+      title = redundant_feature
+    }
+  }else{
+    if(add_gene_symbol){
+      title = sprintf("%s (%s)", title, gene_symbol)
+    }
+  }
+  
+  # melt
+  value_cols = colnames(sample_level_data)[grepl("^[0-9]", colnames(sample_level_data))]
+  melted_subset = data.table::melt(sample_level_data, 
+                                   id.vars=c('feature'), 
+                                   measure.vars=value_cols,
+                                   variable.name='sample')
+  melted_subset = melted_subset[!is.na(value)]
+  melted_subset[,sample := as.character(sample)]
+  
+  meta = unique(data.table::as.data.table(MotrpacRatTraining6moData::PHENO[,c('group','sex','pid','viallabel')]))
+  meta[,pid := as.character(pid)]
+  
+  # use pid or viallabel to merge?
+  if(all(melted_subset[,sample] %in% meta[,viallabel])){
+    col = 'viallabel'
+  }else if(all(melted_subset[,sample] %in% meta[,pid])){
+    col = 'pid'
+    meta[,viallabel := NULL]
+    meta = unique(meta)
+  }else{
+    stop(sprintf("Sample names in sample-level data do not correspond to vial labels or PIDs: %s...",
+         paste(head(melted_subset[,sample]), collapse=", ")))
+  }
+  
+  # merge
+  subset_meta = merge(melted_subset, meta, by.x='sample', by.y=col)
+  
+  bygroup = subset_meta[,list(expr = mean(value, na.rm=T),
+                              sd = sd(value, na.rm = T)),
+                        by=.(sex, group, feature)]
+  
+  if(return_data){
+    return(as.data.frame(bygroup))
+  }
+  
+  bygroup[,plot_group := sprintf("%s_%s", feature, sex)]
+  if(!facet_by_sex){
+    g = ggplot2::ggplot(bygroup, ggplot2::aes(x=group, y=expr, group=plot_group, colour=sex)) +
+      ggplot2::geom_line() +
+      ggplot2::geom_point() +
+      ggplot2::geom_errorbar(ggplot2::aes(ymin = expr-sd, ymax = expr+sd), width=0.2) +
+      ggplot2::theme_classic() +
+      ggplot2::scale_colour_manual(values=c(female=MotrpacRatTraining6moData::SEX_COLORS[['F']],
+                                            male=MotrpacRatTraining6moData::SEX_COLORS[['M']])) +
+      ggplot2::scale_x_discrete(limits=c('control','1w','2w','fill','4w',rep('fill',3), '8w'),
+                                labels=c('0','1','2','4','8'),
+                                breaks=c('control','1w','2w','4w','8w')) +
+      ggplot2::labs(x='Time trained (weeks)', y='Normalized value', title=title) +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=11),
+                     legend.title = ggplot2::element_blank(),
+                     legend.position = "top",
+                     panel.grid.major = ggplot2::element_blank(),
+                     panel.grid.minor = ggplot2::element_blank(),
+                     legend.margin = ggplot2::margin(t=-5, b=-5, unit="pt"),
+                     legend.spacing.y = ggplot2::unit(0, "pt"))  
+  }else{
+    g = ggplot2::ggplot(bygroup, ggplot2::aes(x=group, y=expr, group=plot_group)) +
+      ggplot2::geom_line(colour=MotrpacRatTraining6moData::TISSUE_COLORS[[TISSUE]]) +
+      ggplot2::geom_point(colour=MotrpacRatTraining6moData::TISSUE_COLORS[[TISSUE]]) +
+      ggplot2::geom_errorbar(aes(ymin = expr-sd, ymax = expr+sd), width=0.2, colour=MotrpacRatTraining6moData::TISSUE_COLORS[[TISSUE]]) +
+      ggplot2::theme_classic() +
+      ggplot2::scale_x_discrete(limits=c('control','1w','2w','fill','4w',rep('fill',3), '8w'),
+                                labels=c('0','1','2','4','8'),
+                                breaks=c('control','1w','2w','4w','8w')) +
+      ggplot2::labs(x='Time trained (weeks)', y='Normalized value', title=title) +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=11),
+                     legend.title = ggplot2::element_blank(),
+                     legend.position = "none",
+                     panel.grid.major = ggplot2::element_blank(),
+                     panel.grid.minor = ggplot2::element_blank()) +
+      ggplot2::facet_wrap(~sex)
+  }
+  
+  return(g)
+}
 
-# TODO
-plot_feature_logfc = function(){}
+
+# # TODO
+# plot_feature_logfc = function(curr_feature,
+#                               timewise_dea,
+#                               facet_by_sex = F,
+#                               scale_x_by_time = T,
+#                               add_gene_symbol = F,
+#                               feature_to_gene = NULL,
+#                               title = NULL,
+#                               add_adj_p = F){
+#   
+#   if(add_gene_symbol & is.null(feature_to_gene)){
+#     stop("'feature_to_gene' must be provided if add_gene_symbol = TRUE.")
+#   }
+#   
+#   timewise_dea = data.table(timewise_dea)
+#   
+#   feature_id = unlist(strsplit(curr_feature, ";"))[3]
+#   curr_tissue = unlist(strsplit(curr_feature, ";"))[2]
+#   curr_ome = unlist(strsplit(curr_feature, ";"))[1]
+#   curr_timewise_dea = timewise_dea[feature_ID == feature_id & tissue_abbreviation == curr_tissue & assay_abbr == curr_ome]
+#   
+#   if(nrow(curr_timewise_dea) == 0){
+#     message(sprintf("No DEA results for %s.",curr_feature))
+#     return()
+#   }
+#   
+#   if(add_gene_symbol){
+#     feature_to_gene = data.table(feature_to_gene)
+#     gene_symbol = feature_to_gene[feature_ID %in% gsub(".*;","",feature_id), gene_symbol][1]
+#   }
+#   
+#   adj_p_value = unique(curr_timewise_dea[,selection_fdr])
+#   if(length(adj_p_value)>1){
+#     warning(sprintf("Multiple measurements for feature %s. Taking the smallest training-dea FDR for the plot label.",curr_feature))
+#   }
+#   
+#   # make title 
+#   if(is.null(title)){
+#     if(add_gene_symbol){
+#       title = sprintf("%s (%s)", curr_feature, gene_symbol)
+#     }else{
+#       title = sprintf("%s", curr_feature)
+#     }
+#   }else{
+#     if(add_gene_symbol){
+#       title = sprintf("%s (%s)", title, gene_symbol)
+#     }
+#   }
+#   
+#   # add 0
+#   dummy = unique(curr_timewise_dea[,.(tissue_abbreviation, assay_abbr)])
+#   dummy[,logFC := 0]
+#   dummy[,logFC_se := 0]
+#   dummy[,comparison_group := 'control']
+#   dlist = list()
+#   for(SEX in na.omit(unique(curr_timewise_dea[,sex]))){
+#     d = copy(dummy)
+#     d[,sex := SEX]
+#     dlist[[SEX]] = d
+#   }
+#   res = rbindlist(c(list(curr_timewise_dea), dlist),fill=T)
+#   
+#   if(facet_by_sex){
+#     g = ggplot(res, aes(y=logFC,x=comparison_group,group=tissue_abbreviation,color=tissue_abbreviation))+
+#       geom_point() +
+#       geom_line() +
+#       geom_errorbar(aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se),width=0.2) +
+#       theme_classic() +
+#       geom_hline(yintercept = 0,linetype="dotted") +
+#       facet_wrap(~sex) +
+#       labs(title=title, x="Time trained (weeks)", y="Log fold-change") +
+#       theme(plot.title = element_text(hjust=0.5),
+#             plot.subtitle = element_text(hjust=0.5),
+#             panel.grid.major = element_blank(),
+#             panel.grid.minor = element_blank(),
+#             legend.position = "none") +
+#       scale_colour_manual(values=tissue_cols[names(tissue_cols) %in% res[,tissue_abbreviation]], name="Tissue")
+#   }else{
+#     g = ggplot(res, aes(y=logFC,x=comparison_group,group=paste0(tissue_abbreviation,sex),color=sex))+
+#       geom_point() +
+#       geom_line() +
+#       geom_errorbar(aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se),width=0.2) +
+#       theme_classic() +
+#       geom_hline(yintercept = 0,linetype="dotted") +
+#       labs(title=title, x="Time trained (weeks)", y="Log fold-change") +
+#       theme(plot.title = element_text(hjust=0.5),
+#             plot.subtitle = element_text(hjust=0.5),
+#             panel.grid.major = element_blank(),
+#             panel.grid.minor = element_blank()) +
+#       scale_colour_manual(values=sex_cols[names(sex_cols) %in% res[,sex]], name="Sex")
+#   }
+#   
+#   if(add_adj_p){
+#     subtitle = sprintf("adj. p-value: %s", round(adj_p_value, 3))
+#     g = g + labs(subtitle = subtitle)
+#   }
+#   
+#   if(scale_x_by_time){
+#     g = g +
+#       scale_x_discrete(limits=c('control','1w','2w','fill','4w',rep('fill',3), '8w'),
+#                        labels=c('0','1','2','4','8'),
+#                        breaks=c('control','1w','2w','4w','8w'))
+#   }else{
+#     g = g +
+#       scale_x_discrete(limits=c('control','1w','2w','4w','8w'),
+#                        labels=c('0','1','2','4','8'),
+#                        breaks=c('control','1w','2w','4w','8w'))
+#   }
+#   
+#   return(g)
+# }
 
 
 #' Plot feature trajectories 
