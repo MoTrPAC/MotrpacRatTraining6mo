@@ -22,14 +22,6 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.ref_name }}
           token: ${{ secrets.BOT_ACCESS_TOKEN }}
-          
-      - name: Checkout PR
-        if: github.event_name == 'pull_request'
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
-          token: ${{ secrets.BOT_ACCESS_TOKEN }}
 
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
