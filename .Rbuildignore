@@ -8,4 +8,5 @@ devnotes.md
 ^docs$
 ^pkgdown$
 ^cytoscape$
+^workshops$
 ^\.github$
