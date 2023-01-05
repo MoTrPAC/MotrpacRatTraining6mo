@@ -268,6 +268,25 @@ data = load_sample_data("HIPPOC",
                         scratchdir = "/tmp")
 ```
 
+We can plot the normalized sample-level data for a single feature using
+`plot_feature_normalized_data()`. All of the following examples are different
+ways to plot the same feature. 
+```{r plot_feature_normalized_data}
+plot_feature_normalized_data(feature = "PROT;SKM-GN;NP_786937.1",
+                             add_gene_symbol = TRUE)
+
+plot_feature_normalized_data(assay = "PROT",
+                             tissue = "SKM-GN",
+                             feature_ID = "NP_786937.1",
+                             exclude_outliers = TRUE,
+                             scale_x_by_time = FALSE)
+
+plot_feature_normalized_data(assay = "PROT",
+                             tissue = "SKM-GN",
+                             feature_ID = "NP_786937.1",
+                             facet_by_sex = TRUE)
+```
+
 `combine_normalized_data()` is a wrapper for `load_sample_data()` that returns 
 combined sample-level normalized data for multiple datasets. Note that the sample-specific 
 vial labels used as column names for most of the sample-level data are replaced
@@ -393,6 +412,25 @@ plot(-log10(merged$p_value_orginal),
      main="Timewise DA results for ACETYL data")
 ```
 
+We can plot the differential analysis results for a single feature using 
+`plot_feature_logfc()`. All of the following examples are different
+ways to plot results for the same feature. 
+```{r}
+plot_feature_logfc(feature = "PROT;SKM-GN;NP_786937.1",
+                   add_gene_symbol = TRUE)
+
+plot_feature_logfc(assay = "PROT",
+                   tissue = "SKM-GN",
+                   feature_ID = "NP_786937.1",
+                   scale_x_by_time = FALSE)
+
+plot_feature_logfc(assay = "PROT",
+                   tissue = "SKM-GN",
+                   feature_ID = "NP_786937.1",
+                   facet_by_sex = TRUE,
+                   add_adj_p = FALSE)
+```
+
 ## Bayesian graphical clustering 
 
 ### Summary 
@@ -416,20 +454,19 @@ assigned to the corresponding states with high probability:
 
 |         | Female 1w | Male 1w | Female 2w | Male 2w | Female 4w | Male 4w | Female 8w | Male 8w |
 | ------- | :-------: | :-----: | :-------: | :-----: | :-------: | :-----: | :-------: | :-----: |
-| z-score | -5.7      | 0.1     | 0.65      | -0.06   | 0.09      | 6.7     | 0.21      | 5       |
-| state   | -1        | 0       | 0         | 0       | 0         | 1       | 0         | 1       |
+| z-score | -0.2      | 0.1     | 0.85      | -0.05   | 0.09      | 6.7     | 0.21      | 5       |
+| state   | 0         | 0       | 0         | 0       | 0         | 1       | 0         | 1       |
 
 
 We then combine the male and female states for a given time point using the following notation:
 
 |          | 1 week      | 2 weeks    | 4 weeks    | 8 weeks    |
 | -------- | :---------: | :--------: | :--------: | :--------: | 
-| notation | `1w_F-1_M0` | `2w_F0_M0` | `4w_F0_M1` | `8w_F0_M1` |
+| notation | `1w_F0_M0`  | `2w_F0_M0` | `4w_F0_M1` | `8w_F0_M1` |
 
 
-Descriptively, this feature is down-regulated in females 
-(`F-1`) at 1 week of training (`1w`), null in both sexes (`F0_M0`) at 
-2 weeks of training (`2w`), and up-regulated in males only (`F0_M1`) at 4 and 8 weeks of training.  
+Descriptively, this feature is null in both sexes (`F0_M0`) at 1 week (`1w`) and
+2 weeks (`2w`) of training and up-regulated in males only (`F0_M1`) at 4 and 8 weeks of training.  
 
 One major advantage of this approach is that we can use the time points and discrete states
 to construct a graph, where each point (or "node") in the graph represents a state at a given time point (e.g., `1w_F-1_M0`). 
@@ -438,14 +475,23 @@ its trajectory over the training time course. We can use the paths and nodes in 
 to define clusters of features with similar temporal behavior and characterize the underlying biology. 
 
 For example, we can represent the complete path of the above feature over the training time course as follows: 
-`1w_F-1_M0->2w_F0_M0->4w_F0_M1->8w_F0_M1`. 
-This path is made by connecting the `1w_F-1_M0` node to the 
+`1w_F0_M0->2w_F0_M0->4w_F0_M1->8w_F0_M1`. 
+This path is made by connecting the `1w_F0_M0` node to the 
 `2w_F0_M0` node to the `4w_F0_M1` node to the `8w_F0_M1` node. The connection 
 between a single pair of consecutive nodes is called an edge. For example, the 
-`1w_F-1_M0---2w_F0_M0` edge represents features that are down-regulated only in females
-after 1 week of training and null in both sexes after 2 weeks of training. 
-The `1w_F-1_M0->2w_F0_M0->4w_F0_M1->8w_F0_M1` path is constructed from 3 edges, 
+`2w_F0_M0---4w_F0_M1` edge represents features that are null in both sexes after
+2 weeks of training but are up-regulated in males after 4 weeks of training. 
+The `1w_F0_M0->2w_F0_M0->4w_F0_M1->8w_F0_M1` path is constructed from 3 edges, 
 each represented by `->` in the notation. 
+
+The figure below provides toy examples of four features to demonstrate their graphical representation. 
+Feature `f2` (green) is the same trajectory described above. 
+
+```{r, echo=FALSE, fig.cap="A. A schematic example of the graphical representation of the differential analysis results. Top left: the z-scores of four features. A positive score corresponds to up-regulation (red), and a negative score corresponds to down regulation (blue). Bottom left: the assignment of features to node sets and full path sets (edge sets are not shown for conciseness but can be easily inferred from the full paths). Node labels follow the [time]_F[x]_M[y] format where [time] shows the animal sacrifice week and can take one of (1w, 2w, 4w, or 8w), and [x] and [y] are one of (-1,0,1), corresponding to down-regulation, no effect, and up-regulation, respectively. Right: the graphical representation of the feature sets. Columns are training time points, and rows are the differential abundance states. Node and edge sizes are proportional to the number of features that are assigned to each set."}
+knitr::include_graphics("graph_explanation.png")
+```
+
+
 
 We herein refer to our approach of using `repfdr` to construct a graph of the 
 dynamic multi-omic responses to endurance exercise training across tissues as *graphical clustering*.
@@ -654,10 +700,23 @@ plot_features_per_cluster(clusters)
 From this plot, we see that the majority of training-regulated features in the
 gastrocnemius that are up-regulated in both sexes at all training time points 
 (`1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1`, top row) are proteins, followed
-by protein phosphosites. We also see a cluster comprised mostly of protein 
+by protein phosphosites. We can plot the sample-level trajectories of all features
+in this cluster with `plot_feature_trajectories()`. 
+```{r plot_feature_trajectories}
+plot_feature_trajectories(clusters$`1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1`, 
+                          title="Features consistently up-regulated in gastroc")
+```
+
+We also see a cluster comprised mostly of protein 
 phosphosites, where these features are down-regulated in females at all training
 time points and also down-regulated in males at 8 weeks of training 
-(`1w_F-1_M0->2w_F-1_M0->4w_F-1_M0->8w_F-1_M-1`). In the next section, we show how 
+(`1w_F-1_M0->2w_F-1_M0->4w_F-1_M0->8w_F-1_M-1`). 
+```{r plot_feature_trajectories 2}
+plot_feature_trajectories(clusters$`1w_F-1_M0->2w_F-1_M0->4w_F-1_M0->8w_F-1_M-1`, 
+                          title="Cluster of mostly PHOSPHO in gastroc")
+```
+
+In the next section, we show how 
 pathway enrichment can be used to begin interpreting the biology underlying a 
 graphical cluster (node, edge, or path) of interest. 
 
@@ -851,8 +910,12 @@ Cytoscape module, but it's easier to generate them and explore the underlying da
 
 Briefly, each node in the network is a pathway, and edges connect highly similar
 pathways, i.e., those whose enrichments are driven by highly similar sets of genes
-across omes. This groups together highly similar pathway enrichments, which makes
+across omes (see infographic). This groups together highly similar pathway enrichments, which makes
 it easier to digest large numbers of results. 
+
+```{r, echo=FALSE}
+knitr::include_graphics("pw_network.png", dpi=150)
+```
 
 In our implementation, groups of similar pathway enrichments are color-coded, and 
 group labels are inferred from the term names and parents of the pathways in the group. 

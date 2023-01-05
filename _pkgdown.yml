@@ -19,12 +19,14 @@ reference:
   contents:
     - load_sample_data
     - combine_normalized_data
+    - plot_feature_normalized_data
 
 - subtitle: Load differential analysis results 
   contents: 
     - combine_da_results
     - load_training_da
     - load_metab_da
+    - plot_feature_logfc
 
 - subtitle: Load epigenetic data
   desc: Load full epigenetic datasets from Google Cloud Storage
@@ -79,7 +81,7 @@ reference:
     which was abandoned in favor of meta-regression.  
   contents:
     - metab_meta_analysis
-
+    
 
 
 - title: Graphical clustering 
@@ -146,6 +148,7 @@ reference:
     - get_peak_annotations
     - filter_outliers
     - viallabel_to_pid
+    - df_to_numeric
 
 
 

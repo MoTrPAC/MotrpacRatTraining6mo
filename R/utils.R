@@ -281,3 +281,68 @@ limma_res_extract_se = function(limma_res,
   ses1 = effects/ts
   return(ses1)
 }
+
+
+
+#' Make data frame numeric only
+#' 
+#' Set row names and remove all non-numeric columns. This is useful for
+#' reformatting data objects in `MotrpacRatTraining6moData`,
+#' e.g., [MotrpacRatTraining6moData::PROT_HEART_NORM_DATA]
+#'
+#' @param df data frame with at least one numeric column
+#' @param rownames either NULL, a character specifying a column name in \code{df},
+#'   or a vector. Specifies target row names. Default: "feature_ID" 
+#'
+#' @return numeric data frame
+#' @export
+#'
+#' @examples
+#' df = MotrpacRatTraining6moData::PROT_HEART_NORM_DATA
+#' head(df)
+#' head(df_to_numeric(df))
+#' 
+#' df = load_sample_data("SKM-GN", "TRNSCRPT")
+#' head(df)
+#' head(df_to_numeric(df))
+#' 
+#' df = MotrpacRatTraining6moData::METAB_NORM_DATA_FLAT 
+#' head(df)
+#' rn = paste(df$assay, df$tissue, df$feature_ID, df$dataset, sep=";")
+#' head(df_to_numeric(df, rownames = rn))
+df_to_numeric = function(df, rownames="feature_ID"){
+  
+  df = as.data.frame(df)
+  
+  # assign rownames
+  if(is.null(rownames)){
+    rownames(df) = NULL
+  }else{
+    if(length(rownames) == 1){
+      if(!rownames %in% colnames(df)){
+        stop(sprintf("'%s' not found in column names of input data frame. 'rownames' must specify a valid column.", rownames))
+      }
+      if(any(duplicated(df[,rownames]))){
+        stop(sprintf("Row names must be unique, but df$%s has duplicate values.", rownames))
+      }
+      rownames(df) = df[,rownames]
+    }else{
+      if(any(duplicated(rownames))){
+        stop("Row names must be unique, but 'rownames' has duplicate values.")
+      }
+      if(length(rownames) != nrow(df)){
+        stop("Length of 'rownames' does not equal number of rows in 'df'.")
+      }
+      rownames(df) = as.character(rownames)
+    }
+  }
+  
+  # remove non-numeric colnames 
+  non_num_cols = colnames(df)[unlist(lapply(df, function(x) !is.numeric(x)))]
+  if(length(non_num_cols) == ncol(df)){
+    stop("Input data frame has no non-numeric columns.")
+  }
+  df[,non_num_cols] = NULL
+
+  return(df)  
+}

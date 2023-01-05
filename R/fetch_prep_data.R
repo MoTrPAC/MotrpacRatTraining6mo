@@ -84,15 +84,15 @@ transcript_prep_data = function(tissue,
   
   # load data
   counts = load_sample_data(.tissue, "TRNSCRPT", normalized = FALSE)
-  #counts = get(sprintf("TRNSCRPT_%s_RAW_COUNTS", gsub("-","",.tissue)))
   tmm = load_sample_data(.tissue, "TRNSCRPT", normalized = TRUE)
-  #tmm = get(sprintf("TRNSCRPT_%s_NORM_DATA", gsub("-","",.tissue)))
-  rownames(tmm) = tmm$feature_ID
-  tmm[,c("feature","feature_ID","tissue","assay")] = NULL
+  tmm = df_to_numeric(tmm)
+  # rownames(tmm) = tmm$feature_ID
+  # tmm[,c("feature","feature_ID","tissue","assay")] = NULL
   
   # filter counts by genes in normalized data 
-  rownames(counts) = counts$feature_ID
-  counts[,c("feature","feature_ID","tissue","assay")] = NULL
+  counts = df_to_numeric(counts)
+  # rownames(counts) = counts$feature_ID
+  # counts[,c("feature","feature_ID","tissue","assay")] = NULL
   counts = counts[rownames(tmm),]
   
   # format metadata
@@ -292,8 +292,9 @@ atac_prep_data = function(tissue,
                             scratchdir = scratchdir,
                             exclude_outliers = FALSE,
                             nrows = nrows)
-  rownames(counts) = counts$feature_ID
-  counts[,c("feature","feature_ID","tissue","assay")] = NULL
+  counts = df_to_numeric(counts)
+  # rownames(counts) = counts$feature_ID
+  # counts[,c("feature","feature_ID","tissue","assay")] = NULL
   
   # filter by tissue
   meta = meta[tissue == .tissue]
@@ -325,8 +326,9 @@ atac_prep_data = function(tissue,
                             scratchdir = scratchdir,
                             exclude_outliers = FALSE,
                             nrows = nrows)
-    rownames(norm) = norm$feature_ID
-    norm[,c("feature","feature_ID","tissue","assay")] = NULL
+    norm = df_to_numeric(norm)
+    # rownames(norm) = norm$feature_ID
+    # norm[,c("feature","feature_ID","tissue","assay")] = NULL
     norm = norm[,meta[,viallabel]]
   }
   

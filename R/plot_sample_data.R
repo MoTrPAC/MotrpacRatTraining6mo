@@ -1,8 +1,499 @@
-# TODO
-plot_feature_normalized_data = function(){}
+#' Plot sample-level data for a feature
+#' 
+#' Plot normalized sample-level data for a single feature. 
+#' Points are mean values across samples in each group, 
+#' and error bars indicate standard deviations. 
+#'
+#' @param assay NULL or `r assay()`
+#' @param tissue NULL or `r tissue()`
+#' @param feature_ID NULL or `r feature_ID()`
+#' @param feature NULL or `r feature()`. If NULL, \code{assay}, \code{tissue}, and 
+#'   \code{feature_ID} must all be specified. 
+#' @param title character, plot title. By default, the plot ID is \code{feature}. 
+#'   If \code{add_gene_symbol = TRUE}, the gene symbol is also added to the plot title.
+#' @param add_gene_symbol bool, whether to add corresponding gene symbol to 
+#'   plot title. Default: FALSE
+#' @param facet_by_sex bool, whether to facet the plot by sex. If \code{TRUE},
+#'   lines are colored by tissue. If \code{FALSE}, lines are colored by sex. Default: FALSE
+#' @param scale_x_by_time bool, whether to scale the x-axis by time. If \code{FALSE},
+#'   space the time points (0w, 1w, 2w, 4w, 8w) evenly. Default: TRUE
+#' @param return_data bool, whether to return data instead of plot. Default: FALSE
+#' @param exclude_outliers bool, whether to exclude data from sample outliers. Default: TRUE
+#'   (see [MotrpacRatTraining6moData::OUTLIERS])
+#' @param ... additional arguments passed to [load_sample_data()]
+#'
+#' @return a [ggplot2::ggplot()] object or a data frame if \code{return_data = TRUE}
+#' @export
+#'
+#' @examples
+#' # 3 ways of plotting the same data are shown in each example below
+#' 
+#' # Plot a differential feature 
+#' plot_feature_normalized_data(feature = "ACETYL;HEART;NP_001003673.1_K477k",
+#'                              add_gene_symbol = TRUE)
+#' plot_feature_normalized_data(assay = "ACETYL",
+#'                              tissue = "HEART",
+#'                              feature_ID = "NP_001003673.1_K477k",
+#'                              add_gene_symbol = TRUE,
+#'                              scale_x_by_time = FALSE)
+#' plot_feature_normalized_data(assay = "ACETYL",
+#'                              tissue = "HEART",
+#'                              feature_ID = "NP_001003673.1_K477k",
+#'                              add_gene_symbol = TRUE,
+#'                              facet_by_sex = TRUE)
+#' 
+#' # Plot a redundant differential feature
+#' plot_feature_normalized_data(feature = "IMMUNO;PLASMA;BDNF",
+#'                              add_gene_symbol = FALSE)
+#' plot_feature_normalized_data(assay = "IMMUNO",
+#'                              tissue = "PLASMA",
+#'                              feature_ID = "BDNF",
+#'                              add_gene_symbol = FALSE)
+#' plot_feature_normalized_data(assay = "IMMUNO",
+#'                              tissue = "PLASMA",
+#'                              feature_ID = "BDNF",
+#'                              add_gene_symbol = FALSE,
+#'                              facet_by_sex = TRUE)
+#'                              
+#' # Plot one measurement of a redundant feature
+#' plot_feature_normalized_data(feature = "IMMUNO;PLASMA;rat-myokine:BDNF",
+#'                              add_gene_symbol = FALSE)
+#' plot_feature_normalized_data(assay = "IMMUNO",
+#'                              tissue = "PLASMA",
+#'                              feature_ID = "rat-myokine:BDNF",
+#'                              add_gene_symbol = FALSE)
+#' plot_feature_normalized_data(assay = "IMMUNO",
+#'                              tissue = "PLASMA",
+#'                              feature_ID = "rat-myokine:BDNF",
+#'                              add_gene_symbol = FALSE,
+#'                              facet_by_sex = TRUE)
+#'                              
+#' # Plot a non-differential feature
+#' plot_feature_normalized_data(feature = "PROT;SKM-GN;YP_665629.1",
+#'                              add_gene_symbol = TRUE)
+#' plot_feature_normalized_data(assay = "PROT",
+#'                              tissue = "SKM-GN",
+#'                              feature_ID = "YP_665629.1",
+#'                              add_gene_symbol = TRUE)
+#' plot_feature_normalized_data(assay = "PROT",
+#'                              tissue = "SKM-GN",
+#'                              feature_ID = "YP_665629.1",
+#'                              add_gene_symbol = TRUE,
+#'                              facet_by_sex = TRUE)
+#'                              
+plot_feature_normalized_data = function(assay = NULL,
+                                        tissue = NULL, 
+                                        feature_ID = NULL,
+                                        feature = NULL, 
+                                        title = NULL, 
+                                        add_gene_symbol = FALSE, 
+                                        facet_by_sex = FALSE, 
+                                        scale_x_by_time = TRUE, 
+                                        return_data = FALSE,
+                                        exclude_outliers = TRUE,
+                                        ...){
+  
+  curr_feature = feature 
+  if(is.null(curr_feature)){
+    if(any(is.null(c(assay, tissue, feature_ID)))){
+      stop("If 'feature' is not specified, 'assay', 'tissue', and 'feature_ID' must all be specified.")
+    }
+    curr_feature = sprintf("%s;%s;%s", assay, tissue, feature_ID)
+  }
+  if(is.null(tissue)){
+    splits = unname(unlist(strsplit(curr_feature, ";")))
+    assay = splits[1]
+    tissue = splits[2]
+    feature_ID = splits[3]
+  }
+  # rename to avoid conflict with data.table columns
+  FEATURE_ID = feature_ID
+  ASSAY = assay 
+  TISSUE = tissue 
+  FEATURE = curr_feature 
+  redundant_feature = FEATURE
+  
+  # is this a differential feature?
+  differential = TRUE
+  if(!FEATURE %in% MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES$feature){
+    differential = FALSE
+    # check if it is a repeated feature - TRAINING_REGULATED_FEATURES uses non-redundant feature
+    if(ASSAY %in% c("METAB", "IMMUNO")){
+      if(FEATURE %in% MotrpacRatTraining6moData::REPEATED_FEATURES$feature){
+        FEATURE = MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature[MotrpacRatTraining6moData::REPEATED_FEATURES$feature == FEATURE]
+        differential = TRUE
+        # now handle FEATURE_ID. get redundant one
+        FEATURE_ID = MotrpacRatTraining6moData::REPEATED_FEATURES$feature_ID[MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature == FEATURE[1]]
+      }
+    }
+  }
+  
+  if(differential){
+    if(exclude_outliers){
+      all_sample_level_data = data.table::as.data.table(MotrpacRatTraining6moData::TRAINING_REGULATED_NORM_DATA_NO_OUTLIERS)
+    }else{
+      all_sample_level_data = data.table::as.data.table(MotrpacRatTraining6moData::TRAINING_REGULATED_NORM_DATA)
+    }
+    # subset data
+    sample_level_data = all_sample_level_data[feature %in% FEATURE]
+  }else{
+    message(sprintf("'%s' is not a training-regulated feature. Looking in all sample-level data.", FEATURE))
+    all_sample_level_data =  data.table::as.data.table(load_sample_data(TISSUE, ASSAY, exclude_outliers = exclude_outliers, ...))
+    if(!FEATURE_ID %in% all_sample_level_data[,feature_ID]){
+      stop(sprintf("'%s' not found in the %s %s sample-level data.", FEATURE_ID, ASSAY, TISSUE))
+    }
+    # subset data
+    sample_level_data = all_sample_level_data[feature_ID == FEATURE_ID]
+    sample_level_data[is.na(feature), feature := FEATURE]
+  }
+  
+  if(nrow(sample_level_data) > 1){
+    warning(sprintf("Multiple features correspond to '%s'. Plotting them together.", redundant_feature))
+  }
+  
+  if(add_gene_symbol){
+    if(ASSAY %in% c("METHYL","ATAC") & !differential){
+      feature_to_gene = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE)
+    }else{
+      feature_to_gene = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT)
+    }
+    gene_symbol = feature_to_gene[feature_ID == FEATURE_ID, gene_symbol][1]
+  }
+  
+  if(is.null(title)){
+    if(add_gene_symbol){
+      title = sprintf("%s (%s)", redundant_feature, gene_symbol)
+    }else{
+      title = redundant_feature
+    }
+  }else{
+    if(add_gene_symbol){
+      title = sprintf("%s (%s)", title, gene_symbol)
+    }
+  }
+  
+  # melt
+  value_cols = colnames(sample_level_data)[grepl("^[0-9]", colnames(sample_level_data))]
+  melted_subset = data.table::melt(sample_level_data, 
+                                   id.vars=c('feature'), 
+                                   measure.vars=value_cols,
+                                   variable.name='sample')
+  melted_subset = melted_subset[!is.na(value)]
+  melted_subset[,sample := as.character(sample)]
+  
+  meta = unique(data.table::as.data.table(MotrpacRatTraining6moData::PHENO[,c('group','sex','pid','viallabel')]))
+  meta[,pid := as.character(pid)]
+  
+  # use pid or viallabel to merge?
+  if(all(melted_subset[,sample] %in% meta[,viallabel])){
+    col = 'viallabel'
+  }else if(all(melted_subset[,sample] %in% meta[,pid])){
+    col = 'pid'
+    meta[,viallabel := NULL]
+    meta = unique(meta)
+  }else{
+    stop(sprintf("Sample names in sample-level data do not correspond to vial labels or PIDs: %s...",
+         paste(utils::head(melted_subset[,sample]), collapse=", ")))
+  }
+  
+  # merge
+  subset_meta = merge(melted_subset, meta, by.x='sample', by.y=col)
+  
+  bygroup = subset_meta[,list(expr = mean(value, na.rm=T),
+                              sd = sd(value, na.rm = T)),
+                        by=.(sex, group, feature)]
+  
+  if(return_data){
+    return(as.data.frame(bygroup))
+  }
+  
+  bygroup[,plot_group := sprintf("%s_%s", feature, sex)]
+  if(!facet_by_sex){
+    g = ggplot2::ggplot(bygroup, ggplot2::aes(x=group, y=expr, group=plot_group, colour=sex)) +
+      ggplot2::geom_line() +
+      ggplot2::geom_point() +
+      ggplot2::geom_errorbar(ggplot2::aes(ymin = expr-sd, ymax = expr+sd), width=0.2) +
+      ggplot2::theme_classic() +
+      ggplot2::scale_colour_manual(values=c(female=MotrpacRatTraining6moData::SEX_COLORS[['F']],
+                                            male=MotrpacRatTraining6moData::SEX_COLORS[['M']])) +
+      ggplot2::labs(x='Time trained (weeks)', y='Normalized value', title=title) +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=11),
+                     legend.title = ggplot2::element_blank(),
+                     legend.position = "top",
+                     panel.grid.major = ggplot2::element_blank(),
+                     panel.grid.minor = ggplot2::element_blank(),
+                     legend.margin = ggplot2::margin(t=-5, b=-5, unit="pt"),
+                     legend.spacing.y = ggplot2::unit(0, "pt"))  
+  }else{
+    g = ggplot2::ggplot(bygroup, ggplot2::aes(x=group, y=expr, group=plot_group)) +
+      ggplot2::geom_line(colour=MotrpacRatTraining6moData::TISSUE_COLORS[[TISSUE]]) +
+      ggplot2::geom_point(colour=MotrpacRatTraining6moData::TISSUE_COLORS[[TISSUE]]) +
+      ggplot2::geom_errorbar(aes(ymin = expr-sd, ymax = expr+sd), width=0.2, colour=MotrpacRatTraining6moData::TISSUE_COLORS[[TISSUE]]) +
+      ggplot2::theme_classic() +
+      ggplot2::labs(x='Time trained (weeks)', y='Normalized value', title=title) +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=11),
+                     legend.title = ggplot2::element_blank(),
+                     legend.position = "none",
+                     panel.grid.major = ggplot2::element_blank(),
+                     panel.grid.minor = ggplot2::element_blank()) +
+      ggplot2::facet_wrap(~sex)
+  }
+  
+  if(scale_x_by_time){
+    g = g +
+      scale_x_discrete(limits=c('control','1w','2w','fill','4w',rep('fill',3), '8w'),
+                       labels=c('0','1','2','4','8'),
+                       breaks=c('control','1w','2w','4w','8w'))
+  }else{
+    g = g +
+      scale_x_discrete(limits=c('control','1w','2w','4w','8w'),
+                       labels=c('0','1','2','4','8'),
+                       breaks=c('control','1w','2w','4w','8w'))
+  }
+  
+  return(g)
+}
 
-# TODO
-plot_feature_logfc = function(){}
+#' Plot differential analysis results for a feature
+#' 
+#' Plot timewise differential analysis results for a single feature. 
+#' Points are log fold-changes, and error bars indicate standard errors. 
+#'
+#' @param assay NULL or `r assay()`
+#' @param tissue NULL or `r tissue()`
+#' @param feature_ID NULL or `r feature_ID()`
+#' @param feature NULL or `r feature()`. If NULL, \code{assay}, \code{tissue}, and 
+#'   \code{feature_ID} must all be specified. 
+#' @param title character, plot title. By default, the plot ID is \code{feature}. 
+#'   If \code{add_gene_symbol = TRUE}, the gene symbol is also added to the plot title.
+#' @param add_gene_symbol bool, whether to add corresponding gene symbol to 
+#'   plot title. Default: FALSE 
+#' @param facet_by_sex bool, whether to facet the plot by sex. If \code{TRUE},
+#'   lines are colored by tissue. If \code{FALSE}, lines are colored by sex. Default: FALSE
+#' @param scale_x_by_time bool, whether to scale the x-axis by time. If \code{FALSE},
+#'   space the time points (0w, 1w, 2w, 4w, 8w) evenly. Default: TRUE
+#' @param add_adj_p bool, whether to include the training adjusted p-value (AKA selection FDR)
+#'   in the plot subtitle. Default: TRUE
+#' @param metareg bool, whether to use the meta-regression version of differential
+#'   analysis results for metabolomics data. If \code{FALSE}, use the redundant,
+#'   non-meta-analyzed results. Default: TRUE 
+#' @param ... additional arguments passed to [get_file_from_url()]
+#' 
+#' @export
+#' 
+#' @return a [ggplot2::ggplot()] object
+#' 
+#' @examples
+#' # 3 ways of plotting the same data are shown in each example below
+#' 
+#' # Plot a differential feature 
+#' plot_feature_logfc(feature = "ACETYL;HEART;NP_001003673.1_K477k",
+#'                    add_gene_symbol = TRUE)
+#' plot_feature_logfc(assay = "ACETYL",
+#'                    tissue = "HEART",
+#'                    feature_ID = "NP_001003673.1_K477k",
+#'                    add_gene_symbol = TRUE,
+#'                    scale_x_by_time = FALSE)
+#' plot_feature_logfc(assay = "ACETYL",
+#'                    tissue = "HEART",
+#'                    feature_ID = "NP_001003673.1_K477k",
+#'                    add_gene_symbol = TRUE,
+#'                    facet_by_sex = TRUE)
+#' 
+#' # Plot a redundant differential feature
+#' plot_feature_logfc(feature = "IMMUNO;PLASMA;BDNF",
+#'                    add_gene_symbol = FALSE)
+#' plot_feature_logfc(assay = "IMMUNO",
+#'                    tissue = "PLASMA",
+#'                    feature_ID = "BDNF",
+#'                    add_gene_symbol = FALSE,
+#'                    scale_x_by_time = FALSE)
+#' plot_feature_logfc(assay = "IMMUNO",
+#'                    tissue = "PLASMA",
+#'                    feature_ID = "BDNF",
+#'                    add_gene_symbol = FALSE,
+#'                    facet_by_sex = TRUE)
+#'                              
+#' # Plot one measurement of a redundant feature
+#' plot_feature_logfc(feature = "IMMUNO;PLASMA;rat-myokine:BDNF",
+#'                    add_gene_symbol = FALSE)
+#' plot_feature_logfc(assay = "IMMUNO",
+#'                    tissue = "PLASMA",
+#'                    feature_ID = "rat-myokine:BDNF",
+#'                    add_gene_symbol = FALSE,
+#'                    scale_x_by_time = FALSE)
+#' plot_feature_logfc(assay = "IMMUNO",
+#'                    tissue = "PLASMA",
+#'                    feature_ID = "rat-myokine:BDNF",
+#'                    add_gene_symbol = FALSE,
+#'                    facet_by_sex = TRUE)
+#'                              
+#' # Plot a non-differential feature
+#' plot_feature_logfc(feature = "PROT;SKM-GN;YP_665629.1",
+#'                    add_gene_symbol = TRUE)
+#' plot_feature_logfc(assay = "PROT",
+#'                    tissue = "SKM-GN",
+#'                    feature_ID = "YP_665629.1",
+#'                    add_gene_symbol = TRUE,
+#'                    scale_x_by_time = FALSE)
+#' plot_feature_logfc(assay = "PROT",
+#'                    tissue = "SKM-GN",
+#'                    feature_ID = "YP_665629.1",
+#'                    add_gene_symbol = TRUE,
+#'                    facet_by_sex = TRUE)
+#'    
+plot_feature_logfc = function(assay = NULL,
+                              tissue = NULL, 
+                              feature_ID = NULL,
+                              feature = NULL, 
+                              title = NULL, 
+                              add_gene_symbol = FALSE,
+                              facet_by_sex = FALSE, 
+                              scale_x_by_time = TRUE, 
+                              add_adj_p = TRUE,
+                              metareg = TRUE,
+                              ...){
+  
+  curr_feature = feature 
+  if(is.null(curr_feature)){
+    if(any(is.null(c(assay, tissue, feature_ID)))){
+      stop("If 'feature' is not specified, 'assay', 'tissue', and 'feature_ID' must all be specified.")
+    }
+    curr_feature = sprintf("%s;%s;%s", assay, tissue, feature_ID)
+  }
+  if(is.null(tissue)){
+    splits = unname(unlist(strsplit(curr_feature, ";")))
+    assay = splits[1]
+    tissue = splits[2]
+    feature_ID = splits[3]
+  }
+  # rename to avoid conflict with data.table columns
+  FEATURE_ID = feature_ID
+  ASSAY = assay 
+  TISSUE = tissue 
+  FEATURE = curr_feature 
+  redundant_feature = FEATURE
+  
+  if(ASSAY %in% c("ATAC","METHYL")){
+    include_epigen = TRUE
+  }else{
+    include_epigen = FALSE
+  }
+  
+  # get timewise differential analysis results
+  timewise = data.table::data.table(combine_da_results(tissues = TISSUE, assays = ASSAY, metareg = metareg))
+  # make feature column
+  timewise[is.na(feature), feature := sprintf("%s;%s;%s", assay, tissue, feature_ID)]
+  if(!FEATURE %in% timewise[,feature]){
+    # check redundant features - timewise results use non-redundant version
+    if(FEATURE %in% MotrpacRatTraining6moData::REPEATED_FEATURES$feature){
+      FEATURE = MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature[MotrpacRatTraining6moData::REPEATED_FEATURES$feature == FEATURE]
+      # now handle FEATURE_ID. get redundant one
+      FEATURE_ID = MotrpacRatTraining6moData::REPEATED_FEATURES$feature_ID[MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature == FEATURE[1]]
+    }
+  }
+  curr_timewise_dea = timewise[feature %in% FEATURE]
+  
+  if(nrow(curr_timewise_dea) == 0){
+    warning(sprintf("No DEA results for '%s'.",curr_feature))
+    return()
+  }
+  
+  if(add_gene_symbol){
+    if(ASSAY %in% c("METHYL","ATAC")){
+      feature_to_gene = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE)
+    }else{
+      feature_to_gene = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT)
+    }
+    gene_symbol = feature_to_gene[feature_ID == FEATURE_ID, gene_symbol][1]
+  }
+  
+  adj_p_value = unique(curr_timewise_dea[,selection_fdr])
+  if(length(adj_p_value)>1){
+    warning(sprintf("Multiple measurements for feature '%s'. Taking the smallest training-dea FDR for the plot label.",curr_feature))
+    adj_p_value = min(adj_p_value, na.rm=TRUE)
+  }
+
+  # make title
+  if(is.null(title)){
+    if(add_gene_symbol){
+      title = sprintf("%s (%s)", redundant_feature, gene_symbol)
+    }else{
+      title = redundant_feature
+    }
+  }else{
+    if(add_gene_symbol){
+      title = sprintf("%s (%s)", title, gene_symbol)
+    }
+  }
+
+  # add 0
+  dummy = unique(curr_timewise_dea[,.(tissue, assay)])
+  dummy[,logFC := 0]
+  dummy[,logFC_se := 0]
+  dummy[,comparison_group := 'control']
+  dlist = list()
+  i = 1
+  for(SEX in na.omit(unique(curr_timewise_dea[,sex]))){
+    for(f in FEATURE){
+      d = copy(dummy)
+      d[,sex := SEX]
+      d[,feature := f]
+      dlist[[i]] = d
+      i = i+1
+    }
+  }
+  res = rbindlist(c(list(curr_timewise_dea), dlist),fill=TRUE)
+
+  if(facet_by_sex){
+    g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,feature),color=tissue))+
+      ggplot2::geom_point() +
+      ggplot2::geom_line() +
+      ggplot2::geom_errorbar(ggplot2::aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se),width=0.2) +
+      ggplot2::theme_classic() +
+      ggplot2::geom_hline(yintercept = 0,linetype="dotted") +
+      ggplot2::facet_wrap(~sex) +
+      ggplot2::labs(title=title, x="Time trained (weeks)", y="Log fold-change") +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5),
+                     plot.subtitle = ggplot2::element_text(hjust=0.5),
+                     panel.grid.major = ggplot2::element_blank(),
+                     panel.grid.minor = ggplot2::element_blank(),
+                     legend.position = "none") +
+      ggplot2::scale_colour_manual(values=MotrpacRatTraining6moData::TISSUE_COLORS[names(MotrpacRatTraining6moData::TISSUE_COLORS) %in% res[,tissue]], name="Tissue")
+  }else{
+    g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,sex,feature),color=sex))+
+      ggplot2::geom_point() +
+      ggplot2::geom_line() +
+      ggplot2::geom_errorbar(aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se),width=0.2) +
+      ggplot2::theme_classic() +
+      ggplot2::geom_hline(yintercept = 0,linetype="dotted") +
+      ggplot2::labs(title=title, x="Time trained (weeks)", y="Log fold-change") +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5),
+            plot.subtitle = ggplot2::element_text(hjust=0.5),
+            panel.grid.major = ggplot2::element_blank(),
+            panel.grid.minor = ggplot2::element_blank()) +
+      ggplot2::scale_colour_manual(values=MotrpacRatTraining6moData::SEX_COLORS[names(MotrpacRatTraining6moData::SEX_COLORS) %in% res[,sex]], name="Sex")
+  }
+
+  if(add_adj_p){
+    subtitle = sprintf("adj. p-value: %s", round(adj_p_value, 3))
+    g = g + labs(subtitle = subtitle)
+  }
+
+  if(scale_x_by_time){
+    g = g +
+      scale_x_discrete(limits=c('control','1w','2w','fill','4w',rep('fill',3), '8w'),
+                       labels=c('0','1','2','4','8'),
+                       breaks=c('control','1w','2w','4w','8w'))
+  }else{
+    g = g +
+      scale_x_discrete(limits=c('control','1w','2w','4w','8w'),
+                       labels=c('0','1','2','4','8'),
+                       breaks=c('control','1w','2w','4w','8w'))
+  }
+
+  return(g)
+}
 
 
 #' Plot feature trajectories 
