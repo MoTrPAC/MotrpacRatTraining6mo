@@ -12,6 +12,7 @@ plot_feature_normalized_data(
   title = NULL,
   add_gene_symbol = FALSE,
   facet_by_sex = FALSE,
+  scale_x_by_time = TRUE,
   return_data = FALSE,
   exclude_outliers = TRUE,
   ...
@@ -35,6 +36,9 @@ plot title. Default: FALSE}
 
 \item{facet_by_sex}{bool, whether to facet the plot by sex. If \code{TRUE},
 lines are colored by tissue. If \code{FALSE}, lines are colored by sex. Default: FALSE}
+
+\item{scale_x_by_time}{bool, whether to scale the x-axis by time. If \code{FALSE},
+space the time points (0w, 1w, 2w, 4w, 8w) evenly. Default: TRUE}
 
 \item{return_data}{bool, whether to return data instead of plot. Default: FALSE}
 
@@ -60,7 +64,8 @@ plot_feature_normalized_data(feature = "ACETYL;HEART;NP_001003673.1_K477k",
 plot_feature_normalized_data(assay = "ACETYL",
                              tissue = "HEART",
                              feature_ID = "NP_001003673.1_K477k",
-                             add_gene_symbol = TRUE)
+                             add_gene_symbol = TRUE,
+                             scale_x_by_time = FALSE)
 plot_feature_normalized_data(assay = "ACETYL",
                              tissue = "HEART",
                              feature_ID = "NP_001003673.1_K477k",
