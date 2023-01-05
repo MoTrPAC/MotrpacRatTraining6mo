@@ -1072,7 +1072,7 @@ combine_da_results = function(tissues = MotrpacRatTraining6moData::TISSUE_ABBREV
                               scratchdir = "."){
   
   if( ("ATAC" %in% assays | "METHYL" %in% assays) & !include_epigen){
-    warning("'include_epigen' is FALSE. Excluding ATAC and METHYL results.")
+    warning("'include_epigen' is FALSE. Excluding ATAC and METHYL results.\n")
     assays = assays[!assays %in% c("ATAC","METHYL")]
   }
   
