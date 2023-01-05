@@ -18,6 +18,14 @@ but I will do my best to accommodate new programmers/R users as well.
 **If you are interested in this part of the workshop, please complete the steps in this document beforehand**. 
 Time **will not** be allotted at the beginning of the workshop to perform these installation steps. 
 
+### Contents
+* [Install R](#install-r)  
+* [Install RStudio Desktop](#install-rstudio-desktop)
+* [Install the MoTrPAC R packages](#install-the-motrpac-r-packages)
+  * [Install MotrpacRatTraining6moData (v1.7.0)](#install-motrpacrattraining6modata-v170)
+  * [Install MotrpacRatTraining6mo (v1.4.0)](#install-motrpacrattraining6mo-v140)
+* [Install other R packages for the workshop](#install-other-r-packages-for-the-workshop)
+
 ### Install R  
 Optional if you already have R installed. You must be running at least 3.5.0, but
 I recommend a newer version since it's up to 4.2.2. Be warned that you must re-install all
