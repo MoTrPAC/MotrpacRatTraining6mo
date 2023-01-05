@@ -19,7 +19,8 @@ gene_pathway_enrichment(
 
 \item{background}{vector of gene identifiers in universe/background. Must include the
 input. Should include all genes that were candidates for \code{input}, e.g.,
-expressed genes. See \code{custom_bg} argument for \code{\link[gprofiler2:gost]{gprofiler2::gost()}}.}
+expressed genes. If performing pathway enrichment on genes identified through \code{MotrpacRatTraining6moData},
+see \link[MotrpacRatTraining6moData:GENE_UNIVERSES]{MotrpacRatTraining6moData::GENE_UNIVERSES}. See \code{custom_bg} argument for \code{\link[gprofiler2:gost]{gprofiler2::gost()}}.}
 
 \item{organism}{character, species name. Default: "rnorvegicus" See \code{organism}
 argument for \code{\link[gprofiler2:gost]{gprofiler2::gost()}}.}
@@ -31,7 +32,7 @@ argument for \code{\link[gprofiler2:gost]{gprofiler2::gost()}}.}
 
 \item{max_pw_set_size}{integer, exclude pathways larger than this. Default: 200}
 
-\item{return_gem}{bool, whether to return a data frame compatbile with the
+\item{return_gem}{bool, whether to return a data frame compatible with the
 Generic Enrichment Map (GEM) file format, which can be used as an input for the
 \href{https://apps.cytoscape.org/apps/enrichmentmap}{Cytoscape EnrichmentMap application}.
 Default: FALSE}

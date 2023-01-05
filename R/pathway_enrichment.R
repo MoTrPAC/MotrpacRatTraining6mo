@@ -1028,14 +1028,15 @@ plot_top_enrichments_per_cluster = function(){}
 #' @param input vector of gene identifiers
 #' @param background vector of gene identifiers in universe/background. Must include the 
 #'   input. Should include all genes that were candidates for \code{input}, e.g., 
-#'   expressed genes. See \code{custom_bg} argument for [gprofiler2::gost()]. 
+#'   expressed genes. If performing pathway enrichment on genes identified through \code{MotrpacRatTraining6moData},
+#'   see [MotrpacRatTraining6moData::GENE_UNIVERSES]. See \code{custom_bg} argument for [gprofiler2::gost()]. 
 #' @param organism character, species name. Default: "rnorvegicus" See \code{organism}
 #'   argument for [gprofiler2::gost()]. 
 #' @param databases character, vector of databases in which to search. See \code{sources}
 #'   argument for [gprofiler2::gost()]. 
 #' @param min_pw_set_size integer, exclude pathways smaller than this. Default: 10
 #' @param max_pw_set_size integer, exclude pathways larger than this. Default: 200
-#' @param return_gem bool, whether to return a data frame compatbile with the
+#' @param return_gem bool, whether to return a data frame compatible with the
 #'   Generic Enrichment Map (GEM) file format, which can be used as an input for the 
 #'   [Cytoscape EnrichmentMap application](https://apps.cytoscape.org/apps/enrichmentmap).
 #'   Default: FALSE

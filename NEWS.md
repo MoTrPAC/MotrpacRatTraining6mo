@@ -1,6 +1,7 @@
 # MotrpacRatTraining6mo 1.4.0 (2023-01-05)
 
 * Add `gene_pathway_enrichment()` (wrapper for `gprofiler2::gost()`). 
+* Add example to "Get Started" vignette. 
 
 # MotrpacRatTraining6mo 1.3.0 (2023-01-04)
 
