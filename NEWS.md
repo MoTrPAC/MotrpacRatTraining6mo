@@ -2,6 +2,7 @@
 
 * Add `df_to_numeric()` to easily format data frames. 
 * Add `plot_feature_normalized_data()` to plot normalized sample-level data for a single feature. 
+* Add `plot_feature_logfc()` to plot differential analysis results for a single feature. 
 
 # MotrpacRatTraining6mo 1.2.0 (2022-12-27)
 

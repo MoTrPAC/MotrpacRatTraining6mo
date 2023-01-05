@@ -52,6 +52,8 @@ Points are mean values across samples in each group,
 and error bars indicate standard deviations.
 }
 \examples{
+# 3 ways of plotting the same data are shown in each example below
+
 # Plot a differential feature 
 plot_feature_normalized_data(feature = "ACETYL;HEART;NP_001003673.1_K477k",
                              add_gene_symbol = TRUE)
@@ -75,6 +77,19 @@ plot_feature_normalized_data(assay = "IMMUNO",
 plot_feature_normalized_data(assay = "IMMUNO",
                              tissue = "PLASMA",
                              feature_ID = "BDNF",
+                             add_gene_symbol = FALSE,
+                             facet_by_sex = TRUE)
+                             
+# Plot one measurement of a redundant feature
+plot_feature_normalized_data(feature = "IMMUNO;PLASMA;rat-myokine:BDNF",
+                             add_gene_symbol = FALSE)
+plot_feature_normalized_data(assay = "IMMUNO",
+                             tissue = "PLASMA",
+                             feature_ID = "rat-myokine:BDNF",
+                             add_gene_symbol = FALSE)
+plot_feature_normalized_data(assay = "IMMUNO",
+                             tissue = "PLASMA",
+                             feature_ID = "rat-myokine:BDNF",
                              add_gene_symbol = FALSE,
                              facet_by_sex = TRUE)
                              
