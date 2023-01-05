@@ -915,7 +915,6 @@ it easier to digest large numbers of results.
 
 ```{r, echo=FALSE}
 knitr::include_graphics("pw_network.png", dpi=150)
-knitr::knit_exit()
 ```
 
 In our implementation, groups of similar pathway enrichments are color-coded, and 
