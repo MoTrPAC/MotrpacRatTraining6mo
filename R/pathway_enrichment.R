@@ -737,7 +737,7 @@ custom_cluster_pathway_enrichment = function(cluster_res,
   write(sprintf("#%s", as.character(date())), file = logfile, append = F)
   write("cluster,tissue,ome,n_features,reason", file = logfile, append = T)
   
-  cluster_res = annotate_cluster_res(cluster_res)
+  cluster_res = check_cluster_res_format(cluster_res)
   
   if(!requireNamespace("IHW", quietly = TRUE)){
     if(length(unique(cluster_res$tissue)) > 1){

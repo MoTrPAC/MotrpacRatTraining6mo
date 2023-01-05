@@ -1,3 +1,7 @@
+# MotrpacRatTraining6mo 1.4.1 (2023-01-05)
+
+* Fix `custom_cluster_pathway_enrichment()` to accept a list of lists as input. 
+
 # MotrpacRatTraining6mo 1.4.0 (2023-01-05)
 
 * Add `gene_pathway_enrichment()` (wrapper for `gprofiler2::gost()`). 
