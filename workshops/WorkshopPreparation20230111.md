@@ -1,8 +1,4 @@
----
-title: Preparation for MoTrPAC PASS1B R package workshop
-author: Nicole Gay
-date: 1/5/23
----
+# Preparation for MoTrPAC PASS1B R package workshop
 
 > TLDR; complete the steps in this document *before* the workshop if you want to use 
 the MoTrPAC R packages to explore PASS1B data. 
@@ -108,3 +104,8 @@ about which packages are required or suggested for `MotrpacRatTraining6mo`, take
 [DESCRIPTION](https://github.com/MoTrPAC/MotrpacRatTraining6mo/blob/main/DESCRIPTION) file. 
 
 That's it! Thank you for getting this far. I look forward to the workshop on 1/11/23! 
+
+---
+
+Author: Nicole Gay  
+Updated: 1/5/23
