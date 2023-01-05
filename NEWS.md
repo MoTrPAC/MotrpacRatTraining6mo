@@ -1,4 +1,4 @@
-# MotrpacRatTraining6mo 1.3.0 (2023-01-05)
+# MotrpacRatTraining6mo 1.3.0 (2023-01-04)
 
 * Add `df_to_numeric()` to easily format data frames. 
 * Add `plot_feature_normalized_data()` to plot normalized sample-level data for a single feature. 
