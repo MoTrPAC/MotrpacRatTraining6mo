@@ -88,6 +88,9 @@
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/custom_cluster_pathway_enrichment.html</loc>
   </url>
   <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/df_to_numeric.html</loc>
+  </url>
+  <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/edge_intersection.html</loc>
   </url>
   <url>
@@ -203,6 +206,12 @@
   </url>
   <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/pathway_hypergeom_test.html</loc>
+  </url>
+  <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/plot_feature_logfc.html</loc>
+  </url>
+  <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/plot_feature_normalized_data.html</loc>
   </url>
   <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/plot_feature_trajectories.html</loc>
