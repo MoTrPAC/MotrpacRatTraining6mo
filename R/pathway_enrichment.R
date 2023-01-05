@@ -1019,3 +1019,118 @@ pathway_hypergeom_test = function(feature_to_gene,
 # low priority 
 plot_top_enrichments_per_cluster = function(){}
 
+
+#' Gene pathway enrichment
+#'
+#' Perform pathway enrichment for a list of genes. 
+#' Wrapper for [gprofiler2::gost()]. 
+#'
+#' @param input vector of gene identifiers
+#' @param background vector of gene identifiers in universe/background. Must include the 
+#'   input. Should include all genes that were candidates for \code{input}, e.g., 
+#'   expressed genes. See \code{custom_bg} argument for [gprofiler2::gost()]. 
+#' @param organism character, species name. Default: "rnorvegicus" See \code{organism}
+#'   argument for [gprofiler2::gost()]. 
+#' @param databases character, vector of databases in which to search. See \code{sources}
+#'   argument for [gprofiler2::gost()]. 
+#' @param min_pw_set_size integer, exclude pathways smaller than this. Default: 10
+#' @param max_pw_set_size integer, exclude pathways larger than this. Default: 200
+#' @param return_gem bool, whether to return a data frame compatbile with the
+#'   Generic Enrichment Map (GEM) file format, which can be used as an input for the 
+#'   [Cytoscape EnrichmentMap application](https://apps.cytoscape.org/apps/enrichmentmap).
+#'   Default: FALSE
+#'
+#' @return a data frame of pathway enrichment results. If \code{return_gem=TRUE},
+#'   column names are changed add added to be compatible with the Generic Enrichment Map (GEM) file format.
+#'   Otherwise, the columns are defined as follows:
+#' \describe{
+#'   \item{\code{query}}{character, the name of the input query which by default is the order of query with the prefix "query_"}
+#'   \item{\code{significant}}{bool, whether the [gprofiler2::gost()] enrichment p-value is less than 0.05}
+#'   \item{\code{term_size}}{integer, number of genes that are annotated to the term}
+#'   \item{\code{query_size}}{integer, number of genes that were included in the query (from [gprofiler2::gost()])}
+#'   \item{\code{intersection_size}}{integer, the number of genes in the input query that are annotated to the corresponding term}
+#'   \item{\code{precision}}{double, the proportion of genes in the input list that are annotated to the function, defined as \code{intersection_size/query_size}}
+#'   \item{\code{recall}}{double, the proportion of functionally annotated genes that the query recovers, defined as \code{intersection_size/term_size}}
+#'   \item{\code{term_id}}{character, unique term/pathway identifier}
+#'   \item{\code{source}}{character, the abbreviation of the data source for the term/pathway}
+#'   \item{\code{term_name}}{character, term/pathway name}
+#'   \item{\code{effective_domain_size}}{integer, the total number of genes in the universe used for the hypergeometric test}
+#'   \item{\code{source_order}}{integer, numeric order for the term within its data source}
+#'   \item{\code{parents}}{list of term IDs that are hierarchically directly above the term. 
+#'     For non-hierarchical data sources this points to an artificial root node}
+#'   \item{\code{evidence_codes}}{character, comma-separated evidence codes}
+#'   \item{\code{intersection}}{character, input gene IDs that intersect with the term/pathway}
+#'   \item{\code{gost_adj_p_value}}{double, improperly adjusted hypergeometric p-value 
+#'     from [gprofiler2::gost()]. For reference only; should not be used to filter results 
+#'     unless there was only a single list of genes in the input.}
+#'   \item{\code{computed_p_value}}{double, nominal hypergeometric p-value, 
+#'     computed from the [gprofiler2::gost()] output}
+#'   \item{\code{BH_adj_p_value}}{double, BH-adjusted p-values, calculated on \code{computed_p_value}} 
+#'}
+#' @export
+#'
+#' @examples
+#' # Perform pathway enrichment for differential transcripts in the liver
+#' diff = MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES
+#' input_feat = diff$feature_ID[diff$tissue == "LIVER" & diff$assay == "TRNSCRPT"]
+#' map = MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT
+#' input = unique(map$gene_symbol[map$feature_ID %in% input_feat])
+#' background = MotrpacRatTraining6moData::GENE_UNIVERSES$gene_symbol$TRNSCRPT$LIVER
+#' res = gene_pathway_enrichment(input, background)
+#' head(res)
+gene_pathway_enrichment = function(input, 
+                                   background, 
+                                   organism = 'rnorvegicus', 
+                                   databases = c('REAC','WP','KEGG'),
+                                   min_pw_set_size = 10,
+                                   max_pw_set_size = 200,
+                                   return_gem = FALSE){
+  
+  if (!requireNamespace("gprofiler2", quietly = TRUE)) {
+    stop(
+      "Package 'gprofiler2' must be installed to run 'gene_pathway_enrichment()'.",
+      call. = FALSE
+    )
+  }
+  
+  res = gprofiler2::gost(input,
+                         organism = organism,
+                         significant = FALSE, # return all results
+                         correction_method = 'fdr', # it will not return unadjusted p-values. calculate those yourself
+                         sources = databases,
+                         custom_bg = background,
+                         domain_scope = 'custom',
+                         evcodes = TRUE)
+  
+  res_dt = data.table::data.table(res$result)
+  
+  if(nrow(res_dt)==0){
+    warning("No results returned by 'gprofiler2::gost()'.\n")
+    return()
+  }
+  
+  # calculate raw p-values
+  res_dt[,gost_adj_p_value := p_value]
+  res_dt[,p_value := NULL]
+  res_dt[,computed_p_value := stats::phyper(intersection_size-1, term_size, effective_domain_size-term_size, query_size, lower.tail= FALSE)]
+  
+  # remove tests outside of the parameters
+  if(min_pw_set_size>0 | max_pw_set_size<Inf){
+    res_dt = res_dt[term_size<=max_pw_set_size & term_size>=min_pw_set_size]
+  }
+  
+  # fix parents column 
+  res_dt[,parents := sapply(parents, function(x) paste0(unlist(x), collapse=','))]
+  
+  res_dt[,BH_adj_p_value := stats::p.adjust(computed_p_value, method='BH')]
+  res_dt = res_dt[order(BH_adj_p_value, decreasing=F)]
+  
+  if(return_gem){
+    res_dt[,Phenotype := 1]
+    res_dt = res_dt[,.(term_id, term_name, computed_p_value, BH_adj_p_value, Phenotype, intersection)]
+    colnames(res_dt) = c('GO.ID','Description','p.Val','FDR','Phenotype','Genes')
+  }
+  
+  return(as.data.frame(res_dt))
+}
+
