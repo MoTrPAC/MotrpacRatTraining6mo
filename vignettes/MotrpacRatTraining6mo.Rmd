@@ -268,6 +268,25 @@ data = load_sample_data("HIPPOC",
                         scratchdir = "/tmp")
 ```
 
+We can plot the normalized sample-level data for a single feature using
+`plot_feature_normalized_data()`. All of the following examples are different
+ways to plot the same feature. 
+```{r plot_feature_normalized_data}
+plot_feature_normalized_data(feature = "PROT;SKM-GN;NP_786937.1",
+                             add_gene_symbol = TRUE)
+
+plot_feature_normalized_data(assay = "PROT",
+                             tissue = "SKM-GN",
+                             feature_ID = "NP_786937.1",
+                             exclude_outliers = TRUE,
+                             scale_x_by_time = FALSE)
+
+plot_feature_normalized_data(assay = "PROT",
+                             tissue = "SKM-GN",
+                             feature_ID = "NP_786937.1",
+                             facet_by_sex = TRUE)
+```
+
 `combine_normalized_data()` is a wrapper for `load_sample_data()` that returns 
 combined sample-level normalized data for multiple datasets. Note that the sample-specific 
 vial labels used as column names for most of the sample-level data are replaced
@@ -391,6 +410,25 @@ plot(-log10(merged$p_value_orginal),
      xlab="Original timewise p-value (-log10)",
      ylab="Reproduced timewise p-value (-log10)",
      main="Timewise DA results for ACETYL data")
+```
+
+We can plot the differential analysis results for a single feature using 
+`plot_feature_logfc()`. All of the following examples are different
+ways to plot results for the same feature. 
+```{r}
+plot_feature_logfc(feature = "PROT;SKM-GN;NP_786937.1",
+                   add_gene_symbol = TRUE)
+
+plot_feature_logfc(assay = "PROT",
+                   tissue = "SKM-GN",
+                   feature_ID = "NP_786937.1",
+                   scale_x_by_time = FALSE)
+
+plot_feature_logfc(assay = "PROT",
+                   tissue = "SKM-GN",
+                   feature_ID = "NP_786937.1",
+                   facet_by_sex = TRUE,
+                   add_adj_p = FALSE)
 ```
 
 ## Bayesian graphical clustering 
@@ -654,10 +692,23 @@ plot_features_per_cluster(clusters)
 From this plot, we see that the majority of training-regulated features in the
 gastrocnemius that are up-regulated in both sexes at all training time points 
 (`1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1`, top row) are proteins, followed
-by protein phosphosites. We also see a cluster comprised mostly of protein 
+by protein phosphosites. We can plot the sample-level trajectories of all features
+in this cluster with `plot_feature_trajectories()`. 
+```{r plot_feature_trajectories}
+plot_feature_trajectories(clusters$`1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1`, 
+                          title="Features consistently up-regulated in gastroc")
+```
+
+We also see a cluster comprised mostly of protein 
 phosphosites, where these features are down-regulated in females at all training
 time points and also down-regulated in males at 8 weeks of training 
-(`1w_F-1_M0->2w_F-1_M0->4w_F-1_M0->8w_F-1_M-1`). In the next section, we show how 
+(`1w_F-1_M0->2w_F-1_M0->4w_F-1_M0->8w_F-1_M-1`). 
+```{r plot_feature_trajectories 2}
+plot_feature_trajectories(clusters$`1w_F-1_M0->2w_F-1_M0->4w_F-1_M0->8w_F-1_M-1`, 
+                          title="Cluster of mostly PHOSPHO in gastroc")
+```
+
+In the next section, we show how 
 pathway enrichment can be used to begin interpreting the biology underlying a 
 graphical cluster (node, edge, or path) of interest. 
 

@@ -15,6 +15,8 @@
 #'   plot title. Default: FALSE
 #' @param facet_by_sex bool, whether to facet the plot by sex. If \code{TRUE},
 #'   lines are colored by tissue. If \code{FALSE}, lines are colored by sex. Default: FALSE
+#' @param scale_x_by_time bool, whether to scale the x-axis by time. If \code{FALSE},
+#'   space the time points (0w, 1w, 2w, 4w, 8w) evenly. Default: TRUE
 #' @param return_data bool, whether to return data instead of plot. Default: FALSE
 #' @param exclude_outliers bool, whether to exclude data from sample outliers. Default: TRUE
 #'   (see [MotrpacRatTraining6moData::OUTLIERS])
@@ -32,7 +34,8 @@
 #' plot_feature_normalized_data(assay = "ACETYL",
 #'                              tissue = "HEART",
 #'                              feature_ID = "NP_001003673.1_K477k",
-#'                              add_gene_symbol = TRUE)
+#'                              add_gene_symbol = TRUE,
+#'                              scale_x_by_time = FALSE)
 #' plot_feature_normalized_data(assay = "ACETYL",
 #'                              tissue = "HEART",
 #'                              feature_ID = "NP_001003673.1_K477k",
@@ -85,6 +88,7 @@ plot_feature_normalized_data = function(assay = NULL,
                                         title = NULL, 
                                         add_gene_symbol = FALSE, 
                                         facet_by_sex = FALSE, 
+                                        scale_x_by_time = TRUE, 
                                         return_data = FALSE,
                                         exclude_outliers = TRUE,
                                         ...){
@@ -212,9 +216,6 @@ plot_feature_normalized_data = function(assay = NULL,
       ggplot2::theme_classic() +
       ggplot2::scale_colour_manual(values=c(female=MotrpacRatTraining6moData::SEX_COLORS[['F']],
                                             male=MotrpacRatTraining6moData::SEX_COLORS[['M']])) +
-      ggplot2::scale_x_discrete(limits=c('control','1w','2w','fill','4w',rep('fill',3), '8w'),
-                                labels=c('0','1','2','4','8'),
-                                breaks=c('control','1w','2w','4w','8w')) +
       ggplot2::labs(x='Time trained (weeks)', y='Normalized value', title=title) +
       ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=11),
                      legend.title = ggplot2::element_blank(),
@@ -229,9 +230,6 @@ plot_feature_normalized_data = function(assay = NULL,
       ggplot2::geom_point(colour=MotrpacRatTraining6moData::TISSUE_COLORS[[TISSUE]]) +
       ggplot2::geom_errorbar(aes(ymin = expr-sd, ymax = expr+sd), width=0.2, colour=MotrpacRatTraining6moData::TISSUE_COLORS[[TISSUE]]) +
       ggplot2::theme_classic() +
-      ggplot2::scale_x_discrete(limits=c('control','1w','2w','fill','4w',rep('fill',3), '8w'),
-                                labels=c('0','1','2','4','8'),
-                                breaks=c('control','1w','2w','4w','8w')) +
       ggplot2::labs(x='Time trained (weeks)', y='Normalized value', title=title) +
       ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=11),
                      legend.title = ggplot2::element_blank(),
@@ -239,6 +237,18 @@ plot_feature_normalized_data = function(assay = NULL,
                      panel.grid.major = ggplot2::element_blank(),
                      panel.grid.minor = ggplot2::element_blank()) +
       ggplot2::facet_wrap(~sex)
+  }
+  
+  if(scale_x_by_time){
+    g = g +
+      scale_x_discrete(limits=c('control','1w','2w','fill','4w',rep('fill',3), '8w'),
+                       labels=c('0','1','2','4','8'),
+                       breaks=c('control','1w','2w','4w','8w'))
+  }else{
+    g = g +
+      scale_x_discrete(limits=c('control','1w','2w','4w','8w'),
+                       labels=c('0','1','2','4','8'),
+                       breaks=c('control','1w','2w','4w','8w'))
   }
   
   return(g)
