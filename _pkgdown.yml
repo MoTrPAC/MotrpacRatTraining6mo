@@ -119,6 +119,7 @@ reference:
   contents:
     - cluster_pathway_enrichment
     - custom_cluster_pathway_enrichment
+    - gene_pathway_enrichment
     - run_fella
     - make_kegg_db 
 

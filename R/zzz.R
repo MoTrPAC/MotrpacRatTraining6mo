@@ -132,5 +132,9 @@ utils::globalVariables(
     "site",
     ########################################### plot_sample_data
     "expr",
-    "plot_group"
+    "plot_group",
+    ########################################### gene_pathway_enrichment
+    "BH_adj_p_value",
+    "Phenotype",
+    "parents"
   ))
