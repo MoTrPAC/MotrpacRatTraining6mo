@@ -1,6 +1,7 @@
 # MotrpacRatTraining6mo 1.4.1 (2023-01-05)
 
 * Fix `custom_cluster_pathway_enrichment()` to accept a list of lists as input. 
+* Use filtered feature-to-gene map to perform pathway enrichment. 
 
 # MotrpacRatTraining6mo 1.4.0 (2023-01-05)
 

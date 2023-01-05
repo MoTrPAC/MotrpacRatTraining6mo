@@ -19,7 +19,7 @@
 #'   See [gprofiler2 documentation](https://rdrr.io/cran/gprofiler2/man/gost.html) for an up-to-date list. 
 #' @param feature_to_gene data frame, map between \code{intersection_id_type} and gene symbols. 
 #'   Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
-#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default. 
+#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT] by default. 
 #' @param gene_identifier_type character, column in \code{feature_to_gene} that 
 #'   matches the gene identifier type in \code{universe}.
 #'   "ensembl_gene" by default. 
@@ -108,7 +108,7 @@
 #' }
 cluster_pathway_enrichment = function(cluster_res, 
                                       databases = c('REAC','KEGG'), 
-                                      feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE, 
+                                      feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT, 
                                       gene_identifier_type = "ensembl_gene",
                                       universe = MotrpacRatTraining6moData::GENE_UNIVERSES$ensembl_gene, 
                                       kegg_db_destination = NULL,
@@ -635,7 +635,7 @@ make_kegg_db = function(kegg_db_destination){
 #' @param source optional character string to define the source of \code{pathway_member_list} 
 #' @param feature_to_gene data frame, map between \code{intersection_id_type} and gene symbols. 
 #'   Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
-#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default. 
+#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT] by default. 
 #' @param gene_identifier_type character, column in \code{feature_to_gene} that 
 #'   matches the gene identifier type in \code{universe}.
 #'   "gene_symbol" by default. 
@@ -713,7 +713,7 @@ make_kegg_db = function(kegg_db_destination){
 custom_cluster_pathway_enrichment = function(cluster_res, 
                                              pathway_member_list, 
                                              source = 'custom', 
-                                             feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE, 
+                                             feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT, 
                                              gene_identifier_type = "gene_symbol",
                                              universe = MotrpacRatTraining6moData::GENE_UNIVERSES$gene_symbol, 
                                              add_ensembl_intersection = TRUE, 
@@ -837,7 +837,6 @@ custom_cluster_pathway_enrichment = function(cluster_res,
 #' 
 #' @param feature_to_gene data frame, map between \code{intersection_id_type} and gene symbols. 
 #'   Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
-#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default. 
 #' @param universe list of lists of character vectors, 
 #'   named first by assay (i.e., [MotrpacRatTraining6moData::ASSAY_ABBREV])
 #'   and then by tissue (i.e., [MotrpacRatTraining6moData::TISSUE_ABBREV]). 

@@ -7,7 +7,7 @@
 cluster_pathway_enrichment(
   cluster_res,
   databases = c("REAC", "KEGG"),
-  feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE,
+  feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT,
   gene_identifier_type = "ensembl_gene",
   universe = MotrpacRatTraining6moData::GENE_UNIVERSES$ensembl_gene,
   kegg_db_destination = NULL,
@@ -38,7 +38,7 @@ See \href{https://rdrr.io/cran/gprofiler2/man/gost.html}{gprofiler2 documentatio
 
 \item{feature_to_gene}{data frame, map between \code{intersection_id_type} and gene symbols.
 Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
-\link[MotrpacRatTraining6moData:FEATURE_TO_GENE]{MotrpacRatTraining6moData::FEATURE_TO_GENE} by default.}
+\link[MotrpacRatTraining6moData:FEATURE_TO_GENE_FILT]{MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT} by default.}
 
 \item{gene_identifier_type}{character, column in \code{feature_to_gene} that
 matches the gene identifier type in \code{universe}.
