@@ -10,7 +10,7 @@
 #'   scale_x_discrete element_blank geom_line geom_point geom_errorbar scale_colour_manual
 #'   element_text margin unit geom_hline
 #' @importFrom stats na.omit prcomp sd median poly phyper cor p.adjust coefficients
-#' @importFrom utils download.file data globalVariables combn
+#' @importFrom utils download.file data globalVariables combn head
 #' @importFrom graphics hist legend
 ## usethis namespace: end
 NULL

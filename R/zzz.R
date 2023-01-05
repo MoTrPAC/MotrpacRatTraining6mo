@@ -129,5 +129,8 @@ utils::globalVariables(
     "colour",
     ########################################### metabolomics meta
     "metabolite_refmet",
-    "site"
+    "site",
+    ########################################### plot_sample_data
+    "expr",
+    "plot_group"
   ))

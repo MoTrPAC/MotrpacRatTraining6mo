@@ -193,7 +193,7 @@ plot_feature_normalized_data = function(assay = NULL,
     meta = unique(meta)
   }else{
     stop(sprintf("Sample names in sample-level data do not correspond to vial labels or PIDs: %s...",
-         paste(head(melted_subset[,sample]), collapse=", ")))
+         paste(utils::head(melted_subset[,sample]), collapse=", ")))
   }
   
   # merge
