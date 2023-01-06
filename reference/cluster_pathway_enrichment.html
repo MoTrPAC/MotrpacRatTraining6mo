@@ -16,7 +16,7 @@ each unique combination of tissue, assay/ome, and cluster."><!-- mathjax --><scr
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@ each unique combination of tissue, assay/ome, and cluster.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cluster_pathway_enrichment</span><span class="op">(</span></span>
 <span>  <span class="va">cluster_res</span>,</span>
 <span>  databases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REAC"</span>, <span class="st">"KEGG"</span><span class="op">)</span>,</span>
-<span>  feature_to_gene <span class="op">=</span> <span class="fu">MotrpacRatTraining6moData</span><span class="fu">::</span><span class="va"><a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/FEATURE_TO_GENE.html">FEATURE_TO_GENE</a></span>,</span>
+<span>  feature_to_gene <span class="op">=</span> <span class="fu">MotrpacRatTraining6moData</span><span class="fu">::</span><span class="va"><a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/FEATURE_TO_GENE_FILT.html">FEATURE_TO_GENE_FILT</a></span>,</span>
 <span>  gene_identifier_type <span class="op">=</span> <span class="st">"ensembl_gene"</span>,</span>
 <span>  universe <span class="op">=</span> <span class="fu">MotrpacRatTraining6moData</span><span class="fu">::</span><span class="va"><a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/GENE_UNIVERSES.html">GENE_UNIVERSES</a></span><span class="op">$</span><span class="va">ensembl_gene</span>,</span>
 <span>  kegg_db_destination <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -104,7 +104,7 @@ See <a href="https://rdrr.io/cran/gprofiler2/man/gost.html" class="external-link
 <dt>feature_to_gene</dt>
 <dd><p>data frame, map between <code>intersection_id_type</code> and gene symbols.
 Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
-<a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/FEATURE_TO_GENE.html">MotrpacRatTraining6moData::FEATURE_TO_GENE</a> by default.</p></dd>
+<a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/FEATURE_TO_GENE_FILT.html">MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT</a> by default.</p></dd>
 
 
 <dt>gene_identifier_type</dt>
@@ -242,6 +242,7 @@ computed from the <code><a href="https://rdrr.io/pkg/gprofiler2/man/gost.html" c
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code><a href="https://rdrr.io/pkg/FELLA/man/enrich-funs.html" class="external-link">FELLA::enrich()</a></code> is used for pathway enrichment of metabolites; <code><a href="https://rdrr.io/pkg/gprofiler2/man/gost.html" class="external-link">gprofiler2::gost()</a></code> is used for
 all other omes assuming features have been mapped to genes.</p>
+<p>Pathway enrichments driven by a single gene are excluded.</p>
 <p>This function was used to generate <a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/GRAPH_PW_ENRICH.html">MotrpacRatTraining6moData::GRAPH_PW_ENRICH</a>.</p>
     </div>
 
