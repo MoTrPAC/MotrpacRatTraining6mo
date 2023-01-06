@@ -118,6 +118,8 @@ each unique combination of tissue, assay/ome, and cluster.
 \code{\link[FELLA:enrich-funs]{FELLA::enrich()}} is used for pathway enrichment of metabolites; \code{\link[gprofiler2:gost]{gprofiler2::gost()}} is used for
 all other omes assuming features have been mapped to genes.
 
+Pathway enrichments driven by a single gene are excluded.
+
 This function was used to generate \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}.
 }
 \examples{

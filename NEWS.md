@@ -2,6 +2,8 @@
 
 * Fix `custom_cluster_pathway_enrichment()` to accept a list of lists as input. 
 * Use filtered feature-to-gene map to perform pathway enrichment. 
+* In `cluster_pathway_enrichment()`, remove pathway enrichments driven by a single gene
+for consistency with the landscape paper.   
 
 # MotrpacRatTraining6mo 1.4.0 (2023-01-05)
 
