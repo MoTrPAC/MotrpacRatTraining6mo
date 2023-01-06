@@ -114,5 +114,31 @@ plot_feature_logfc(assay = "PROT",
                    feature_ID = "YP_665629.1",
                    add_gene_symbol = TRUE,
                    facet_by_sex = TRUE)
+                   
+# Plot a merged feature from meta-regression
+plot_feature_logfc(assay = "METAB",
+                   tissue = "PLASMA",
+                   feature_ID = "Glucose",
+                   facet_by_sex = TRUE)
+plot_feature_logfc(assay = "METAB",
+                   tissue = "PLASMA",
+                   feature_ID = "Glucose",
+                   scale_x_by_time = FALSE,
+                   metareg = FALSE)
+plot_feature_logfc(assay = "METAB",
+                   tissue = "PLASMA",
+                   feature_ID = "glucose",
+                   scale_x_by_time = FALSE,
+                   metareg = FALSE)
+plot_feature_logfc(assay = "METAB",
+                   tissue = "PLASMA",
+                   feature_ID = "glucose",
+                   facet_by_sex = TRUE,
+                   metareg = TRUE)
+plot_feature_logfc(assay = "METAB",
+                   tissue = "PLASMA",
+                   feature_ID = "metab-u-ionpneg:glucose",
+                   scale_x_by_time = FALSE,
+                   metareg = FALSE)                  
    
 }

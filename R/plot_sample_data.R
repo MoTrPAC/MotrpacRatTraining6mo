@@ -398,6 +398,32 @@ plot_feature_normalized_data = function(assay = NULL,
 #'                    feature_ID = "YP_665629.1",
 #'                    add_gene_symbol = TRUE,
 #'                    facet_by_sex = TRUE)
+#'                    
+#' # Plot a merged feature from meta-regression
+#' plot_feature_logfc(assay = "METAB",
+#'                    tissue = "PLASMA",
+#'                    feature_ID = "Glucose",
+#'                    facet_by_sex = TRUE)
+#' plot_feature_logfc(assay = "METAB",
+#'                    tissue = "PLASMA",
+#'                    feature_ID = "Glucose",
+#'                    scale_x_by_time = FALSE,
+#'                    metareg = FALSE)
+#' plot_feature_logfc(assay = "METAB",
+#'                    tissue = "PLASMA",
+#'                    feature_ID = "glucose",
+#'                    scale_x_by_time = FALSE,
+#'                    metareg = FALSE)
+#' plot_feature_logfc(assay = "METAB",
+#'                    tissue = "PLASMA",
+#'                    feature_ID = "glucose",
+#'                    facet_by_sex = TRUE,
+#'                    metareg = TRUE)
+#' plot_feature_logfc(assay = "METAB",
+#'                    tissue = "PLASMA",
+#'                    feature_ID = "metab-u-ionpneg:glucose",
+#'                    scale_x_by_time = FALSE,
+#'                    metareg = FALSE)                  
 #'    
 plot_feature_logfc = function(assay = NULL,
                               tissue = NULL, 
@@ -447,6 +473,27 @@ plot_feature_logfc = function(assay = NULL,
       FEATURE = MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature[MotrpacRatTraining6moData::REPEATED_FEATURES$feature == FEATURE]
       # now handle FEATURE_ID. get redundant one
       FEATURE_ID = MotrpacRatTraining6moData::REPEATED_FEATURES$feature_ID[MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature == FEATURE[1]]
+    # check if this is a metabolite name, in which case there may be multiple results under a refmet ID from meta-reg results 
+    }else if(ASSAY == "METAB"){
+      if(FEATURE_ID %in% timewise[,feature_ID]){
+        FEATURE = unique(timewise[feature_ID == FEATURE_ID & tissue == TISSUE, feature])
+      }else if(grepl(":", FEATURE_ID)){
+        # or maybe they gave a feature ID and site? e.g. metab-u-ionpneg:glucose
+        ds = gsub(":.*","",FEATURE_ID)
+        new_feature_id = gsub(".*:","",FEATURE_ID)
+        if(nrow(timewise[feature_ID == new_feature_id & dataset == ds & tissue == TISSUE]) > 0){
+          timewise = timewise[feature_ID == new_feature_id & dataset == ds & tissue == TISSUE]
+          timewise[,feature := sprintf("%s;%s;%s", ASSAY, TISSUE, FEATURE_ID)]
+          FEATURE = unique(timewise[,feature])
+        }
+      }else if(metareg){
+        # they could have supplied a metabolite ID that is only available in results as refmet
+        if(FEATURE_ID %in% METAB_FEATURE_ID_MAP$metabolite_name){
+          new_feature_id = unique(METAB_FEATURE_ID_MAP$feature_ID_metareg[METAB_FEATURE_ID_MAP$metabolite_name == FEATURE_ID])
+          new_feature_id = unique(new_feature_id[new_feature_id %in% timewise[,feature_ID]])
+          FEATURE = unique(timewise[feature_ID == new_feature_id & tissue == TISSUE, feature])
+        }
+      }
     }
   }
   curr_timewise_dea = timewise[feature %in% FEATURE]
@@ -465,10 +512,13 @@ plot_feature_logfc = function(assay = NULL,
     gene_symbol = feature_to_gene[feature_ID == FEATURE_ID, gene_symbol][1]
   }
   
+  multiple_measurements = FALSE
   adj_p_value = unique(curr_timewise_dea[,selection_fdr])
   if(length(adj_p_value)>1){
     warning(sprintf("Multiple measurements for feature '%s'. Taking the smallest training-dea FDR for the plot label.",curr_feature))
     adj_p_value = min(adj_p_value, na.rm=TRUE)
+    curr_timewise_dea[,feature := dataset]
+    multiple_measurements = TRUE
   }
 
   # make title
@@ -485,51 +535,97 @@ plot_feature_logfc = function(assay = NULL,
   }
 
   # add 0
-  dummy = unique(curr_timewise_dea[,.(tissue, assay)])
+  dummy = unique(curr_timewise_dea[,.(tissue, assay, feature)])
   dummy[,logFC := 0]
   dummy[,logFC_se := 0]
   dummy[,comparison_group := 'control']
   dlist = list()
   i = 1
   for(SEX in na.omit(unique(curr_timewise_dea[,sex]))){
-    for(f in FEATURE){
+    for(f in unique(curr_timewise_dea[,feature])){
       d = copy(dummy)
       d[,sex := SEX]
       d[,feature := f]
+      d[,dataset := f]
       dlist[[i]] = d
       i = i+1
     }
   }
   res = rbindlist(c(list(curr_timewise_dea), dlist),fill=TRUE)
 
-  if(facet_by_sex){
-    g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,feature),color=tissue))+
-      ggplot2::geom_point() +
-      ggplot2::geom_line() +
-      ggplot2::geom_errorbar(ggplot2::aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se),width=0.2) +
-      ggplot2::theme_classic() +
-      ggplot2::geom_hline(yintercept = 0,linetype="dotted") +
-      ggplot2::facet_wrap(~sex) +
-      ggplot2::labs(title=title, x="Time trained (weeks)", y="Log fold-change") +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5),
-                     plot.subtitle = ggplot2::element_text(hjust=0.5),
-                     panel.grid.major = ggplot2::element_blank(),
-                     panel.grid.minor = ggplot2::element_blank(),
-                     legend.position = "none") +
-      ggplot2::scale_colour_manual(values=MotrpacRatTraining6moData::TISSUE_COLORS[names(MotrpacRatTraining6moData::TISSUE_COLORS) %in% res[,tissue]], name="Tissue")
+  if(multiple_measurements){
+    if(facet_by_sex){
+      g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,feature),color=tissue))+
+        ggplot2::geom_point(size=3, aes(shape=dataset), position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_line(position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_errorbar(ggplot2::aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se),
+                               width=0.2, 
+                               position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::theme_classic() +
+        ggplot2::geom_hline(yintercept = 0,linetype="dotted") +
+        ggplot2::facet_wrap(~sex) +
+        ggplot2::labs(title=title, x="Time trained (weeks)", y="Log fold-change") +
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5),
+                       plot.subtitle = ggplot2::element_text(hjust=0.5),
+                       panel.grid.major = ggplot2::element_blank(),
+                       panel.grid.minor = ggplot2::element_blank(),
+                       legend.position = "top",
+                       legend.margin = ggplot2::margin(t=-5, b=-5, unit="pt"),
+                       legend.spacing.y = ggplot2::unit(0, "pt"),
+                       legend.title = ggplot2::element_blank()) +
+        ggplot2::scale_colour_manual(values=MotrpacRatTraining6moData::TISSUE_COLORS[names(MotrpacRatTraining6moData::TISSUE_COLORS) %in% res[,tissue]], name="Tissue")
+    }else{
+      g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,sex,feature),color=sex))+
+        ggplot2::geom_point(size=3, aes(shape=dataset), position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_line(position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_errorbar(aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se), width=0.2, position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::theme_classic() +
+        ggplot2::geom_hline(yintercept = 0,linetype="dotted") +
+        ggplot2::labs(title=title, x="Time trained (weeks)", y="Log fold-change") +
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5),
+              plot.subtitle = ggplot2::element_text(hjust=0.5),
+              panel.grid.major = ggplot2::element_blank(),
+              panel.grid.minor = ggplot2::element_blank(),
+              legend.position = "top",
+              legend.margin = ggplot2::margin(t=-5, b=-5, unit="pt"),
+              legend.spacing.y = ggplot2::unit(0, "pt"),
+              legend.title = ggplot2::element_blank()) +
+        ggplot2::scale_colour_manual(values=MotrpacRatTraining6moData::SEX_COLORS[names(MotrpacRatTraining6moData::SEX_COLORS) %in% res[,sex]], name="Sex")
+    }
   }else{
-    g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,sex,feature),color=sex))+
-      ggplot2::geom_point() +
-      ggplot2::geom_line() +
-      ggplot2::geom_errorbar(aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se),width=0.2) +
-      ggplot2::theme_classic() +
-      ggplot2::geom_hline(yintercept = 0,linetype="dotted") +
-      ggplot2::labs(title=title, x="Time trained (weeks)", y="Log fold-change") +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5),
-            plot.subtitle = ggplot2::element_text(hjust=0.5),
-            panel.grid.major = ggplot2::element_blank(),
-            panel.grid.minor = ggplot2::element_blank()) +
-      ggplot2::scale_colour_manual(values=MotrpacRatTraining6moData::SEX_COLORS[names(MotrpacRatTraining6moData::SEX_COLORS) %in% res[,sex]], name="Sex")
+    if(facet_by_sex){
+      g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,feature),color=tissue))+
+        ggplot2::geom_point() +
+        ggplot2::geom_line() +
+        ggplot2::geom_errorbar(ggplot2::aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se),width=0.2) +
+        ggplot2::theme_classic() +
+        ggplot2::geom_hline(yintercept = 0,linetype="dotted") +
+        ggplot2::facet_wrap(~sex) +
+        ggplot2::labs(title=title, x="Time trained (weeks)", y="Log fold-change") +
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5),
+                       plot.subtitle = ggplot2::element_text(hjust=0.5),
+                       panel.grid.major = ggplot2::element_blank(),
+                       panel.grid.minor = ggplot2::element_blank(),
+                       legend.position = "none") +
+        ggplot2::scale_colour_manual(values=MotrpacRatTraining6moData::TISSUE_COLORS[names(MotrpacRatTraining6moData::TISSUE_COLORS) %in% res[,tissue]], name="Tissue")
+    }else{
+      g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,sex,feature),color=sex))+
+        ggplot2::geom_point(position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_line(position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_errorbar(aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se),width=0.2,position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::theme_classic() +
+        ggplot2::geom_hline(yintercept = 0,linetype="dotted") +
+        ggplot2::labs(title=title, x="Time trained (weeks)", y="Log fold-change") +
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5),
+                       plot.subtitle = ggplot2::element_text(hjust=0.5),
+                       panel.grid.major = ggplot2::element_blank(),
+                       panel.grid.minor = ggplot2::element_blank(),
+                       legend.position = "top",
+                       legend.margin = ggplot2::margin(t=-5, b=-5, unit="pt"),
+                       legend.spacing.y = ggplot2::unit(0, "pt"),
+                       legend.title = ggplot2::element_blank()) +
+        ggplot2::scale_colour_manual(values=MotrpacRatTraining6moData::SEX_COLORS[names(MotrpacRatTraining6moData::SEX_COLORS) %in% res[,sex]])
+    }
   }
 
   if(add_adj_p){
