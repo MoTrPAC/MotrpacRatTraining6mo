@@ -132,21 +132,21 @@ Use `load_sample_data()` to load sample-level data for a specific ome and tissue
 ?load_sample_data
 
 # heart protein expression 
-heart_prot = load_sample_data("HEART", "PROT")
+
 
 # heart immunoassay data
-heart_immuno = load_sample_data("HEART", "IMMUNO")
+
 
 # gastroc gene expression
-gastroc_rna = load_sample_data("SKM-GN", "TRNSCRPT")
+
 
 # gastroc metabolomics
-gastroc_metab = load_sample_data("SKM-GN", "METAB")
+
 ```
 
 Let's look at the format of these data frames.
 ```{r}
-head(heart_prot)
+
 ```
 
 The `feature` column is non-NA only for training-regulated features, which provides 
@@ -155,7 +155,7 @@ a convenient way of identifying this subset of features.
 Sometimes it is more convenient to have all-numeric data frames. We can easily
 convert these data frames to this format with `df_to_numeric()`. 
 ```{r df_to_numeric}
-head(df_to_numeric(heart_prot, rownames = "feature_ID"))
+
 ```
 
 Note that `load_sample_data()` also prints a message with the name of the object
@@ -167,12 +167,8 @@ head(PROT_HEART_NORM_DATA)
 
 Let's plot the sample-level data for a single differential feature.
 ```{r, out.width="50%", out.height="50%", fig.show="hold"}
-head(heart_prot[!is.na(heart_prot$feature),])
-plot_feature_normalized_data(feature="PROT;HEART;XP_003754359.1", 
-                             add_gene_symbol = TRUE)
-plot_feature_normalized_data(feature="PROT;HEART;XP_003754359.1", 
-                             add_gene_symbol = TRUE,
-                             facet_by_sex = TRUE)
+?plot_feature_normalized_data
+
 ```
 
 We can also use `combine_normalized_data()` to load normalized data from multiple omes or tissues
@@ -197,12 +193,12 @@ Now that we know how to get the sample-level data, let's perform PCA with the he
 and gastroc data. PCA is best used on one data type at a time, so let's use gene expression data. 
 ```{r pca}
 # load data
-heart = load_sample_data(tissue = "HEART", assay = "TRNSCRPT", exclude_outliers = TRUE)
-gastroc = load_sample_data(tissue = "SKM-GN", assay = "TRNSCRPT", exclude_outliers = TRUE)
+heart = ""
+gastroc = ""
 
 # convert to numeric
-heart = df_to_numeric(heart)
-gastroc = df_to_numeric(gastroc)
+heart = ""
+gastroc = ""
 
 # merge
 merged = merge(heart, gastroc, by="row.names")
@@ -217,19 +213,8 @@ pheno = unique(PHENO[,c("viallabel","group","sex","tissue")])
 head(pheno)
 data_for_plotting = merge(pheno, pcs, by.x="viallabel", by.y="row.names")
 
-# minimal
-ggplot(data_for_plotting, aes(x=PC1, PC2, colour=tissue)) +
-  geom_point()
+# plot
 
-# prettier
-ggplot(data_for_plotting, aes(x=PC1, y=PC2, fill=tissue, shape=sex)) + 
-  geom_point(size=3) +
-  scale_fill_manual(values=TISSUE_COLORS) +
-  scale_shape_manual(values=c(male=21, female=24)) +
-  theme_bw() +
-  guides(fill=guide_legend(override.aes = list(shape=21))) +
-  labs(title="PCA of heart and gastroc RNA-seq data") +
-  theme(plot.title = element_text(hjust=0.5))
 ```
 
 Now let's perform PCA for a single tissue and label samples by training group. 
@@ -242,19 +227,8 @@ pcs = as.data.frame(pca$x)
 pheno = unique(PHENO[,c("viallabel","group","sex","tissue")])
 data_for_plotting = merge(pheno, pcs, by.x="viallabel", by.y="row.names")
 
-# minimal
-ggplot(data_for_plotting, aes(x=PC1, PC2)) +
-  geom_point()
+# plot
 
-# prettier
-ggplot(data_for_plotting, aes(x=PC1, y=PC2, fill=group, shape=sex)) + 
-  geom_point(size=3) +
-  scale_fill_manual(values=GROUP_COLORS) +
-  scale_shape_manual(values=c(male=21, female=24)) +
-  theme_bw() +
-  guides(fill=guide_legend(override.aes = list(shape=21))) +
-  labs(title="PCA of gastroc RNA-seq data") +
-  theme(plot.title = element_text(hjust=0.5))
 ```
 
 ## Differential analysis results 
@@ -269,12 +243,7 @@ Lesser-used additional *training* summary statistics are available through `load
 First, let's consider training-regulated features only. These are conveniently provided 
 in `TRAINING_REGULATED_FEATURES`, which we can easily subset to any data set of interest. 
 ```{r}
-head(TRAINING_REGULATED_FEATURES)
-heart_gastroc_sig = TRAINING_REGULATED_FEATURES[TRAINING_REGULATED_FEATURES$tissue %in% c("HEART","SKM-GN"),]
-# how many differential features?
-nrow(heart_gastroc_sig)
-# what tissues and omes?
-table(heart_gastroc_sig$tissue, heart_gastroc_sig$assay)
+
 ```
 
 We can also load the full set of differential analysis results. This consumes some
@@ -290,9 +259,9 @@ Plot the differential analysis results for a single training-regulated feature.
 ```{r, out.width="50%", out.height="50%", fig.show="hold"}
 # plot the first differential feature
 head(heart_gastroc_sig)
-plot_feature_logfc(feature = "ACETYL;HEART;NP_001003673.1_K477k", facet_by_sex = TRUE, add_gene_symbol = TRUE)
-# how does this compare to the sample-level data?
-plot_feature_normalized_data(feature = "ACETYL;HEART;NP_001003673.1_K477k", facet_by_sex = TRUE, add_gene_symbol = TRUE)
+
+?plot_feature_logfc
+
 ```
 
 ## Explore graphical clustering results
@@ -312,53 +281,25 @@ features by plotting the graphs themselves.
 
 Start by plotting graphs for gastroc and heart separately. 
 ```{r, fig.width=9, fig.height=6}
+?get_tree_plot_for_tissue
+
 # gastroc
-get_tree_plot_for_tissue(tissues=c("SKM-GN"))
-get_tree_plot_for_tissue(tissues=c("SKM-GN"),
-                         max_trajectories = 5)
-get_tree_plot_for_tissue(tissues=c("SKM-GN"),
-                         max_trajectories = 3,
-                         parallel_edges_by_ome = TRUE,
-                         curvature = 1,
-                         edge_alpha_range = c(0.5, 1))
-get_tree_plot_for_tissue(tissues=c("SKM-GN"),
-                         omes=c("PROT","PHOSPHO","TRNSCRPT"),
-                         max_trajectories = 3,
-                         parallel_edges_by_ome = TRUE,
-                         curvature = 0.5,
-                         edge_alpha_range = c(0.5, 1))
+
 
 # heart
-get_tree_plot_for_tissue(tissues=c("HEART"),
-                         max_trajectories = 3,
-                         parallel_edges_by_ome = TRUE,
-                         curvature = 1,
-                         edge_alpha_range = c(0.5, 1))
-get_tree_plot_for_tissue(tissues=c("HEART"),
-                         omes=c("PROT","PHOSPHO","TRNSCRPT","METAB","ACETYL"),
-                         max_trajectories = 3,
-                         parallel_edges_by_ome = TRUE,
-                         curvature = 0.8,
-                         edge_alpha_range = c(0.5, 1))
+
+
 ```
 
 Now plot both heart and gastroc features together. For the sake of visualization, 
 let's limit it to popular omes in both tissues. 
 ```{r, fig.width=9, fig.height=6}
 # edges by tissue
-get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART"),
-                         omes=c("PROT","PHOSPHO","TRNSCRPT","METAB"),
-                         max_trajectories = 3,
-                         parallel_edges_by_tissue = TRUE,
-                         curvature = 0.5,
-                         edge_alpha_range = c(0.5, 1))
+
+
 # edges by ome
-get_tree_plot_for_tissue(tissues=c("SKM-GN","HEART"),
-                         omes=c("PROT","PHOSPHO","TRNSCRPT","METAB"),
-                         max_trajectories = 3,
-                         parallel_edges_by_ome = TRUE,
-                         curvature = 0.8,
-                         edge_alpha_range = c(0.5, 1))
+
+
 ```
 
 There's a lot going on in each of these three trajectories. **We will focus on these
@@ -434,14 +375,17 @@ MY_CLUSTER_DF = check_cluster_res_format(clusters)
 
 We can visualize the composition of these clusters in terms of tissues and omes. 
 ```{r, fig.width=9, fig.height=3}
-plot_features_per_cluster(MY_CLUSTERS) # could also use MY_CLUSTER_DF as input
+?plot_features_per_cluster
+
+
 ```
 
 We can also look at the trajectories of these features' abundances over the 
 training time course. Let's look at a single cluster.   
 ```{r}
-plot_feature_trajectories(MY_CLUSTERS$`SKM-GN:1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1`, 
-                          title="SKM-GN:1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1")
+?plot_feature_trajectories 
+
+
 ```
 
 ## Pathway enrichment
@@ -499,8 +443,9 @@ and pathway enrichment is performed for each set of features per cluster per tis
 We can run tests in parallel by specifying `num_cores`, but since this sometimes has
 unexpected behavior, let's just use one core today, which is the default. 
 ```{r cluster_pathway_enrichment}
-res = cluster_pathway_enrichment(MY_CLUSTERS, 
-                                 databases = c("REAC", "KEGG")) 
+?cluster_pathway_enrichment
+
+res = ""
 ```
 
 We get a few warnings and messages. 
@@ -529,44 +474,6 @@ Note that we get different numbers of significant enrichments compared to when w
 `GRAPH_PW_ENRICH` was generated more than a year ago, and these pathways databases have changed slightly
 since then. The multiple testing adjustment procedures are also different - here, 
 we are adjusting over a different set of tests than when we applied IHW to all tests in `GRAPH_PW_ENRICH`. 
-
-<!-- However, the nominal p-values should be nearly identical unless the pathway databases changed, -->
-<!-- so let's do a sanity check. -->
-<!-- ```{r compare} -->
-<!-- old_res = GRAPH_PW_ENRICH[GRAPH_PW_ENRICH$cluster %in% names(MY_CLUSTERS),] -->
-<!-- new_res = res -->
-<!-- merged = merge(old_res,  -->
-<!--                new_res,  -->
-<!--                by=c("term_id","source","term_name","cluster","tissue","ome"),  -->
-<!--                suffixes=c("_old","_new")) -->
-<!-- ggplot(merged, aes(x=-log10(computed_p_value_old), y=-log10(computed_p_value_new))) + -->
-<!--   geom_point(aes(colour=source)) + -->
-<!--   geom_abline(linetype="dashed") + -->
-<!--   theme_bw() -->
-<!-- ggplot(merged, aes(x=-log10(adj_p_value_old), y=-log10(adj_p_value_new))) + -->
-<!--   geom_point(aes(colour=source)) + -->
-<!--   geom_abline(linetype="dashed") + -->
-<!--   theme_bw() -->
-
-<!-- # are input sizes the same at least? -->
-<!-- ggplot(merged, aes(x=query_size_old, y=query_size_new)) + -->
-<!--   geom_point(aes(colour=source)) + -->
-<!--   geom_abline(linetype="dashed") + -->
-<!--   theme_bw() -->
-<!-- # background sizes? -->
-<!-- ggplot(merged, aes(x=effective_domain_size_old, y=effective_domain_size_new)) + -->
-<!--   geom_point(aes(colour=source)) + -->
-<!--   geom_abline(linetype="dashed") + -->
-<!--   theme_bw() -->
-<!-- # pathway sizes? -->
-<!-- ggplot(merged, aes(x=term_size_old, y=term_size_new)) + -->
-<!--   geom_point(aes(colour=source)) + -->
-<!--   geom_abline(linetype="dashed") + -->
-<!--   theme_bw() -->
-
-<!-- # biggest difference is in effective domain size, but gene universes are identical -->
-<!-- # best guess: -->
-<!-- ``` -->
 
 #### Enrichment with single list of genes 
 
@@ -678,20 +585,14 @@ Let's focus on a single trajectory, first separately in each tissue. While it is
 it is not trivial, so let's keep it simple here.  
 ```{r viznetwork gastroc, fig.width=8}
 names(MY_CLUSTERS)
-gastroc_res = GRAPH_PW_ENRICH[GRAPH_PW_ENRICH$cluster == "SKM-GN:1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1",]
+?enrichment_network_vis
 
-enrichment_network_vis(gastroc_res)
 
-enrichment_network_vis(gastroc_res, 
-                       title = "SKM-GN:1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1", 
-                       add_group_label_nodes = TRUE)
 ```
 
 ```{r viznetwork heart, fig.width=8}
-heart_res = GRAPH_PW_ENRICH[GRAPH_PW_ENRICH$cluster == "HEART:1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1",]
-enrichment_network_vis(heart_res, 
-                       title = "HEART:1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1", 
-                       add_group_label_nodes = TRUE)
+
+
 ```
 
 #### Multiple tissues 
@@ -702,181 +603,6 @@ If we are specifically interested in pathways that are significantly enriched in
 multiple tissues, we can set `multitissue_pathways_only` to `TRUE`. This removes 
 any pathways that are not enriched in more than one tissue (in at least one ome). 
 ```{r viznetwork2, fig.width=8}
-enrich = GRAPH_PW_ENRICH[GRAPH_PW_ENRICH$cluster %in% c("HEART:1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1",
-                                                        "SKM-GN:1w_F1_M1->2w_F1_M1->4w_F1_M1->8w_F1_M1"),]
-enrichment_network_vis(enrich, 
-                       multitissue_pathways_only = TRUE,
-                       add_group_label_nodes = TRUE,
-                       title = "'All up' path in heart and gastroc - shared enrichments")
+
+
 ```
-
-
-<!-- ## Principal component analysis  -->
-
-<!-- ### Protein expression data in a single tissue -->
-<!-- ```{r pca prot single tissue} -->
-<!-- # load data -->
-<!-- prot_kidney = load_sample_data("KIDNEY","PROT",exclude_outliers=TRUE) -->
-<!-- head(prot_kidney) -->
-<!-- # convert to numeric matrix -->
-<!-- rownames(prot_kidney) = prot_kidney$feature_ID -->
-<!-- prot_kidney[,c("feature","feature_ID","tissue","assay")] = NULL -->
-
-<!-- # perform PCA -->
-<!-- pca = prcomp(t(prot_kidney), center=TRUE) -->
-
-<!-- # handle missing values  -->
-<!-- nrow(prot_kidney) -->
-<!-- table(complete.cases(prot_kidney)) -->
-<!-- # remove genes with any missing values. -->
-<!-- # this is crude filtering for the sake of this tutorial. -->
-<!-- # in practice, we would impute missing values  -->
-<!-- prot_kidney = prot_kidney[complete.cases(prot_kidney),] -->
-
-<!-- # perform PCA -->
-<!-- pca = prcomp(t(prot_kidney), center=TRUE) -->
-
-<!-- # merge PCs with PHENO -->
-<!-- pcs = as.data.frame(pca$x) -->
-<!-- pheno = unique(PHENO[,c("viallabel","group","sex")]) -->
-<!-- head(pheno) -->
-<!-- data_for_plotting = merge(pheno, pcs, by.x="viallabel", by.y="row.names") -->
-
-<!-- # minimal -->
-<!-- ggplot(data_for_plotting, aes(x=PC1, PC2, shape=sex)) + -->
-<!--   geom_point() -->
-
-<!-- # prettier -->
-<!-- ggplot(data_for_plotting, aes(x=PC1, y=PC2, fill=group, shape=sex)) +  -->
-<!--   geom_point() + -->
-<!--   scale_fill_manual(values=GROUP_COLORS) + -->
-<!--   scale_shape_manual(values=c(male=21, female=24)) + -->
-<!--   theme_bw() + -->
-<!--   guides(fill=guide_legend(override.aes = list(shape=21))) + -->
-<!--   labs(title="PCA of kidney protein expression data") + -->
-<!--   theme(plot.title = element_text(hjust=0.5)) -->
-<!-- ``` -->
-
-<!-- ### All gene expression data -->
-<!-- ```{r pca gene expression} -->
-<!-- # merge normalized sample-level data from all tissues -->
-<!-- merged_data = NULL -->
-<!-- for(tissue in TISSUE_ABBREV){ -->
-<!--   norm = load_sample_data(tissue, assay="TRNSCRPT", exclude_outliers = TRUE) -->
-<!--   if(is.null(norm)){ -->
-<!--     next -->
-<!--   } -->
-<!--   # convert norm to numeric matrix -->
-<!--   rownames(norm) = norm$feature_ID -->
-<!--   norm[,c("feature","feature_ID","tissue","assay")] = NULL -->
-<!--   # merge with existing merged_data -->
-<!--   if(is.null(merged_data)){ -->
-<!--     merged_data = norm -->
-<!--     next -->
-<!--   } -->
-<!--   # note that any genes not expressed in all tissues are excluded -->
-<!--   merged_data = merge(merged_data, norm, by="row.names") -->
-<!--   rownames(merged_data) = merged_data$Row.names -->
-<!--   merged_data$Row.names = NULL -->
-<!-- } -->
-<!-- dim(merged_data) -->
-
-<!-- # perform PCA  -->
-<!-- pca = prcomp(t(merged_data), center = TRUE) -->
-
-<!-- # merge PCs with PHENO -->
-<!-- pcs = as.data.frame(pca$x) -->
-<!-- pheno = unique(PHENO[,c("viallabel","group","sex","tissue")]) -->
-<!-- head(pheno) -->
-<!-- data_for_plotting = merge(pheno, pcs, by.x="viallabel", by.y="row.names") -->
-
-<!-- # minimal -->
-<!-- ggplot(data_for_plotting, aes(x=PC1, PC2, colour=tissue)) + -->
-<!--   geom_point() -->
-
-<!-- # prettier -->
-<!-- ggplot(data_for_plotting, aes(x=PC1, y=PC2, fill=tissue, shape=sex)) +  -->
-<!--   geom_point() + -->
-<!--   scale_fill_manual(values=TISSUE_COLORS) + -->
-<!--   scale_shape_manual(values=c(male=21, female=24)) + -->
-<!--   theme_bw() + -->
-<!--   guides(fill=guide_legend(override.aes = list(shape=21, size=3), ncol=2)) + -->
-<!--   labs(title="PCA of RNA-seq data") + -->
-<!--   theme(plot.title = element_text(hjust=0.5)) -->
-<!-- ``` -->
-
-<!-- Given all of the samples and colors, it's hard to distinguish samples from each tissue.  -->
-<!-- Let's print the same PC plot, highlighting one tissue at a time.  -->
-<!-- ```{r, out.width="33%", out.height="33%"} -->
-<!-- # highlight one tissue at a time? -->
-<!-- for(tissue in unique(data_for_plotting$tissue)){ -->
-<!--   # add new colour column -->
-<!--   data_for_plotting$colour = factor(ifelse(data_for_plotting$tissue == tissue, TISSUE_COLORS[[tissue]], "gray"), -->
-<!--                                     levels = c("gray", TISSUE_COLORS[[tissue]])) -->
-<!--   # reorder points so this tissue is on top  -->
-<!--   data_for_plotting = data_for_plotting[order(data_for_plotting$colour),] -->
-<!--   g = ggplot(data_for_plotting, aes(x=PC1, y=PC2, fill=colour, shape=sex)) +  -->
-<!--     geom_point() + -->
-<!--     scale_fill_identity() + -->
-<!--     scale_shape_manual(values=c(male=21, female=24)) + -->
-<!--     theme_bw() + -->
-<!--     labs(title=sprintf("PCA of RNA-seq data (%s)", tissue)) + -->
-<!--     theme(plot.title = element_text(hjust=0.5)) -->
-<!--   print(g) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ## Compare protein expression and gene expression for the same samples -->
-<!-- ```{r prot vs rna} -->
-<!-- # for each ome, download data, melt, add pheno, add gene symbol -->
-<!-- data_list = list() -->
-<!-- data("FEATURE_TO_GENE_FILT") -->
-<!-- for(ome in c("PROT", "TRNSCRPT")){ -->
-<!--   data = load_sample_data("HEART", ome) -->
-
-<!--   # add gene symbol -->
-<!--   data2 = merge(data, FEATURE_TO_GENE_FILT[,c("feature_ID", "gene_symbol")], by="feature_ID") -->
-<!--   # for each gene symbol, keep the highest expression feature -->
-<!--   data2$mean_expr = apply(data2[,colnames(data2)[grepl("^9", colnames(data2))]], 1, mean, na.rm=TRUE) -->
-<!--   data2 = data2[order(data2$mean_expr, decreasing=TRUE),] -->
-<!--   data2 = data2[!duplicated(data2$gene_symbol),] -->
-
-<!--   # melt -->
-<!--   melted = reshape2::melt(data2,  -->
-<!--                           id.vars = c("feature_ID","tissue","assay","gene_symbol"), -->
-<!--                           measure.vars = colnames(data)[grepl("^9", colnames(data))], -->
-<!--                           variable.name = "viallabel", -->
-<!--                           value.name = ome) -->
-
-<!--   # add pheno -->
-<!--   pheno = unique(PHENO[,c("pid","viallabel","group","sex")]) -->
-<!--   merged = merge(pheno, melted, by="viallabel") -->
-
-<!--   # remove missing values  -->
-<!--   merged = merged[complete.cases(merged),] -->
-
-<!--   data_list[[ome]] = merged -->
-<!-- } -->
-
-<!-- # merge RNA and PROT data -->
-<!-- merged = merge(data_list[["PROT"]], data_list[["TRNSCRPT"]], -->
-<!--                by=c("pid","group","sex","tissue","gene_symbol"), -->
-<!--                suffixes=c("_prot","_rna")) -->
-<!-- nrow(merged) -->
-
-<!-- # subset to just control females -->
-<!-- merged = merged[merged$group == "control" & merged$sex == "female",] -->
-
-<!-- # plot PROT vs TRNSCRPT values for control females -->
-<!-- ggplot(merged, aes(x=PROT, y=TRNSCRPT)) + -->
-<!--   geom_point(size=0.1, alpha=0.5) + -->
-<!--   theme_bw() + -->
-<!--   labs(title="Heart protein vs. transcript expression (control females)")  -->
-
-<!-- # plot PROT vs TRNSCRPT values for a single animal -->
-<!-- ggplot(merged[merged$pid == "10043527",], aes(x=PROT, y=TRNSCRPT)) + -->
-<!--   geom_point(size=0.1, alpha=0.5) + -->
-<!--   theme_bw() + -->
-<!--   labs(title="Heart protein vs. transcript expression (control female 10043527)")  -->
-<!-- ``` -->
-
