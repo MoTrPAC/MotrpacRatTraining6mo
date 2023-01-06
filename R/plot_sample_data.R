@@ -134,7 +134,7 @@ plot_feature_normalized_data = function(assay = NULL,
   
   # is this a differential feature?
   differential = TRUE
-  training_reg = data.table::as.data.table(TRAINING_REGULATED_FEATURES)
+  training_reg = data.table::as.data.table(MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES)
   if(!FEATURE %in% training_reg[,feature]){
     differential = FALSE
     # check if it is a repeated feature - TRAINING_REGULATED_FEATURES uses non-redundant feature
