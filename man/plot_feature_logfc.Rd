@@ -15,6 +15,7 @@ plot_feature_logfc(
   scale_x_by_time = TRUE,
   add_adj_p = TRUE,
   metareg = TRUE,
+  return_data = FALSE,
   ...
 )
 }
@@ -47,10 +48,13 @@ in the plot subtitle. Default: TRUE}
 analysis results for metabolomics data. If \code{FALSE}, use the redundant,
 non-meta-analyzed results. Default: TRUE}
 
+\item{return_data}{bool, whether to return data instead of plot. Default: FALSE}
+
 \item{...}{additional arguments passed to \code{\link[=get_file_from_url]{get_file_from_url()}}}
 }
 \value{
-a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object
+a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object or a data frame if \code{return_data = TRUE}
+or NULL if the data cannot be found
 }
 \description{
 Plot timewise differential analysis results for a single feature.
@@ -114,5 +118,31 @@ plot_feature_logfc(assay = "PROT",
                    feature_ID = "YP_665629.1",
                    add_gene_symbol = TRUE,
                    facet_by_sex = TRUE)
+                   
+# Plot a merged feature from meta-regression
+plot_feature_logfc(assay = "METAB",
+                   tissue = "PLASMA",
+                   feature_ID = "Glucose",
+                   facet_by_sex = TRUE)
+plot_feature_logfc(assay = "METAB",
+                   tissue = "PLASMA",
+                   feature_ID = "Glucose",
+                   scale_x_by_time = FALSE,
+                   metareg = FALSE)
+plot_feature_logfc(assay = "METAB",
+                   tissue = "PLASMA",
+                   feature_ID = "glucose",
+                   scale_x_by_time = FALSE,
+                   metareg = FALSE)
+plot_feature_logfc(assay = "METAB",
+                   tissue = "PLASMA",
+                   feature_ID = "glucose",
+                   facet_by_sex = TRUE,
+                   metareg = TRUE)
+plot_feature_logfc(assay = "METAB",
+                   tissue = "PLASMA",
+                   feature_ID = "metab-u-ionpneg:glucose",
+                   scale_x_by_time = FALSE,
+                   metareg = FALSE)                  
    
 }

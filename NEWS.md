@@ -1,3 +1,11 @@
+# MotrpacRatTraining6mo 1.4.2 (2023-01-06)
+
+* Dodge points in `plot_feature_normalized_data()` and `plot_feature_logfc()` for readability.  
+* Make `plot_feature_normalized_data()` and `plot_feature_logfc()` more accommodating of features with multiple measurements.  
+* Add `add_adj_p` parameter to `plot_feature_normalized_data()`.  
+* Add `return_data` parameter to `plot_feature_logfc()`. 
+* Return NULL instead of error if data doesn't exist for plotting `plot_feature_normalized_data()` in loops. 
+
 # MotrpacRatTraining6mo 1.4.1 (2023-01-05)
 
 * Fix `custom_cluster_pathway_enrichment()` to accept a list of lists as input. 
