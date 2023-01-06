@@ -15,6 +15,7 @@ plot_feature_normalized_data(
   scale_x_by_time = TRUE,
   return_data = FALSE,
   exclude_outliers = TRUE,
+  add_adj_p = FALSE,
   ...
 )
 }
@@ -44,6 +45,9 @@ space the time points (0w, 1w, 2w, 4w, 8w) evenly. Default: TRUE}
 
 \item{exclude_outliers}{bool, whether to exclude data from sample outliers. Default: TRUE
 (see \link[MotrpacRatTraining6moData:OUTLIERS]{MotrpacRatTraining6moData::OUTLIERS})}
+
+\item{add_adj_p}{bool, whether to include the training adjusted p-value (AKA selection FDR)
+in the plot subtitle. Default: TRUE}
 
 \item{...}{additional arguments passed to \code{\link[=load_sample_data]{load_sample_data()}}}
 }
@@ -121,5 +125,10 @@ plot_feature_normalized_data(assay = "METAB",
                              tissue = "PLASMA",
                              feature_ID = "glucose",
                              scale_x_by_time = FALSE)
+plot_feature_normalized_data(assay = "METAB",
+                             tissue = "PLASMA",
+                             feature_ID = "glucose",
+                             scale_x_by_time = FALSE,
+                             add_adj_p = TRUE)
                              
 }

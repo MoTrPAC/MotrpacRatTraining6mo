@@ -20,6 +20,8 @@
 #' @param return_data bool, whether to return data instead of plot. Default: FALSE
 #' @param exclude_outliers bool, whether to exclude data from sample outliers. Default: TRUE
 #'   (see [MotrpacRatTraining6moData::OUTLIERS])
+#' @param add_adj_p bool, whether to include the training adjusted p-value (AKA selection FDR)
+#'   in the plot subtitle. Default: TRUE
 #' @param ... additional arguments passed to [load_sample_data()]
 #'
 #' @return a [ggplot2::ggplot()] object or a data frame if \code{return_data = TRUE}
@@ -91,6 +93,11 @@
 #'                              tissue = "PLASMA",
 #'                              feature_ID = "glucose",
 #'                              scale_x_by_time = FALSE)
+#' plot_feature_normalized_data(assay = "METAB",
+#'                              tissue = "PLASMA",
+#'                              feature_ID = "glucose",
+#'                              scale_x_by_time = FALSE,
+#'                              add_adj_p = TRUE)
 #'                              
 plot_feature_normalized_data = function(assay = NULL,
                                         tissue = NULL, 
@@ -102,6 +109,7 @@ plot_feature_normalized_data = function(assay = NULL,
                                         scale_x_by_time = TRUE, 
                                         return_data = FALSE,
                                         exclude_outliers = TRUE,
+                                        add_adj_p = FALSE,
                                         ...){
   
   curr_feature = feature 
@@ -126,7 +134,8 @@ plot_feature_normalized_data = function(assay = NULL,
   
   # is this a differential feature?
   differential = TRUE
-  if(!FEATURE %in% MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES$feature){
+  training_reg = data.table::as.data.table(TRAINING_REGULATED_FEATURES)
+  if(!FEATURE %in% training_reg[,feature]){
     differential = FALSE
     # check if it is a repeated feature - TRAINING_REGULATED_FEATURES uses non-redundant feature
     if(ASSAY %in% c("METAB", "IMMUNO")){
@@ -135,6 +144,16 @@ plot_feature_normalized_data = function(assay = NULL,
         differential = TRUE
         # now handle FEATURE_ID. get redundant one
         FEATURE_ID = MotrpacRatTraining6moData::REPEATED_FEATURES$feature_ID[MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature == FEATURE[1]]
+      }else{
+        if(ASSAY == "METAB"){
+          # check for refmet
+          new_feature_id = unique(MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$feature_ID_metareg[MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$metabolite_name == FEATURE_ID])
+          new_feature_id = unique(new_feature_id[new_feature_id %in% training_reg[assay == ASSAY & tissue == TISSUE,feature_ID]])
+          FEATURE = unique(training_reg[feature_ID == new_feature_id & tissue == TISSUE & assay == ASSAY, feature])
+          if(length(FEATURE) > 0){
+            differential = TRUE
+          }
+        }
       }
     }
   }
@@ -236,6 +255,7 @@ plot_feature_normalized_data = function(assay = NULL,
         ggplot2::labs(x='Time trained (weeks)', y='Normalized value', title=title) +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=11),
                        legend.title = ggplot2::element_blank(),
+                       plot.subtitle = ggplot2::element_text(hjust=0.5),
                        legend.position = "top",
                        panel.grid.major = ggplot2::element_blank(),
                        panel.grid.minor = ggplot2::element_blank(),
@@ -257,6 +277,7 @@ plot_feature_normalized_data = function(assay = NULL,
         ggplot2::labs(x='Time trained (weeks)', y='Normalized value', title=title) +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=11),
                        legend.title = ggplot2::element_blank(),
+                       plot.subtitle = ggplot2::element_text(hjust=0.5), 
                        legend.position = "top",
                        panel.grid.major = ggplot2::element_blank(),
                        panel.grid.minor = ggplot2::element_blank(),
@@ -275,6 +296,7 @@ plot_feature_normalized_data = function(assay = NULL,
         ggplot2::labs(x='Time trained (weeks)', y='Normalized value', title=title) +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=11),
                        legend.title = ggplot2::element_blank(),
+                       plot.subtitle = ggplot2::element_text(hjust=0.5), 
                        legend.position = "top",
                        panel.grid.major = ggplot2::element_blank(),
                        panel.grid.minor = ggplot2::element_blank(),
@@ -289,6 +311,7 @@ plot_feature_normalized_data = function(assay = NULL,
         ggplot2::labs(x='Time trained (weeks)', y='Normalized value', title=title) +
         ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=11),
                        legend.title = ggplot2::element_blank(),
+                       plot.subtitle = ggplot2::element_text(hjust=0.5), 
                        legend.position = "none",
                        panel.grid.major = ggplot2::element_blank(),
                        panel.grid.minor = ggplot2::element_blank()) +
@@ -306,6 +329,20 @@ plot_feature_normalized_data = function(assay = NULL,
       scale_x_discrete(limits=c('control','1w','2w','4w','8w'),
                        labels=c('0','1','2','4','8'),
                        breaks=c('control','1w','2w','4w','8w'))
+  }
+  
+  if(add_adj_p){
+    message("Adding differential analysis p-value...")
+    da = plot_feature_logfc(assay = ASSAY,
+                            tissue = TISSUE,
+                            feature_ID = feature_ID,
+                            add_adj_p = TRUE, 
+                            return_data = TRUE)
+    if(!is.null(da)){
+      adj_p_value = min(unique(da$selection_fdr), na.rm=TRUE)
+      subtitle = sprintf("adj. p-value: %s", round(adj_p_value, 3))
+      g = g + labs(subtitle = subtitle)
+    }
   }
   
   return(g)
@@ -334,11 +371,13 @@ plot_feature_normalized_data = function(assay = NULL,
 #' @param metareg bool, whether to use the meta-regression version of differential
 #'   analysis results for metabolomics data. If \code{FALSE}, use the redundant,
 #'   non-meta-analyzed results. Default: TRUE 
+#' @param return_data bool, whether to return data instead of plot. Default: FALSE
 #' @param ... additional arguments passed to [get_file_from_url()]
 #' 
 #' @export
 #' 
-#' @return a [ggplot2::ggplot()] object or NULL if the data cannot be found
+#' @return a [ggplot2::ggplot()] object or a data frame if \code{return_data = TRUE}
+#'    or NULL if the data cannot be found
 #' 
 #' @examples
 #' # 3 ways of plotting the same data are shown in each example below
@@ -435,6 +474,7 @@ plot_feature_logfc = function(assay = NULL,
                               scale_x_by_time = TRUE, 
                               add_adj_p = TRUE,
                               metareg = TRUE,
+                              return_data = FALSE,
                               ...){
   
   curr_feature = feature 
@@ -488,8 +528,8 @@ plot_feature_logfc = function(assay = NULL,
         }
       }else if(metareg){
         # they could have supplied a metabolite ID that is only available in results as refmet
-        if(FEATURE_ID %in% METAB_FEATURE_ID_MAP$metabolite_name){
-          new_feature_id = unique(METAB_FEATURE_ID_MAP$feature_ID_metareg[METAB_FEATURE_ID_MAP$metabolite_name == FEATURE_ID])
+        if(FEATURE_ID %in% MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$metabolite_name){
+          new_feature_id = unique(MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$feature_ID_metareg[MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$metabolite_name == FEATURE_ID])
           new_feature_id = unique(new_feature_id[new_feature_id %in% timewise[,feature_ID]])
           FEATURE = unique(timewise[feature_ID == new_feature_id & tissue == TISSUE, feature])
         }
@@ -513,10 +553,10 @@ plot_feature_logfc = function(assay = NULL,
   }
   
   multiple_measurements = FALSE
-  adj_p_value = unique(curr_timewise_dea[,selection_fdr])
-  if(length(adj_p_value)>1){
+  ADJ_P = unique(curr_timewise_dea[,selection_fdr])
+  if(length(ADJ_P)>1){
     warning(sprintf("Multiple measurements for feature '%s'. Taking the smallest training-dea FDR for the plot label.",curr_feature))
-    adj_p_value = min(adj_p_value, na.rm=TRUE)
+    ADJ_P = min(ADJ_P, na.rm=TRUE)
     curr_timewise_dea[,feature := dataset]
     multiple_measurements = TRUE
   }
@@ -552,6 +592,11 @@ plot_feature_logfc = function(assay = NULL,
     }
   }
   res = rbindlist(c(list(curr_timewise_dea), dlist),fill=TRUE)
+  
+  if(return_data){
+    res[,selection_fdr := ADJ_P]
+    return(as.data.frame(res))
+  }
 
   if(multiple_measurements){
     if(facet_by_sex){
@@ -629,7 +674,7 @@ plot_feature_logfc = function(assay = NULL,
   }
 
   if(add_adj_p){
-    subtitle = sprintf("adj. p-value: %s", round(adj_p_value, 3))
+    subtitle = sprintf("adj. p-value: %s", round(ADJ_P, 3))
     g = g + labs(subtitle = subtitle)
   }
 

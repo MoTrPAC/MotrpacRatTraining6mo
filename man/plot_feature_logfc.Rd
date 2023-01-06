@@ -15,6 +15,7 @@ plot_feature_logfc(
   scale_x_by_time = TRUE,
   add_adj_p = TRUE,
   metareg = TRUE,
+  return_data = FALSE,
   ...
 )
 }
@@ -47,10 +48,13 @@ in the plot subtitle. Default: TRUE}
 analysis results for metabolomics data. If \code{FALSE}, use the redundant,
 non-meta-analyzed results. Default: TRUE}
 
+\item{return_data}{bool, whether to return data instead of plot. Default: FALSE}
+
 \item{...}{additional arguments passed to \code{\link[=get_file_from_url]{get_file_from_url()}}}
 }
 \value{
-a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object or NULL if the data cannot be found
+a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object or a data frame if \code{return_data = TRUE}
+or NULL if the data cannot be found
 }
 \description{
 Plot timewise differential analysis results for a single feature.
