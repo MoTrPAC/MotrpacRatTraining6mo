@@ -263,7 +263,7 @@ plot_feature_normalized_data = function(assay = NULL,
     if(!facet_by_sex){
       g = ggplot2::ggplot(bygroup, ggplot2::aes(x=group, y=expr, group=plot_group, colour=sex)) +
         ggplot2::geom_line(position=ggplot2::position_dodge(width=0.3)) +
-        ggplot2::geom_point(aes(shape=feature), size=3, position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_point(aes(shape=feature), position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_errorbar(ggplot2::aes(ymin = expr-sd, ymax = expr+sd), width=0.2, position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::theme_classic() +
         ggplot2::scale_colour_manual(values=c(female=MotrpacRatTraining6moData::SEX_COLORS[['F']],
@@ -283,7 +283,6 @@ plot_feature_normalized_data = function(assay = NULL,
                            position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_point(colour=MotrpacRatTraining6moData::TISSUE_COLORS[[TISSUE]], 
                             aes(shape=feature), 
-                            size=3, 
                             position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_errorbar(aes(ymin = expr-sd, ymax = expr+sd), 
                                width=0.2, 
@@ -651,7 +650,7 @@ plot_feature_logfc = function(assay = NULL,
   if(multiple_measurements){
     if(facet_by_sex){
       g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,feature),color=tissue))+
-        ggplot2::geom_point(size=3, aes(shape=dataset), position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_point(aes(shape=dataset), position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_line(position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_errorbar(ggplot2::aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se),
                                width=0.2, 
@@ -671,7 +670,7 @@ plot_feature_logfc = function(assay = NULL,
         ggplot2::scale_colour_manual(values=MotrpacRatTraining6moData::TISSUE_COLORS[names(MotrpacRatTraining6moData::TISSUE_COLORS) %in% res[,tissue]], name="Tissue")
     }else{
       g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,sex,feature),color=sex))+
-        ggplot2::geom_point(size=3, aes(shape=dataset), position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_point(aes(shape=dataset), position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_line(position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_errorbar(aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se), width=0.2, position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::theme_classic() +
