@@ -12,7 +12,7 @@ Points are log fold-changes, and error bars indicate standard errors."><!-- math
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,6 +68,7 @@ Points are log fold-changes, and error bars indicate standard errors.</p>
 <span>  scale_x_by_time <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  add_adj_p <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  metareg <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  return_data <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -122,6 +123,10 @@ analysis results for metabolomics data. If <code>FALSE</code>, use the redundant
 non-meta-analyzed results. Default: TRUE</p></dd>
 
 
+<dt>return_data</dt>
+<dd><p>bool, whether to return data instead of plot. Default: FALSE</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional arguments passed to <code><a href="get_file_from_url.html">get_file_from_url()</a></code></p></dd>
 
@@ -130,7 +135,10 @@ non-meta-analyzed results. Default: TRUE</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>a <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot2::ggplot()</a></code> object</p>
+<p>a <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot2::ggplot()</a></code> object or a data frame if <code>return_data = TRUE</code></p>
+
+
+<p>or NULL if the data cannot be found</p>
     </div>
 
     <div class="section level2">
@@ -219,6 +227,44 @@ non-meta-analyzed results. Default: TRUE</p></dd>
 <span class="r-in"><span>                   facet_by_sex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> PROT_SKMGN_DA</span>
 <span class="r-plt img"><img src="plot_feature_logfc-12.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span>                   </span></span>
+<span class="r-in"><span><span class="co"># Plot a merged feature from meta-regression</span></span></span>
+<span class="r-in"><span><span class="fu">plot_feature_logfc</span><span class="op">(</span>assay <span class="op">=</span> <span class="st">"METAB"</span>,</span></span>
+<span class="r-in"><span>                   tissue <span class="op">=</span> <span class="st">"PLASMA"</span>,</span></span>
+<span class="r-in"><span>                   feature_ID <span class="op">=</span> <span class="st">"Glucose"</span>,</span></span>
+<span class="r-in"><span>                   facet_by_sex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> METAB_PLASMA_DA_METAREG</span>
+<span class="r-plt img"><img src="plot_feature_logfc-13.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu">plot_feature_logfc</span><span class="op">(</span>assay <span class="op">=</span> <span class="st">"METAB"</span>,</span></span>
+<span class="r-in"><span>                   tissue <span class="op">=</span> <span class="st">"PLASMA"</span>,</span></span>
+<span class="r-in"><span>                   feature_ID <span class="op">=</span> <span class="st">"Glucose"</span>,</span></span>
+<span class="r-in"><span>                   scale_x_by_time <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                   metareg <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> METAB_PLASMA_DA</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Multiple measurements for feature 'METAB;PLASMA;Glucose'. Taking the smallest training-dea FDR for the plot label.</span>
+<span class="r-plt img"><img src="plot_feature_logfc-14.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu">plot_feature_logfc</span><span class="op">(</span>assay <span class="op">=</span> <span class="st">"METAB"</span>,</span></span>
+<span class="r-in"><span>                   tissue <span class="op">=</span> <span class="st">"PLASMA"</span>,</span></span>
+<span class="r-in"><span>                   feature_ID <span class="op">=</span> <span class="st">"glucose"</span>,</span></span>
+<span class="r-in"><span>                   scale_x_by_time <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                   metareg <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> METAB_PLASMA_DA</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Multiple measurements for feature 'METAB;PLASMA;glucose'. Taking the smallest training-dea FDR for the plot label.</span>
+<span class="r-plt img"><img src="plot_feature_logfc-15.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu">plot_feature_logfc</span><span class="op">(</span>assay <span class="op">=</span> <span class="st">"METAB"</span>,</span></span>
+<span class="r-in"><span>                   tissue <span class="op">=</span> <span class="st">"PLASMA"</span>,</span></span>
+<span class="r-in"><span>                   feature_ID <span class="op">=</span> <span class="st">"glucose"</span>,</span></span>
+<span class="r-in"><span>                   facet_by_sex <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                   metareg <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> METAB_PLASMA_DA_METAREG</span>
+<span class="r-plt img"><img src="plot_feature_logfc-16.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu">plot_feature_logfc</span><span class="op">(</span>assay <span class="op">=</span> <span class="st">"METAB"</span>,</span></span>
+<span class="r-in"><span>                   tissue <span class="op">=</span> <span class="st">"PLASMA"</span>,</span></span>
+<span class="r-in"><span>                   feature_ID <span class="op">=</span> <span class="st">"metab-u-ionpneg:glucose"</span>,</span></span>
+<span class="r-in"><span>                   scale_x_by_time <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                   metareg <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>                  </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> METAB_PLASMA_DA</span>
+<span class="r-plt img"><img src="plot_feature_logfc-17.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span>   </span></span>
 </code></pre></div>
     </div>

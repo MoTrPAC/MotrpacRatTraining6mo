@@ -14,7 +14,7 @@ and error bars indicate standard deviations."><!-- mathjax --><script src="https
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,6 +71,7 @@ and error bars indicate standard deviations.</p>
 <span>  scale_x_by_time <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  return_data <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  exclude_outliers <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  add_adj_p <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -123,6 +124,11 @@ space the time points (0w, 1w, 2w, 4w, 8w) evenly. Default: TRUE</p></dd>
 (see <a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/OUTLIERS.html">MotrpacRatTraining6moData::OUTLIERS</a>)</p></dd>
 
 
+<dt>add_adj_p</dt>
+<dd><p>bool, whether to include the training adjusted p-value (AKA selection FDR)
+in the plot subtitle. Default: TRUE</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional arguments passed to <code><a href="load_sample_data.html">load_sample_data()</a></code></p></dd>
 
@@ -134,11 +140,12 @@ space the time points (0w, 1w, 2w, 4w, 8w) evenly. Default: TRUE</p></dd>
 <p>a <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot2::ggplot()</a></code> object or a data frame if <code>return_data = TRUE</code></p>
 
 
+<p>or NULL if the data cannot be found</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># 3 ways of plotting the same data are shown in each example below</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Multiple ways of plotting the same data are shown for each example below</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot a differential feature </span></span></span>
 <span class="r-in"><span><span class="fu">plot_feature_normalized_data</span><span class="op">(</span>feature <span class="op">=</span> <span class="st">"ACETYL;HEART;NP_001003673.1_K477k"</span>,</span></span>
@@ -213,6 +220,29 @@ space the time points (0w, 1w, 2w, 4w, 8w) evenly. Default: TRUE</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 'PROT;SKM-GN;YP_665629.1' is not a training-regulated feature. Looking in all sample-level data.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> PROT_SKMGN_NORM_DATA</span>
 <span class="r-plt img"><img src="plot_feature_normalized_data-12.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span>                             </span></span>
+<span class="r-in"><span><span class="co"># Plot a merged feature from meta-regression</span></span></span>
+<span class="r-in"><span><span class="fu">plot_feature_normalized_data</span><span class="op">(</span>assay <span class="op">=</span> <span class="st">"METAB"</span>,</span></span>
+<span class="r-in"><span>                             tissue <span class="op">=</span> <span class="st">"PLASMA"</span>,</span></span>
+<span class="r-in"><span>                             feature_ID <span class="op">=</span> <span class="st">"Glucose"</span>,</span></span>
+<span class="r-in"><span>                             facet_by_sex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Multiple features correspond to 'METAB;PLASMA;Glucose'. Plotting them together.</span>
+<span class="r-plt img"><img src="plot_feature_normalized_data-13.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu">plot_feature_normalized_data</span><span class="op">(</span>assay <span class="op">=</span> <span class="st">"METAB"</span>,</span></span>
+<span class="r-in"><span>                             tissue <span class="op">=</span> <span class="st">"PLASMA"</span>,</span></span>
+<span class="r-in"><span>                             feature_ID <span class="op">=</span> <span class="st">"glucose"</span>,</span></span>
+<span class="r-in"><span>                             scale_x_by_time <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Multiple features correspond to 'METAB;PLASMA;glucose'. Plotting them together.</span>
+<span class="r-plt img"><img src="plot_feature_normalized_data-14.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu">plot_feature_normalized_data</span><span class="op">(</span>assay <span class="op">=</span> <span class="st">"METAB"</span>,</span></span>
+<span class="r-in"><span>                             tissue <span class="op">=</span> <span class="st">"PLASMA"</span>,</span></span>
+<span class="r-in"><span>                             feature_ID <span class="op">=</span> <span class="st">"glucose"</span>,</span></span>
+<span class="r-in"><span>                             scale_x_by_time <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                             add_adj_p <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Multiple features correspond to 'METAB;PLASMA;glucose'. Plotting them together.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Adding differential analysis p-value...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> METAB_PLASMA_DA_METAREG</span>
+<span class="r-plt img"><img src="plot_feature_normalized_data-15.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span>                             </span></span>
 </code></pre></div>
     </div>
