@@ -145,4 +145,10 @@ plot_feature_logfc(assay = "METAB",
                    scale_x_by_time = FALSE,
                    metareg = FALSE)                  
    
+# Try plotting a feature that doesn't exist
+plot_feature_logfc(assay = "METAB", 
+                   tissue = "ADRNL", 
+                   feature_ID = "glucose", 
+                   add_adj_p = TRUE)
+                             
 }

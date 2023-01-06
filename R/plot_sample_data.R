@@ -99,6 +99,12 @@
 #'                              scale_x_by_time = FALSE,
 #'                              add_adj_p = TRUE)
 #'                              
+#' # Try plotting a feature that doesn't exist
+#' plot_feature_normalized_data(assay = "METAB", 
+#'                              tissue = "ADRNL", 
+#'                              feature_ID = "glucose", 
+#'                              add_adj_p = TRUE)
+#'                              
 plot_feature_normalized_data = function(assay = NULL,
                                         tissue = NULL, 
                                         feature_ID = NULL,
@@ -135,27 +141,33 @@ plot_feature_normalized_data = function(assay = NULL,
   # is this a differential feature?
   differential = TRUE
   training_reg = data.table::as.data.table(MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES)
-  if(!FEATURE %in% training_reg[,feature]){
+  keep_looking = TRUE
+  while(keep_looking){
+    
+    if(FEATURE %in% training_reg[,feature]) break
+    
     differential = FALSE
+    
     # check if it is a repeated feature - TRAINING_REGULATED_FEATURES uses non-redundant feature
-    if(ASSAY %in% c("METAB", "IMMUNO")){
-      if(FEATURE %in% MotrpacRatTraining6moData::REPEATED_FEATURES$feature){
-        FEATURE = MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature[MotrpacRatTraining6moData::REPEATED_FEATURES$feature == FEATURE]
-        differential = TRUE
-        # now handle FEATURE_ID. get redundant one
-        FEATURE_ID = MotrpacRatTraining6moData::REPEATED_FEATURES$feature_ID[MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature == FEATURE[1]]
-      }else{
-        if(ASSAY == "METAB"){
-          # check for refmet
-          new_feature_id = unique(MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$feature_ID_metareg[MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$metabolite_name == FEATURE_ID])
-          new_feature_id = unique(new_feature_id[new_feature_id %in% training_reg[assay == ASSAY & tissue == TISSUE,feature_ID]])
-          FEATURE = unique(training_reg[feature_ID == new_feature_id & tissue == TISSUE & assay == ASSAY, feature])
-          if(length(FEATURE) > 0){
-            differential = TRUE
-          }
-        }
-      }
+    if(!ASSAY %in% c("METAB", "IMMUNO")) break
+    if(FEATURE %in% MotrpacRatTraining6moData::REPEATED_FEATURES$feature){
+      FEATURE = MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature[MotrpacRatTraining6moData::REPEATED_FEATURES$feature == FEATURE]
+      differential = TRUE
+      # now handle FEATURE_ID. get redundant one
+      FEATURE_ID = MotrpacRatTraining6moData::REPEATED_FEATURES$feature_ID[MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature == FEATURE[1]]
+      break
     }
+    
+    # check if there is a corresponding refmet ID that exists in the data
+    if(!ASSAY == "METAB") break
+    new_feature_id = unique(MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$feature_ID_metareg[MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$metabolite_name == FEATURE_ID])
+    new_feature_id = unique(new_feature_id[new_feature_id %in% training_reg[assay == ASSAY & tissue == TISSUE,feature_ID]])
+    if(length(new_feature_id) == 0) break
+    FEATURE = unique(training_reg[feature_ID == new_feature_id & tissue == TISSUE & assay == ASSAY, feature])
+    if(length(FEATURE) == 0) break
+    differential = TRUE
+    
+    keep_looking = FALSE
   }
   
   if(differential){
@@ -169,6 +181,10 @@ plot_feature_normalized_data = function(assay = NULL,
   }else{
     message(sprintf("'%s' is not a training-regulated feature. Looking in all sample-level data.", FEATURE))
     all_sample_level_data =  data.table::as.data.table(load_sample_data(TISSUE, ASSAY, exclude_outliers = exclude_outliers, ...))
+    if(nrow(all_sample_level_data) == 0){
+      warning(sprintf("Sample-level data for %s %s not found.", ASSAY, TISSUE))
+      return()
+    }
     if(!FEATURE_ID %in% all_sample_level_data[,feature_ID]){
       warning(sprintf("'%s' not found in the %s %s sample-level data.", FEATURE_ID, ASSAY, TISSUE))
       return()
@@ -247,7 +263,7 @@ plot_feature_normalized_data = function(assay = NULL,
     if(!facet_by_sex){
       g = ggplot2::ggplot(bygroup, ggplot2::aes(x=group, y=expr, group=plot_group, colour=sex)) +
         ggplot2::geom_line(position=ggplot2::position_dodge(width=0.3)) +
-        ggplot2::geom_point(aes(shape=feature), size=3, position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_point(size=2, aes(shape=feature), position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_errorbar(ggplot2::aes(ymin = expr-sd, ymax = expr+sd), width=0.2, position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::theme_classic() +
         ggplot2::scale_colour_manual(values=c(female=MotrpacRatTraining6moData::SEX_COLORS[['F']],
@@ -267,8 +283,8 @@ plot_feature_normalized_data = function(assay = NULL,
                            position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_point(colour=MotrpacRatTraining6moData::TISSUE_COLORS[[TISSUE]], 
                             aes(shape=feature), 
-                            size=3, 
-                            position=ggplot2::position_dodge(width=0.3)) +
+                            position=ggplot2::position_dodge(width=0.3),
+                            size=2) +
         ggplot2::geom_errorbar(aes(ymin = expr-sd, ymax = expr+sd), 
                                width=0.2, 
                                colour=MotrpacRatTraining6moData::TISSUE_COLORS[[TISSUE]], 
@@ -464,6 +480,12 @@ plot_feature_normalized_data = function(assay = NULL,
 #'                    scale_x_by_time = FALSE,
 #'                    metareg = FALSE)                  
 #'    
+#' # Try plotting a feature that doesn't exist
+#' plot_feature_logfc(assay = "METAB", 
+#'                    tissue = "ADRNL", 
+#'                    feature_ID = "glucose", 
+#'                    add_adj_p = TRUE)
+#'                              
 plot_feature_logfc = function(assay = NULL,
                               tissue = NULL, 
                               feature_ID = NULL,
@@ -505,39 +527,67 @@ plot_feature_logfc = function(assay = NULL,
   
   # get timewise differential analysis results
   timewise = data.table::data.table(combine_da_results(tissues = TISSUE, assays = ASSAY, metareg = metareg))
+  if(nrow(timewise) == 0){
+    warning(sprintf("Differential analysis results for %s %s not found.", ASSAY, TISSUE))
+    return()
+  }
   # make feature column
   timewise[is.na(feature), feature := sprintf("%s;%s;%s", assay, tissue, feature_ID)]
-  if(!FEATURE %in% timewise[,feature]){
+  
+  keep_looking = TRUE
+  while(keep_looking){
+    if(FEATURE %in% timewise[,feature]) break
+      
     # check redundant features - timewise results use non-redundant version
     if(FEATURE %in% MotrpacRatTraining6moData::REPEATED_FEATURES$feature){
       FEATURE = MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature[MotrpacRatTraining6moData::REPEATED_FEATURES$feature == FEATURE]
       # now handle FEATURE_ID. get redundant one
       FEATURE_ID = MotrpacRatTraining6moData::REPEATED_FEATURES$feature_ID[MotrpacRatTraining6moData::REPEATED_FEATURES$new_feature == FEATURE[1]]
+      break
+    }
+    
+    if(!ASSAY == "METAB") break
+      
     # check if this is a metabolite name, in which case there may be multiple results under a refmet ID from meta-reg results 
-    }else if(ASSAY == "METAB"){
-      if(FEATURE_ID %in% timewise[,feature_ID]){
-        FEATURE = unique(timewise[feature_ID == FEATURE_ID & tissue == TISSUE, feature])
-      }else if(grepl(":", FEATURE_ID)){
-        # or maybe they gave a feature ID and site? e.g. metab-u-ionpneg:glucose
-        ds = gsub(":.*","",FEATURE_ID)
-        new_feature_id = gsub(".*:","",FEATURE_ID)
-        if(nrow(timewise[feature_ID == new_feature_id & dataset == ds & tissue == TISSUE]) > 0){
-          timewise = timewise[feature_ID == new_feature_id & dataset == ds & tissue == TISSUE]
-          timewise[,feature := sprintf("%s;%s;%s", ASSAY, TISSUE, FEATURE_ID)]
-          FEATURE = unique(timewise[,feature])
-        }
-      }else if(metareg){
-        # they could have supplied a metabolite ID that is only available in results as refmet
-        if(FEATURE_ID %in% MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$metabolite_name){
-          new_feature_id = unique(MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$feature_ID_metareg[MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$metabolite_name == FEATURE_ID])
-          new_feature_id = unique(new_feature_id[new_feature_id %in% timewise[,feature_ID]])
-          FEATURE = unique(timewise[feature_ID == new_feature_id & tissue == TISSUE, feature])
+    if(FEATURE_ID %in% timewise[,feature_ID]){
+      FEATURE = unique(timewise[feature_ID == FEATURE_ID & tissue == TISSUE, feature])
+      break
+    }
+    
+    # or maybe they gave a feature ID and site? e.g. metab-u-ionpneg:glucose
+    if(grepl(":", FEATURE_ID)){
+      ds = gsub(":.*","",FEATURE_ID)
+      new_feature_id = gsub(".*:","",FEATURE_ID)
+      if(nrow(timewise[feature_ID == new_feature_id & dataset == ds & tissue == TISSUE]) > 0){
+        timewise = timewise[feature_ID == new_feature_id & dataset == ds & tissue == TISSUE]
+        timewise[,feature := sprintf("%s;%s;%s", ASSAY, TISSUE, FEATURE_ID)]
+        new_feature = unique(timewise[,feature])
+        if(length(new_feature) > 0){
+          FEATURE = new_feature
+          break
         }
       }
     }
+    
+    # they could have supplied a metabolite ID that is only available in results as refmet
+    if(FEATURE_ID %in% MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$metabolite_name){
+      new_feature_id = unique(MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$feature_ID_metareg[MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP$metabolite_name == FEATURE_ID])
+      new_feature_id = unique(new_feature_id[new_feature_id %in% timewise[,feature_ID]])
+      if(length(new_feature_id) == 0) break
+      new_feature = unique(timewise[feature_ID == new_feature_id & tissue == TISSUE, feature])
+      if(length(new_feature) == 0) break
+      FEATURE = new_feature
+    }
+    
+    keep_looking = FALSE
   }
-  curr_timewise_dea = timewise[feature %in% FEATURE]
+
+  if(length(FEATURE) == 0){
+    warning(sprintf("No DEA results for '%s'.",curr_feature))
+    return()
+  }
   
+  curr_timewise_dea = timewise[feature %in% FEATURE]
   if(nrow(curr_timewise_dea) == 0){
     warning(sprintf("No DEA results for '%s'.",curr_feature))
     return()
@@ -601,7 +651,7 @@ plot_feature_logfc = function(assay = NULL,
   if(multiple_measurements){
     if(facet_by_sex){
       g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,feature),color=tissue))+
-        ggplot2::geom_point(size=3, aes(shape=dataset), position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_point(size=2, aes(shape=dataset), position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_line(position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_errorbar(ggplot2::aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se),
                                width=0.2, 
@@ -621,7 +671,7 @@ plot_feature_logfc = function(assay = NULL,
         ggplot2::scale_colour_manual(values=MotrpacRatTraining6moData::TISSUE_COLORS[names(MotrpacRatTraining6moData::TISSUE_COLORS) %in% res[,tissue]], name="Tissue")
     }else{
       g = ggplot2::ggplot(res, ggplot2::aes(y=logFC,x=comparison_group,group=paste0(tissue,sex,feature),color=sex))+
-        ggplot2::geom_point(size=3, aes(shape=dataset), position=ggplot2::position_dodge(width=0.3)) +
+        ggplot2::geom_point(size=2, aes(shape=dataset), position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_line(position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::geom_errorbar(aes(ymin=logFC-logFC_se, ymax=logFC+logFC_se), width=0.2, position=ggplot2::position_dodge(width=0.3)) +
         ggplot2::theme_classic() +
