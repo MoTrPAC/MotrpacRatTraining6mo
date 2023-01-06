@@ -50,7 +50,7 @@ non-meta-analyzed results. Default: TRUE}
 \item{...}{additional arguments passed to \code{\link[=get_file_from_url]{get_file_from_url()}}}
 }
 \value{
-a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object
+a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object or NULL if the data cannot be found
 }
 \description{
 Plot timewise differential analysis results for a single feature.

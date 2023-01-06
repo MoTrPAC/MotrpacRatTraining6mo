@@ -49,6 +49,7 @@ space the time points (0w, 1w, 2w, 4w, 8w) evenly. Default: TRUE}
 }
 \value{
 a \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}} object or a data frame if \code{return_data = TRUE}
+or NULL if the data cannot be found
 }
 \description{
 Plot normalized sample-level data for a single feature.
@@ -56,7 +57,7 @@ Points are mean values across samples in each group,
 and error bars indicate standard deviations.
 }
 \examples{
-# 3 ways of plotting the same data are shown in each example below
+# Multiple ways of plotting the same data are shown for each example below
 
 # Plot a differential feature 
 plot_feature_normalized_data(feature = "ACETYL;HEART;NP_001003673.1_K477k",
@@ -110,5 +111,15 @@ plot_feature_normalized_data(assay = "PROT",
                              feature_ID = "YP_665629.1",
                              add_gene_symbol = TRUE,
                              facet_by_sex = TRUE)
+                             
+# Plot a merged feature from meta-regression
+plot_feature_normalized_data(assay = "METAB",
+                             tissue = "PLASMA",
+                             feature_ID = "Glucose",
+                             facet_by_sex = TRUE)
+plot_feature_normalized_data(assay = "METAB",
+                             tissue = "PLASMA",
+                             feature_ID = "glucose",
+                             scale_x_by_time = FALSE)
                              
 }
