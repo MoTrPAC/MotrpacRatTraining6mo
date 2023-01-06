@@ -8,7 +8,7 @@ custom_cluster_pathway_enrichment(
   cluster_res,
   pathway_member_list,
   source = "custom",
-  feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE,
+  feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT,
   gene_identifier_type = "gene_symbol",
   universe = MotrpacRatTraining6moData::GENE_UNIVERSES$gene_symbol,
   add_ensembl_intersection = TRUE,
@@ -37,7 +37,7 @@ and values are pathway members. Pathway members must match values in the
 
 \item{feature_to_gene}{data frame, map between \code{intersection_id_type} and gene symbols.
 Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
-\link[MotrpacRatTraining6moData:FEATURE_TO_GENE]{MotrpacRatTraining6moData::FEATURE_TO_GENE} by default.}
+\link[MotrpacRatTraining6moData:FEATURE_TO_GENE_FILT]{MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT} by default.}
 
 \item{gene_identifier_type}{character, column in \code{feature_to_gene} that
 matches the gene identifier type in \code{universe}.

@@ -20,8 +20,7 @@ pathway_hypergeom_test(
 }
 \arguments{
 \item{feature_to_gene}{data frame, map between \code{intersection_id_type} and gene symbols.
-Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
-\link[MotrpacRatTraining6moData:FEATURE_TO_GENE]{MotrpacRatTraining6moData::FEATURE_TO_GENE} by default.}
+Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".}
 
 \item{universe}{list of lists of character vectors,
 named first by assay (i.e., \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV})

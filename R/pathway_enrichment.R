@@ -19,7 +19,7 @@
 #'   See [gprofiler2 documentation](https://rdrr.io/cran/gprofiler2/man/gost.html) for an up-to-date list. 
 #' @param feature_to_gene data frame, map between \code{intersection_id_type} and gene symbols. 
 #'   Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
-#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default. 
+#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT] by default. 
 #' @param gene_identifier_type character, column in \code{feature_to_gene} that 
 #'   matches the gene identifier type in \code{universe}.
 #'   "ensembl_gene" by default. 
@@ -83,6 +83,8 @@
 #' [FELLA::enrich()] is used for pathway enrichment of metabolites; [gprofiler2::gost()] is used for 
 #' all other omes assuming features have been mapped to genes. 
 #' 
+#' Pathway enrichments driven by a single gene are excluded. 
+#' 
 #' This function was used to generate [MotrpacRatTraining6moData::GRAPH_PW_ENRICH]. 
 #' 
 #' @examples 
@@ -108,7 +110,7 @@
 #' }
 cluster_pathway_enrichment = function(cluster_res, 
                                       databases = c('REAC','KEGG'), 
-                                      feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE, 
+                                      feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT, 
                                       gene_identifier_type = "ensembl_gene",
                                       universe = MotrpacRatTraining6moData::GENE_UNIVERSES$ensembl_gene, 
                                       kegg_db_destination = NULL,
@@ -237,6 +239,10 @@ cluster_pathway_enrichment = function(cluster_res,
     }
   }
   
+  # remove pathways enriched with a single feature
+  # for consistency with landscape analyses 
+  enrich_res = enrich_res[intersection_size > 1]
+  
   # check if there are no results
   if(nrow(enrich_res)==0){
     message("No enrichment results were returned. Are you sure you are using the right universe and 'feature' format in the input?")
@@ -247,23 +253,6 @@ cluster_pathway_enrichment = function(cluster_res,
   if(!'term_name' %in% colnames(enrich_res)){
     enrich_res[,term_name := NA_character_]
   }
-  # pw = unique(enrich_res[,.(term_name, term_id)])
-  # id_to_name = pw$term_name
-  # names(id_to_name) = pw$term_id
-  # id_to_name1 = id_to_name[!is.na(id_to_name)]
-  # id_to_name2 = id_to_name[is.na(id_to_name)] # these should only be KEGG
-  # id_to_name2 = id_to_name2[grepl('KEGG:\\d+$', names(id_to_name2))]
-  # 
-  # # fill in the rest with KEGG API
-  # keggid2keggname = as.list(KEGGREST::keggList("pathway"))
-  # names(keggid2keggname) = gsub("[A-z:]","",names(keggid2keggname))
-  # id_to_name3 = unname(lapply(names(id_to_name2), 
-  #                             function(x) unname(unlist(keggid2keggname[substring(x, 6)]))))
-  # names(id_to_name3) = names(id_to_name2)
-  # id_to_name = c(id_to_name1, id_to_name3)
-  # enrich_res[is.na(term_name), term_name := as.character(sapply(term_id,
-  #                                                               function(x) id_to_name[[x]]))]
-  # enrich_res = enrich_res[term_name == 'NULL', term_name := term_id]
   
   # fill in missing KEGG IDs (for METAB)
   if(any(is.na(enrich_res[,term_name]))){
@@ -635,7 +624,7 @@ make_kegg_db = function(kegg_db_destination){
 #' @param source optional character string to define the source of \code{pathway_member_list} 
 #' @param feature_to_gene data frame, map between \code{intersection_id_type} and gene symbols. 
 #'   Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
-#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default. 
+#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT] by default. 
 #' @param gene_identifier_type character, column in \code{feature_to_gene} that 
 #'   matches the gene identifier type in \code{universe}.
 #'   "gene_symbol" by default. 
@@ -713,7 +702,7 @@ make_kegg_db = function(kegg_db_destination){
 custom_cluster_pathway_enrichment = function(cluster_res, 
                                              pathway_member_list, 
                                              source = 'custom', 
-                                             feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE, 
+                                             feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT, 
                                              gene_identifier_type = "gene_symbol",
                                              universe = MotrpacRatTraining6moData::GENE_UNIVERSES$gene_symbol, 
                                              add_ensembl_intersection = TRUE, 
@@ -737,7 +726,7 @@ custom_cluster_pathway_enrichment = function(cluster_res,
   write(sprintf("#%s", as.character(date())), file = logfile, append = F)
   write("cluster,tissue,ome,n_features,reason", file = logfile, append = T)
   
-  cluster_res = annotate_cluster_res(cluster_res)
+  cluster_res = check_cluster_res_format(cluster_res)
   
   if(!requireNamespace("IHW", quietly = TRUE)){
     if(length(unique(cluster_res$tissue)) > 1){
@@ -837,7 +826,6 @@ custom_cluster_pathway_enrichment = function(cluster_res,
 #' 
 #' @param feature_to_gene data frame, map between \code{intersection_id_type} and gene symbols. 
 #'   Columns must include "feature_ID", "gene_symbol", "ensembl_gene", and "kegg_id".
-#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default. 
 #' @param universe list of lists of character vectors, 
 #'   named first by assay (i.e., [MotrpacRatTraining6moData::ASSAY_ABBREV])
 #'   and then by tissue (i.e., [MotrpacRatTraining6moData::TISSUE_ABBREV]). 
