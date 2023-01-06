@@ -14,7 +14,7 @@ and error bars indicate standard deviations."><!-- mathjax --><script src="https
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -243,6 +243,16 @@ in the plot subtitle. Default: TRUE</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Adding differential analysis p-value...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> METAB_PLASMA_DA_METAREG</span>
 <span class="r-plt img"><img src="plot_feature_normalized_data-15.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span>                             </span></span>
+<span class="r-in"><span><span class="co"># Try plotting a feature that doesn't exist</span></span></span>
+<span class="r-in"><span><span class="fu">plot_feature_normalized_data</span><span class="op">(</span>assay <span class="op">=</span> <span class="st">"METAB"</span>, </span></span>
+<span class="r-in"><span>                             tissue <span class="op">=</span> <span class="st">"ADRNL"</span>, </span></span>
+<span class="r-in"><span>                             feature_ID <span class="op">=</span> <span class="st">"glucose"</span>, </span></span>
+<span class="r-in"><span>                             add_adj_p <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 'METAB;ADRNL;glucose' is not a training-regulated feature. Looking in all sample-level data.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> METAB ADRNL normalized data from METAB_NORM_DATA_FLAT</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'glucose' not found in the METAB ADRNL sample-level data.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 <span class="r-in"><span>                             </span></span>
 </code></pre></div>
     </div>
