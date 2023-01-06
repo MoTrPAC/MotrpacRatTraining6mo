@@ -1,3 +1,7 @@
+# MotrpacRatTraining6mo 1.4.3 (2023-01-06)
+
+* In `plot_feature_normalized_data()` and `plot_feature_logfc()`, handle input features that don't exist in the data.  
+
 # MotrpacRatTraining6mo 1.4.2 (2023-01-06)
 
 * Dodge points in `plot_feature_normalized_data()` and `plot_feature_logfc()` for readability.  
