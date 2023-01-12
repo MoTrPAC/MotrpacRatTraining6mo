@@ -3,19 +3,14 @@
 > TLDR; complete the steps in this document *before* the workshop if you want to use 
 the MoTrPAC R packages to explore PASS1B data. 
 
-Thank you for your interest in the MoTrPAC Workshop: PASS1B R packages & JupyterHub (1/11/23 at 12:00 PM PT)!
+Thank you for your interest in the MoTrPAC PASS1B R packages!
 
-The **first part** of this workshop will focus on the **BIC's interactive JupyterHub Dashboard**,
-which allows users to explore PASS1B data and results without any code. **This part of 
-the workshop is suitable for people without any programming experience.** However, to follow along
-on your own computer, you need an authorized [MoTrPAC Data Portal](https://motrpac-data.org/) account. 
-
-During the **second part** of the workshop, we will work through practical examples of how to
+During this workshop, we will work through practical examples of how to
 use the **[MotrpacRatTraining6mo](https://motrpac.github.io/MotrpacRatTraining6mo/) and 
 [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData/) R packages** to explore
-and analyze PASS1B data in R. This part of the workshop is geared towards people who are familiar with R, 
+and analyze PASS1B data in R. This workshop is geared towards people who are familiar with R, 
 but I will do my best to accommodate new programmers/R users as well. 
-**If you are interested in this part of the workshop, please complete the steps in this document beforehand**. 
+**Please complete the steps in this document beforehand**. 
 Time **will not** be allotted at the beginning of the workshop to perform these installation steps. 
 
 ### Contents
@@ -55,17 +50,19 @@ Optional if you already have RStudio Desktop installed.
 **Even if you have previously installed these R packages, I recommend re-installing them to 
 ensure you are using the newest versions.** We will be using new functions added on 1/5/23. 
 
-#### Install MotrpacRatTraining6moData (v1.7.0)
-Note that this package takes 5-10 minutes to install.
+#### Install MotrpacRatTraining6moData
+Note that this package takes 5-10 minutes to install. 
+By not specifying a version, we install the newest available version. 
 If you encounter any errors, follow the troubleshooting instructions [here](https://github.com/MoTrPAC/MotrpacRatTraining6moData#troubleshooting). 
 
 1. Open RStudio  
-2. Copy/paste the following command in the `Console`:  
+2. Copy/paste the following commands in the `Console`, **one line at a time.** 
+Read and respond to any prompts before pasting the next line. If this is your first time installing `devtools`, 
+you will get a prompt that says, "Do you want to install from sources the package which needs compilation? (Yes/no/cancel)". 
+Type "yes" and hit enter. Wait for dependencies to install before moving on to the next command. 
 
     ```r
-    if (!require("devtools", quietly = TRUE)){
-      install.packages("devtools")
-    }
+    if (!require("devtools", quietly = TRUE)) install.packages("devtools")
     options(timeout=1e5)
     devtools::install_github("MoTrPAC/MotrpacRatTraining6moData")
     ```
@@ -76,8 +73,9 @@ can include changes to the data. In the top-right corner of [this page](https://
 choose `Watch` > `Custom` > `Releases`. This requires a GitHub account. You can sign up
 for a free account [here](https://github.com/join). 
 
-#### Install MotrpacRatTraining6mo (v1.4.0)
+#### Install MotrpacRatTraining6mo
 This package should install very quickly if `MotrpacRatTraining6moData` is already installed. 
+By not specifying a version, we install the newest available version. 
 
 1. Open RStudio  
 2. Copy/paste the following command in the `Console`:  
@@ -86,16 +84,18 @@ This package should install very quickly if `MotrpacRatTraining6moData` is alrea
     devtools::install_github("MoTrPAC/MotrpacRatTraining6mo")
     ```
 
+> **Note:** To install a specific version of the package, we could use, e.g., `devtools::install_github("MoTrPAC/MotrpacRatTraining6mo@v1.4.3")`
+
 ### Install other R packages for the workshop 
 To avoid having to install additional dependencies *during* the workshop, install
 them ahead of time by copy/paste-ing the following commands in your RStudio `Console`. 
+If you run into any issues, try running one line at a time.  
 ```r
 install.packages("foreach")
 install.packages("gprofiler2")
 install.packages("doParallel")
 install.packages("reshape2")
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 BiocManager::install("IHW")
 ```
 
@@ -111,9 +111,9 @@ you to install an additional package. If you are curious
 about which packages are required or suggested for `MotrpacRatTraining6mo`, take a look at the
 [DESCRIPTION](https://github.com/MoTrPAC/MotrpacRatTraining6mo/blob/main/DESCRIPTION) file. 
 
-That's it! Thank you for getting this far. I look forward to the workshop on 1/11/23! 
+That's it! Thank you for getting this far. I look forward to the workshop! 
 
 ---
 
 Author: Nicole Gay  
-Updated: 1/5/23
+Updated: 1/12/23
