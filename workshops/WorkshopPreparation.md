@@ -17,8 +17,8 @@ Time **will not** be allotted at the beginning of the workshop to perform these 
 * [Install R](#install-r)  
 * [Install RStudio Desktop](#install-rstudio-desktop)
 * [Install the MoTrPAC R packages](#install-the-motrpac-r-packages)
-  * [Install MotrpacRatTraining6moData (v1.7.0)](#install-motrpacrattraining6modata-v170)
-  * [Install MotrpacRatTraining6mo (v1.4.0)](#install-motrpacrattraining6mo-v140)
+  * [Install MotrpacRatTraining6moData](#install-motrpacrattraining6modata)
+  * [Install MotrpacRatTraining6mo](#install-motrpacrattraining6mo)
 * [Install other R packages for the workshop](#install-other-r-packages-for-the-workshop)
 
 ### Install R  
