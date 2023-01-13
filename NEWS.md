@@ -1,3 +1,10 @@
+# MotrpacRatTraining6mo 1.4.4 
+
+* Replace `fetch_object(name_as_string)` with `get(name_as_string, envir=as.environment("package:MotrpacRatTraining6moData"))`.  
+* Add `counts` argument to `transcript_normalize_counts()` and `atac_normalize_counts()` 
+to allow user-supplied data.  
+* Add note about reproducibility issues to documentation for `transcript_normalize_counts()`.  
+
 # MotrpacRatTraining6mo 1.4.3 (2023-01-06)
 
 * In `plot_feature_normalized_data()` and `plot_feature_logfc()`, handle input features that don't exist in the data.  

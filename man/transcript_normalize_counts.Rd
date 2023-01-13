@@ -8,7 +8,8 @@ transcript_normalize_counts(
   tissue,
   min_cpm = 0.5,
   min_num_samples = 2,
-  norm_method = "TMM"
+  norm_method = "TMM",
+  counts = NULL
 )
 }
 \arguments{
@@ -19,12 +20,25 @@ transcript_normalize_counts(
 \item{min_num_samples}{double, retain genes with more than \code{min_cpm} counts per million in at least \code{min_num_samples} samples}
 
 \item{norm_method}{character, one of \code{c("TMM","TMMwsp","RLE","upperquartile","none")}. "TMM" by default.}
+
+\item{counts}{optional user-supplied numeric data frame or matrix where row names are
+gene IDs and column names are sample identifiers}
 }
 \value{
 data frame where row names are feature_ID and column names are viallabel
 }
 \description{
 Get raw counts and return the filtered and normalized data.
+}
+\details{
+Note that while this function is identical to the code used to generate the
+normalized RNA-seq data tables (\link[MotrpacRatTraining6moData:TRNSCRPT_NORM_DATA]{MotrpacRatTraining6moData::TRNSCRPT_NORM_DATA})
+and the normalized RNA-seq data available through the MoTrPAC Data Hub,
+\code{transcript_normalize_counts(tissue)} yields slightly fewer genes than its
+corresponding \link[MotrpacRatTraining6moData:TRNSCRPT_NORM_DATA]{MotrpacRatTraining6moData::TRNSCRPT_NORM_DATA} object.
+Investigation of this discrepancy suggests minor functional differences in the
+version of \code{\link[edgeR:cpm]{edgeR::cpm()}} used ~2.5 years apart. Find more details in
+\href{https://github.com/MoTrPAC/MotrpacRatTraining6moData/issues/41}{this GitHub issue}.
 }
 \examples{
 norm_data = transcript_normalize_counts("LUNG")
