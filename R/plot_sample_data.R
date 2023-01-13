@@ -356,7 +356,7 @@ plot_feature_normalized_data = function(assay = NULL,
                             return_data = TRUE)
     if(!is.null(da)){
       adj_p_value = min(unique(da$selection_fdr), na.rm=TRUE)
-      subtitle = sprintf("adj. p-value: %s", round(adj_p_value, 3))
+      subtitle = sprintf("adj. p-value: %s", signif(adj_p_value, digits=2))
       g = g + labs(subtitle = subtitle)
     }
   }
@@ -724,7 +724,7 @@ plot_feature_logfc = function(assay = NULL,
   }
 
   if(add_adj_p){
-    subtitle = sprintf("adj. p-value: %s", round(ADJ_P, 3))
+    subtitle = sprintf("adj. p-value: %s", signif(ADJ_P, digits=2))
     g = g + labs(subtitle = subtitle)
   }
 
