@@ -822,9 +822,9 @@ plot_feature_trajectories = function(features,
   
   if(training_regulated_only){
     if(exclude_outliers){
-      data = data.table::as.data.table(fetch_object("TRAINING_REGULATED_NORM_DATA_NO_OUTLIERS"))
+      data = data.table::as.data.table(get("TRAINING_REGULATED_NORM_DATA_NO_OUTLIERS", envir=as.environment("package:MotrpacRatTraining6moData")))
     }else{
-      data = data.table::as.data.table(fetch_object("TRAINING_REGULATED_NORM_DATA"))
+      data = data.table::as.data.table(get("TRAINING_REGULATED_NORM_DATA", envir=as.environment("package:MotrpacRatTraining6moData")))
     }
     data = fix_cols(data)
     # select features 

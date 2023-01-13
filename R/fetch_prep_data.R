@@ -440,7 +440,7 @@ load_sample_data = function(tissue,
         obj_name = sprintf("%s_%s_NORM_DATA_05FDR", assay, gsub("-","",tissue))
         if(obj_name %in% available_data){
           message(obj_name)
-          data = fetch_object(obj_name)
+          data = get(obj_name, envir=as.environment("package:MotrpacRatTraining6moData"))
         }
       }else{
         # download from GCS
@@ -470,7 +470,7 @@ load_sample_data = function(tissue,
       obj_name = sprintf("%s_%s_NORM_DATA", assay, gsub("-","",tissue))
       if(obj_name %in% available_data){
         message(obj_name)
-        data = fetch_object(obj_name)
+        data = get(obj_name, envir=as.environment("package:MotrpacRatTraining6moData"))
       }
     }
   }else{
@@ -487,7 +487,7 @@ load_sample_data = function(tissue,
         obj_name = sprintf("%s_%s_RAW_COUNTS", assay, gsub("-","",tissue))
         if(obj_name %in% available_data){
           message(obj_name)
-          data = fetch_object(obj_name)
+          data = get(obj_name, envir=as.environment("package:MotrpacRatTraining6moData"))
         }
       }
     }else{
@@ -784,7 +784,8 @@ load_metab_da = function(tissue, type="timewise", ...){
   }
   
   if(type=="timewise"){
-    data = fetch_object(sprintf("METAB_%s_DA", gsub("-","",tissue)))
+    obj_name = sprintf("METAB_%s_DA", gsub("-","",tissue))
+    data = get(obj_name, envir=as.environment("package:MotrpacRatTraining6moData"))
   }else{
     data = load_training_da("METAB", tissue, metareg = FALSE)
   }
@@ -1106,7 +1107,7 @@ combine_da_results = function(tissues = MotrpacRatTraining6moData::TISSUE_ABBREV
           # load from URL
           data = get_rdata_from_url(tissue=t, assay=a, suffix="DA", scratchdir=scratchdir)
         }else{
-          data = fetch_object(object_name)
+          data = get(object_name, envir=as.environment("package:MotrpacRatTraining6moData"))
         }
         if ("removed_samples" %in% colnames(data)){
           data$removed_samples = as.character(data$removed_samples)

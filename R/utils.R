@@ -238,29 +238,6 @@ get_peak_annotations = function(counts, species="Rattus norvegicus", release=96,
 }
 
 
-#' Get object from MotrpacRatTraining6moData
-#' 
-#' Using \code{get()} to retrieve data from MotrpacRatTraining6moData 
-#' within this package doesn't work, at least in tests.
-#' This function allows us to be explicit about the source package.
-#' For internal use only. Users can use \code{get()} or \code{data()} directly
-#' after loading the \code{MotrpacRatTraining6moData} package. 
-#'
-#' @param name_as_string character, name of object in \code{MotrpacRatTraining6moData}
-#'
-#' @return specified object 
-#' 
-#' @seealso [load_sample_data()]
-#' 
-#' @keywords internal
-#' 
-fetch_object = function(name_as_string){
-  do.call("data", list(as.name(name_as_string),
-                              package = "MotrpacRatTraining6moData"))
-  return(get(name_as_string))
-}
-
-
 #' Extract standard errors
 #' 
 #' Extract standard errors from \code{limma} results
