@@ -17,6 +17,7 @@
 #'
 #' @return character, path of the GCT file  
 #' @export
+#' @importFrom methods new
 #'
 #' @examples
 #' prepare_gsea_input("HEART","PROT",outdir="/tmp")
@@ -115,7 +116,7 @@ prepare_gsea_input = function(tissue = NULL, assay = NULL, outdir = ".", outfile
   rownames(mat) = rn
   
   # make GCT
-  gct = new("GCT", mat = mat)
+  gct = methods::new("GCT", mat = mat)
   
   # write to file 
   cmapR::write_gct(gct, ofile = sprintf("%s/%s.gct", outdir, outfile_prefix), appenddim = FALSE)
@@ -124,6 +125,13 @@ prepare_gsea_input = function(tissue = NULL, assay = NULL, outdir = ".", outfile
 
 
 prepare_ptmsea_input = function(tissue){
+  
+  if(!requireNamespace("cmapR", quietly = TRUE)){
+    stop(
+      "Package 'cmapR' must be installed to run 'prepare_ptmsea_input()'.",
+      call. = FALSE
+    )
+  }
   
   # #Path to feature-mapping file in local copy of data freeze bucket
   # mapping.dir <- "~/Projects/motrpac-data-freeze-pass/pass1b-06/v1.0/analysis/proteomics-untargeted/prot-ph/normalized-data/"
@@ -176,7 +184,7 @@ prepare_ptmsea_input = function(tissue){
                          column_to_rownames(var = 'flanking_sequence') %>% as.matrix(),
                        rdesc = data.frame(id.flanking = as.character(sign.logp.table$flanking_sequence)))
   sign.logp.gct@rdesc$id.flanking <- as.character(sign.logp.gct@rdesc$id.flanking)
-  write_gct(sign.logp.gct,ofile = paste0(output.dir,zscore.filename),appenddim = F)
+  cmapR::write_gct(sign.logp.gct,ofile = paste0(output.dir,zscore.filename),appenddim = F)
   
   # unclear if there's more to add here?
   # next section says "#3. Create PTM-SEA input with human flanking sequences",
@@ -187,7 +195,8 @@ gsea = function(tissue, assay, gene_set, gene_centric = TRUE, outdir = "."){
   
   if(!requireNamespace("ssGSEA2", quietly = TRUE)){
     stop(
-      "Package 'ssGSEA2' must be installed to run 'gsea()'.",
+      paste("Package 'ssGSEA2' must be installed to run 'gsea()'.",
+            "Install with devtools::install_github('nicolerg/ssGSEA2.0')."),
       call. = FALSE
     )
   }
@@ -253,19 +262,20 @@ gsea = function(tissue, assay, gene_set, gene_centric = TRUE, outdir = "."){
   # setwd(output.dir)
   
   #Setting sample.norm.type to none and correl.type to rank uses the actual signed log p-vals
-  gsea.out <- run_ssGSEA2(input.ds = input.ds, # input.ds is a path to a file
-                          output.prefix = output.prefix,
-                          gene.set.databases = gene.set.databases, # list of paths to gene set files 
-                          sample.norm.type = "none",
-                          weight=0.75,
-                          correl.type="rank",
-                          statistic="area.under.RES",
-                          output.score.type="NES",
-                          min.overlap=5,
-                          extended.output=TRUE,
-                          global.fdr=FALSE,
-                          nperm=10000,
-                          log.file=sprintf("%s/run.log", outdir))
+  gsea.out <- ssGSEA2::run_ssGSEA2(
+    input.ds = input.ds, # input.ds is a path to a file
+    output.prefix = output.prefix,
+    gene.set.databases = gene.set.databases, # list of paths to gene set files 
+    sample.norm.type = "none",
+    weight = 0.75,
+    correl.type = "rank",
+    statistic = "area.under.RES",
+    output.score.type = "NES",
+    min.overlap = 5,
+    extended.output = TRUE,
+    global.fdr = FALSE,
+    nperm = 10000,
+    log.file = sprintf("%s/run.log", outdir))
 
   #Original parameters used before 2/16/2021
   # gsea.out <- ssGSEA2(input.ds = input.ds, output.prefix = output.prefix, gene.set.databases = gene.set.databases,
@@ -277,6 +287,14 @@ gsea = function(tissue, assay, gene_set, gene_centric = TRUE, outdir = "."){
 }
 
 ptmsea = function(tissue){
+  
+  if(!requireNamespace("ssGSEA2", quietly = TRUE)){
+    stop(
+      paste("Package 'ssGSEA2' must be installed to run 'ptmsea()'.",
+            "Install with devtools::install_github('nicolerg/ssGSEA2.0')."),
+      call. = FALSE
+    )
+  }
   
   # #ssGSEA script - https://github.com/broadinstitute/ssGSEA2.0
   # script.dir <- "~/ssGSEA2.0/"
@@ -322,22 +340,26 @@ ptmsea = function(tissue){
   
   #1. PTM-SEA analysis
   #Recommended to run directly on the command line
-
+  
+  # only difference from GSEA params: nperm = 1000 instead of 10000
+    
   current.wd <- getwd() 
   setwd(output.dir)
   #Setting sample.norm.type to none and correl.type to rank uses the actual signed log p-vals
-  gsea.out <- run_ssGSEA2(input.ds = input.ds, 
-                          output.prefix = output.prefix, 
-                          gene.set.databases = gene.set.databases,
-                          sample.norm.type = "none", 
-                          weight=0.75, 
-                          correl.type="rank", 
-                          statistic="area.under.RES",
-                          output.score.type="NES", 
-                          nperm=1000, 
-                          min.overlap=5, 
-                          extended.output=TRUE, 
-                          global.fdr=FALSE)
+  gsea.out <- ssGSEA2::run_ssGSEA2(
+    input.ds = input.ds, 
+    output.prefix = output.prefix, 
+    gene.set.databases = gene.set.databases,
+    sample.norm.type = "none", 
+    weight = 0.75, 
+    correl.type = "rank", 
+    statistic = "area.under.RES",
+    output.score.type = "NES", 
+    nperm = 1000, 
+    min.overlap = 5, 
+    extended.output = TRUE, 
+    global.fdr = FALSE,
+    log.file = sprintf("%s/run.log", outdir))
   #Original parameters used before 3/30/2021
   # gsea.out <- ssGSEA2(input.ds = input.ds, output.prefix = output.prefix, gene.set.databases = gene.set.databases,
   #                     sample.norm.type = "rank", weight=0.75, correl.type="z.score", statistic="area.under.RES", 
