@@ -107,10 +107,14 @@ If you have not yet installed this R package, follow instructions
 library(MotrpacRatTraining6mo)
 ```
 
-For the sake of easily loading and looking up documentation for data objects, 
-let's also load the [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData) 
-package, which is installed as a dependency when you install this package. 
-```{r data lib}
+As of v1.5.0, attaching `MotrpacRatTraining6mo` also attaches 
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData), 
+so an additional `library(MotrpacRatTraining6moData)` command is not necessary. 
+For older versions of `MotrpacRatTraining6mo`, attach 
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData) directly. 
+Attaching [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData) 
+makes it easier to load and look up documentation for data objects in the data package. 
+```{r data lib, eval=FALSE}
 library(MotrpacRatTraining6moData)
 ```
 
@@ -142,8 +146,7 @@ package are indicated as variable names in all caps, e.g. `PHENO`, `TRNSCRPT_LIV
 
 **Tip:** To learn more about any data object or function, use `?` to retrieve the documentation,
 e.g., [`?METAB_FEATURE_ID_MAP`](https://motrpac.github.io/MotrpacRatTraining6moData/reference/METAB_FEATURE_ID_MAP.html), 
-`?load_sample_data`. Note that both `MotrpacRatTraining6mo` and 
-`MotrpacRatTraining6moData` must be installed and loaded with `library()` for this to work. 
+`?load_sample_data`. Note that `MotrpacRatTraining6mo` must be installed and loaded with `library()` for this to work. 
 
 </div>
 
@@ -345,7 +348,7 @@ list_available_data("MotrpacRatTraining6moData")
 ```
 
 If the [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData/) library
-is loaded, you can learn more about any of these data objects with `?`, e.g., 
+is attached, you can learn more about any of these data objects with `?`, e.g., 
 [`?TISSUE_COLORS`](https://motrpac.github.io/MotrpacRatTraining6moData/reference/TISSUE_COLORS.html),
 and you can load data objects into your environment using `data()`, e.g., 
 `data(TRAINING_REGULATED_FEATURES)`. 
@@ -380,7 +383,7 @@ documentation for each function for more details, e.g. `?transcript_timewise_da`
 * METAB  
   * `metab_timewise_da()`  
   * `metab_training_da()`  
-  * `metab_meta_regression()`
+  * `metab_meta_regression()`  
 * METHYL  
   * `rrbs_differential_analysis()`   
 * TRNSCRPT  
@@ -490,8 +493,6 @@ Feature `f2` (green) is the same trajectory described above.
 ```{r, echo=FALSE, fig.cap="A. A schematic example of the graphical representation of the differential analysis results. Top left: the z-scores of four features. A positive score corresponds to up-regulation (red), and a negative score corresponds to down regulation (blue). Bottom left: the assignment of features to node sets and full path sets (edge sets are not shown for conciseness but can be easily inferred from the full paths). Node labels follow the [time]_F[x]_M[y] format where [time] shows the animal sacrifice week and can take one of (1w, 2w, 4w, or 8w), and [x] and [y] are one of (-1,0,1), corresponding to down-regulation, no effect, and up-regulation, respectively. Right: the graphical representation of the feature sets. Columns are training time points, and rows are the differential abundance states. Node and edge sizes are proportional to the number of features that are assigned to each set."}
 knitr::include_graphics("graph_explanation.png")
 ```
-
-
 
 We herein refer to our approach of using `repfdr` to construct a graph of the 
 dynamic multi-omic responses to endurance exercise training across tissues as *graphical clustering*.

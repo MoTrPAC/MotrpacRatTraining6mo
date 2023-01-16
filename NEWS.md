@@ -1,10 +1,12 @@
-# MotrpacRatTraining6mo 1.4.4 
+# MotrpacRatTraining6mo 1.5.0 (2023-01-16)
 
+* Use `signif()` instead of `round()` to display values in plot titles. 
 * Add `counts` argument to `transcript_normalize_counts()` and `atac_normalize_counts()` 
 to allow user-supplied data.  
 * Add note about reproducibility issues to documentation for `transcript_normalize_counts()`.  
-* Move `MotrpacRatTraining6moData` from `Imports` to `Depends`.  
-* Replace `fetch_object(name_as_string)` with `get(name_as_string, envir=as.environment("package:MotrpacRatTraining6moData"))`. 
+* Move `MotrpacRatTraining6moData` from `Imports` to `Depends`. This means `MotrpacRatTraining6moData` is also attached
+(not just loaded) when `MotrpacRatTraining6mo` is attached.  
+* Replace `fetch_object(name_as_string)` with `get(name_as_string, envir=as.environment("package:MotrpacRatTraining6moData"))`.  
 
 # MotrpacRatTraining6mo 1.4.3 (2023-01-06)
 
