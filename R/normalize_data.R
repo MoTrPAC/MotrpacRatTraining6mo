@@ -1,6 +1,7 @@
 #' Filter and normalize raw RNA-seq counts
 #' 
-#' Get raw counts and return the filtered and normalized data. 
+#' Load raw counts and return the filtered and normalized data. 
+#' Alternatively, the user can provide a numeric data frame of raw RNA-seq counts. 
 #'
 #' @param tissue `r tissue()`
 #' @param min_cpm double, retain genes with more than \code{min_cpm} counts per million in at least \code{min_num_samples} samples
