@@ -28,7 +28,8 @@ gene IDs and column names are sample identifiers}
 data frame where row names are feature_ID and column names are viallabel
 }
 \description{
-Get raw counts and return the filtered and normalized data.
+Load raw counts and return the filtered and normalized data.
+Alternatively, the user can provide a numeric data frame of raw RNA-seq counts.
 }
 \details{
 Note that while this function is identical to the code used to generate the
@@ -42,6 +43,11 @@ version of \code{\link[edgeR:cpm]{edgeR::cpm()}} used ~2.5 years apart. Find mor
 }
 \examples{
 norm_data = transcript_normalize_counts("LUNG")
+
+# Simulate "user-supplied data"
+counts = load_sample_data("LUNG", "TRNSCRPT", normalized=FALSE)
+counts = df_to_numeric(counts)
+norm_data = transcript_normalize_counts(counts = counts)
 
 }
 \seealso{
