@@ -37,8 +37,8 @@ immuno_timewise_da = function(){
     )
   }
   
-  data = get("IMMUNO_NORM_DATA_NESTED", envir=as.environment("package:MotrpacRatTraining6moData"))
-  meta = get("IMMUNO_META", envir=as.environment("package:MotrpacRatTraining6moData"))
+  data = MotrpacRatTraining6moData::IMMUNO_NORM_DATA_NESTED
+  meta = MotrpacRatTraining6moData::IMMUNO_META
   meta = meta[,c("sex", "group", "tissue", "log2_CHEX4", "panel_name", "viallabel")]
   
   alldat = lapply(names(data), function(mydataset){
@@ -231,8 +231,8 @@ immuno_training_da = function(){
     )
   }
   
-  imputed_data = get("IMMUNO_NORM_DATA_NESTED", envir=as.environment("package:MotrpacRatTraining6moData"))
-  metadata = data.table::data.table(get("IMMUNO_META", envir=as.environment("package:MotrpacRatTraining6moData")))[,c("sex", "group", "tissue", "log2_CHEX4", "panel_name", "viallabel"), with=F]
+  imputed_data = MotrpacRatTraining6moData::IMMUNO_NORM_DATA_NESTED
+  metadata = data.table::data.table(MotrpacRatTraining6moData::IMMUNO_META)[,c("sex", "group", "tissue", "log2_CHEX4", "panel_name", "viallabel"), with=F]
   
   training_res = list()
   i=1

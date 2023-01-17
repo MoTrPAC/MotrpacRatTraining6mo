@@ -4,7 +4,7 @@
 \alias{load_methyl_feature_annotation}
 \title{Load METHYL feature annotation}
 \source{
-\url{https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/METHYL_FEATURE_ANNOT.rda}
+\url{https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/feature-annot/METHYL_FEATURE_ANNOT.rda}
 }
 \usage{
 load_methyl_feature_annotation(scratchdir = ".")
@@ -25,4 +25,7 @@ See \link{METHYL_FEATURE_ANNOT} for more details.
 feature_annot = load_methyl_feature_annotation("/tmp")
 }
 
+}
+\seealso{
+\code{\link[=load_feature_annotation]{load_feature_annotation()}}, \link[MotrpacRatTraining6moData:METHYL_FEATURE_ANNOT]{MotrpacRatTraining6moData::METHYL_FEATURE_ANNOT}
 }

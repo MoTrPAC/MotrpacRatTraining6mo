@@ -260,7 +260,6 @@ limma_res_extract_se = function(limma_res,
 }
 
 
-
 #' Make data frame numeric only
 #' 
 #' Set row names and remove all non-numeric columns. This is useful for
@@ -322,4 +321,21 @@ df_to_numeric = function(df, rownames="feature_ID"){
   df[,non_num_cols] = NULL
 
   return(df)  
+}
+
+
+#' Get object from MotrpacRatTraining6moData
+#' 
+#' For internal use only. Users can use \code{get()} or \code{data()} directly
+#' after attaching the \code{MotrpacRatTraining6moData} package. 
+#'
+#' @param object_name_as_string character, name of data object in \code{MotrpacRatTraining6moData}
+#'   R package 
+#'
+#' @return specified object
+#'
+#' @keywords internal
+.get = function(object_name_as_string){
+  data = get(object_name_as_string, envir=as.environment("package:MotrpacRatTraining6moData"))
+  return(data)
 }

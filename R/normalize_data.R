@@ -47,7 +47,7 @@ transcript_normalize_counts = function(tissue, min_cpm = 0.5, min_num_samples = 
     }
   }else{
     obj_name = sprintf("TRNSCRPT_%s_RAW_COUNTS", gsub("-","",tissue))
-    counts = get(obj_name, envir=as.environment("package:MotrpacRatTraining6moData"))
+    counts = .get(obj_name)
     counts = df_to_numeric(counts)
   }
   
