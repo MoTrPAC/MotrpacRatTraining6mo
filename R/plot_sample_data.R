@@ -44,6 +44,13 @@
 #'                              feature_ID = "NP_001003673.1_K477k",
 #'                              add_gene_symbol = TRUE,
 #'                              facet_by_sex = TRUE)
+#'                              
+#' # Plot a differential epigenetic feature
+#' plot_feature_normalized_data(feature = "METHYL;HEART;chr20-38798_cluster11",
+#'                              add_gene_symbol = TRUE)
+#' plot_feature_normalized_data(feature = "METHYL;HEART;chr20-38798_cluster11",
+#'                              add_gene_symbol = TRUE,
+#'                              facet_by_sex = TRUE)
 #' 
 #' # Plot a redundant differential feature
 #' plot_feature_normalized_data(feature = "IMMUNO;PLASMA;BDNF",
@@ -396,7 +403,7 @@ plot_feature_normalized_data = function(assay = NULL,
 #'    or NULL if the data cannot be found
 #' 
 #' @examples
-#' # 3 ways of plotting the same data are shown in each example below
+#' # Multiple ways of plotting the same data are shown in each example below
 #' 
 #' # Plot a differential feature 
 #' plot_feature_logfc(feature = "ACETYL;HEART;NP_001003673.1_K477k",
@@ -409,6 +416,13 @@ plot_feature_normalized_data = function(assay = NULL,
 #' plot_feature_logfc(assay = "ACETYL",
 #'                    tissue = "HEART",
 #'                    feature_ID = "NP_001003673.1_K477k",
+#'                    add_gene_symbol = TRUE,
+#'                    facet_by_sex = TRUE)
+#'                    
+#' # Plot a differential epigen feature
+#' plot_feature_logfc(feature="METHYL;HEART;chr20-38798_cluster11",
+#'                    add_gene_symbol = TRUE)
+#' plot_feature_logfc(feature="METHYL;HEART;chr20-38798_cluster11",
 #'                    add_gene_symbol = TRUE,
 #'                    facet_by_sex = TRUE)
 #' 
@@ -485,7 +499,7 @@ plot_feature_normalized_data = function(assay = NULL,
 #'                    tissue = "ADRNL", 
 #'                    feature_ID = "glucose", 
 #'                    add_adj_p = TRUE)
-#'                              
+#' 
 plot_feature_logfc = function(assay = NULL,
                               tissue = NULL, 
                               feature_ID = NULL,
@@ -526,7 +540,18 @@ plot_feature_logfc = function(assay = NULL,
   }
   
   # get timewise differential analysis results
-  timewise = data.table::data.table(combine_da_results(tissues = TISSUE, assays = ASSAY, metareg = metareg))
+  if(FEATURE %in% MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES$feature){
+    timewise = data.table::data.table(MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES)
+    setnames(timewise, 
+             old=c("training_q","training_group","timewise_logFC","timewise_zscore","timewise_p_value","timewise_logFC_se"),
+             new=c("selection_fdr","comparison_group","logFC","zscore","p_value","logFC_se"))
+  }else{
+    timewise = data.table::data.table(combine_da_results(tissues = TISSUE, 
+                                                         assays = ASSAY, 
+                                                         metareg = metareg,
+                                                         include_epigen = include_epigen))
+  }
+
   if(nrow(timewise) == 0){
     warning(sprintf("Differential analysis results for %s %s not found.", ASSAY, TISSUE))
     return()
@@ -594,7 +619,7 @@ plot_feature_logfc = function(assay = NULL,
   }
   
   if(add_gene_symbol){
-    if(ASSAY %in% c("METHYL","ATAC")){
+    if(ASSAY %in% c("METHYL","ATAC") & !FEATURE %in% MotrpacRatTraining6moData::TRAINING_REGULATED_FEATURES$feature){
       feature_to_gene = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE)
     }else{
       feature_to_gene = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT)
@@ -622,6 +647,12 @@ plot_feature_logfc = function(assay = NULL,
     if(add_gene_symbol){
       title = sprintf("%s (%s)", title, gene_symbol)
     }
+  }
+  
+  # add logFC_se, if missing
+  # this is the case for METHYL not in TRAINING_REGULATED_FEATURES
+  if(any(is.na(curr_timewise_dea[,logFC_se]))){
+    curr_timewise_dea[is.na(logFC_se), logFC_se := logFC/zscore]
   }
 
   # add 0
@@ -822,9 +853,9 @@ plot_feature_trajectories = function(features,
   
   if(training_regulated_only){
     if(exclude_outliers){
-      data = data.table::as.data.table(get("TRAINING_REGULATED_NORM_DATA_NO_OUTLIERS", envir=as.environment("package:MotrpacRatTraining6moData")))
+      data = data.table::as.data.table(MotrpacRatTraining6moData::TRAINING_REGULATED_NORM_DATA_NO_OUTLIERS) 
     }else{
-      data = data.table::as.data.table(get("TRAINING_REGULATED_NORM_DATA", envir=as.environment("package:MotrpacRatTraining6moData")))
+      data = data.table::as.data.table(MotrpacRatTraining6moData::TRAINING_REGULATED_NORM_DATA)
     }
     data = fix_cols(data)
     # select features 
