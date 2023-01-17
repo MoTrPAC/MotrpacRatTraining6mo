@@ -61,7 +61,7 @@ Plot timewise differential analysis results for a single feature.
 Points are log fold-changes, and error bars indicate standard errors.
 }
 \examples{
-# 3 ways of plotting the same data are shown in each example below
+# Multiple ways of plotting the same data are shown in each example below
 
 # Plot a differential feature 
 plot_feature_logfc(feature = "ACETYL;HEART;NP_001003673.1_K477k",
@@ -74,6 +74,13 @@ plot_feature_logfc(assay = "ACETYL",
 plot_feature_logfc(assay = "ACETYL",
                    tissue = "HEART",
                    feature_ID = "NP_001003673.1_K477k",
+                   add_gene_symbol = TRUE,
+                   facet_by_sex = TRUE)
+                   
+# Plot a differential epigen feature
+plot_feature_logfc(feature="METHYL;HEART;chr20-38798_cluster11",
+                   add_gene_symbol = TRUE)
+plot_feature_logfc(feature="METHYL;HEART;chr20-38798_cluster11",
                    add_gene_symbol = TRUE,
                    facet_by_sex = TRUE)
 
@@ -150,5 +157,5 @@ plot_feature_logfc(assay = "METAB",
                    tissue = "ADRNL", 
                    feature_ID = "glucose", 
                    add_adj_p = TRUE)
-                             
+
 }

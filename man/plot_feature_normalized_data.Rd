@@ -76,6 +76,13 @@ plot_feature_normalized_data(assay = "ACETYL",
                              feature_ID = "NP_001003673.1_K477k",
                              add_gene_symbol = TRUE,
                              facet_by_sex = TRUE)
+                             
+# Plot a differential epigenetic feature
+plot_feature_normalized_data(feature = "METHYL;HEART;chr20-38798_cluster11",
+                             add_gene_symbol = TRUE)
+plot_feature_normalized_data(feature = "METHYL;HEART;chr20-38798_cluster11",
+                             add_gene_symbol = TRUE,
+                             facet_by_sex = TRUE)
 
 # Plot a redundant differential feature
 plot_feature_normalized_data(feature = "IMMUNO;PLASMA;BDNF",
