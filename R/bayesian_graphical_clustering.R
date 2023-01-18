@@ -1166,7 +1166,8 @@ extract_tissue_sets<-function(tissues,
 #' 
 #' @examples
 #' # Get lists of features belonging to all trajectories in the liver
-#' get_all_trajectories(tissues = "LIVER")
+#' liver = get_all_trajectories(tissues = "LIVER")
+#' lapply(liver[1:5], head)
 #'
 get_all_trajectories = function(edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets, 
                                 node_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$node_sets, 
