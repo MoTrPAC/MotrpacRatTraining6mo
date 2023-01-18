@@ -2,16 +2,31 @@
 #' 
 #' Plot an interactive network of pathway enrichments. 
 #' 
-#' @param pw_enrich_res data frame of enrichment results. 
+#' @param pw_enrich_res optional data frame of enrichment results. 
 #'   May be a subset of [MotrpacRatTraining6moData::GRAPH_PW_ENRICH] 
 #'   or a data frame returned from [cluster_pathway_enrichment()].
 #'   Columns must include "adj_p_value", "ome", "tissue", "intersection", "computed_p_value", 
-#'   "term_name", "term_id". 
+#'   "term_name", "term_id". If not specified, \code{tissues} and \code{cluster} must be specified. 
+#'   \code{NULL} by default. 
+#' @param tissues character vector of tissue abbreviations, at least one of [MotrpacRatTraining6moData::TISSUE_ABBREV].
+#'   Must be specified if \code{pw_enrich_res} is not provided. \code{NULL} by default.     
+#' @param assays optional character vector of assay abbreviations, at least one of [MotrpacRatTraining6moData::ASSAY_ABBREV].
+#'   All assays by default.   
+#' @param cluster character, graphical cluster of interest.
+#'   Must be specified if \code{pw_enrich_res} is not provided.  
+#'   e.g., "8w_F1_M1" for features that are 
+#'   up-regulated (1) in females (F) and up-regulated in males (M1) at 8 weeks of training (8w), or 
+#'   "1w_F0_M1->2w_F0_M1->4w_F0_M1->8w_F1_M1" for features that are up-regulated in males at all time points
+#'   (1w_F?_M1, 2w_F?_M1, 4w_F?_M1, 8w_F?_M1) and up-regulated in females at 8 weeks of training only. 
+#'   See [MotrpacRatTraining6moData::GRAPH_PW_ENRICH]\code{$graphical_cluster} for all possible options.  
+#'   See the [vignette](https://motrpac.github.io/MotrpacRatTraining6mo/articles/MotrpacRatTraining6mo.html#bayesian-graphical-clustering)
+#'   for a detailed description of how to interpret and construct these strings. \code{NULL} by default.  
 #' @param feature_to_gene data frame, map between \code{intersection_id_type} and gene symbols. 
 #'   Columns must include "gene_symbol" and "ensembl_gene" if \code{intersection_id_type == "ensembl_gene"}.
 #'   [MotrpacRatTraining6moData::FEATURE_TO_GENE] by default. 
 #' @param intersection_id_type character, type of gene identifier used to define 
-#'   \code{pw_enrich_res$intersection}, either "ensembl_gene" or "gene_symbol"
+#'   \code{pw_enrich_res$intersection}, either "ensembl_gene" or "gene_symbol".
+#'   "ensembl_gene" by default. 
 #' @param similarity_cutoff numeric, edges are drawn between pairs of pathways if they have 
 #'   a similarity metric above this value. 0.375 by default. 
 #' @param adj_pval_cutoff numeric, pathway enrichments are only considered for 
@@ -72,6 +87,10 @@
 #' enrich_res = MotrpacRatTraining6moData::GRAPH_PW_ENRICH
 #' enrich_res = enrich_res[enrich_res$cluster == "HEART:8w_F1_M1",]
 #' enrichment_network_vis(enrich_res, add_group_label_nodes = TRUE) 
+#' # Equivalently:
+#' enrichment_network_vis(tissues="HEART", 
+#'                        cluster="8w_F1_M1",
+#'                        add_group_label_nodes = TRUE) 
 #' 
 #' \dontrun{
 #' # Example 2: Export the above network to Cytoscape.
@@ -94,8 +113,18 @@
 #'                        title = "Muscle 8w_F1_M1",
 #'                        add_group_label_nodes = FALSE,
 #'                        multitissue_pathways_only = TRUE) 
+#' # Equivalently:
+#' enrichment_network_vis(tissues = c("SKM-GN","SKM-VL","HEART"),
+#'                        cluster = "8w_F1_M1",
+#'                        similarity_cutoff = 0.3,
+#'                        title = "Muscle 8w_F1_M1",
+#'                        add_group_label_nodes = FALSE,
+#'                        multitissue_pathways_only = TRUE) 
 #' 
-enrichment_network_vis = function(pw_enrich_res, 
+enrichment_network_vis = function(pw_enrich_res = NULL, 
+                                  tissues = NULL,
+                                  assays = MotrpacRatTraining6moData::ASSAY_ABBREV,
+                                  cluster = NULL, 
                                   feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE,
                                   intersection_id_type = 'ensembl_gene',
                                   similarity_cutoff = 0.375,
@@ -116,6 +145,8 @@ enrichment_network_vis = function(pw_enrich_res,
   ptm = proc.time()
   set.seed(123)
   
+  if(verbose) message("Formatting inputs...")
+  
   if(!overwrite_html & file.exists(out_html) & out_html != "/dev/null" & return_html){
     message(sprintf("HTML file %s already exists. Returning path", out_html))
     return(out_html)
@@ -125,13 +156,62 @@ enrichment_network_vis = function(pw_enrich_res,
     stop("Only one of 'return_html' and 'return_graph_for_cytoscape' can be set to TRUE.")
   }
   
-  if(verbose) message("Formatting inputs...")
+  if(is.null(pw_enrich_res) & any(c(is.null(tissues), is.null(cluster)))){
+    stop("If 'pw_enrich_res' is not provided, 'tissues' and 'cluster' must be specified.")
+  }
+  
+  if(!is.null(pw_enrich_res) & (!is.null(tissues) | !is.null(cluster))){
+    stop("If 'pw_enrich_res' is provided, 'tissues' and 'cluster' should not be specified. Subset 'pw_enrich_res' to your liking before running this function.")
+  }
+  
+  # check cluster argument
+  if(!is.null(cluster) & length(cluster) > 1){
+    stop(paste("'cluster' has more than one value, but only a single value can be provided.",
+               "To plot pathway enrichments for features from multiple clusters,",
+               "select the features of interest from MotrpacRatTrainingData::GRAPH_STATES,",
+               "perform pathway enrichment with 'cluster_pathway_enrichment()',",
+               "and supply the results to the 'pw_enrich_res' argument of this function."))
+  }
+  
+  if(is.null(pw_enrich_res)){
+    if(!all(tissues %in% MotrpacRatTraining6moData::TISSUE_ABBREV)){
+      stop(sprintf("'tissues' must be at least one of the following tissue abbreviations:\n %s", 
+           paste0(MotrpacRatTraining6moData::TISSUE_ABBREV, collapse=", ")))
+    }
+    if(!all(assays %in% MotrpacRatTraining6moData::ASSAY_ABBREV)){
+      stop(sprintf("'assays' must be at least one of the following assay abbreviations:\n %s", 
+                   paste0(MotrpacRatTraining6moData::ASSAY_ABBREV, collapse=", ")))
+    }
+    .cluster = cluster
+    all_enrich = data.table::data.table(MotrpacRatTraining6moData::GRAPH_PW_ENRICH)
+    if(!any(grepl(cluster, all_enrich[,cluster]))){
+      stop(sprintf("No match was found for cluster '%s' in MotrpacRatTraining6moData::GRAPH_PW_ENRICH$cluster.", cluster))
+    }
+    sub_enrich = all_enrich[tissue %in% tissues & ome %in% assays & grepl(sprintf(":%s", .cluster), cluster)]
+  }else{
+    sub_enrich = data.table::data.table(pw_enrich_res)
+    if("cluster" %in% colnames(sub_enrich) & "tissue" %in% colnames(sub_enrich)){
+      # get cluster names without tissue prefix
+      if(all(unique(gsub(":.*","",sub_enrich[,cluster])) %in% sub_enrich[,tissue])){
+        clusters = unique(gsub(".*:","",sub_enrich[,cluster]))
+      }else{
+        clusters = unique(sub_enrich[,cluster])
+      }
+      if(length(clusters) > 1){
+        stop(paste("The 'cluster' column in the input has more than one unique value.",
+                   "Subset the input to specify a single cluster or,",
+                   "if you believe this is a mistake, make the 'cluster' column a single value.",
+                   "Alternatively, to plot pathway enrichments for features from multiple clusters,",
+                   "perform pathway enrichment for a single super-cluster with 'cluster_pathway_enrichment()'",
+                   "and supply the results to the 'pw_enrich_res' argument of this function."))
+      }
+    }
+  }
   
   # check format of enrich_res 
-  sub_enrich = data.table::data.table(pw_enrich_res)
   req_cols = c("adj_p_value", "ome", "tissue", "intersection", "computed_p_value", "term_name", "term_id")
   if(!all(req_cols %in% colnames(sub_enrich))){
-    stop(sprintf("The input is missing at least one of the required columns:\n $s", paste(req_cols, collapse=", ")))
+    stop(sprintf("The input is missing at least one of the required columns:\n %s", paste(req_cols, collapse=", ")))
   }
   
   # check format of feature_to_gene
@@ -194,12 +274,15 @@ enrichment_network_vis = function(pw_enrich_res,
   # keep omes separate
   clust1sig[,enriched := sprintf('<b>%s:</b> %s',dataset,genes)]
   
+  # check if there are duplicate datasets for a pw
+  if(nrow(clust1sig[,.(tissue, ome, term_id)]) != nrow(unique(clust1sig[,.(tissue, ome, term_id)]))){
+    stop("There are multiple results for a single tissue/assay/pathway combination. This is unexpected. Check your input.")
+  }
+  
   clust1sig_collapsed = clust1sig[,list(intersection_formatted = paste0(genes, collapse=', '),
                                         genes = paste0(genes, collapse=', '),
                                         intersection_original = paste0(intersection, collapse=','), # includes duplicates 
                                         sumlog_p = collapse_p(computed_p_value),
-                                        #term_size = sum(term_size),
-                                        #query_size = sum(query_size),
                                         omes = paste0(unique(ome), collapse=', '),
                                         tissues = paste0(unique(tissue), collapse=', '),
                                         datasets = paste0(dataset, collapse='; '),
@@ -338,10 +421,6 @@ enrichment_network_vis = function(pw_enrich_res,
     return()
   }
   
-  #if(verbose) message("Final touches...")
-  
-  #if(verbose) message("Labelling groups by most frequent pathway subclass...")
-  
   # add class and subclass to edges 
   points[,pathway_class := parent_pathways[Var]]
   points[,pathway_subclass := gsub(".*; ","",pathway_class)]
@@ -444,8 +523,6 @@ enrichment_network_vis = function(pw_enrich_res,
   }
   hex = hex[1:n_clusters]
   names(hex) = unique(viznetwork_nodes[,group])
-  
-  #if(verbose) message("Formatting legend...")
   
   # set color by group 
   viznetwork_nodes[,color.background := hex[group]]

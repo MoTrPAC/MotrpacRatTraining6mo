@@ -952,17 +952,20 @@ Here we show the interactive network of pathway enrichments corresponding to
 training-regulated features that are up-regulated in the gastrocnemius in both
 sexes at the 8-week time point, i.e. `SKM-GN:8w_F1_M1`. 
 ```{r viznetwork1, fig.width=8}
-# Extract pathway enrichments for this cluster
-data(GRAPH_PW_ENRICH)
-pw = GRAPH_PW_ENRICH[GRAPH_PW_ENRICH$cluster == "SKM-GN:8w_F1_M1",]
-enrichment_network_vis(pw)
+enrichment_network_vis(tissues="SKM-GN",
+                       cluster="8w_F1_M1")
+
+# # Equivalently:
+# data(GRAPH_PW_ENRICH)
+# pw = GRAPH_PW_ENRICH[GRAPH_PW_ENRICH$cluster == "SKM-GN:8w_F1_M1",]
+# enrichment_network_vis(pw)
 ```
 
 Note that you could run this function with any pathway enrichment results, 
 as long as the columns of `pw_enrich_res`
 include "adj_p_value", "ome", "tissue", "intersection", "computed_p_value", "term_name", and "term_id" 
 and the columns of `feature_to_gene` include "gene_symbol", "ensembl_gene". 
-`feature$ensembl_gene` can be a dummy column if `intersection_id_type = "gene_symbol". 
+`feature$ensembl_gene` can be a dummy column if `intersection_id_type = "gene_symbol"`. 
 
 ### Example with multiple tissues 
 Now let's examine pathways that are enriched in the same graphical cluster for
@@ -974,10 +977,14 @@ If we are specifically interested in pathways that are significantly enriched in
 multiple tissues, we can set `multitissue_pathways_only` to `TRUE`. This removes 
 any pathways that are not enriched in more than one tissue (in at least one ome). 
 ```{r viznetwork2, fig.width=8}
-pw = GRAPH_PW_ENRICH[grepl(":8w_F1_M1", GRAPH_PW_ENRICH$cluster) & 
-                       GRAPH_PW_ENRICH$tissue %in% c("HEART","SKM-GN","SKM-VL"),]
+enrichment_network_vis(tissues=c("HEART","SKM-GN","SKM-VL"),
+                       cluster="8w_F1_M1", 
+                       multitissue_pathways_only = TRUE)
 
-enrichment_network_vis(pw, multitissue_pathways_only = TRUE)
+# # Equivalently:
+# pw = GRAPH_PW_ENRICH[grepl(":8w_F1_M1", GRAPH_PW_ENRICH$cluster) & 
+#                        GRAPH_PW_ENRICH$tissue %in% c("HEART","SKM-GN","SKM-VL"),]
+# enrichment_network_vis(pw, multitissue_pathways_only = TRUE)
 ```
 
 ### Examples with other parameters
@@ -993,11 +1000,21 @@ we can set the `add_group_label_nodes` argument to `TRUE`.
 If you're zoomed out, hover over a label to display it in larger font. 
 ```{r viznetwork3, fig.width=8}
 enrichment_network_vis(pw, add_group_label_nodes = TRUE)
+
+# # Equivalently:
+# enrichment_network_vis(tissues="SKM-GN",
+#                        cluster="8w_F1_M1",
+#                        add_group_label_nodes = TRUE)
 ```
 
 You can also remove group labels entirely with `label_nodes = FALSE`. 
 ```{r viznetwork4, fig.width=8}
 enrichment_network_vis(pw, label_nodes = FALSE)
+
+# # Equivalently:
+# enrichment_network_vis(tissues="SKM-GN",
+#                        cluster="8w_F1_M1",
+#                        label_nodes = FALSE)
 ```
 
 #### Save similarity scores
