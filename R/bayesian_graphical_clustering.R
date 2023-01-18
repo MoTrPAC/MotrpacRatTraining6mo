@@ -532,9 +532,9 @@ get_trajectory_sizes_from_edge_sets <- function(edge_sets = MotrpacRatTraining6m
 #' 
 #' Keep the edges of the top trajectories of an edge set of a graphical solution.
 #' 
-#' @param edge_sets A named list of string vectors. The name of an edge is node_id---node_id
+#' @param edge_sets A named list of string vectors. The name of an edge is \code{node_id---node_id}
 #'        edges with no analytes have a NULL set (a set of size zero, but are still represented),
-#'        node ids are time_points_Fx_My where x and y represent the up/down state in each sex.
+#'        node ids are \code{[timepoints]_F[x]_M[y]} where \code{x} and \code{y} represent the up/down state in each sex.
 #'        \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.
 #' @param topk A number. The maximal number of full trajectories to include in the new solution.
 #' @param min_path_size An integer specifying the minimal path size to be considered.
@@ -542,7 +542,7 @@ get_trajectory_sizes_from_edge_sets <- function(edge_sets = MotrpacRatTraining6m
 #' @export
 #' 
 #' @return 
-#' A named list of edge sets. All possible edges in our 9x4 grid will appear in the solution.
+#' A named list of edge sets. All possible edges in our 9 x 4 grid will appear in the solution.
 #' Edges that are removed will have no features/analytes in their entry.
 #' 
 #' @examples
@@ -579,7 +579,8 @@ get_trajectory_sizes_from_edge_sets <- function(edge_sets = MotrpacRatTraining6m
 #' # Get edges corresponding to 5 largest trajectories in the liver
 #' tissue_edge_sets = limit_sets_by_regex(MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets,
 #'                                        "LIVER")
-#' filter_edge_sets_by_trajectories(tissue_edge_sets)
+#' res = filter_edge_sets_by_trajectories(tissue_edge_sets)
+#' lapply(res[1:10], head)
 filter_edge_sets_by_trajectories <- function(edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets, 
                                              topk = 5, 
                                              min_path_size = 5){
