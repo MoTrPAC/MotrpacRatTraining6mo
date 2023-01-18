@@ -9,10 +9,13 @@
 #'   "term_name", "term_id". If not specified, \code{tissues} and \code{cluster} must be specified. 
 #'   \code{NULL} by default. 
 #' @param tissues character vector of tissue abbreviations, at least one of [MotrpacRatTraining6moData::TISSUE_ABBREV].
+#'   Used to subset [MotrpacRatTraining6moData::GRAPH_PW_ENRICH]. 
 #'   Must be specified if \code{pw_enrich_res} is not provided. \code{NULL} by default.     
 #' @param assays optional character vector of assay abbreviations, at least one of [MotrpacRatTraining6moData::ASSAY_ABBREV].
+#'   Used to subset [MotrpacRatTraining6moData::GRAPH_PW_ENRICH]. 
 #'   All assays by default.   
 #' @param cluster character, graphical cluster of interest.
+#'   Used to subset [MotrpacRatTraining6moData::GRAPH_PW_ENRICH]. 
 #'   Must be specified if \code{pw_enrich_res} is not provided.  
 #'   e.g., "8w_F1_M1" for features that are 
 #'   up-regulated (1) in females (F) and up-regulated in males (M1) at 8 weeks of training (8w), or 
