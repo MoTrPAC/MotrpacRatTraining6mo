@@ -36,12 +36,15 @@ Columns must include "adj_p_value", "ome", "tissue", "intersection", "computed_p
 \code{NULL} by default.}
 
 \item{tissues}{character vector of tissue abbreviations, at least one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}.
+Used to subset \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}.
 Must be specified if \code{pw_enrich_res} is not provided. \code{NULL} by default.}
 
 \item{assays}{optional character vector of assay abbreviations, at least one of \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV}.
+Used to subset \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}.
 All assays by default.}
 
 \item{cluster}{character, graphical cluster of interest.
+Used to subset \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}.
 Must be specified if \code{pw_enrich_res} is not provided.
 e.g., "8w_F1_M1" for features that are
 up-regulated (1) in females (F) and up-regulated in males (M1) at 8 weeks of training (8w), or
