@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,22 @@
       <small>Source: <a href="https://github.com/MoTrPAC/MotrpacRatTraining6mo/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.5.0" id="motrpacrattraining6mo-150-2023-01-18">MotrpacRatTraining6mo 1.5.0 (2023-01-18)<a class="anchor" aria-label="anchor" href="#motrpacrattraining6mo-150-2023-01-18"></a></h2>
+<ul><li>Add <code><a href="../reference/load_feature_annotation.html">load_feature_annotation()</a></code>.<br></li>
+<li>Add <code>counts</code> argument to <code><a href="../reference/transcript_normalize_counts.html">transcript_normalize_counts()</a></code> and <code><a href="../reference/atac_normalize_counts.html">atac_normalize_counts()</a></code> to allow user-supplied data.<br></li>
+<li>Add <code>tissues</code>, <code>assays</code>, and <code>cluster</code> arguments to <code><a href="../reference/enrichment_network_vis.html">enrichment_network_vis()</a></code> to provide an alternate way for users to specify results from <code><a href="https://motrpac.github.io/MotrpacRatTraining6moData/reference/GRAPH_PW_ENRICH.html">MotrpacRatTraining6moData::GRAPH_PW_ENRICH</a></code>.<br></li>
+<li>Add tests for <code><a href="../reference/enrichment_network_vis.html">enrichment_network_vis()</a></code>.<br></li>
+<li>Use <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">signif()</a></code> instead of <code><a href="https://rdrr.io/r/base/Round.html" class="external-link">round()</a></code> to display values in plot titles.</li>
+<li>Add note about reproducibility issues to documentation for <code><a href="../reference/transcript_normalize_counts.html">transcript_normalize_counts()</a></code>.<br></li>
+<li>Move <code>MotrpacRatTraining6moData</code> from <code>Imports</code> to <code>Depends</code>. This means <code>MotrpacRatTraining6moData</code> is also attached (not just loaded) when <code>MotrpacRatTraining6mo</code> is attached.<br></li>
+<li>Replace <code>fetch_object(name_as_string)</code> with <code>.get</code>, which internally uses <code>get(name_as_string, envir=as.environment("package:MotrpacRatTraining6moData"))</code>.<br></li>
+<li>Change URLs for <code><a href="../reference/load_methyl_feature_annotation.html">load_methyl_feature_annotation()</a></code> and <code><a href="../reference/load_atac_feature_annotation.html">load_atac_feature_annotation()</a></code>.<br></li>
+<li>Fix bug in <code><a href="../reference/plot_feature_logfc.html">plot_feature_logfc()</a></code> that prevented epigenetic features from being plotted.<br></li>
+<li>Speed up <code><a href="../reference/plot_feature_logfc.html">plot_feature_logfc()</a></code> for differential epigenetic features.<br></li>
+<li>In <code><a href="../reference/get_rdata_from_url.html">get_rdata_from_url()</a></code>, calculate log fold-change standard errors for METHYL differential analysis results: <code>logFC_se = logFC/zscore</code>
+</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.4.3" id="motrpacrattraining6mo-143-2023-01-06">MotrpacRatTraining6mo 1.4.3 (2023-01-06)<a class="anchor" aria-label="anchor" href="#motrpacrattraining6mo-143-2023-01-06"></a></h2>
 <ul><li>In <code><a href="../reference/plot_feature_normalized_data.html">plot_feature_normalized_data()</a></code> and <code><a href="../reference/plot_feature_logfc.html">plot_feature_logfc()</a></code>, handle input features that don’t exist in the data.</li>

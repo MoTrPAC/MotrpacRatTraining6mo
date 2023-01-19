@@ -12,7 +12,7 @@ split data frames."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/aj
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,35 +76,299 @@ split data frames.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">list_available_data</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "STOPWORDS"             "AirPassengers"         "BJsales"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "BOD"                   "CO2"                   "ChickWeight"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "DNase"                 "EuStockMarkets"        "Formaldehyde"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "HairEyeColor"          "Harman23.cor"          "Harman74.cor"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "Indometh"              "InsectSprays"          "JohnsonJohnson"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "LakeHuron"             "LifeCycleSavings"      "Loblolly"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "Nile"                  "Orange"                "OrchardSprays"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "PlantGrowth"           "Puromycin"             "Seatbelts"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "Theoph"                "Titanic"               "ToothGrowth"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [28] "UCBAdmissions"         "UKDriverDeaths"        "UKgas"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "USAccDeaths"           "USArrests"             "USJudgeRatings"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [34] "USPersonalExpenditure" "UScitiesD"             "VADeaths"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "WWWusage"              "WorldPhones"           "ability.cov"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [40] "airmiles"              "airquality"            "anscombe"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [43] "attenu"                "attitude"              "austres"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [46] "cars"                  "chickwts"              "co2"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [49] "crimtab"               "discoveries"           "esoph"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [52] "euro"                  "eurodist"              "faithful"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [55] "freeny"                "infert"                "iris"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [58] "iris3"                 "islands"               "lh"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [61] "longley"               "lynx"                  "morley"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [64] "mtcars"                "nhtemp"                "nottem"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [67] "npk"                   "occupationalStatus"    "precip"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [70] "presidents"            "pressure"              "quakes"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [73] "randu"                 "rivers"                "rock"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [76] "sleep"                 "stackloss"             "sunspot.month"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [79] "sunspot.year"          "sunspots"              "swiss"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [82] "treering"              "trees"                 "uspop"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [85] "volcano"               "warpbreaks"            "women"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "STOPWORDS"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [2] "ACETYL_HEART_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [3] "ACETYL_HEART_NORM_DATA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [4] "ACETYL_LIVER_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [5] "ACETYL_LIVER_NORM_DATA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [6] "ACETYL_META"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] "ASSAY_ABBREV"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [8] "ASSAY_ABBREV_TO_CODE"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [9] "ASSAY_CODE_TO_ABBREV"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [10] "ASSAY_COLORS"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [11] "ASSAY_ORDER"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [12] "ATAC_BAT_NORM_DATA_05FDR"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] "ATAC_HEART_NORM_DATA_05FDR"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [14] "ATAC_HIPPOC_NORM_DATA_05FDR"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [15] "ATAC_KIDNEY_NORM_DATA_05FDR"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [16] "ATAC_LIVER_NORM_DATA_05FDR"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [17] "ATAC_LUNG_NORM_DATA_05FDR"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [18] "ATAC_META"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] "ATAC_SKMGN_NORM_DATA_05FDR"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [20] "ATAC_WATSC_NORM_DATA_05FDR"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [21] "FEATURE_TO_GENE"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [22] "FEATURE_TO_GENE_FILT"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [23] "GENE_UNIVERSES"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [24] "GRAPH_COMPONENTS"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] "GRAPH_PW_ENRICH"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] "GRAPH_STATES"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [27] "GROUP_COLORS"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [28] "IMMUNO_ADRNL_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [29] "IMMUNO_BAT_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [30] "IMMUNO_COLON_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "IMMUNO_CORTEX_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [32] "IMMUNO_HEART_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [33] "IMMUNO_HIPPOC_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [34] "IMMUNO_KIDNEY_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [35] "IMMUNO_LIVER_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [36] "IMMUNO_LUNG_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] "IMMUNO_META"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [38] "IMMUNO_NORM_DATA_FLAT"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [39] "IMMUNO_NORM_DATA_NESTED"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [40] "IMMUNO_OVARY_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] "IMMUNO_PLASMA_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [42] "IMMUNO_SKMGN_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] "IMMUNO_SKMVL_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [44] "IMMUNO_SMLINT_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [45] "IMMUNO_SPLEEN_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] "IMMUNO_TESTES_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [47] "IMMUNO_WATSC_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [48] "METAB_ADRNL_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] "METAB_ADRNL_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [50] "METAB_BAT_DA"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] "METAB_BAT_DA_METAREG"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [52] "METAB_COLON_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [53] "METAB_COLON_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [54] "METAB_CORTEX_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] "METAB_CORTEX_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [56] "METAB_FEATURE_ID_MAP"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [57] "METAB_HEART_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [58] "METAB_HEART_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [59] "METAB_HIPPOC_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [60] "METAB_HIPPOC_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "METAB_HYPOTH_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [62] "METAB_HYPOTH_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [63] "METAB_KIDNEY_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] "METAB_KIDNEY_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [65] "METAB_LIVER_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [66] "METAB_LIVER_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] "METAB_LUNG_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [68] "METAB_LUNG_DA_METAREG"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [69] "METAB_NORM_DATA_FLAT"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [70] "METAB_NORM_DATA_NESTED"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [71] "METAB_OVARY_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [72] "METAB_OVARY_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] "METAB_PLASMA_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [74] "METAB_PLASMA_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] "METAB_SKMGN_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] "METAB_SKMGN_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [77] "METAB_SKMVL_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [78] "METAB_SKMVL_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] "METAB_SMLINT_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [80] "METAB_SMLINT_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [81] "METAB_SPLEEN_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [82] "METAB_SPLEEN_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [83] "METAB_TESTES_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [84] "METAB_TESTES_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] "METAB_VENACV_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [86] "METAB_VENACV_DA_METAREG"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [87] "METAB_WATSC_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [88] "METAB_WATSC_DA_METAREG"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [89] "METHYL_BAT_NORM_DATA_05FDR"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [90] "METHYL_HEART_NORM_DATA_05FDR"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "METHYL_HIPPOC_NORM_DATA_05FDR"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [92] "METHYL_KIDNEY_NORM_DATA_05FDR"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [93] "METHYL_LIVER_NORM_DATA_05FDR"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [94] "METHYL_LUNG_NORM_DATA_05FDR"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [95] "METHYL_META"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [96] "METHYL_SKMGN_NORM_DATA_05FDR"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "METHYL_WATSC_NORM_DATA_05FDR"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [98] "OUTLIERS"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [99] "PATHWAY_PARENTS"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100] "PHENO"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [101] "PHOSPHO_CORTEX_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [102] "PHOSPHO_CORTEX_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [103] "PHOSPHO_HEART_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [104] "PHOSPHO_HEART_NORM_DATA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [105] "PHOSPHO_KIDNEY_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [106] "PHOSPHO_KIDNEY_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [107] "PHOSPHO_LIVER_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [108] "PHOSPHO_LIVER_NORM_DATA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [109] "PHOSPHO_LUNG_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [110] "PHOSPHO_LUNG_NORM_DATA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [111] "PHOSPHO_META"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [112] "PHOSPHO_SKMGN_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [113] "PHOSPHO_SKMGN_NORM_DATA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [114] "PHOSPHO_WATSC_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [115] "PHOSPHO_WATSC_NORM_DATA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [116] "PROT_CORTEX_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [117] "PROT_CORTEX_NORM_DATA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [118] "PROT_HEART_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [119] "PROT_HEART_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [120] "PROT_KIDNEY_DA"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [121] "PROT_KIDNEY_NORM_DATA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [122] "PROT_LIVER_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [123] "PROT_LIVER_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [124] "PROT_LUNG_DA"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [125] "PROT_LUNG_NORM_DATA"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [126] "PROT_META"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [127] "PROT_SKMGN_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [128] "PROT_SKMGN_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [129] "PROT_WATSC_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [130] "PROT_WATSC_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [131] "RAT_TO_HUMAN_GENE"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [132] "RAT_TO_HUMAN_PHOSPHO"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [133] "REPEATED_FEATURES"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [134] "REPFDR_INPUTS"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [135] "REPFDR_RES"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [136] "SEX_COLORS"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [137] "TISSUE_ABBREV"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [138] "TISSUE_ABBREV_TO_CODE"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [139] "TISSUE_CODE_TO_ABBREV"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [140] "TISSUE_COLORS"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [141] "TISSUE_ORDER"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [142] "TRAINING_REGULATED_FEATURES"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [143] "TRAINING_REGULATED_NORM_DATA"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [144] "TRAINING_REGULATED_NORM_DATA_NO_OUTLIERS"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [145] "TRNSCRPT_ADRNL_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [146] "TRNSCRPT_ADRNL_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [147] "TRNSCRPT_ADRNL_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [148] "TRNSCRPT_BAT_DA"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [149] "TRNSCRPT_BAT_NORM_DATA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [150] "TRNSCRPT_BAT_RAW_COUNTS"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151] "TRNSCRPT_BLOOD_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [152] "TRNSCRPT_BLOOD_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [153] "TRNSCRPT_BLOOD_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [154] "TRNSCRPT_COLON_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [155] "TRNSCRPT_COLON_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [156] "TRNSCRPT_COLON_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [157] "TRNSCRPT_CORTEX_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [158] "TRNSCRPT_CORTEX_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [159] "TRNSCRPT_CORTEX_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [160] "TRNSCRPT_HEART_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [161] "TRNSCRPT_HEART_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [162] "TRNSCRPT_HEART_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [163] "TRNSCRPT_HIPPOC_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [164] "TRNSCRPT_HIPPOC_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [165] "TRNSCRPT_HIPPOC_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [166] "TRNSCRPT_HYPOTH_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [167] "TRNSCRPT_HYPOTH_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [168] "TRNSCRPT_HYPOTH_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [169] "TRNSCRPT_KIDNEY_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [170] "TRNSCRPT_KIDNEY_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [171] "TRNSCRPT_KIDNEY_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [172] "TRNSCRPT_LIVER_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [173] "TRNSCRPT_LIVER_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [174] "TRNSCRPT_LIVER_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [175] "TRNSCRPT_LUNG_DA"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [176] "TRNSCRPT_LUNG_NORM_DATA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [177] "TRNSCRPT_LUNG_RAW_COUNTS"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [178] "TRNSCRPT_META"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [179] "TRNSCRPT_OVARY_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [180] "TRNSCRPT_OVARY_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [181] "TRNSCRPT_OVARY_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [182] "TRNSCRPT_SKMGN_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [183] "TRNSCRPT_SKMGN_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [184] "TRNSCRPT_SKMGN_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [185] "TRNSCRPT_SKMVL_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [186] "TRNSCRPT_SKMVL_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [187] "TRNSCRPT_SKMVL_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [188] "TRNSCRPT_SMLINT_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [189] "TRNSCRPT_SMLINT_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [190] "TRNSCRPT_SMLINT_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [191] "TRNSCRPT_SPLEEN_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [192] "TRNSCRPT_SPLEEN_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [193] "TRNSCRPT_SPLEEN_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [194] "TRNSCRPT_TESTES_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [195] "TRNSCRPT_TESTES_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [196] "TRNSCRPT_TESTES_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [197] "TRNSCRPT_VENACV_DA"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [198] "TRNSCRPT_VENACV_NORM_DATA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [199] "TRNSCRPT_VENACV_RAW_COUNTS"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [200] "TRNSCRPT_WATSC_DA"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [201] "TRNSCRPT_WATSC_NORM_DATA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [202] "TRNSCRPT_WATSC_RAW_COUNTS"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [203] "UBIQ_HEART_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [204] "UBIQ_HEART_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [205] "UBIQ_LIVER_DA"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [206] "UBIQ_LIVER_NORM_DATA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [207] "UBIQ_META"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [208] "AirPassengers"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [209] "BJsales"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [210] "BOD"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [211] "CO2"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [212] "ChickWeight"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [213] "DNase"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [214] "EuStockMarkets"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [215] "Formaldehyde"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [216] "HairEyeColor"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [217] "Harman23.cor"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [218] "Harman74.cor"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [219] "Indometh"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [220] "InsectSprays"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [221] "JohnsonJohnson"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [222] "LakeHuron"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [223] "LifeCycleSavings"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [224] "Loblolly"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [225] "Nile"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [226] "Orange"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [227] "OrchardSprays"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [228] "PlantGrowth"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [229] "Puromycin"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [230] "Seatbelts"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [231] "Theoph"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [232] "Titanic"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [233] "ToothGrowth"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [234] "UCBAdmissions"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [235] "UKDriverDeaths"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [236] "UKgas"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [237] "USAccDeaths"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [238] "USArrests"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [239] "USJudgeRatings"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [240] "USPersonalExpenditure"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [241] "UScitiesD"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [242] "VADeaths"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [243] "WWWusage"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [244] "WorldPhones"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [245] "ability.cov"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [246] "airmiles"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [247] "airquality"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [248] "anscombe"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [249] "attenu"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [250] "attitude"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [251] "austres"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [252] "cars"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [253] "chickwts"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [254] "co2"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [255] "crimtab"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [256] "discoveries"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [257] "esoph"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [258] "euro"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [259] "eurodist"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [260] "faithful"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [261] "freeny"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [262] "infert"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [263] "iris"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [264] "iris3"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [265] "islands"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [266] "lh"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [267] "longley"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [268] "lynx"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [269] "morley"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [270] "mtcars"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [271] "nhtemp"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [272] "nottem"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [273] "npk"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [274] "occupationalStatus"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [275] "precip"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [276] "presidents"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [277] "pressure"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [278] "quakes"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [279] "randu"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [280] "rivers"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [281] "rock"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [282] "sleep"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [283] "stackloss"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [284] "sunspot.month"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [285] "sunspot.year"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [286] "sunspots"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [287] "swiss"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [288] "treering"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [289] "trees"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [290] "uspop"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [291] "volcano"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [292] "warpbreaks"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [293] "women"                                   </span>
 <span class="r-in"><span><span class="fu">list_available_data</span><span class="op">(</span><span class="st">"MotrpacRatTraining6moData"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "ACETYL_HEART_DA"                         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [2] "ACETYL_HEART_NORM_DATA"                  </span>
