@@ -1,3 +1,10 @@
+# MotrpacRatTraining6mo 1.5.1 (2023-01-19)
+
+* In `enrichment_network_vis()`, include pathway names in determination of node labels.  
+* In `enrichment_network_vis()`, use `MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT` as
+`feature_to_gene` default instead of the unfiltered version.  
+* Add more details to `enrichment_network_vis()` docs.  
+
 # MotrpacRatTraining6mo 1.5.0 (2023-01-18)
 
 * Add `load_feature_annotation()`.  

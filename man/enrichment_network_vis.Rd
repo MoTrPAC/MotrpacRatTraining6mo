@@ -9,7 +9,7 @@ enrichment_network_vis(
   tissues = NULL,
   assays = MotrpacRatTraining6moData::ASSAY_ABBREV,
   cluster = NULL,
-  feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE,
+  feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT,
   intersection_id_type = "ensembl_gene",
   similarity_cutoff = 0.375,
   adj_pval_cutoff = 0.1,
@@ -56,14 +56,15 @@ for a detailed description of how to interpret and construct these strings. \cod
 
 \item{feature_to_gene}{data frame, map between \code{intersection_id_type} and gene symbols.
 Columns must include "gene_symbol" and "ensembl_gene" if \code{intersection_id_type == "ensembl_gene"}.
-\link[MotrpacRatTraining6moData:FEATURE_TO_GENE]{MotrpacRatTraining6moData::FEATURE_TO_GENE} by default.}
+\link[MotrpacRatTraining6moData:FEATURE_TO_GENE_FILT]{MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT} by default.}
 
 \item{intersection_id_type}{character, type of gene identifier used to define
 \code{pw_enrich_res$intersection}, either "ensembl_gene" or "gene_symbol".
 "ensembl_gene" by default.}
 
 \item{similarity_cutoff}{numeric, edges are drawn between pairs of pathways if they have
-a similarity metric above this value. 0.375 by default.}
+a similarity metric above this value. Increase this value to make a sparser
+network; decrease it to make a denser network. 0.375 by default.}
 
 \item{adj_pval_cutoff}{numeric, pathway enrichments are only considered for
 the network if the corresponding adjusted p-value (\code{pw_enrich_res$adj_p_value})
@@ -120,16 +121,34 @@ which the interactive \code{visNetwork} was saved.
 \description{
 Plot an interactive network of pathway enrichments.
 }
+\details{
+Inspired by the \href{https://apps.cytoscape.org/apps/enrichmentmap}{EnrichmentMap Cytoscape App}.
+Each node is a significantly enriched pathway; edges connect nodes where there is a high overlap between the
+sets of genes underlying each pathway enrichment. For pathways with significant
+enrichments in multiple assays, genes are combined across assays
+to calculate this similarity score. Node size is proportional to the number of datasets (tissue and assay combinations)
+with a significant enrichment; edge weight is scaled to the similarity score.
+Presenting pathway enrichments in this way allows groups of highly similar pathways
+to be more easily summarized at a higher level.
+
+Nodes in the graph are colored by the cluster of nodes they belong to, determined
+by \code{\link[igraph:cluster_louvain]{igraph::cluster_louvain()}}. If \code{label_nodes = TRUE}, node labels indicate
+the cluster number, a summary term for the cluster, and the number of nodes in
+the cluster from which this summary term was derived, e.g., "3: Fatty acid metabolism (4/15)".
+The summary term is defined as the most common pathway or parent pathway name.
+For example, the "3: Fatty acid metabolism (4/15)" label indicates that the pathway
+or parent pathway name for 4 out of 15 nodes in cluster 3 are "Fatty acid metabolism".
+}
 \examples{
 # Example 1: Plot an interactive network of pathway enrichments from the HEART:8w_F1_M1 node,
 # i.e., features that are up-regulated in both males and females after 8 weeks of training
 enrich_res = MotrpacRatTraining6moData::GRAPH_PW_ENRICH
 enrich_res = enrich_res[enrich_res$cluster == "HEART:8w_F1_M1",]
 enrichment_network_vis(enrich_res, add_group_label_nodes = TRUE) 
-# Equivalently:
-enrichment_network_vis(tissues="HEART", 
-                       cluster="8w_F1_M1",
-                       add_group_label_nodes = TRUE) 
+# # Equivalently:
+# enrichment_network_vis(tissues="HEART", 
+#                        cluster="8w_F1_M1",
+#                        add_group_label_nodes = TRUE) 
 
 \dontrun{
 # Example 2: Export the above network to Cytoscape.
@@ -144,21 +163,12 @@ RCy3::createNetworkFromIgraph(g, new.title='HEART:8w_F1_M1')
 # features that are up-regulated in both sexes at 8 weeks in any of the 3 muscle tissues. 
 # Only include pathways that are enriched in at least 2 muscle tissues.
 # Plot the color legend on the left instead of using colored labels pointing to nodes 
-enrich_res = MotrpacRatTraining6moData::GRAPH_PW_ENRICH
-enrich_res = enrich_res[enrich_res$tissue \%in\% c("SKM-GN","SKM-VL","HEART") &
-                         grepl(":8w_F1_M1",enrich_res$cluster),]
-enrichment_network_vis(enrich_res,
-                       similarity_cutoff = 0.3,
-                       title = "Muscle 8w_F1_M1",
-                       add_group_label_nodes = FALSE,
-                       multitissue_pathways_only = TRUE) 
-# Equivalently:
 enrichment_network_vis(tissues = c("SKM-GN","SKM-VL","HEART"),
                        cluster = "8w_F1_M1",
                        similarity_cutoff = 0.3,
                        title = "Muscle 8w_F1_M1",
                        add_group_label_nodes = FALSE,
-                       multitissue_pathways_only = TRUE) 
+                       multitissue_pathways_only = TRUE)
 
 }
 \seealso{
