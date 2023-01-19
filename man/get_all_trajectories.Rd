@@ -30,6 +30,7 @@ Remove all non-empty trajectories
 }
 \examples{
 # Get lists of features belonging to all trajectories in the liver
-get_all_trajectories(tissues = "LIVER")
+liver = get_all_trajectories(tissues = "LIVER")
+lapply(liver[1:5], head)
 
 }

@@ -1,3 +1,22 @@
+# MotrpacRatTraining6mo 1.5.0 (2023-01-18)
+
+* Add `load_feature_annotation()`.  
+* Add `counts` argument to `transcript_normalize_counts()` and `atac_normalize_counts()` 
+to allow user-supplied data.  
+* Add `tissues`, `assays`, and `cluster` arguments to `enrichment_network_vis()` to 
+provide an alternate way for users to specify results from `MotrpacRatTraining6moData::GRAPH_PW_ENRICH`.    
+* Add tests for `enrichment_network_vis()`.  
+* Use `signif()` instead of `round()` to display values in plot titles. 
+* Add note about reproducibility issues to documentation for `transcript_normalize_counts()`.  
+* Move `MotrpacRatTraining6moData` from `Imports` to `Depends`. This means `MotrpacRatTraining6moData` is also attached
+(not just loaded) when `MotrpacRatTraining6mo` is attached.  
+* Replace `fetch_object(name_as_string)` with `.get`, which internally uses `get(name_as_string, envir=as.environment("package:MotrpacRatTraining6moData"))`.  
+* Change URLs for `load_methyl_feature_annotation()` and `load_atac_feature_annotation()`.  
+* Fix bug in `plot_feature_logfc()` that prevented epigenetic features from being plotted.   
+* Speed up `plot_feature_logfc()` for differential epigenetic features.  
+* In `get_rdata_from_url()`, calculate log fold-change standard errors for METHYL 
+differential analysis results: `logFC_se = logFC/zscore`  
+
 # MotrpacRatTraining6mo 1.4.3 (2023-01-06)
 
 * In `plot_feature_normalized_data()` and `plot_feature_logfc()`, handle input features that don't exist in the data.  

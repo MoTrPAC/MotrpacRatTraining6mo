@@ -61,80 +61,39 @@ Points are mean values across samples in each group,
 and error bars indicate standard deviations.
 }
 \examples{
-# Multiple ways of plotting the same data are shown for each example below
-
-# Plot a differential feature 
+# Plot a differential feature and add gene symbol
 plot_feature_normalized_data(feature = "ACETYL;HEART;NP_001003673.1_K477k",
                              add_gene_symbol = TRUE)
-plot_feature_normalized_data(assay = "ACETYL",
-                             tissue = "HEART",
-                             feature_ID = "NP_001003673.1_K477k",
-                             add_gene_symbol = TRUE,
-                             scale_x_by_time = FALSE)
-plot_feature_normalized_data(assay = "ACETYL",
-                             tissue = "HEART",
-                             feature_ID = "NP_001003673.1_K477k",
+                             
+# Plot a differential epigenetic feature and facet by sex
+plot_feature_normalized_data(feature = "METHYL;HEART;chr20-38798_cluster11",
                              add_gene_symbol = TRUE,
                              facet_by_sex = TRUE)
 
 # Plot a redundant differential feature
-plot_feature_normalized_data(feature = "IMMUNO;PLASMA;BDNF",
-                             add_gene_symbol = FALSE)
 plot_feature_normalized_data(assay = "IMMUNO",
                              tissue = "PLASMA",
                              feature_ID = "BDNF",
-                             add_gene_symbol = FALSE)
-plot_feature_normalized_data(assay = "IMMUNO",
-                             tissue = "PLASMA",
-                             feature_ID = "BDNF",
-                             add_gene_symbol = FALSE,
                              facet_by_sex = TRUE)
                              
 # Plot one measurement of a redundant feature
-plot_feature_normalized_data(feature = "IMMUNO;PLASMA;rat-myokine:BDNF",
-                             add_gene_symbol = FALSE)
 plot_feature_normalized_data(assay = "IMMUNO",
                              tissue = "PLASMA",
                              feature_ID = "rat-myokine:BDNF",
-                             add_gene_symbol = FALSE)
-plot_feature_normalized_data(assay = "IMMUNO",
-                             tissue = "PLASMA",
-                             feature_ID = "rat-myokine:BDNF",
-                             add_gene_symbol = FALSE,
                              facet_by_sex = TRUE)
                              
 # Plot a non-differential feature
-plot_feature_normalized_data(feature = "PROT;SKM-GN;YP_665629.1",
-                             add_gene_symbol = TRUE)
 plot_feature_normalized_data(assay = "PROT",
                              tissue = "SKM-GN",
-                             feature_ID = "YP_665629.1",
-                             add_gene_symbol = TRUE)
-plot_feature_normalized_data(assay = "PROT",
-                             tissue = "SKM-GN",
-                             feature_ID = "YP_665629.1",
-                             add_gene_symbol = TRUE,
-                             facet_by_sex = TRUE)
+                             feature_ID = "YP_665629.1")
                              
-# Plot a merged feature from meta-regression
-plot_feature_normalized_data(assay = "METAB",
-                             tissue = "PLASMA",
-                             feature_ID = "Glucose",
-                             facet_by_sex = TRUE)
-plot_feature_normalized_data(assay = "METAB",
-                             tissue = "PLASMA",
-                             feature_ID = "glucose",
-                             scale_x_by_time = FALSE)
+# Plot a merged feature from meta-regression,
+# don't scale the x-axis, facet by sex, and include the training p-value
 plot_feature_normalized_data(assay = "METAB",
                              tissue = "PLASMA",
                              feature_ID = "glucose",
                              scale_x_by_time = FALSE,
-                             add_adj_p = TRUE)
-                             
-# Try plotting a feature that doesn't exist
-plot_feature_normalized_data(assay = "METAB", 
-                             tissue = "ADRNL", 
-                             feature_ID = "glucose", 
-                             add_adj_p = TRUE)
+                             add_adj_p = TRUE,
+                             facet_by_sex = TRUE)
                              
 }

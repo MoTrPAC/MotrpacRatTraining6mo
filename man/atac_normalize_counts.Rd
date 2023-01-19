@@ -4,7 +4,13 @@
 \alias{atac_normalize_counts}
 \title{Filter and normalize raw ATAC-seq counts}
 \usage{
-atac_normalize_counts(tissue, scratchdir = ".", n_samples = 4, min_count = 10)
+atac_normalize_counts(
+  tissue,
+  scratchdir = ".",
+  n_samples = 4,
+  min_count = 10,
+  counts = NULL
+)
 }
 \arguments{
 \item{tissue}{character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
@@ -15,18 +21,28 @@ Google Cloud Storage. Current working directory by default.}
 \item{n_samples}{integer, retain features with at least \code{min_count} counts in at least \code{n_samples} samples}
 
 \item{min_count}{integer, retain features with at least \code{min_count} counts in at least \code{n_samples} samples}
+
+\item{counts}{optional user-supplied numeric data frame or matrix where row names are
+feature IDs and column names are sample identifiers}
 }
 \value{
 data frame where row names are feature_ID and column names are viallabel
 }
 \description{
 Download raw counts from Google Cloud Storage and return the filtered and
-quantile-normalized data.
+quantile-normalized data. Alternatively, the user can provide a numeric
+data frame of raw ATAC-seq counts.
+}
+\details{
+Non-autosomal peaks are removed, i.e., peak IDs that don't begin with "chrX", "chrY",
+or "chr"+number. If you are providing your own counts matrix, ensure that peak IDs
+follow the same naming convention.
 }
 \examples{
 \dontrun{
 norm_data = atac_normalize_counts("BAT", scratchdir = "/tmp")
 }
+
 }
 \seealso{
 \link[MotrpacRatTraining6moData:ATAC_NORM_DATA]{MotrpacRatTraining6moData::ATAC_NORM_DATA}
