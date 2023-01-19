@@ -91,12 +91,9 @@ To avoid having to install additional dependencies *during* the workshop, instal
 them ahead of time by copy/paste-ing the following commands in your RStudio `Console`. 
 If you run into any issues, try running one line at a time.  
 ```r
-install.packages("foreach")
+install.packages("rmarkdown")
 install.packages("gprofiler2")
-install.packages("doParallel")
 install.packages("reshape2")
-if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-BiocManager::install("IHW")
 ```
 
 **Technical aside:** You may be wondering why you need to install these packages
@@ -116,4 +113,4 @@ That's it! Thank you for getting this far. I look forward to the workshop!
 ---
 
 Author: Nicole Gay  
-Updated: 1/12/23
+Updated: 1/18/23
