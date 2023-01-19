@@ -61,94 +61,39 @@ Plot timewise differential analysis results for a single feature.
 Points are log fold-changes, and error bars indicate standard errors.
 }
 \examples{
-# 3 ways of plotting the same data are shown in each example below
-
-# Plot a differential feature 
+# Plot a differential feature and add gene symbol
 plot_feature_logfc(feature = "ACETYL;HEART;NP_001003673.1_K477k",
                    add_gene_symbol = TRUE)
-plot_feature_logfc(assay = "ACETYL",
-                   tissue = "HEART",
-                   feature_ID = "NP_001003673.1_K477k",
-                   add_gene_symbol = TRUE,
-                   scale_x_by_time = FALSE)
-plot_feature_logfc(assay = "ACETYL",
-                   tissue = "HEART",
-                   feature_ID = "NP_001003673.1_K477k",
+                             
+# Plot a differential epigenetic feature and facet by sex
+plot_feature_logfc(feature = "METHYL;HEART;chr20-38798_cluster11",
                    add_gene_symbol = TRUE,
                    facet_by_sex = TRUE)
 
 # Plot a redundant differential feature
-plot_feature_logfc(feature = "IMMUNO;PLASMA;BDNF",
-                   add_gene_symbol = FALSE)
 plot_feature_logfc(assay = "IMMUNO",
                    tissue = "PLASMA",
                    feature_ID = "BDNF",
-                   add_gene_symbol = FALSE,
-                   scale_x_by_time = FALSE)
-plot_feature_logfc(assay = "IMMUNO",
-                   tissue = "PLASMA",
-                   feature_ID = "BDNF",
-                   add_gene_symbol = FALSE,
                    facet_by_sex = TRUE)
                              
 # Plot one measurement of a redundant feature
-plot_feature_logfc(feature = "IMMUNO;PLASMA;rat-myokine:BDNF",
-                   add_gene_symbol = FALSE)
 plot_feature_logfc(assay = "IMMUNO",
                    tissue = "PLASMA",
                    feature_ID = "rat-myokine:BDNF",
-                   add_gene_symbol = FALSE,
-                   scale_x_by_time = FALSE)
-plot_feature_logfc(assay = "IMMUNO",
-                   tissue = "PLASMA",
-                   feature_ID = "rat-myokine:BDNF",
-                   add_gene_symbol = FALSE,
                    facet_by_sex = TRUE)
                              
 # Plot a non-differential feature
-plot_feature_logfc(feature = "PROT;SKM-GN;YP_665629.1",
-                   add_gene_symbol = TRUE)
 plot_feature_logfc(assay = "PROT",
                    tissue = "SKM-GN",
-                   feature_ID = "YP_665629.1",
-                   add_gene_symbol = TRUE,
-                   scale_x_by_time = FALSE)
-plot_feature_logfc(assay = "PROT",
-                   tissue = "SKM-GN",
-                   feature_ID = "YP_665629.1",
-                   add_gene_symbol = TRUE,
-                   facet_by_sex = TRUE)
-                   
-# Plot a merged feature from meta-regression
-plot_feature_logfc(assay = "METAB",
-                   tissue = "PLASMA",
-                   feature_ID = "Glucose",
-                   facet_by_sex = TRUE)
-plot_feature_logfc(assay = "METAB",
-                   tissue = "PLASMA",
-                   feature_ID = "Glucose",
-                   scale_x_by_time = FALSE,
-                   metareg = FALSE)
-plot_feature_logfc(assay = "METAB",
-                   tissue = "PLASMA",
-                   feature_ID = "glucose",
-                   scale_x_by_time = FALSE,
-                   metareg = FALSE)
-plot_feature_logfc(assay = "METAB",
-                   tissue = "PLASMA",
-                   feature_ID = "glucose",
-                   facet_by_sex = TRUE,
-                   metareg = TRUE)
-plot_feature_logfc(assay = "METAB",
-                   tissue = "PLASMA",
-                   feature_ID = "metab-u-ionpneg:glucose",
-                   scale_x_by_time = FALSE,
-                   metareg = FALSE)                  
-   
-# Try plotting a feature that doesn't exist
-plot_feature_logfc(assay = "METAB", 
-                   tissue = "ADRNL", 
-                   feature_ID = "glucose", 
-                   add_adj_p = TRUE)
+                   feature_ID = "YP_665629.1")
                              
+# Plot a merged feature from meta-regression, facet by sex, 
+# don't scale the x-axis, and exclude the training p-value
+plot_feature_logfc(assay = "METAB",
+                   tissue = "PLASMA",
+                   feature_ID = "glucose",
+                   scale_x_by_time = FALSE,
+                   facet_by_sex = TRUE,
+                   add_adj_p = FALSE)
+
 }

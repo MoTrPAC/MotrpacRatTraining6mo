@@ -5,7 +5,10 @@
 \title{Pathway enrichment network}
 \usage{
 enrichment_network_vis(
-  pw_enrich_res,
+  pw_enrich_res = NULL,
+  tissues = NULL,
+  assays = MotrpacRatTraining6moData::ASSAY_ABBREV,
+  cluster = NULL,
   feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE,
   intersection_id_type = "ensembl_gene",
   similarity_cutoff = 0.375,
@@ -25,18 +28,39 @@ enrichment_network_vis(
 )
 }
 \arguments{
-\item{pw_enrich_res}{data frame of enrichment results.
+\item{pw_enrich_res}{optional data frame of enrichment results.
 May be a subset of \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}
 or a data frame returned from \code{\link[=cluster_pathway_enrichment]{cluster_pathway_enrichment()}}.
 Columns must include "adj_p_value", "ome", "tissue", "intersection", "computed_p_value",
-"term_name", "term_id".}
+"term_name", "term_id". If not specified, \code{tissues} and \code{cluster} must be specified.
+\code{NULL} by default.}
+
+\item{tissues}{character vector of tissue abbreviations, at least one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}.
+Used to subset \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}.
+Must be specified if \code{pw_enrich_res} is not provided. \code{NULL} by default.}
+
+\item{assays}{optional character vector of assay abbreviations, at least one of \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV}.
+Used to subset \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}.
+All assays by default.}
+
+\item{cluster}{character, graphical cluster of interest.
+Used to subset \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}.
+Must be specified if \code{pw_enrich_res} is not provided.
+e.g., "8w_F1_M1" for features that are
+up-regulated (1) in females (F) and up-regulated in males (M1) at 8 weeks of training (8w), or
+"1w_F0_M1->2w_F0_M1->4w_F0_M1->8w_F1_M1" for features that are up-regulated in males at all time points
+(1w_F?_M1, 2w_F?_M1, 4w_F?_M1, 8w_F?_M1) and up-regulated in females at 8 weeks of training only.
+See \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}\code{$graphical_cluster} for all possible options.
+See the \href{https://motrpac.github.io/MotrpacRatTraining6mo/articles/MotrpacRatTraining6mo.html#bayesian-graphical-clustering}{vignette}
+for a detailed description of how to interpret and construct these strings. \code{NULL} by default.}
 
 \item{feature_to_gene}{data frame, map between \code{intersection_id_type} and gene symbols.
 Columns must include "gene_symbol" and "ensembl_gene" if \code{intersection_id_type == "ensembl_gene"}.
 \link[MotrpacRatTraining6moData:FEATURE_TO_GENE]{MotrpacRatTraining6moData::FEATURE_TO_GENE} by default.}
 
 \item{intersection_id_type}{character, type of gene identifier used to define
-\code{pw_enrich_res$intersection}, either "ensembl_gene" or "gene_symbol"}
+\code{pw_enrich_res$intersection}, either "ensembl_gene" or "gene_symbol".
+"ensembl_gene" by default.}
 
 \item{similarity_cutoff}{numeric, edges are drawn between pairs of pathways if they have
 a similarity metric above this value. 0.375 by default.}
@@ -102,6 +126,10 @@ Plot an interactive network of pathway enrichments.
 enrich_res = MotrpacRatTraining6moData::GRAPH_PW_ENRICH
 enrich_res = enrich_res[enrich_res$cluster == "HEART:8w_F1_M1",]
 enrichment_network_vis(enrich_res, add_group_label_nodes = TRUE) 
+# Equivalently:
+enrichment_network_vis(tissues="HEART", 
+                       cluster="8w_F1_M1",
+                       add_group_label_nodes = TRUE) 
 
 \dontrun{
 # Example 2: Export the above network to Cytoscape.
@@ -120,6 +148,13 @@ enrich_res = MotrpacRatTraining6moData::GRAPH_PW_ENRICH
 enrich_res = enrich_res[enrich_res$tissue \%in\% c("SKM-GN","SKM-VL","HEART") &
                          grepl(":8w_F1_M1",enrich_res$cluster),]
 enrichment_network_vis(enrich_res,
+                       similarity_cutoff = 0.3,
+                       title = "Muscle 8w_F1_M1",
+                       add_group_label_nodes = FALSE,
+                       multitissue_pathways_only = TRUE) 
+# Equivalently:
+enrichment_network_vis(tissues = c("SKM-GN","SKM-VL","HEART"),
+                       cluster = "8w_F1_M1",
                        similarity_cutoff = 0.3,
                        title = "Muscle 8w_F1_M1",
                        add_group_label_nodes = FALSE,
