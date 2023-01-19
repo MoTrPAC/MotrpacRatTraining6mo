@@ -87,6 +87,6 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Depends: 
-    MotrpacRatTraining6moData (>= 1.7.0),
+    MotrpacRatTraining6moData (>= 1.8.0),
     R (>= 2.10)
 LazyData: true
