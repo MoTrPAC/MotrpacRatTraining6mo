@@ -1,3 +1,7 @@
+# MotrpacRatTraining6mo 1.5.2 (2023-01-20)
+
+* For `enrichment_network_vis()` with argument `return_html=TRUE`, don't require GNU sed.  
+
 # MotrpacRatTraining6mo 1.5.1 (2023-01-19)
 
 * In `enrichment_network_vis()`, include pathway names in determination of node labels.  

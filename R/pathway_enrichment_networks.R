@@ -61,8 +61,8 @@
 #' @param overwrite_html boolean, whether to overwrite \code{out_html} if it already exists.
 #'   \code{TRUE} by default. If \code{out_html} exists and \code{overwrite_html=FALSE},
 #'   then the path \code{out_html} is returned. 
-#' @param return_html boolean, whether to return the path to \code{out_html}. If
-#'   \code{FALSE}, return the \code{visNetwork} object instead. \code{FALSE} by default. 
+#' @param return_html boolean, whether to return the path to \code{out_html}. 
+#'   If \code{FALSE}, return the \code{visNetwork} object instead. \code{FALSE} by default. 
 #' @param return_graph_for_cytoscape boolean. If \code{TRUE}, return an \code{igraph}
 #'   graph object that can be exported to Cytoscape.
 #' @param verbose boolean, whether to print verbose output
@@ -689,8 +689,18 @@ enrichment_network_vis = function(pw_enrich_res = NULL,
       visNetwork::visSave(v1, file = out_html)
       message(sprintf("Network saved in %s", out_html))
       # adjust browser window size 
-      cmd = sprintf('sed -i \'s|"browser":{"width":960,"height":500,"padding":40,"fill":false}|"browser":{"width":960,"height":960,"padding":0,"fill":false}|\' %s', out_html)
-      system(cmd)
+      is_gnu_sed = !system("sed --version", intern=FALSE, ignore.stdout=TRUE, ignore.stderr=TRUE)
+      if(is_gnu_sed){
+        # Linux - GNU sed
+        cmd = sprintf('sed -i \'s|"browser":{"width":960,"height":500,"padding":40,"fill":false}|"browser":{"width":960,"height":960,"padding":0,"fill":false}|\' %s', 
+                      out_html)
+      }else{
+        # Mac
+        cmd = sprintf('sed -i \'\' \'s|"browser":{"width":960,"height":500,"padding":40,"fill":false}|"browser":{"width":960,"height":960,"padding":0,"fill":false}|\' %s', 
+                      out_html)
+      }
+      # now run the sed command, if possible 
+      try(system(cmd), silent=TRUE)
     }
   }
   
