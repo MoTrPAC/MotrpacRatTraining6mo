@@ -60,3 +60,12 @@ test_that("duplicate pathways", {
   input$cluster = NULL
   expect_error(enrichment_network_vis(input))
 })
+
+test_that("returns HTML", {
+  out = enrichment_network_vis(tissue="SKM-GN", 
+                               cluster="8w_F1_M1",
+                               return_html = TRUE, 
+                               overwrite_html = TRUE, 
+                               out_html = "/tmp/test.HTML")
+  expect_equal(out, "/tmp/test.HTML")
+})
