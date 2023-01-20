@@ -104,8 +104,8 @@ similarity scores are loaded from the file instead of being recalculated.
 \code{TRUE} by default. If \code{out_html} exists and \code{overwrite_html=FALSE},
 then the path \code{out_html} is returned.}
 
-\item{return_html}{boolean, whether to return the path to \code{out_html}. If
-\code{FALSE}, return the \code{visNetwork} object instead. \code{FALSE} by default.}
+\item{return_html}{boolean, whether to return the path to \code{out_html}.
+If \code{FALSE}, return the \code{visNetwork} object instead. \code{FALSE} by default.}
 
 \item{return_graph_for_cytoscape}{boolean. If \code{TRUE}, return an \code{igraph}
 graph object that can be exported to Cytoscape.}
