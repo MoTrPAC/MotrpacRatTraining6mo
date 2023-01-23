@@ -3,6 +3,8 @@
 > TLDR; complete the steps in this document *before* the workshop if you want to use 
 the MoTrPAC R packages to explore PASS1B data. 
 
+Materials for 1/23/23 workshop: https://drive.google.com/drive/folders/1CCww9brbnZFppX59Qvw-oSbVgN5clRQp?usp=sharing
+
 Thank you for your interest in the MoTrPAC PASS1B R packages!
 
 During this workshop, we will work through practical examples of how to
