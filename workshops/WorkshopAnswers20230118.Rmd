@@ -16,7 +16,7 @@ output:
 
 ```{r setup, message=FALSE}
 # MoTrPAC R packages 
-library(MotrpacRatTraining6mo) # v1.5.0
+library(MotrpacRatTraining6mo) # v1.5.2
 # MotrpacRatTraining6moData v1.8.0 is automatically attached
 
 # for plotting
