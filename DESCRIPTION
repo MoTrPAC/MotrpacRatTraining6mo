@@ -2,7 +2,7 @@ Type: Package
 Package: MotrpacRatTraining6mo
 Title: Analysis of the MoTrPAC endurance exercise training data in
     6-month-old rats
-Version: 1.4.3
+Version: 1.6.0
 Authors@R: c(
     person("Nicole", "Gay", , "nicole.r.gay@gmail.com", role = c("cre", "aut")),
     person("David", "Amar", , "ddam.am@gmail.com", role = "aut"),
@@ -78,10 +78,14 @@ Suggests:
     metafor,
     nloptr,
     cmapR,
-    ssGSEA2 (>= 1.0.0)
+    ssGSEA2 (>= 1.0.0),
+    stringr,
+    BiocGenerics,
+    XVector,
+    Biostrings
 VignetteBuilder: 
     knitr
-Remotes:  
+Remotes: 
     MoTrPAC/MotrpacRatTraining6moData,
     MoTrPAC/MotrpacBicQC,
     YuLab-SMU/ggtree,

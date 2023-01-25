@@ -124,72 +124,110 @@ prepare_gsea_input = function(tissue = NULL, assay = NULL, outdir = ".", outfile
 }
 
 
-prepare_ptmsea_input = function(tissue){
+#' Prepare PTM-SEA input
+#'
+#' @param tissue `r tissue()`
+#' @param fasta [Biostrings::XStringSet] object returned from reading in 
+#'   a human protein FASTA file with [Biostrings::readAAStringSet()]. Names of the 
+#'   [Biostrings::XStringSet] object should be set to the human protein accession, 
+#'   e.g., "Q96QG7". If not specified, the result of [load_uniprot_human_fasta()] is used, which 
+#'   returns the version of the Uniprot human protein FASTA used in the manuscript. 
+#' @param outfile character, optional output file name for GCT file. By default, 
+#'   the file name includes the tissue and date and is saved to the current working directory.  
+#'
+#' @return character, full path to GCT file 
+#' @export
+#' 
+#' @seealso [load_uniprot_human_fasta()], [find_flanks()]
+#' 
+#' @importFrom purrr map_chr
+#' @importFrom methods new
+#' @importFrom tibble column_to_rownames remove_rownames
+#' @importFrom dplyr filter mutate select group_by summarise_all
+#' @importFrom tidyr pivot_wider separate_rows
+#' 
+#' @examples
+#' res = prepare_ptmsea_input("HEART")
+prepare_ptmsea_input = function(tissue, fasta=NULL, outfile=NULL){
   
-  if(!requireNamespace("cmapR", quietly = TRUE)){
-    stop(
-      "Package 'cmapR' must be installed to run 'prepare_ptmsea_input()'.",
-      call. = FALSE
-    )
+  missing = c()
+  for(pkg in c("stringr", "BiocGenerics", "cmapR")){
+    if(!requireNamespace(pkg, quietly = TRUE)){
+      missing = c(missing, pkg)
+    }
+  }
+  if(length(missing)>0){
+    stop(sprintf("The following packages must be installed to run 'prepare_ptmsea_input()':\n%s",
+                 paste(missing, collapse=", ")))
   }
   
-  # #Path to feature-mapping file in local copy of data freeze bucket
-  # mapping.dir <- "~/Projects/motrpac-data-freeze-pass/pass1b-06/v1.0/analysis/proteomics-untargeted/prot-ph/normalized-data/"
-  # #Path to results in local copy of data freeze bucket
-  # dea.dir <- "~/Projects/motrpac-data-freeze-pass/pass1b-06/v1.0/analysis/proteomics-untargeted/prot-ph/dea/"
-  # dea.result.file <- paste0("pass1b-06_",current.tissue,"_prot-ph_timewise-dea-fdr_20211006.txt")
-  # dea.annot.file <- paste0("motrpac_pass1b-06_",current.tissue,"_prot-ph_normalized-data-feature-annot.txt")
-  # #Rat to human phosphosite mapping table
-  # rat2human <- read_csv("~/Projects/motrpac-pass/mawg-data/mappings/proteomics/motrpac_pass1b-06_proteomics-ph-rat2human-20211016.csv")
-  rat2human = get("RAT_TO_HUMAN_PHOSPHO", envir=as.environment("package:MotrpacRatTraining6moData"))
-  # #FASTA database used in searches. Will be used to add flanking sequences if the column VMSiteFlanks is not available.
-  # #Rat FASTA
-  # # db.str <- '~/motrpac-pass/fasta/RefSeq.20181127_rat_full.fasta'
-  # #Human FASTA
-  # human.db.str <- '~/Projects/motrpac-pass/mawg-data/pass1b-06/mappings/proteomics/mappings_proteomics_uniprot-reviewed-homo_sapiens_20210203.fasta'
-  # 
-  # output.dir <- "~/Projects/motrpac-pass/mawg-data/pass1b-06/prot-ph/gct_ptm-centric/"
-  # sign.logp.filename <- paste0("pass1b-06_",current.tissue,"_prot-ph",prot_corr_suffix,"_signed-logp_ptm-centric.gct")
-  # sign.logp.human.filename <- paste0("pass1b-06_",current.tissue,"_prot-ph",prot_corr_suffix,"_signed-logp_ptm-centric_human-orthologs.gct")
-  # zscore.filename <- paste0("pass1b-06_",current.tissue,"_prot-ph",prot_corr_suffix,"_tscore_ptm-centric.gct")
-  # zscore.human.filename <- paste0("pass1b-06_",current.tissue,"_prot-ph",prot_corr_suffix,"_tscore_ptm-centric_human-orthologs.gct")
+  if(is.null(outfile)){
+    outfile = sprintf("ptmsea_input_tscore_%s_%s.gct",
+                      tissue,
+                      gsub("-","",Sys.Date()))
+  }
   
-  # dea.results <- read_tsv(Sys.glob(file.path(dea.dir,dea.result.file)))
-  # dea.annot <- read_tsv(Sys.glob(file.path(mapping.dir,dea.annot.file))) 
-  # dea.results <- left_join(dea.results,dea.annot) 
+  # load data 
+  rat2human = MotrpacRatTraining6moData::RAT_TO_HUMAN_PHOSPHO
   dea.results = combine_da_results(tissues=tissue, assays="PHOSPHO")
-  dea.annot = get("FEATURE_TO_GENE_FILT", envir=as.environment("package:MotrpacRatTraining6moData"))
+  dea.annot = MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT
   dea.results = merge(dea.results, dea.annot, by="feature_ID")
+  if(is.null(fasta)){
+    human.fasta = load_uniprot_human_fasta()
+  }else{
+    human.fasta = fasta
+  }
   
-  # where is the flanking_sequence column coming from?
+  # annotate with human flanks 
+  message("Adding human flanking sequences...")
+  rat2human.flanks <- rat2human %>% 
+    dplyr::filter(ptm_id_rat_refseq %in% dea.results$feature_ID) %>%
+    dplyr::filter(!is.na(ptm_id_human_uniprot)) %>%
+    unique %>%
+    dplyr::mutate(flanking_sequence = purrr::map_chr(ptm_id_human_uniprot, 
+                                                     find_flanks, 
+                                                     human.fasta)) %>%
+    dplyr::mutate(ptm_id = ptm_id_rat_refseq)
   
-  sign.logp.table <- dea.results %>%
-    mutate(signed_logpval = tscore) %>%
+  dea.results = merge(dea.results, 
+                      rat2human.flanks, 
+                      by.x="feature_ID",
+                      by.y="ptm_id")
+  
+  message("Formatting and writing GCT file...")
+  tscore.table <- dea.results %>%
+    dplyr::mutate(signed_logpval = tscore) %>%
     #Make into wide format
-    select(feature_ID,flanking_sequence,sex,comparison_group,signed_logpval)%>%
-    pivot_wider(names_from = c("sex","comparison_group"),values_from = signed_logpval) %>%
+    dplyr::select(feature_ID, flanking_sequence, sex, comparison_group, signed_logpval) %>%
+    tidyr::pivot_wider(names_from = c("sex","comparison_group"),
+                       values_from = signed_logpval) %>%
     #Expand flanking_sequence that are grouped
-    separate_rows(flanking_sequence,sep = "\\|") %>%
+    tidyr::separate_rows(flanking_sequence, sep = "\\|") %>%
     #Now we combine rows with the same flanking sequence
-    select(-feature_ID) %>% group_by(flanking_sequence) %>% summarise_all(mean,na.rm=T) %>%
+    dplyr::select(-feature_ID) %>% 
+    dplyr::group_by(flanking_sequence) %>% 
+    dplyr::summarise_all(mean, na.rm=T) %>%
     #Make modifications uppercase
-    mutate(flanking_sequence = toupper(flanking_sequence)) %>%
+    dplyr::mutate(flanking_sequence = toupper(flanking_sequence)) %>%
     #Substitute dashes with underscores
-    mutate(flanking_sequence = gsub("-","_",flanking_sequence)) %>%
+    dplyr::mutate(flanking_sequence = gsub("-","_",flanking_sequence)) %>%
     #Add phospho mark to the sequence
-    mutate(flanking_sequence = paste0(flanking_sequence,"-p")) %>%
+    dplyr::mutate(flanking_sequence = paste0(flanking_sequence,"-p")) %>%
     as.data.frame()
-  sign.logp.gct <- new("GCT",
-                       mat = sign.logp.table %>% remove_rownames() %>%
-                         column_to_rownames(var = 'flanking_sequence') %>% as.matrix(),
-                       rdesc = data.frame(id.flanking = as.character(sign.logp.table$flanking_sequence)))
-  sign.logp.gct@rdesc$id.flanking <- as.character(sign.logp.gct@rdesc$id.flanking)
-  cmapR::write_gct(sign.logp.gct,ofile = paste0(output.dir,zscore.filename),appenddim = F)
   
-  # unclear if there's more to add here?
-  # next section says "#3. Create PTM-SEA input with human flanking sequences",
-  # but it only uses signed logFCs, and the methods say we used t-scores
+  tscore.gct <- methods::new("GCT",
+                              mat = tscore.table %>% tibble::remove_rownames() %>%
+                                tibble::column_to_rownames(var = 'flanking_sequence') %>% 
+                                as.matrix(),
+                              rdesc = data.frame(id.flanking = as.character(tscore.table$flanking_sequence)))
+  tscore.gct@rdesc$id.flanking <- as.character(tscore.gct@rdesc$id.flanking)
+  cmapR::write_gct(tscore.gct, ofile = outfile, appenddim = F)
+  
+  path = list.files(path=dirname(outfile), pattern=basename(outfile), full.names=TRUE)[1]
+  message("Done.")
+  return(path)
 }
+
 
 gsea = function(tissue, assay, gene_set, gene_centric = TRUE, outdir = "."){
   
@@ -365,4 +403,132 @@ ptmsea = function(tissue){
   #                     sample.norm.type = "rank", weight=0.75, correl.type="z.score", statistic="area.under.RES", 
   #                     output.score.type="NES", nperm=1000, min.overlap=5, extended.output=T, global.fdr=F)
   setwd(current.wd)
+}
+
+
+#' Load Uniprot human protein FASTA file 
+#'
+#' @param scratchdir character, directory in which the file from Google Cloud
+#'   Storage should be downloaded
+#'
+#' @return [Biostrings::XStringSet] object returned from reading in 
+#'   the FASTA file with [Biostrings::readAAStringSet()]
+#' @export
+#' @seealso [find_flanks()]
+#'
+#' @examples
+#' fasta = load_uniprot_human_fasta()
+#' head(fasta)
+load_uniprot_human_fasta = function(scratchdir="."){
+  
+  missing = c()
+  for(pkg in c("stringr", "BiocGenerics")){
+    if(!requireNamespace(pkg, quietly = TRUE)){
+      missing = c(missing, pkg)
+    }
+  }
+  if(length(missing)>0){
+    stop(sprintf("The following packages must be installed to run 'find_flanks()':\n%s",
+                 paste(missing, collapse=", ")))
+  }
+  
+  url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/misc/uniprot-reviewed-homo_sapiens_20210203.fasta"
+  local = sprintf("%s/%s", scratchdir, basename(url))
+  download.file(url, destfile = local)
+  human.fasta = Biostrings::readAAStringSet(local)
+  names(human.fasta) = stringr::str_split_fixed(names(human.fasta),"\\|",n = 3)[,2]
+  file.remove(local)
+  return(human.fasta)
+}
+
+
+#' Find human flanks
+#' 
+#' Find flanking sequence in human ortholog of PTM 
+#'
+#' @param x character, human accession for PTM, e.g., "Q96QG7_S548s"
+#' @param fasta [Biostrings::XStringSet] object returned from reading in 
+#'   a human protein FASTA file with [Biostrings::readAAStringSet()]. Names of the 
+#'   [Biostrings::XStringSet] object should be set to the human protein accession, 
+#'   e.g., "Q96QG7". Can be the result of [load_uniprot_human_fasta()], which 
+#'   returns the version of the Uniprot human protein FASTA used in the manuscript. 
+#' @param type character, type of accession 
+#'
+#' @return character, pipe-separated string of human flanking sequences for the PTM
+#' @export
+#' @seealso [load_uniprot_human_fasta()]
+#'
+#' @examples
+#' fasta = load_uniprot_human_fasta(scratchdir="/tmp")
+#' x = "Q96QG7_S548s"
+#' find_flanks(x, fasta)
+find_flanks = function(x, fasta, type = "uniprot"){
+  
+  missing = c()
+  for(pkg in c("stringr", "BiocGenerics", "XVector")){
+    if(!requireNamespace(pkg, quietly = TRUE)){
+      missing = c(missing, pkg)
+    }
+  }
+  if(length(missing)>0){
+    stop(sprintf("The following packages must be installed to run 'find_flanks()':\n%s",
+                 paste(missing, collapse=", ")))
+  }
+
+  #If missing mapping, return NA
+  if(is.na(x)){
+    return(NA)
+  }
+  
+  #If this is not a single character object, report error
+  if(!is.character(x) | length(x) != 1){
+    stop("Input must be a character vector of length 1")
+  }
+  
+  #Extract accession and position or position(s)
+  if(type == "uniprot"){
+    accession <- stringr::str_split_fixed(x,"_",2)[1]
+    position <- stringr::str_split_fixed(x,"_",2)[2] %>%
+      stringr::str_extract_all("\\d+") %>% unlist %>%
+      as.numeric
+  }else{
+    accession <- stringr::str_extract(x,"^.._\\d+\\.\\d")
+    position <- stringr::str_split_fixed(x,"_",3)[3] %>%
+      stringr::str_extract_all("\\d+") %>% unlist %>%
+      as.numeric
+  }
+  
+  #Extract sequence of the accession
+  current.seq <- fasta[accession]
+  
+  #Vector with flanking sequences
+  output <- c()
+  
+  #Loop through all aminoacid positions
+  for(i in position){
+    
+    #If the position is less than 8 from the edge, then add underscores
+    if(i > BiocGenerics::width(current.seq)){
+      #Skip  
+      warning(paste("Invalid amino acid location", accession, i))
+    }else if (i < 8){ 
+      flanks <- stringr::str_c(stringr::str_dup("_",8-i),
+                               toString(XVector::subseq(current.seq,1,i+7)))
+    }else if(i > BiocGenerics::width(current.seq)-7) {
+      flanks <- stringr::str_c(toString(XVector::subseq(current.seq,
+                                               i-7,
+                                               BiocGenerics::width(current.seq))),
+                               stringr::str_dup("_",7-(BiocGenerics::width(current.seq)-i)))
+    }else{
+      flanks <- XVector::subseq(current.seq,i-7,i+7) %>% as.character
+    }
+    
+    output <- c(output,flanks)
+  }
+  
+  if(is.null(output)){
+    return(NA)
+  } else {
+    return(paste(output,collapse="|"))
+  }
 }

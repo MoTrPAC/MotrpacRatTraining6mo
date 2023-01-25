@@ -3,7 +3,7 @@
 
 ## usethis namespace: start
 #' @import MotrpacRatTraining6moData
-#' @importFrom data.table as.data.table data.table rbindlist setnames := copy melt setkey dcast unique
+#' @importFrom data.table as.data.table data.table rbindlist setnames := copy melt setkey dcast
 #' @importFrom magrittr %>%
 #' @importFrom ggplot2 guides scale_size theme annotate guide_legend aes element_rect 
 #'   ggplot geom_bar theme_classic facet_wrap scale_fill_manual coord_flip labs 

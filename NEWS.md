@@ -1,3 +1,8 @@
+# MotrpacRatTraining6mo 1.6.0
+
+* Add functions for GSEA and PTM-SEA: `gsea()`, `ptmsea()`, `prepare_gsea_input()`, 
+`prepare_ptmsea_input()`, `find_flanks()`, `load_uniprot_human_fasta()`
+
 # MotrpacRatTraining6mo 1.4.4 
 
 * Add `counts` argument to `transcript_normalize_counts()` and `atac_normalize_counts()` 
