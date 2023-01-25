@@ -1,3 +1,7 @@
+# MotrpacRatTraining6mo 1.6.0
+
+* Add `extract_top_trajectories()` function. 
+
 # MotrpacRatTraining6mo 1.5.2 (2023-01-20)
 
 * For `enrichment_network_vis()` with argument `return_html=TRUE`, don't require GNU sed.  

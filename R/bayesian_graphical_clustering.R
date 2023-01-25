@@ -1073,7 +1073,7 @@ get_tree_plot_for_tissue <- function(
 #' @param add_week8 A logical. TRUE (default): add all week 8 nodes to the node set.
 #' @param omes A character vector (optional). The names of the omes (one or more) to be considered.
 #' 
-#' @return A named list. Names correspond to set names (can correspond to a node, edge, or a trajectory).
+#' @return A named list. Names correspond to cluster names (can correspond to a node, edge, or a trajectory).
 #' 
 #' @export
 #' 
@@ -1196,6 +1196,78 @@ get_all_trajectories = function(edge_sets = MotrpacRatTraining6moData::GRAPH_COM
     l[[paste(tissue_top_trajs[path_i,2:5],collapse="->")]] = curr_set
   }
   return(l)
+}
+
+
+#' Extract top trajectories 
+#' 
+#' Get the features corresponding to each of the top k largest trajectories of training-regulated
+#' features for the given tissue(s) and ome(s). Optionally include features in the non-null
+#' 8-week nodes as well (e.g., 8w_F1_M1, 8w_F0_M-1).  
+#'
+#' @param tissues character, tissue abbreviation, at least one of [MotrpacRatTraining6moData::TISSUE_ABBREV]
+#' @param omes `r assay()`. All assays by default. 
+#' @param k integer, return the top \code{k} largest trajectories/paths with at least \code{min_size}
+#'   features. Default: 5
+#' @param min_size integer, minimal cluster size to be considered. Clusters with fewer than 
+#'   this number of features are excluded. Default: 5
+#' @param add_week8 logical, whether to include non-null 8-week nodes with at least
+#'   \code{min_size} features in addition to the top \code{k} largest trajectories/paths.
+#'   Default: FALSE
+#' @param node_sets named list with the node (state) sets of analytes/features.
+#'   \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$node_sets} by default.
+#' @param edge_sets named list with the edge (state) sets of analytes/features.
+#'   \code{\link[MotrpacRatTraining6moData]{GRAPH_COMPONENTS}$edge_sets} by default.
+#'
+#' @return named list where names are the names of the graphical clusters (paths/trajectories and, 
+#' optionally, non-null 8-week nodes) and values are vectors of the training-regulated
+#' features that belong to that cluster, in the format 
+#' \code{\link[MotrpacRatTraining6moData]{ASSAY_ABBREV};\link[MotrpacRatTraining6moData]{TISSUE_ABBREV};[feature_ID]}.
+#' 
+#' @export 
+#'
+#' @examples
+#' # Top 3 trajectories of training-regulated proteins in the liver
+#' res = extract_top_trajectories("LIVER", omes="PROT", k=3)
+#' names(res)
+#' lapply(res, length)
+#' 
+#' # Top 5 trajectories and 8-week nodes for the union of training-regulated 
+#' # features in the heart and gastrocnemius (all omes)
+#' res = extract_top_trajectories(c("HEART","SKM-GN"), add_week8=TRUE)
+#' names(res)
+#' lapply(res, length)
+extract_top_trajectories = function(tissues, 
+                                    omes = MotrpacRatTraining6moData::ASSAY_ABBREV,
+                                    k = 5, 
+                                    min_size = 5,
+                                    add_week8 = FALSE,
+                                    node_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$node_sets,
+                                    edge_sets = MotrpacRatTraining6moData::GRAPH_COMPONENTS$edge_sets){
+  
+  # extract_tissue_sets() returns top k largest paths, nodes, and edges 
+  # as well as all 8-week nodes
+  clust = extract_tissue_sets(tissues = tissues, 
+                              omes = omes, 
+                              node_sets = node_sets,
+                              edge_sets = edge_sets,
+                              k = k,
+                              min_size = min_size,
+                              add_week8 = add_week8)
+  
+  # paths only
+  paths = clust[grepl("->",names(clust))]
+  
+  if(add_week8){
+    w8 = clust[grepl("^8w",names(clust))]
+    # remove all-null node
+    w8 = w8[names(w8) != "8w_F0_M0"]
+    clusters = c(paths, w8)
+  }else{
+    clusters = paths
+  }
+  
+  return(clusters)
 }
 
 

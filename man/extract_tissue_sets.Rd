@@ -32,7 +32,7 @@ extract_tissue_sets(
 \item{omes}{A character vector (optional). The names of the omes (one or more) to be considered.}
 }
 \value{
-A named list. Names correspond to set names (can correspond to a node, edge, or a trajectory).
+A named list. Names correspond to cluster names (can correspond to a node, edge, or a trajectory).
 }
 \description{
 An auxiliary function for getting the top analyte sets for a set of tissues.
