@@ -1255,16 +1255,12 @@ extract_top_trajectories = function(tissues,
                               min_size = min_size,
                               add_week8 = add_week8)
   
-  # paths only
-  paths = clust[grepl("->",names(clust))]
-  
   if(add_week8){
-    w8 = clust[grepl("^8w",names(clust))]
-    # remove all-null node
-    w8 = w8[names(w8) != "8w_F0_M0"]
-    clusters = c(paths, w8)
+    # paths and non-null 8-week clusters
+    clusters = clust[grepl("->|^8w_(?!F0_M0$)", names(clust), perl=TRUE)]
   }else{
-    clusters = paths
+    # paths only
+    clusters = clust[grepl("->",names(clust))]
   }
   
   return(clusters)
