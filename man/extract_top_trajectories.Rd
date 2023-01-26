@@ -48,7 +48,7 @@ features for the given tissue(s) and ome(s). Optionally include features in the 
 }
 \examples{
 # Top 3 trajectories of training-regulated proteins in the liver
-res = extract_top_trajectories("LIVER", omes="PROT")
+res = extract_top_trajectories("LIVER", omes="PROT", k=3)
 names(res)
 lapply(res, length)
 
