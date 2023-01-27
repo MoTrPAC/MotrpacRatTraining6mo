@@ -1,7 +1,7 @@
 # MotrpacRatTraining6mo 1.6.0
 
-* Add functions for GSEA and PTM-SEA: `gsea()`, `ptmsea()`, `prepare_gsea_input()`, 
-`prepare_ptmsea_input()`, `find_flanks()`, `load_uniprot_human_fasta()`
+* Add functions for GSEA and PTM-SEA: `ssGSEA2_wrapper()`, `prepare_gsea_input()`, 
+`prepare_ptmsea_input()`, `find_flanks()`, `load_uniprot_human_fasta()`  
 
 # MotrpacRatTraining6mo 1.4.4 
 
