@@ -106,10 +106,16 @@
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/extract_tissue_sets.html</loc>
   </url>
   <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/extract_top_trajectories.html</loc>
+  </url>
+  <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/filter_edge_sets_by_trajectories.html</loc>
   </url>
   <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/filter_outliers.html</loc>
+  </url>
+  <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/find_flanks.html</loc>
   </url>
   <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/fix_covariates.html</loc>
@@ -187,6 +193,9 @@
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_training_da.html</loc>
   </url>
   <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/load_uniprot_human_fasta.html</loc>
+  </url>
+  <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/make_kegg_db.html</loc>
   </url>
   <url>
@@ -229,6 +238,12 @@
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/plot_pcs.html</loc>
   </url>
   <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/prepare_gsea_input.html</loc>
+  </url>
+  <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/prepare_ptmsea_input.html</loc>
+  </url>
+  <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/proteomics_timewise_da.html</loc>
   </url>
   <url>
@@ -251,6 +266,9 @@
   </url>
   <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/run_single_enrichment.html</loc>
+  </url>
+  <url>
+    <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/ssGSEA2_wrapper.html</loc>
   </url>
   <url>
     <loc>https://motrpac.github.io/MotrpacRatTraining6mo/reference/transcript_call_outliers.html</loc>
