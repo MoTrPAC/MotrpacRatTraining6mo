@@ -132,6 +132,14 @@ reference:
   contents: 
     - enrichment_network_vis
     - check_cluster_res_format
+    
+- subtitle: Perform ssGSEA2 and PTM-SEA
+  contents: 
+    - ssGSEA2_wrapper
+    - prepare_gsea_input
+    - prepare_ptmsea_input
+    - load_uniprot_human_fasta
+    - find_flanks
 
 
 
