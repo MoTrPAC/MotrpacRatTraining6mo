@@ -1,6 +1,7 @@
 #' Filter and normalize raw RNA-seq counts
 #' 
-#' Get raw counts and return the filtered and normalized data. 
+#' Load raw counts and return the filtered and normalized data. 
+#' Alternatively, the user can provide a numeric data frame of raw RNA-seq counts. 
 #'
 #' @param tissue `r tissue()`
 #' @param min_cpm double, retain genes with more than \code{min_cpm} counts per million in at least \code{min_num_samples} samples
@@ -19,6 +20,11 @@
 #' @examples
 #' norm_data = transcript_normalize_counts("LUNG")
 #' 
+#' # Simulate "user-supplied data"
+#' counts = load_sample_data("LUNG", "TRNSCRPT", normalized=FALSE)
+#' counts = df_to_numeric(counts)
+#' norm_data = transcript_normalize_counts(counts = counts)
+#' 
 #' @details 
 #' Note that while this function is identical to the code used to generate the 
 #' normalized RNA-seq data tables ([MotrpacRatTraining6moData::TRNSCRPT_NORM_DATA])
@@ -33,9 +39,15 @@ transcript_normalize_counts = function(tissue, min_cpm = 0.5, min_num_samples = 
 
   if(!is.null(counts)){
     counts = as.data.frame(counts)
+    if(!all(apply(counts, c(1,2), is.numeric))){
+      stop("'counts' must be a numeric table with features as row names and samples as column names.")
+    }
+    if(all(rownames(counts) == as.character(1:nrow(counts)))){
+      stop("'counts' should have meaningful row names, i.e., feature IDs.")
+    }
   }else{
     obj_name = sprintf("TRNSCRPT_%s_RAW_COUNTS", gsub("-","",tissue))
-    counts = get(obj_name, envir=as.environment("package:MotrpacRatTraining6moData"))
+    counts = .get(obj_name)
     counts = df_to_numeric(counts)
   }
   
@@ -85,6 +97,16 @@ atac_normalize_counts = function(tissue, scratchdir = ".", n_samples = 4, min_co
   
   if(!is.null(counts)){
     counts = as.data.frame(counts)
+    if(!all(apply(counts, c(1,2), is.numeric))){
+      stop("'counts' must be a numeric table with features as row names and samples as column names.")
+    }
+    if(all(rownames(counts) == as.character(1:nrow(counts)))){
+      stop("'counts' should have meaningful row names, i.e., feature IDs.")
+    }
+    if(!any(grepl("^chr[0-9]|^chrY|^chrX", rownames(counts)))){
+      stop(paste("No autosomal features found in input 'counts'. Did you use the expected chromosome naming convention?",
+                 "i.e., chr1, chr2, ..., chr20, chrX, chrY."))
+    }
   }else{
     # load raw counts 
     counts = load_sample_data(tissue = tissue, 

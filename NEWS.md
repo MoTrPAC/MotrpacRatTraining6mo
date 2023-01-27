@@ -1,15 +1,38 @@
-# MotrpacRatTraining6mo 1.6.0
+# MotrpacRatTraining6mo 1.6.0 (2023-01-27)
 
 * Add functions for GSEA and PTM-SEA: `ssGSEA2_wrapper()`, `prepare_gsea_input()`, 
 `prepare_ptmsea_input()`, `find_flanks()`, `load_uniprot_human_fasta()`  
+* Add `extract_top_trajectories()` function. 
 
-# MotrpacRatTraining6mo 1.4.4 
+# MotrpacRatTraining6mo 1.5.2 (2023-01-20)
 
+* For `enrichment_network_vis()` with argument `return_html=TRUE`, don't require GNU sed.  
+
+# MotrpacRatTraining6mo 1.5.1 (2023-01-19)
+
+* In `enrichment_network_vis()`, include pathway names in determination of node labels.  
+* In `enrichment_network_vis()`, use `MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT` as
+`feature_to_gene` default instead of the unfiltered version.  
+* Add more details to `enrichment_network_vis()` docs.  
+
+# MotrpacRatTraining6mo 1.5.0 (2023-01-18)
+
+* Add `load_feature_annotation()`.  
 * Add `counts` argument to `transcript_normalize_counts()` and `atac_normalize_counts()` 
 to allow user-supplied data.  
+* Add `tissues`, `assays`, and `cluster` arguments to `enrichment_network_vis()` to 
+provide an alternate way for users to specify results from `MotrpacRatTraining6moData::GRAPH_PW_ENRICH`.    
+* Add tests for `enrichment_network_vis()`.  
+* Use `signif()` instead of `round()` to display values in plot titles. 
 * Add note about reproducibility issues to documentation for `transcript_normalize_counts()`.  
-* Move `MotrpacRatTraining6moData` from `Imports` to `Depends`.  
-* Replace `fetch_object(name_as_string)` with `get(name_as_string, envir=as.environment("package:MotrpacRatTraining6moData"))`. 
+* Move `MotrpacRatTraining6moData` from `Imports` to `Depends`. This means `MotrpacRatTraining6moData` is also attached
+(not just loaded) when `MotrpacRatTraining6mo` is attached.  
+* Replace `fetch_object(name_as_string)` with `.get`, which internally uses `get(name_as_string, envir=as.environment("package:MotrpacRatTraining6moData"))`.  
+* Change URLs for `load_methyl_feature_annotation()` and `load_atac_feature_annotation()`.  
+* Fix bug in `plot_feature_logfc()` that prevented epigenetic features from being plotted.   
+* Speed up `plot_feature_logfc()` for differential epigenetic features.  
+* In `get_rdata_from_url()`, calculate log fold-change standard errors for METHYL 
+differential analysis results: `logFC_se = logFC/zscore`  
 
 # MotrpacRatTraining6mo 1.4.3 (2023-01-06)
 

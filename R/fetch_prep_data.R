@@ -440,7 +440,7 @@ load_sample_data = function(tissue,
         obj_name = sprintf("%s_%s_NORM_DATA_05FDR", assay, gsub("-","",tissue))
         if(obj_name %in% available_data){
           message(obj_name)
-          data = get(obj_name, envir=as.environment("package:MotrpacRatTraining6moData"))
+          data = .get(obj_name)
         }
       }else{
         # download from GCS
@@ -470,7 +470,7 @@ load_sample_data = function(tissue,
       obj_name = sprintf("%s_%s_NORM_DATA", assay, gsub("-","",tissue))
       if(obj_name %in% available_data){
         message(obj_name)
-        data = get(obj_name, envir=as.environment("package:MotrpacRatTraining6moData"))
+        data = .get(obj_name)
       }
     }
   }else{
@@ -487,7 +487,7 @@ load_sample_data = function(tissue,
         obj_name = sprintf("%s_%s_RAW_COUNTS", assay, gsub("-","",tissue))
         if(obj_name %in% available_data){
           message(obj_name)
-          data = get(obj_name, envir=as.environment("package:MotrpacRatTraining6moData"))
+          data = .get(obj_name)
         }
       }
     }else{
@@ -596,15 +596,17 @@ load_methyl_raw_data = function(tissue, scratchdir = "."){
 #'
 #' @return data frame. See [MotrpacRatTraining6moData::METHYL_FEATURE_ANNOT] for details. 
 #' @export
+#' 
+#' @seealso [load_feature_annotation()], [MotrpacRatTraining6moData::METHYL_FEATURE_ANNOT]
 #'
 #' @examples
 #' \dontrun{
 #' feature_annot = load_methyl_feature_annotation("/tmp")
 #' }
 #' 
-#' @source <https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/METHYL_FEATURE_ANNOT.rda> 
+#' @source <https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/feature-annot/METHYL_FEATURE_ANNOT.rda> 
 load_methyl_feature_annotation = function(scratchdir = "."){
-  fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/METHYL_FEATURE_ANNOT.rda",
+  fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/feature-annot/METHYL_FEATURE_ANNOT.rda",
                    scratchdir = scratchdir)
   return(fa)
 }
@@ -620,17 +622,88 @@ load_methyl_feature_annotation = function(scratchdir = "."){
 #'
 #' @return data frame. See [MotrpacRatTraining6moData::ATAC_FEATURE_ANNOT] for details. 
 #' @export
+#' 
+#' @seealso [load_feature_annotation()], [MotrpacRatTraining6moData::ATAC_FEATURE_ANNOT]
 #'
 #' @examples
 #' \dontrun{
 #' feature_annot = load_atac_feature_annotation("/tmp")
 #' }
 #' 
-#' @source <https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/ATAC_FEATURE_ANNOT.rda> 
+#' @source <https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/feature-annot/ATAC_FEATURE_ANNOT.rda> 
 load_atac_feature_annotation = function(scratchdir = "."){
-  fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/epigen-rda/ATAC_FEATURE_ANNOT.rda",
+  fa = get_rdata_from_url(url = "https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/feature-annot/ATAC_FEATURE_ANNOT.rda",
                           scratchdir = scratchdir)
   return(fa)
+}
+
+
+#' Load feature annotation
+#'
+#' @param assay `r assay()`
+#' @param scratchdir character, local directory in which to download data from 
+#'   Google Cloud Storage. Current working directory by default. Not used
+#'   if \code{assay} is "TRNSCRPT", "IMMUNO", or "METAB". 
+#'
+#' @seealso [MotrpacRatTraining6moData::FEATURE_TO_GENE],
+#'   [MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT],
+#'   [MotrpacRatTraining6moData::PROT_FEATURE_ANNOT],
+#'   [MotrpacRatTraining6moData::PHOSPHO_FEATURE_ANNOT],
+#'   [MotrpacRatTraining6moData::ACETYL_FEATURE_ANNOT],
+#'   [MotrpacRatTraining6moData::UBIQ_FEATURE_ANNOT],
+#'   [MotrpacRatTraining6moData::TRNSCRPT_FEATURE_ANNOT],
+#'   [MotrpacRatTraining6moData::ATAC_FEATURE_ANNOT],
+#'   [MotrpacRatTraining6moData::METHYL_FEATURE_ANNOT],
+#'   [MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP]
+#'
+#' @return data frame with one row per feature with unique metadata 
+#' @export
+#' 
+#' @examples
+#' head(load_feature_annotation("UBIQ", scratchdir="/tmp"))
+#' head(load_feature_annotation("TRNSCRPT", scratchdir="/tmp"))
+#' head(load_feature_annotation("METAB"))
+#' head(load_feature_annotation("IMMUNO"))
+#' 
+load_feature_annotation = function(assay, scratchdir = "."){
+  if(assay == "PROT"){
+    fa = get_file_from_url("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/feature-annot/PROT_FEATURE_ANNOT.txt", 
+                           scratchdir = scratchdir)
+  }else if(assay == "PHOSPHO"){
+    fa = get_file_from_url("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/feature-annot/PHOSPHO_FEATURE_ANNOT.txt", 
+                           scratchdir = scratchdir)
+  }else if(assay == "UBIQ"){
+    fa = get_file_from_url("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/feature-annot/UBIQ_FEATURE_ANNOT.txt", 
+                           scratchdir = scratchdir)
+  }else if(assay == "ACETYL"){
+    fa = get_file_from_url("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/feature-annot/ACETYL_FEATURE_ANNOT.txt", 
+                           scratchdir = scratchdir)
+  }else if(assay == "ATAC"){
+    fa = load_atac_feature_annotation(scratchdir)
+  }else if(assay == "METHYL"){
+    fa = load_methyl_feature_annotation(scratchdir)
+  }else if(assay == "TRNSCRPT"){
+    fa = get_file_from_url("https://storage.googleapis.com/motrpac-rat-training-6mo-extdata/feature-annot/TRNSCRPT_FEATURE_ANNOT.txt", 
+                           scratchdir = scratchdir)
+  }else if(assay == "IMMUNO"){
+    message("Using FEATURE_TO_GENE_FILT and IMMUNO_NORM_DATA_FLAT")
+    fa = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT)
+    data = unique(data.table::data.table(MotrpacRatTraining6moData::IMMUNO_NORM_DATA_FLAT)[,.(feature_ID, dataset)])
+    data = data[,list(dataset = paste0(dataset, collapse=",")), by=feature_ID]
+    fa = merge(data, fa, by="feature_ID")
+    fa[,c("relationship_to_gene", "custom_annotation", "kegg_id") := NULL]
+  }else if(assay == "METAB"){
+    message("Using FEATURE_TO_GENE_FILT and METAB_FEATURE_ID_MAP")
+    fa = data.table::data.table(MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT)
+    map = data.table::data.table(MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP)
+    fa = fa[feature_ID %in% MotrpacRatTraining6moData::METAB_NORM_DATA_FLAT$feature_ID, .(feature_ID, kegg_id)]
+    fa = merge(fa, map, by.x="feature_ID", by.y="metabolite_name")
+    cols = colnames(fa)[!colnames(fa) %in% c("tissue","feature")]
+    fa = fa[,list(tissue = paste0(tissue, collapse=",")), by=cols]
+  }else{
+    stop(sprintf("'assay' must be one of %s", paste0(MotrpacRatTraining6moData::ASSAY_ABBREV, collapse = ", ")))
+  }
+  return(as.data.frame(fa))
 }
 
 
@@ -737,6 +810,11 @@ get_rdata_from_url = function(tissue=NULL, assay=NULL, suffix=NULL, scratchdir="
     data = data[1:nrows,]
   }
   
+  # for METHYL differential analysis results, calculate logFC_se
+  if(grepl("METHYL", url) & grepl("_DA.rda$", url)){
+    data$logFC_se = data$logFC/data$zscore
+  }
+  
   # delete local copy
   file.remove(local)
 
@@ -785,7 +863,7 @@ load_metab_da = function(tissue, type="timewise", ...){
   
   if(type=="timewise"){
     obj_name = sprintf("METAB_%s_DA", gsub("-","",tissue))
-    data = get(obj_name, envir=as.environment("package:MotrpacRatTraining6moData"))
+    data = .get(obj_name)
   }else{
     data = load_training_da("METAB", tissue, metareg = FALSE)
   }
@@ -1107,7 +1185,7 @@ combine_da_results = function(tissues = MotrpacRatTraining6moData::TISSUE_ABBREV
           # load from URL
           data = get_rdata_from_url(tissue=t, assay=a, suffix="DA", scratchdir=scratchdir)
         }else{
-          data = get(object_name, envir=as.environment("package:MotrpacRatTraining6moData"))
+          data = .get(object_name)
         }
         if ("removed_samples" %in% colnames(data)){
           data$removed_samples = as.character(data$removed_samples)

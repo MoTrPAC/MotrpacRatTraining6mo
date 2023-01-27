@@ -20,6 +20,12 @@ reference:
     - load_sample_data
     - combine_normalized_data
     - plot_feature_normalized_data
+    
+- subtitle: Load feature-level annotation
+  contents:
+    - load_feature_annotation
+    - load_atac_feature_annotation
+    - load_methyl_feature_annotation
 
 - subtitle: Load differential analysis results 
   contents: 
@@ -32,8 +38,6 @@ reference:
   desc: Load full epigenetic datasets from Google Cloud Storage
   contents: 
     - load_epigen_da
-    - load_atac_feature_annotation
-    - load_methyl_feature_annotation
     - load_methyl_raw_data
 
 - subtitle: Load data from GCS
@@ -98,6 +102,7 @@ reference:
 
 - subtitle: Extract graphical clusters  
   contents:
+    - extract_top_trajectories 
     - extract_main_clusters
     - get_all_trajectories
     - extract_tissue_sets

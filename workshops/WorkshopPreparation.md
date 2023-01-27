@@ -3,6 +3,8 @@
 > TLDR; complete the steps in this document *before* the workshop if you want to use 
 the MoTrPAC R packages to explore PASS1B data. 
 
+Materials for 1/23/23 workshop: https://drive.google.com/drive/folders/1CCww9brbnZFppX59Qvw-oSbVgN5clRQp?usp=sharing
+
 Thank you for your interest in the MoTrPAC PASS1B R packages!
 
 During this workshop, we will work through practical examples of how to
@@ -91,12 +93,9 @@ To avoid having to install additional dependencies *during* the workshop, instal
 them ahead of time by copy/paste-ing the following commands in your RStudio `Console`. 
 If you run into any issues, try running one line at a time.  
 ```r
-install.packages("foreach")
+install.packages("rmarkdown")
 install.packages("gprofiler2")
-install.packages("doParallel")
 install.packages("reshape2")
-if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-BiocManager::install("IHW")
 ```
 
 **Technical aside:** You may be wondering why you need to install these packages
@@ -116,4 +115,4 @@ That's it! Thank you for getting this far. I look forward to the workshop!
 ---
 
 Author: Nicole Gay  
-Updated: 1/12/23
+Updated: 1/18/23

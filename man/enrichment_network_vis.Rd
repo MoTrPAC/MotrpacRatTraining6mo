@@ -5,8 +5,11 @@
 \title{Pathway enrichment network}
 \usage{
 enrichment_network_vis(
-  pw_enrich_res,
-  feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE,
+  pw_enrich_res = NULL,
+  tissues = NULL,
+  assays = MotrpacRatTraining6moData::ASSAY_ABBREV,
+  cluster = NULL,
+  feature_to_gene = MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT,
   intersection_id_type = "ensembl_gene",
   similarity_cutoff = 0.375,
   adj_pval_cutoff = 0.1,
@@ -25,21 +28,43 @@ enrichment_network_vis(
 )
 }
 \arguments{
-\item{pw_enrich_res}{data frame of enrichment results.
+\item{pw_enrich_res}{optional data frame of enrichment results.
 May be a subset of \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}
 or a data frame returned from \code{\link[=cluster_pathway_enrichment]{cluster_pathway_enrichment()}}.
 Columns must include "adj_p_value", "ome", "tissue", "intersection", "computed_p_value",
-"term_name", "term_id".}
+"term_name", "term_id". If not specified, \code{tissues} and \code{cluster} must be specified.
+\code{NULL} by default.}
+
+\item{tissues}{character vector of tissue abbreviations, at least one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}.
+Used to subset \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}.
+Must be specified if \code{pw_enrich_res} is not provided. \code{NULL} by default.}
+
+\item{assays}{optional character vector of assay abbreviations, at least one of \link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV}.
+Used to subset \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}.
+All assays by default.}
+
+\item{cluster}{character, graphical cluster of interest.
+Used to subset \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}.
+Must be specified if \code{pw_enrich_res} is not provided.
+e.g., "8w_F1_M1" for features that are
+up-regulated (1) in females (F) and up-regulated in males (M1) at 8 weeks of training (8w), or
+"1w_F0_M1->2w_F0_M1->4w_F0_M1->8w_F1_M1" for features that are up-regulated in males at all time points
+(1w_F?_M1, 2w_F?_M1, 4w_F?_M1, 8w_F?_M1) and up-regulated in females at 8 weeks of training only.
+See \link[MotrpacRatTraining6moData:GRAPH_PW_ENRICH]{MotrpacRatTraining6moData::GRAPH_PW_ENRICH}\code{$graphical_cluster} for all possible options.
+See the \href{https://motrpac.github.io/MotrpacRatTraining6mo/articles/MotrpacRatTraining6mo.html#bayesian-graphical-clustering}{vignette}
+for a detailed description of how to interpret and construct these strings. \code{NULL} by default.}
 
 \item{feature_to_gene}{data frame, map between \code{intersection_id_type} and gene symbols.
 Columns must include "gene_symbol" and "ensembl_gene" if \code{intersection_id_type == "ensembl_gene"}.
-\link[MotrpacRatTraining6moData:FEATURE_TO_GENE]{MotrpacRatTraining6moData::FEATURE_TO_GENE} by default.}
+\link[MotrpacRatTraining6moData:FEATURE_TO_GENE_FILT]{MotrpacRatTraining6moData::FEATURE_TO_GENE_FILT} by default.}
 
 \item{intersection_id_type}{character, type of gene identifier used to define
-\code{pw_enrich_res$intersection}, either "ensembl_gene" or "gene_symbol"}
+\code{pw_enrich_res$intersection}, either "ensembl_gene" or "gene_symbol".
+"ensembl_gene" by default.}
 
 \item{similarity_cutoff}{numeric, edges are drawn between pairs of pathways if they have
-a similarity metric above this value. 0.375 by default.}
+a similarity metric above this value. Increase this value to make a sparser
+network; decrease it to make a denser network. 0.375 by default.}
 
 \item{adj_pval_cutoff}{numeric, pathway enrichments are only considered for
 the network if the corresponding adjusted p-value (\code{pw_enrich_res$adj_p_value})
@@ -79,8 +104,8 @@ similarity scores are loaded from the file instead of being recalculated.
 \code{TRUE} by default. If \code{out_html} exists and \code{overwrite_html=FALSE},
 then the path \code{out_html} is returned.}
 
-\item{return_html}{boolean, whether to return the path to \code{out_html}. If
-\code{FALSE}, return the \code{visNetwork} object instead. \code{FALSE} by default.}
+\item{return_html}{boolean, whether to return the path to \code{out_html}.
+If \code{FALSE}, return the \code{visNetwork} object instead. \code{FALSE} by default.}
 
 \item{return_graph_for_cytoscape}{boolean. If \code{TRUE}, return an \code{igraph}
 graph object that can be exported to Cytoscape.}
@@ -96,12 +121,34 @@ which the interactive \code{visNetwork} was saved.
 \description{
 Plot an interactive network of pathway enrichments.
 }
+\details{
+Inspired by the \href{https://apps.cytoscape.org/apps/enrichmentmap}{EnrichmentMap Cytoscape App}.
+Each node is a significantly enriched pathway; edges connect nodes where there is a high overlap between the
+sets of genes underlying each pathway enrichment. For pathways with significant
+enrichments in multiple assays, genes are combined across assays
+to calculate this similarity score. Node size is proportional to the number of datasets (tissue and assay combinations)
+with a significant enrichment; edge weight is scaled to the similarity score.
+Presenting pathway enrichments in this way allows groups of highly similar pathways
+to be more easily summarized at a higher level.
+
+Nodes in the graph are colored by the cluster of nodes they belong to, determined
+by \code{\link[igraph:cluster_louvain]{igraph::cluster_louvain()}}. If \code{label_nodes = TRUE}, node labels indicate
+the cluster number, a summary term for the cluster, and the number of nodes in
+the cluster from which this summary term was derived, e.g., "3: Fatty acid metabolism (4/15)".
+The summary term is defined as the most common pathway or parent pathway name.
+For example, the "3: Fatty acid metabolism (4/15)" label indicates that the pathway
+or parent pathway name for 4 out of 15 nodes in cluster 3 are "Fatty acid metabolism".
+}
 \examples{
 # Example 1: Plot an interactive network of pathway enrichments from the HEART:8w_F1_M1 node,
 # i.e., features that are up-regulated in both males and females after 8 weeks of training
 enrich_res = MotrpacRatTraining6moData::GRAPH_PW_ENRICH
 enrich_res = enrich_res[enrich_res$cluster == "HEART:8w_F1_M1",]
 enrichment_network_vis(enrich_res, add_group_label_nodes = TRUE) 
+# # Equivalently:
+# enrichment_network_vis(tissues="HEART", 
+#                        cluster="8w_F1_M1",
+#                        add_group_label_nodes = TRUE) 
 
 \dontrun{
 # Example 2: Export the above network to Cytoscape.
@@ -116,14 +163,12 @@ RCy3::createNetworkFromIgraph(g, new.title='HEART:8w_F1_M1')
 # features that are up-regulated in both sexes at 8 weeks in any of the 3 muscle tissues. 
 # Only include pathways that are enriched in at least 2 muscle tissues.
 # Plot the color legend on the left instead of using colored labels pointing to nodes 
-enrich_res = MotrpacRatTraining6moData::GRAPH_PW_ENRICH
-enrich_res = enrich_res[enrich_res$tissue \%in\% c("SKM-GN","SKM-VL","HEART") &
-                         grepl(":8w_F1_M1",enrich_res$cluster),]
-enrichment_network_vis(enrich_res,
+enrichment_network_vis(tissues = c("SKM-GN","SKM-VL","HEART"),
+                       cluster = "8w_F1_M1",
                        similarity_cutoff = 0.3,
                        title = "Muscle 8w_F1_M1",
                        add_group_label_nodes = FALSE,
-                       multitissue_pathways_only = TRUE) 
+                       multitissue_pathways_only = TRUE)
 
 }
 \seealso{

@@ -1,0 +1,429 @@
+---
+title: "MoTrPAC R Package Workshop"
+author: "Nicole Gay"
+date: "2023-01-05"
+output: 
+  rmarkdown::html_document:
+    toc: true
+    code_folding: show 
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    theme: sandstone
+    highlight: tango
+---
+
+```{r setup, message=FALSE}
+# MoTrPAC R packages 
+library(MotrpacRatTraining6mo) # v1.5.0
+# MotrpacRatTraining6moData v1.8.0 is automatically attached
+
+# for plotting
+library(ggplot2)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Background 
+
+### About these R package 
+These package provides functions to fetch, explore, and reproduce the processed 
+data and downstream analysis results presented in the main paper for the first 
+large-scale multi-omic multi-tissue endurance exercise training study conducted 
+in young adult rats by the Molecular Transducers of Physical Activity Consortium 
+(MoTrPAC). Find the [preprint on bioRxiv](https://www.biorxiv.org/content/10.1101/2022.09.21.508770v2).
+
+While functions in [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData) 
+can be used by themselves, they were primarily written to analyze data in the 
+[MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData)
+R package. 
+
+**Note:** Data objects from the [MotrpacRatTraining6moData](https://motrpac.github.io/MotrpacRatTraining6moData) 
+package are indicated as variable names in all caps, e.g. `PHENO`, `TRNSCRPT_LIVER_RAW_COUNTS`. 
+
+**Tip:** To learn more about any data object or function, use `?` to retrieve the documentation,
+e.g., `?METAB_FEATURE_ID_MAP`, `?load_sample_data`. Note that both `MotrpacRatTraining6mo` and 
+`MotrpacRatTraining6moData` must be installed and loaded with `library()` for this to work. 
+
+### About MoTrPAC 
+MoTrPAC is a national research consortium designed to discover and perform 
+preliminary characterization of the range of molecular transducers (the 
+"molecular map") that underlie the effects of physical activity in humans. 
+The program's goal is to study the molecular changes that occur during and after 
+exercise and ultimately to advance the understanding of how physical activity 
+improves and preserves health. The six-year program is the largest targeted NIH 
+investment of funds into the mechanisms of how physical activity improves health 
+and prevents disease. See [motrpac.org](https://www.motrpac.org/) and 
+[motrpac-data.org](https://motrpac-data.org/) for more details. 
+
+### Study design 
+Details of the experimental design can be found in the [supplementary methods of the bioRxiv preprint](https://www.biorxiv.org/content/biorxiv/early/2022/10/05/2022.09.21.508770/DC1/embed/media-1.pdf?download=true). 
+Briefly, 6-month-old young adult rats 
+were subjected to progressive endurance exercise training
+for 1, 2, 4, or 8 weeks, with tissues collected 48 hours after the last training bout. 
+Sex-matched sedentary, untrained rats were used as controls. Whole blood, plasma, 
+and 18 solid tissues were analyzed using genomics, proteomics, metabolomics, 
+and protein immunoassay technologies, with most assays performed in a subset of these tissues. 
+Depending on the assay, between 3 and 6 replicates per sex per time point were
+analyzed. 
+
+### Tissue and assay abbreviations  
+It is important to be aware of the tissue and assay abbreviations because they are used
+to name data objects and define arguments for many functions. 
+
+#### Tissues
+* **ADRNL:** adrenal gland  
+* **BAT:** brown adipose tissue  
+* **BLOOD:** whole blood  
+* **COLON:** colon  
+* **CORTEX:** cerebral cortex  
+* **HEART:** heart  
+* **HIPPOC:** hippocampus  
+* **HYPOTH:** hypothalamus  
+* **KIDNEY:** kidney  
+* **LIVER:** liver  
+* **LUNG:** lung  
+* **OVARY:** ovaries (female gonads)  
+* **PLASMA:** plasma from blood
+* **SKM-GN:** gastrocnemius (leg skeletal muscle)  
+* **SKM-VL:** vastus lateralis (leg skeletal muscle) 
+* **SMLINT:** small intestine  
+* **SPLEEN:** spleen  
+* **TESTES:** testes (male gonads)  
+* **VENACV:** vena cava  
+* **WAT-SC:** subcutaneous white adipose tissue  
+
+#### Assays/omes
+* **ACETYL:** acetylproteomics; protein site acetylation  
+* **ATAC:** chromatin accessibility, ATAC-seq data  
+* **IMMUNO:** multiplexed immunoassays (cytokines and hormones)  
+* **METAB:** metabolomics and lipidomics  
+* **METHYL:** DNA methylation, RRBS data   
+* **PHOSPHO:** phosphoproteomics; protein site phosphorylation  
+* **PROT:** global proteomics; protein abundance  
+* **TRNSCRPT:** transcriptomics, RNA-Seq data  
+* **UBIQ:** ubiquitylome; protein site ubiquitination  
+
+The vectors of abbreviations are also available in `TISSUE_ABBREV` and `ASSAY_ABBREV`: 
+```{r}
+TISSUE_ABBREV
+ASSAY_ABBREV
+```
+
+### Guiding question
+
+Let's see how we can use these R packages to identify an interesting shared
+multi-omic signal in the heart (HEART) and gastrocnemius (SKM-GN) muscle tissues. 
+
+## Sample-level data
+
+First, let's look at a set of functions used to easily load data from the 
+`MotrpacRatTraining6moData` R package. 
+
+Use `load_sample_data()` to load sample-level data for a specific ome and tissue. 
+```{r load_sample_data}
+?load_sample_data
+
+# heart protein expression 
+heart_prot = 
+
+# heart immunoassay data
+heart_immuno = 
+
+# gastroc gene expression
+gastroc_rna =
+
+# gastroc metabolomics
+gastroc_metab = 
+```
+
+Let's look at the format of these data frames.
+```{r}
+
+```
+
+The `feature` column is non-NA only for training-regulated features, which provides 
+a convenient way of identifying this subset of features. 
+
+Sometimes it is more convenient to have all-numeric data frames. We can easily
+convert these data frames to this format with `df_to_numeric()`. 
+```{r df_to_numeric}
+
+```
+
+Note that `load_sample_data()` also prints a message with the name of the object
+in `MotrpacRatTraining6moData` that is being returned. Therefore, instead of using
+`load_sample_data()`, we could call the object directly. 
+```{r}
+
+```
+
+Let's plot the sample-level data for a single differential feature.
+```{r, out.width="50%", out.height="50%", fig.show="hold"}
+head(heart_prot$feature[!is.na(heart_prot$feature)])
+?plot_feature_normalized_data
+# default
+
+# facet by sex
+```
+
+We can also use `combine_normalized_data()` to load normalized data from multiple omes or tissues
+simultaneously. For example, let's load all non-epigenetic data from the gastroc.
+```{r gastroc data}
+? combine_normalized_data
+all_gastroc = 
+
+# how many features?
+
+# how many differential features?
+
+# what omes?
+
+```
+
+Note that column names are now PIDs instead of vial labels. This is because 
+measurements from multiple vial labels (samples) from the same PID (animal) are included in the same column. 
+
+## Differential analysis results 
+
+Next, let's load the differential analysis results. Recall there are two types of differential analysis results:
+*timewise* and *training*. We use the adjusted p-value from the *training* differential
+analysis to identify training-regulated features (`selection_fdr`); we use the summary statistics from the 
+*timewise* differential analysis to quantify time- and sex- specific training effects. The 
+results below are the *timewise* results **and** adjusted p-values from the *training* results. 
+Lesser-used additional *training* summary statistics are available through `load_training_da()`. 
+
+First, let's consider training-regulated features only. These are conveniently provided 
+in `TRAINING_REGULATED_FEATURES`, which we can easily subset to any data set of interest. 
+```{r}
+head(TRAINING_REGULATED_FEATURES)
+heart_gastroc_sig = 
+# how many differential features?
+
+# what tissues and omes?
+
+```
+
+We can also load the full set of differential analysis results. This consumes some
+memory, so let's skip this for now. 
+```{r all da, eval=F}
+# for a single tissue
+heart_da = combine_da_results(tissues="HEART")
+# for multiple tissues
+heart_gastroc_da = combine_da_results(tissues=c("SKM-GN","HEART"))
+```
+
+Plot the differential analysis results for a single training-regulated feature.
+```{r, out.width="50%", out.height="50%", fig.show="hold"}
+# plot the first differential feature
+heart_gastroc_sig
+?plot_feature_logfc
+
+# how does this compare to the sample-level data?
+?plot_feature_normalized_data
+```
+
+## Graphical clustering results
+
+Across all tissues and omes, we had over 30,000 training-regulated features. We 
+used a graphical approach to identify groups of features with similar temporal dynamics. 
+See more details in the ["Get Started" tutorial](https://motrpac.github.io/MotrpacRatTraining6mo/articles/MotrpacRatTraining6mo.html#bayesian-graphical-clustering). 
+
+The graph representation of the `repfdr` results are provided in `GRAPH_COMPONENTS` (node and edge lists) and 
+`GRAPH_STATES` (data frame representation). Features are specified in the format "[ASSAY_ABBREV];[TISSUE_ABBREV];[feature_ID]",
+e.g. "PHOSPHO;SKM-GN;NP_001006973.1_S34s", "METAB;SKM-GN;1-methylnicotinamide". 
+
+### Plot feature trajectories
+
+Let's start exploring the heart and gastroc graphical clustering results
+features by plotting the graphs themselves. 
+
+Start by plotting graphs for gastroc and heart separately. 
+```{r, fig.width=9, fig.height=6}
+?get_tree_plot_for_tissue
+
+# gastroc
+
+# heart
+
+```
+
+Now plot both heart and gastroc features together. For the sake of visualization, 
+let's limit it to popular omes in both tissues. 
+```{r, fig.width=9, fig.height=6}
+# edges by tissue
+
+# edges by ome
+
+```
+
+There's a lot going on in each of these three trajectories. **We will focus on these
+three paths in the heart and gastroc for the rest of this workshop**. 
+
+### Get underlying features 
+
+Let's determine the features that belong to each of these paths. This can be 
+done one of a few ways, but I'll show two here.   
+
+First, how can we get the names of these paths without actually having to type it all out? 
+Since we're looking at the three *largest* paths, we can use `extract_tissue_sets()`.
+```{r}
+?extract_tissue_sets
+sets = 
+# select paths only
+
+lapply(sets, head)
+```
+
+Note that this function does **not** separate paths by tissue when constructing
+the lists of features. 
+
+If we weren't looking at the top N paths, we could construct the name of the each path 
+and subset `GRAPH_STATES`. 
+In addition to subsetting the `path` column as shown here, 
+we can use the `state_*w` columns to select features in any node, edge, or path. 
+```{r graphical clustering results}
+head(GRAPH_STATES)
+
+# make a named list where names are tissue:path and values are features in that cluster
+clusters = list()
+paths = names(sets)
+tissues = c("SKM-GN", "HEART")
+
+
+
+lapply(clusters, length)
+```
+
+Let's move forward with this list of features per cluster. We'll rename them
+to make them easier to keep track of. 
+```{r}
+MY_CLUSTERS = clusters
+```
+
+We can also use the `check_cluster_res_format()` function to transform
+the list to an annotated data frame. 
+```{r}
+MY_CLUSTER_DF = check_cluster_res_format(clusters)
+head(MY_CLUSTER_DF)
+```
+
+### Plot groups of features 
+
+We can visualize the composition of these clusters in terms of tissues and omes. 
+```{r, fig.width=9, fig.height=3}
+?plot_features_per_cluster
+```
+
+We can also look at the trajectories of these features' abundances over the 
+training time course. Let's look at a single cluster.   
+```{r}
+?plot_feature_trajectories
+```
+
+## Pathway enrichment
+
+One important tool we use to interpret the biology underlying graphical clusters
+is pathway enrichment analysis. In this section, we look at functions to explore 
+the existing pathway enrichment results presented in the manuscript. 
+
+> To perform your own pathway enrichment analysis, either with MoTrPAC data from this 
+study or your own data, see `cluster_pathway_enrichment()`, `gene_pathway_enrichment()`,
+and `custom_cluster_pathway_enrichment()`. 
+
+### Explore existing results 
+
+For the manuscript, we performed pathway enrichment for the 2 largest nodes, 
+2 largest edges, 10 largest non-null paths, and all 8-week nodes from the graphical 
+representation of training-regulated features in each tissue. This set of 
+graphical clusters can be extracted using `extract_main_clusters()`. 
+Pathway enrichment results were adjusted over *all* tests using 
+[IHW](https://www.nature.com/articles/nmeth.3885) with tissue as a covariate. 
+These pathway enrichment results are available in `GRAPH_PW_ENRICH`. 
+
+Because our 3 paths of interest are among the 10 largest paths in both tissues, the
+pathway enrichment results for these features are already available in `GRAPH_PW_ENRICH`.
+Let's take a look. 
+```{r GRAPH_PW_ENRICH}
+head(GRAPH_PW_ENRICH)
+writeLines(colnames(GRAPH_PW_ENRICH))
+```
+
+The `cluster` column in `GRAPH_PW_ENRICH` prepends the cluster name with the tissue abbreviation.
+The `graphical_cluster` column does not. 
+Let's get all significant heart and gastroc enrichment results for these three paths. 
+```{r}
+enrich_res = 
+table(enrich_res$cluster, enrich_res$ome)
+```
+
+## Networks of PW enrichments
+
+Okay, so now we know how pathway enrichment was performed. Great! Now let's get to my
+favorite part - how to visualize large numbers of significant pathway enrichments. 
+
+### Approach
+
+After performing pathway enrichment for our graphical clusters of interest, we
+observed that many clusters had many dozens of significantly enriched pathways. 
+In order to make these results more digestible, we leveraged
+[visNetwork](https://cran.r-project.org/web/packages/visNetwork/vignettes/Introduction-to-visNetwork.html)
+to construct interactive networks of pathway enrichments. These networks are 
+conceptually similar to those made by the [EnrichmentMap](https://apps.cytoscape.org/apps/enrichmentmap)
+Cytoscape module, but it's easier to generate them and explore the underlying data. 
+
+Briefly, each node in the network is a pathway, and edges connect highly similar
+pathways, i.e., those whose enrichments are driven by highly similar sets of genes
+across omes. This groups together highly similar pathway enrichments, which makes
+it easier to digest large numbers of results. 
+
+In our implementation, groups of similar pathway enrichments are color-coded, and 
+group labels are inferred from the term names and parents of the pathways in the group. 
+Larger nodes indicate that the pathway was significantly enriched in multiple 
+datasets; thicker edges indicate higher similarity between the pathways. 
+
+Best of all, these networks are interactive! Use your cursor to zoom and drag,
+and hover over nodes and edges to see more information about the underlying data, 
+namely the genes and datasets driving the pathway enrichment. 
+
+Note that you could run this function with any pathway enrichment results, 
+as long as the columns of the input
+include "adj_p_value", "ome", "tissue", "intersection", "computed_p_value", "term_name", and "term_id" 
+and the columns of `feature_to_gene` include "gene_symbol", "ensembl_gene". 
+`feature$ensembl_gene` can be a dummy column if `intersection_id_type = "gene_symbol"`.
+
+### Examples 
+
+#### Single tissue
+
+Let's focus on a single trajectory, first separately in each tissue. While it is possible to 
+[programatically render vizNetwork objects](https://motrpac.github.io/MotrpacRatTraining6mo/articles/MotrpacRatTraining6mo.html#printing-networks-within-a-loop), 
+it is not trivial, so let's keep it simple here.  
+```{r viznetwork gastroc, fig.width=8}
+names(MY_CLUSTERS)
+# make a network for the "all up" gastroc cluster
+?enrichment_network_vis
+
+```
+
+```{r viznetwork heart, fig.width=8}
+# make a network for the "all up" heart cluster
+
+```
+
+#### Multiple tissues 
+
+Now let's examine pathways that are enriched in the same graphical cluster in 
+multiple tissues (heart and gastroc in our case). 
+If we are specifically interested in pathways that are significantly enriched in
+multiple tissues, we can set `multitissue_pathways_only` to `TRUE`. This removes 
+any pathways that are not enriched in more than one tissue (in at least one ome). 
+```{r viznetwork2, fig.width=8}
+# make a network for "all up" cluster in both heart and gastroc
+
+```
+
+```{r session info}
+sessionInfo()
+```

@@ -260,7 +260,6 @@ limma_res_extract_se = function(limma_res,
 }
 
 
-
 #' Make data frame numeric only
 #' 
 #' Set row names and remove all non-numeric columns. This is useful for
@@ -276,17 +275,18 @@ limma_res_extract_se = function(limma_res,
 #'
 #' @examples
 #' df = MotrpacRatTraining6moData::PROT_HEART_NORM_DATA
-#' head(df)
-#' head(df_to_numeric(df))
+#' df[1:5,1:8]
+#' df_to_numeric(df)[1:5,1:4]
 #' 
 #' df = load_sample_data("SKM-GN", "TRNSCRPT")
-#' head(df)
-#' head(df_to_numeric(df))
+#' df[1:5,1:8]
+#' df_to_numeric(df)[1:5,1:4]
 #' 
 #' df = MotrpacRatTraining6moData::METAB_NORM_DATA_FLAT 
-#' head(df)
+#' df[1:5,1:8]
 #' rn = paste(df$assay, df$tissue, df$feature_ID, df$dataset, sep=";")
-#' head(df_to_numeric(df, rownames = rn))
+#' df_to_numeric(df, rownames = rn)[1:5,1:3]
+#' 
 df_to_numeric = function(df, rownames="feature_ID"){
   
   df = as.data.frame(df)
@@ -322,4 +322,21 @@ df_to_numeric = function(df, rownames="feature_ID"){
   df[,non_num_cols] = NULL
 
   return(df)  
+}
+
+
+#' Get object from MotrpacRatTraining6moData
+#' 
+#' For internal use only. Users can use \code{get()} or \code{data()} directly
+#' after attaching the \code{MotrpacRatTraining6moData} package. 
+#'
+#' @param object_name_as_string character, name of data object in \code{MotrpacRatTraining6moData}
+#'   R package 
+#'
+#' @return specified object
+#'
+#' @keywords internal
+.get = function(object_name_as_string){
+  data = get(object_name_as_string, envir=as.environment("package:MotrpacRatTraining6moData"))
+  return(data)
 }
