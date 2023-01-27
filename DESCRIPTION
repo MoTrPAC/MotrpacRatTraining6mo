@@ -89,7 +89,7 @@ Remotes:
     MoTrPAC/MotrpacRatTraining6moData,
     MoTrPAC/MotrpacBicQC,
     YuLab-SMU/ggtree,
-    nicolerg/ssGSEA2.0
+    nicolerg/ssGSEA2
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
