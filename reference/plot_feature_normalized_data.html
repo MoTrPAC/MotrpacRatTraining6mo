@@ -14,7 +14,7 @@ and error bars indicate standard deviations."><!-- mathjax --><script src="https
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,7 +87,7 @@ and error bars indicate standard deviations.</p>
 
 
 <dt>feature_ID</dt>
-<dd><p>NULL or character, MoTrPAC feature identifier</p></dd>
+<dd><p>NULL or character, MoTrPAC feature identifier or metabolite RefMet ID</p></dd>
 
 
 <dt>feature</dt>
@@ -161,7 +161,7 @@ in the plot subtitle. Default: TRUE</p></dd>
 <span class="r-in"><span>                             tissue <span class="op">=</span> <span class="st">"PLASMA"</span>,</span></span>
 <span class="r-in"><span>                             feature_ID <span class="op">=</span> <span class="st">"BDNF"</span>,</span></span>
 <span class="r-in"><span>                             facet_by_sex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Multiple features correspond to 'IMMUNO;PLASMA;BDNF'. Plotting them together.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Multiple features correspond to 'IMMUNO;PLASMA;BDNF'. Plotting them together.</span>
 <span class="r-plt img"><img src="plot_feature_normalized_data-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span>                             </span></span>
 <span class="r-in"><span><span class="co"># Plot one measurement of a redundant feature</span></span></span>
@@ -187,7 +187,7 @@ in the plot subtitle. Default: TRUE</p></dd>
 <span class="r-in"><span>                             scale_x_by_time <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>                             add_adj_p <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                             facet_by_sex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Multiple features correspond to 'METAB;PLASMA;glucose'. Plotting them together.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Multiple features correspond to 'METAB;PLASMA;glucose'. Plotting them together.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Adding differential analysis p-value...</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> METAB_PLASMA_DA_METAREG</span>
 <span class="r-plt img"><img src="plot_feature_normalized_data-6.png" alt="" width="700" height="433"></span>
