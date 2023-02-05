@@ -96,4 +96,11 @@ plot_feature_logfc(assay = "METAB",
                    facet_by_sex = TRUE,
                    add_adj_p = FALSE)
 
+# Plot a metabolite using RefMet ID
+plot_feature_logfc(assay = "METAB",
+                   tissue = "LIVER",
+                   feature_ID = "Pyruvic acid",
+                   add_adj_p = TRUE,
+                   facet_by_sex = TRUE)
+
 }

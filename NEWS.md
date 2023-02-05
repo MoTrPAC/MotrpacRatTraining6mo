@@ -1,3 +1,7 @@
+# MotrpacRatTraining6mo 1.6.1 (2023-02-05)  
+
+* Accommodate RefMet IDs as feature IDs in `plot_feature_normalized_data()` and `plot_feature_logfc()`.  
+
 # MotrpacRatTraining6mo 1.6.0 (2023-01-26)
 
 * Add functions for GSEA and PTM-SEA: `ssGSEA2_wrapper()`, `prepare_gsea_input()`, 

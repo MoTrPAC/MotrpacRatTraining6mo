@@ -96,4 +96,11 @@ plot_feature_normalized_data(assay = "METAB",
                              add_adj_p = TRUE,
                              facet_by_sex = TRUE)
                              
+# Plot a metabolite using RefMet ID
+plot_feature_normalized_data(assay = "METAB",
+                             tissue = "LIVER",
+                             feature_ID = "Lactic acid",
+                             add_adj_p = TRUE,
+                             facet_by_sex = TRUE)
+                             
 }

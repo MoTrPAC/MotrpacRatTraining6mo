@@ -64,6 +64,13 @@
 #'                              add_adj_p = TRUE,
 #'                              facet_by_sex = TRUE)
 #'                              
+#' # Plot a metabolite using RefMet ID
+#' plot_feature_normalized_data(assay = "METAB",
+#'                              tissue = "LIVER",
+#'                              feature_ID = "Lactic acid",
+#'                              add_adj_p = TRUE,
+#'                              facet_by_sex = TRUE)
+#'                              
 plot_feature_normalized_data = function(assay = NULL,
                                         tissue = NULL, 
                                         feature_ID = NULL,
@@ -78,17 +85,34 @@ plot_feature_normalized_data = function(assay = NULL,
                                         ...){
   
   curr_feature = feature 
+  if(is.null(curr_feature) & any(is.null(c(assay, tissue, feature_ID)))){
+    stop("If 'feature' is not specified, 'assay', 'tissue', and 'feature_ID' must all be specified.")
+  }
+  # for metabolites, accommodate RefMet IDs
   if(is.null(curr_feature)){
-    if(any(is.null(c(assay, tissue, feature_ID)))){
-      stop("If 'feature' is not specified, 'assay', 'tissue', and 'feature_ID' must all be specified.")
+    original_feature_ID = feature_ID
+    if(assay == "METAB"){
+      # check if feature_ID is valid 
+      m = data.table(MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP)
+      if(!feature_ID %in% m[,feature_ID_sample_data]){
+        # is it a RefMet ID?
+        if(feature_ID %in% m[,metabolite_refmet]){
+          # get feature_ID used in data
+          feature_ID = unique(m[metabolite_refmet == feature_ID, feature_ID_sample_data])[1]
+        }else{
+          stop(sprintf("Feature ID '%s' not found in METAB data. See METAB_FEATURE_ID_MAP for measured metabolites.", feature_ID))
+        }
+      }
     }
     curr_feature = sprintf("%s;%s;%s", assay, tissue, feature_ID)
   }
+
   if(is.null(tissue)){
     splits = unname(unlist(strsplit(curr_feature, ";")))
     assay = splits[1]
     tissue = splits[2]
     feature_ID = splits[3]
+    original_feature_ID = feature_ID
   }
   # rename to avoid conflict with data.table columns
   FEATURE_ID = feature_ID
@@ -390,6 +414,13 @@ plot_feature_normalized_data = function(assay = NULL,
 #'                    facet_by_sex = TRUE,
 #'                    add_adj_p = FALSE)
 #' 
+#' # Plot a metabolite using RefMet ID
+#' plot_feature_logfc(assay = "METAB",
+#'                    tissue = "LIVER",
+#'                    feature_ID = "Pyruvic acid",
+#'                    add_adj_p = TRUE,
+#'                    facet_by_sex = TRUE)
+#' 
 plot_feature_logfc = function(assay = NULL,
                               tissue = NULL, 
                               feature_ID = NULL,
@@ -404,17 +435,34 @@ plot_feature_logfc = function(assay = NULL,
                               ...){
   
   curr_feature = feature 
+  if(is.null(curr_feature) & any(is.null(c(assay, tissue, feature_ID)))){
+    stop("If 'feature' is not specified, 'assay', 'tissue', and 'feature_ID' must all be specified.")
+  }
+  # for metabolites, accommodate RefMet IDs
   if(is.null(curr_feature)){
-    if(any(is.null(c(assay, tissue, feature_ID)))){
-      stop("If 'feature' is not specified, 'assay', 'tissue', and 'feature_ID' must all be specified.")
+    original_feature_ID = feature_ID
+    if(assay == "METAB"){
+      # check if feature_ID is valid
+      m = data.table(MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP)
+      if(!feature_ID %in% m[,feature_ID_sample_data]){
+        # is it a RefMet ID?
+        if(feature_ID %in% m[,metabolite_refmet]){
+          # get feature_ID used in data
+          feature_ID = unique(m[metabolite_refmet == feature_ID, feature_ID_sample_data])[1]
+        }else{
+          stop(sprintf("Feature ID '%s' not found in METAB data. See METAB_FEATURE_ID_MAP for measured metabolites.", feature_ID))
+        }
+      }
     }
     curr_feature = sprintf("%s;%s;%s", assay, tissue, feature_ID)
   }
+  
   if(is.null(tissue)){
     splits = unname(unlist(strsplit(curr_feature, ";")))
     assay = splits[1]
     tissue = splits[2]
     feature_ID = splits[3]
+    original_feature_ID = feature_ID
   }
   # rename to avoid conflict with data.table columns
   FEATURE_ID = feature_ID
