@@ -6,7 +6,7 @@
 #'
 #' @param assay NULL or `r assay()`
 #' @param tissue NULL or `r tissue()`
-#' @param feature_ID NULL or `r feature_ID()`
+#' @param feature_ID NULL or `r feature_ID()` or metabolite RefMet ID  
 #' @param feature NULL or `r feature()`. If NULL, \code{assay}, \code{tissue}, and 
 #'   \code{feature_ID} must all be specified. 
 #' @param title character, plot title. By default, the plot ID is \code{feature}. 
@@ -77,18 +77,36 @@ plot_feature_normalized_data = function(assay = NULL,
                                         add_adj_p = FALSE,
                                         ...){
   
+  use_feature = !is.null(feature)
   curr_feature = feature 
+  if(is.null(curr_feature) & any(is.null(c(assay, tissue, feature_ID)))){
+    stop("If 'feature' is not specified, 'assay', 'tissue', and 'feature_ID' must all be specified.")
+  }
+  # for metabolites, accommodate RefMet IDs
   if(is.null(curr_feature)){
-    if(any(is.null(c(assay, tissue, feature_ID)))){
-      stop("If 'feature' is not specified, 'assay', 'tissue', and 'feature_ID' must all be specified.")
+    original_feature_ID = feature_ID
+    if(assay == "METAB"){
+      # check if feature_ID is valid 
+      m = data.table(MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP)
+      if(!feature_ID %in% m[,feature_ID_sample_data]){
+        # is it a RefMet ID?
+        if(feature_ID %in% m[,metabolite_refmet]){
+          # get feature_ID used in data
+          feature_ID = unique(m[metabolite_refmet == feature_ID, feature_ID_sample_data])[1]
+        }else{
+          stop(sprintf("Feature ID '%s' not found in METAB data. See METAB_FEATURE_ID_MAP for measured metabolites.", feature_ID))
+        }
+      }
     }
     curr_feature = sprintf("%s;%s;%s", assay, tissue, feature_ID)
   }
+
   if(is.null(tissue)){
     splits = unname(unlist(strsplit(curr_feature, ";")))
     assay = splits[1]
     tissue = splits[2]
     feature_ID = splits[3]
+    original_feature_ID = feature_ID
   }
   # rename to avoid conflict with data.table columns
   FEATURE_ID = feature_ID
@@ -155,7 +173,7 @@ plot_feature_normalized_data = function(assay = NULL,
   
   multiple_measurements = FALSE
   if(nrow(sample_level_data) > 1){
-    warning(sprintf("Multiple features correspond to '%s'. Plotting them together.", redundant_feature))
+    message(sprintf("Multiple features correspond to '%s'. Plotting them together.", redundant_feature))
     # make feature non-redundant
     sample_level_data[,feature := dataset]
     multiple_measurements = TRUE
@@ -308,11 +326,18 @@ plot_feature_normalized_data = function(assay = NULL,
   
   if(add_adj_p){
     message("Adding differential analysis p-value...")
-    da = plot_feature_logfc(assay = ASSAY,
-                            tissue = TISSUE,
-                            feature_ID = feature_ID,
-                            add_adj_p = TRUE, 
-                            return_data = TRUE)
+    if(use_feature){
+      da = plot_feature_logfc(feature = FEATURE,
+                              add_adj_p = TRUE, 
+                              return_data = TRUE)
+    }else{
+      da = plot_feature_logfc(assay = ASSAY,
+                              tissue = TISSUE,
+                              feature_ID = original_feature_ID,
+                              add_adj_p = TRUE, 
+                              return_data = TRUE)
+    }
+
     if(!is.null(da)){
       adj_p_value = min(unique(da$selection_fdr), na.rm=TRUE)
       subtitle = sprintf("adj. p-value: %s", signif(adj_p_value, digits=2))
@@ -330,7 +355,7 @@ plot_feature_normalized_data = function(assay = NULL,
 #'
 #' @param assay NULL or `r assay()`
 #' @param tissue NULL or `r tissue()`
-#' @param feature_ID NULL or `r feature_ID()`
+#' @param feature_ID NULL or `r feature_ID()` or metabolite RefMet ID 
 #' @param feature NULL or `r feature()`. If NULL, \code{assay}, \code{tissue}, and 
 #'   \code{feature_ID} must all be specified. 
 #' @param title character, plot title. By default, the plot ID is \code{feature}. 
@@ -404,17 +429,34 @@ plot_feature_logfc = function(assay = NULL,
                               ...){
   
   curr_feature = feature 
+  if(is.null(curr_feature) & any(is.null(c(assay, tissue, feature_ID)))){
+    stop("If 'feature' is not specified, 'assay', 'tissue', and 'feature_ID' must all be specified.")
+  }
+  # for metabolites, accommodate RefMet IDs
   if(is.null(curr_feature)){
-    if(any(is.null(c(assay, tissue, feature_ID)))){
-      stop("If 'feature' is not specified, 'assay', 'tissue', and 'feature_ID' must all be specified.")
+    original_feature_ID = feature_ID
+    if(assay == "METAB"){
+      # check if feature_ID is valid
+      m = data.table(MotrpacRatTraining6moData::METAB_FEATURE_ID_MAP)
+      if(!feature_ID %in% m[,feature_ID_sample_data]){
+        # is it a RefMet ID?
+        if(feature_ID %in% m[,metabolite_refmet]){
+          # get feature_ID used in data
+          feature_ID = unique(m[metabolite_refmet == feature_ID, feature_ID_sample_data])[1]
+        }else{
+          stop(sprintf("Feature ID '%s' not found in METAB data. See METAB_FEATURE_ID_MAP for measured metabolites.", feature_ID))
+        }
+      }
     }
     curr_feature = sprintf("%s;%s;%s", assay, tissue, feature_ID)
   }
+  
   if(is.null(tissue)){
     splits = unname(unlist(strsplit(curr_feature, ";")))
     assay = splits[1]
     tissue = splits[2]
     feature_ID = splits[3]
+    original_feature_ID = feature_ID
   }
   # rename to avoid conflict with data.table columns
   FEATURE_ID = feature_ID
@@ -520,7 +562,7 @@ plot_feature_logfc = function(assay = NULL,
   multiple_measurements = FALSE
   ADJ_P = unique(curr_timewise_dea[,selection_fdr])
   if(length(ADJ_P)>1){
-    warning(sprintf("Multiple measurements for feature '%s'. Taking the smallest training-dea FDR for the plot label.",curr_feature))
+    message(sprintf("Multiple measurements for feature '%s'. Taking the smallest training-dea FDR for the plot label.",curr_feature))
     ADJ_P = min(ADJ_P, na.rm=TRUE)
     curr_timewise_dea[,feature := dataset]
     multiple_measurements = TRUE
