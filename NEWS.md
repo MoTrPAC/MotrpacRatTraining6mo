@@ -1,6 +1,7 @@
 # MotrpacRatTraining6mo 1.6.1 (2023-02-05)  
 
 * Accommodate RefMet IDs as feature IDs in `plot_feature_normalized_data()` and `plot_feature_logfc()`.  
+* Pass the user-supplied version of the feature identifier when `plot_feature_logfc()` is called within `plot_feature_normalized_data()`.  
 
 # MotrpacRatTraining6mo 1.6.0 (2023-01-26)
 

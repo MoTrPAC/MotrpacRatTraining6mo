@@ -24,7 +24,7 @@ plot_feature_normalized_data(
 
 \item{tissue}{NULL or character, tissue abbreviation, one of \link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV}}
 
-\item{feature_ID}{NULL or character, MoTrPAC feature identifier}
+\item{feature_ID}{NULL or character, MoTrPAC feature identifier or metabolite RefMet ID}
 
 \item{feature}{NULL or character, unique feature identifier in the format '\link[MotrpacRatTraining6moData:ASSAY_ABBREV]{MotrpacRatTraining6moData::ASSAY_ABBREV};\link[MotrpacRatTraining6moData:TISSUE_ABBREV]{MotrpacRatTraining6moData::TISSUE_ABBREV};feature_ID' only for training-regulated features at 5\% IHW FDR. For redundant differential features, 'feature_ID' is prepended with the specific platform to make unique identifiers. See \link[MotrpacRatTraining6moData:REPEATED_FEATURES]{MotrpacRatTraining6moData::REPEATED_FEATURES} for details.. If NULL, \code{assay}, \code{tissue}, and
 \code{feature_ID} must all be specified.}
@@ -93,13 +93,6 @@ plot_feature_normalized_data(assay = "METAB",
                              tissue = "PLASMA",
                              feature_ID = "glucose",
                              scale_x_by_time = FALSE,
-                             add_adj_p = TRUE,
-                             facet_by_sex = TRUE)
-                             
-# Plot a metabolite using RefMet ID
-plot_feature_normalized_data(assay = "METAB",
-                             tissue = "LIVER",
-                             feature_ID = "Lactic acid",
                              add_adj_p = TRUE,
                              facet_by_sex = TRUE)
                              
