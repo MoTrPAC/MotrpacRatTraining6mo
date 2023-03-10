@@ -78,7 +78,7 @@ atac_training_da = function(tissue,
   }
   meta_df$group = factor(meta_df$group, levels=c('control','1w','2w','4w','8w')) # IMPORTANT
   filt_counts = data$counts
-  filt_counts = filt_counts[1:n_features,]
+  filt_counts = filt_counts[1:min(nrow(filt_counts),n_features),]
   
   # split by sex 
   sex_res = list()
@@ -244,7 +244,7 @@ atac_timewise_da = function(tissue,
     meta_df[,which] = factor(meta_df[,which])
   }
   filt_counts = data$counts
-  filt_counts = filt_counts[1:n_features,]
+  filt_counts = filt_counts[1:min(nrow(filt_counts),n_features),]
   
   # split by sex 
   sex_res = list()
