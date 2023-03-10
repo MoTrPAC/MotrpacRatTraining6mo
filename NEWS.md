@@ -1,3 +1,7 @@
+# MotrpacRatTraining6mo 1.6.2 (2023-03-09)
+
+* Bug fix in `atac_timewise_da()` and `atac_training_da()` when `n_features = Inf`. 
+
 # MotrpacRatTraining6mo 1.6.1 (2023-02-05)  
 
 * Accommodate RefMet IDs as feature IDs in `plot_feature_normalized_data()` and `plot_feature_logfc()`.  
