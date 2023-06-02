@@ -74,4 +74,5 @@ da = transcript_timewise_da("BAT", add_shrunk_logfc = FALSE)
 # Same as the first example but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
 da = transcript_timewise_da("BAT", rdata_outfile = "~/test/BAT_RNA_DA.RData", overwrite = TRUE)
 }
+
 }
