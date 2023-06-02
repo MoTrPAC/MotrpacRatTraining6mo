@@ -1,3 +1,7 @@
+# MotrpacRatTraining6mo 1.6.3 (2023-06-02)
+
+* Bug fix in `transcript_timewise_da()` to run with limited contrasts when `tissue="VENACV"`.
+
 # MotrpacRatTraining6mo 1.6.2 (2023-03-09)
 
 * Bug fix in `atac_timewise_da()` and `atac_training_da()` when `n_features = Inf`. 
