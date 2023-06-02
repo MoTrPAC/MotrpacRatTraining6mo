@@ -1,6 +1,10 @@
-# MotrpacRatTraining6mo 1.6.3 (2023-06-02)
+# MotrpacRatTraining6mo 1.6.4 (2023-06-02)
 
 * Bug fix in `transcript_timewise_da()` to run with limited contrasts when `tissue="VENACV"`.
+
+# MotrpacRatTraining6mo 1.6.3 (2023-04-28)
+
+* Create a new tag to associate with Zenodo.
 
 # MotrpacRatTraining6mo 1.6.2 (2023-03-09)
 
