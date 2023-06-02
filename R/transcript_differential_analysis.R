@@ -175,6 +175,7 @@ run_deseq = function(counts, meta, covar, outcome_of_interest, contrasts, dds=NU
 #' # Same as the first example but save the [DESeq2::DESeq2()] DESeqResults objects in an RData file 
 #' da = transcript_timewise_da("BAT", rdata_outfile = "~/test/BAT_RNA_DA.RData", overwrite = TRUE)
 #' }
+#' 
 transcript_timewise_da = function(tissue, 
                                   covariates = c('pct_globin', 'RIN', 'pct_umi_dup', 'median_5_3_bias'), 
                                   outliers = na.omit(MotrpacRatTraining6moData::OUTLIERS$viallabel),
@@ -217,7 +218,8 @@ transcript_timewise_da = function(tissue,
     
     contrasts = list()
     i = 1
-    for (tp in c('1w','2w','4w','8w')){
+    groups = na.omit(unique(curr_meta[,group]))
+    for (tp in groups[groups != "control"]){
       contrasts[[i]] = c('group', tp, 'control')
       i = i+1
     }

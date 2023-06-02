@@ -130,11 +130,24 @@ utils::globalVariables(
     ########################################### metabolomics meta
     "metabolite_refmet",
     "site",
-    ########################################### plot_sample_data
+    ########################################### plot_sample_data()
     "expr",
     "plot_group",
-    ########################################### gene_pathway_enrichment
+    ########################################### gene_pathway_enrichment()
     "BH_adj_p_value",
     "Phenotype",
-    "parents"
+    "parents",
+    ########################################### plot_feature_logfc()
+    "feature_ID_sample_data",
+    "plot_feature_normalized_data",
+    ########################################### gsea
+    "ensembl",
+    "entrez",
+    "entrez_gene",
+    "flanking_sequence",
+    "gene",
+    "ptm_id_human_uniprot",
+    "ptm_id_rat_refseq",
+    "refseq",
+    "signed_logpval"
   ))
