@@ -1,0 +1,1690 @@
+plot	feature_ID	N tissues differential																					
+X	trimethylamine-N-oxide	16																					
+X	N-methylproline	14																					
+X	ala-ala	13																					
+X	5-methylcytosine	12																					
+X	ectoine	12																					
+X	C3-DC carnitine	11																					
+X	creatinine	11																					
+X	N4-acetylcytidine	10																					
+X	beta-guanidinopropionate	10																					
+X	hypotaurine	10																					
+X	methylthioadenosine	10																					
+X	PE(40:4)>PE(18:0_22:4)_feature2	10																					
+X	beta-alanine	9																					
+X	homoarginine	9																					
+X	Car(8:1)	9																					
+X	CAR(4:0)	9																					
+X	Choline	9																					
+X	LPC(14:0)	9																					
+X	LPC(16:1)	9																					
+X	PE(O-40:5)>PE(O-18:1/22:4)_feature4	8																					
+X	PE(O-40:6)>PE(O-18:1/22:5)_feature5	8																					
+X	N6-acetyllysine	8																					
+X	cytidine	8																					
+X	glutamine	8																					
+X	xanthosine	8																					
+X	C34:3 PC plasmalogen	8																					
+X	C36:2 PS plasmalogen	8																					
+X	acisoga	8																					
+X	PE(38:3)>PE(18:0_20:3)_feature3	8																					
+	N-acetyltryptophan	7																					
+	C16-OH carnitine	7																					
+	C22:6 LPE	7																					
+	C24:1 ceramide (d18:1)	7																					
+	C34:2 PE	7																					
+	C38:6 PE	7																					
+	"N6,N6-dimethyllysine"	7																					
+	biliverdin	7																					
+	cyclohexylamine	7																					
+	pro-gly	7																					
+	2'-deoxyadenosine	7																					
+	C18:0 LPE B	7																					
+	C22:4 LPC	7																					
+	PC(40:5)_feature4	7																					
+	C18:2 LPC	7																					
+	CAR(5:0)	7																					
+	Cysteine	7																					
+	CAR(8:0)	7																					
+	PE(40:5)>PE(18:0_22:5)_feature4	7																					
+	C20:1 LPC	7																					
+	PE(O-36:3)>PE(O-18:1/18:2)_feature6	7																					
+	C18:2 LPE	7																					
+	Tryptophan	7																					
+	Hippuric acid	7																					
+	C38:7 PC plasmalogen	7																					
+	Glycocholic acid	7																					
+	xanthine	6																					
+	PC(36:2)	6																					
+	N-acetylornithine	6																					
+	glycohyocholate	6																					
+	PC(36:4)_feature2	6																					
+	CAR(14:1)	6																					
+	GMP	6																					
+	N-acetylserotonin	6																					
+	N6-methyllysine	6																					
+	3-methylhistidine	6																					
+	7-methylguanine	6																					
+	C16:1 LPC	6																					
+	C22:0 SM	6																					
+	C36:5 PE plasmalogen	6																					
+	C40:6 PE	6																					
+	N-acetylputrescine	6																					
+	N-alpha-acetylarginine	6																					
+	N-carbamoyl-beta-alanine	6																					
+	citrulline	6																					
+	guanidinoacetate	6																					
+	histidine	6																					
+	lysine	6																					
+	methyl N-methylanthranilate	6																					
+	methylguanidine	6																					
+	pipecolate	6																					
+	serine	6																					
+	Adenosine	6																					
+	Anserine	6																					
+	C18:3 LPC	6																					
+	ursodeoxycholate	6																					
+	CAR(14:2)	6																					
+	PC(38:4)>PC(18:0_20:4)_M+H2CO2_feature4	6																					
+	PE(O-40:6)>PE(O-18:2/22:4)_feature2	6																					
+	PC(36:5)>PC(16:0_20:5)_M+H2CO2_feature3	6																					
+	PC(40:4)_feature2	6																					
+	PE(40:6)>PE(18:0_22:6)_feature2	6																					
+	niacinamide	6																					
+	serotonin	6																					
+	PC(36:5)_feature3	6																					
+	PC(O-36:5)>PC(O-16:1/20:4)_M+H2CO2_feature5	6																					
+	Sarcosine	6																					
+	S-Allylcysteine	6																					
+	CAR(18:0)	6																					
+	PS(O-42:7)>PS(O-20:3/22:4)_feature1	6																					
+	guanosine	6																					
+	1-methylnicotinamide	6																					
+	C18:0 LPC	6																					
+	Inosine	6																					
+	PC(32:2)	6																					
+	ketoleucine	6																					
+	PC(37:2)_feature2	6																					
+	PC(40:5)_feature1	6																					
+	PC(44:12)_feature1	6																					
+	SM(d40:2)_M+H2CO2_feature1	6																					
+	PI(38:3)>PI(18:0_20:3)_feature2	6																					
+	4-guanidinobutanoate	5																					
+	Hypoxanthine	5																					
+	CAR(18:1(OH))	5																					
+	CAR(12:0)	5																					
+	N-Acetylphenylalanine	5																					
+	TG(54:4)_M+NH3_feature6	5																					
+	sn-Glycero-3-phosphocholine	5																					
+	CAR(18:1)	5																					
+	PC(40:4)>PC(18:0_22:4)_M+H2CO2_feature2	5																					
+	PC(32:2)_feature1	5																					
+	hyodeoxycholate	5																					
+	PE(O-38:5)>PE(O-18:1/20:4)_feature6	5																					
+	2'-deoxycytidine	5																					
+	21-deoxycortisol	5																					
+	C14:0 LPC	5																					
+	C36:2 PE	5																					
+	"N6,N6,N6-trimethyllysine"	5																					
+	creatine	5																					
+	threonine	5																					
+	3-indolepropionate	5																					
+	5'-methylthioadenosine	5																					
+	Alanine	5																					
+	Aspartic acid	5																					
+	C18:1 LPE	5																					
+	C20:4 LPE	5																					
+	C20:5 LPC	5																					
+	CAR(6:0)	5																					
+	PC(41:3)_feature1	5																					
+	C34:3 PE plasmalogen	5																					
+	N-acetylhistidine	5																					
+	cadaverine	5																					
+	Glutamic acid	5																					
+	CAR(20:0)	5																					
+	PC(32:1)_feature1	5																					
+	PC(36:5)>PC(16:1_20:4)_M+H2CO2_feature2	5																					
+	methylimidazoleacetate	5																					
+	C18:1 LPC	5																					
+	CAR(12:1)	5																					
+	PC(34:3)_feature3	5																					
+	alpha-muricholate	5																					
+	Car(16:0)	5																					
+	hippurate	5																					
+	PS(38:4)>PS(18:0_20:4)_feature2	5																					
+	PC(36:2)_feature3	5																					
+	PC(40:8)	5																					
+	Methionine	5																					
+	PC(36:4)>PC(18:2/18:2)_M+H2CO2_feature2	5																					
+	TG(52:4)>TG(16:0_16:0_20:4)_and_TG(16:1_18:1_18:2)_and_TG(16:0_18:1_18:2)_M+NH3_feature6	5																					
+	TG(56:5)>TG(16:0_18:1_22:4)_M+NH3_feature5	5																					
+	PS(40:5)_feature3	5																					
+	acetylcholine	5																					
+	PC(37:3)_feature2	5																					
+	PC(38:3)>PC(18:0_20:3)_M+H2CO2_feature3	5																					
+	PC(32:0)_feature1	5																					
+	PC(37:4)>PC(17:0_20:4)_M+H2CO2_feature3	5																					
+	phytosphingosine	5																					
+	C7 carnitine	5																					
+	PC(36:1)_feature1	5																					
+	PE(34:1)_feature1	5																					
+	SM(d34:1)	5																					
+	C26 carnitine	4																					
+	DG(18:1_18:1)	4																					
+	Arginine	4																					
+	N-acetylaspartate	4																					
+	SDMA	4																					
+	CAR(10:0)	4																					
+	CAR(5:1)	4																					
+	tauroursodeoxycholate	4																					
+	N-lauroylglycine	4																					
+	taurohyodeoxycholate	4																					
+	C3-DC-CH3 carnitine	4																					
+	Sphinganine	4																					
+	PC(34:4)_feature2	4																					
+	trigonelline	4																					
+	C22:6 LPC	4																					
+	CAR(4:0(OH))	4																					
+	LPC(16:1)>LPC(16:1/0:0)_and_LPC(0:0/16:1)_feature1and2	4																					
+	PE(34:3)>PE(16:1_18:2)_feature1	4																					
+	PC(32:0)>PC(16:0_16:0)_M+H2CO2_feature2	4																					
+	PC(33:1)_feature1	4																					
+	PE(38:6)>PE(18:2_20:4)_feature2	4																					
+	PE(O-38:5)>PE(O-16:1/22:4)_feature5	4																					
+	SM(d42:1)	4																					
+	PI(40:5)>PI(18:0_22:5)_feature1	4																					
+	PE(39:6)>PE(17:0_22:6)_feature2	4																					
+	C5-DC carnitine	4																					
+	CAR(14:0)	4																					
+	Glycine	4																					
+	Leucine	4																					
+	SM(d40:2)_feature1	4																					
+	TG(49:0)>TG(16:0_16:0_17:0)_and_TG(15:0_16:0_18:0)_and_TG(14:0_16:0_19:0)_M+NH3_feature1	4																					
+	PC(O-38:5)>PC(O-18:1/20:4)_M+H2CO2_feature1	4																					
+	1-methyladenosine	4																					
+	C36:4 PE	4																					
+	C36:5 PC plasmalogen	4																					
+	GABA	4																					
+	N-acetylleucine	4																					
+	S-methyl-L-cysteine-S-oxide	4																					
+	imidazoleacetate	4																					
+	putrescine	4																					
+	sphingosine	4																					
+	Asparagine	4																					
+	C18:1 LPC plasmalogen A	4																					
+	CAR(10:1)	4																					
+	C38:7 PE plasmalogen	4																					
+	CoA(4:0)	4																					
+	LPC(18:1)>LPC(18:1/0:0)_feature2	4																					
+	PC(34:2)>PC(16:0_18:2)_M+H2CO2_feature1	4																					
+	PE(36:3)_feature1	4																					
+	PE(36:4)>PE(16:0_20:4)_feature1	4																					
+	PE(38:6)>PE(16:0_22:6)_feature3	4																					
+	pyridoxamine	4																					
+	Car(18:2)_feature1	4																					
+	C20:4 LPC A	4																					
+	Carnitine	4																					
+	Ornithine	4																					
+	PE(40:5)_feature4	4																					
+	cotinine N-oxide	4																					
+	C18:1 SM	4																					
+	LPC(18:2)>LPC(18:2/0:0)_and_LPC(0:0/18:2)_feature1and2	4																					
+	PC(34:1)_feature2	4																					
+	PC(36:5)_feature1	4																					
+	PE(O-38:6)>PE(O-16:1/22:5)_feature3	4																					
+	PI(40:6)>PI(18:0_22:6)_feature2	4																					
+	TG(48:1)>TG(16:0_16:0_16:1)_and_TG(14:0_16:0_18:1)_M+NH3_feature3	4																					
+	TG(54:5)>TG(18:1_18:2_18:2)_and_TG(16:0_16:0_22:5)_and_TG(16:0_18:1_20:4)_M+NH3_feature5	4																					
+	TG(58:9)_M+NH3_feature2	4																					
+	CAR(20:4)	4																					
+	fructose 6-phosphate	4																					
+	TG(53:6)>TG(17:2_18:2_18:2)_and_TG(17:1_18:2_18:3)_M+NH3_feature2	4																					
+	C32:2 PC	4																					
+	Ketoglutarate	4																					
+	PC(32:1)	4																					
+	PC(O-34:1)>PC(O-18:1/16:0)_M+H2CO2_feature2	4																					
+	Taurine	4																					
+	glutathione	4																					
+	dimethylglycine	4																					
+	Isocitrate	4																					
+	PC(35:2)_feature2	4																					
+	PC(38:3)_feature3	4																					
+	PC(40:7)_feature1	4																					
+	PE(36:2)>PE(18:0_18:2)_feature2	4																					
+	PE(36:2)>PE(18:2_18:0)_feature3	4																					
+	SM(d40:1)	4																					
+	TG(58:10)_M+NH3_feature3	4																					
+	betaine	4																					
+	taurochenodeoxycholate	4																					
+	biopterin	4																					
+	PE(O-40:6)>PE(O-18:1/22:5)_feature4	4																					
+	PC(O-38:4)_feature4	4																					
+	PE(40:5)>PE(18:0_22:5)_feature3	4																					
+	Phosphoethanolamine	4																					
+	TG(50:3)_M+NH3_feature3	4																					
+	Uric acid	4																					
+	hydroxyindole acetate	4																					
+	PC(35:2)>PC(17:0_18:2)_M+H2CO2_feature2	4																					
+	PC(36:2)>PC(18:0_18:2)_M+H2CO2_feature3	4																					
+	PC(37:2)_feature1	4																					
+	PC(41:6)_feature3	4																					
+	PE(38:4)>PE(18:0_20:4)_feature5	4																					
+	TG(50:2)>TG(16:0_16:1_18:1)_and_TG(14:0_18:1_18:1)_M+NH3_feature3	4																					
+	TG(58:10)_M+NH3_feature2	4																					
+	TG(58:9)_M+NH3_feature3	4																					
+	glutathione reduced	4																					
+	hydroxyphenyllactic acid	4																					
+	Hydroxyproline	4																					
+	PC(36:1)>PC(16:0_20:1)_and_PC(18:0_18:1)_M+H2CO2_feature1	4																					
+	hexose phosphate	4																					
+	CAR(18:2)	4																					
+	alpha-Amino-N-butyric-acid	3																					
+	C38:5 PE plasmalogen	3																					
+	DG(38:3)>DG(18:2_20:1_0:0)_M+NH3_feature2	3																					
+	C18:1 LPC plasmalogen B	3																					
+	PE(O-36:5)>PE(O-16:1/20:4)_feature3	3																					
+	glycohyodeoxycholate	3																					
+	FA(10:0-OH)	3																					
+	PC(34:2)_feature1	3																					
+	PE(34:2)_feature2	3																					
+	C18:0 LPE A	3																					
+	CAR(9:0)	3																					
+	Cer(d34:1)_M+H2CO2_feature1	3																					
+	CoA(2:0-COOH)_and_CoA(4:0-OH)	3																					
+	Valine	3																					
+	DG(34:1)	3																					
+	DG(34:2)	3																					
+	TG(55:7)_M+NH3_feature2	3																					
+	C20:0 SM	3																					
+	Cer(d41:1)>Cer(d18:1/23:0)_feature1	3																					
+	Malic acid	3																					
+	"GTInternalStandard_PS(33:1(d7))>PS(15:0/18:1(9z,d7))_feature1"	3																					
+	CAR(2:0)	3																					
+	PC(34:3)	3																					
+	TG(36:0)>TG(4:0_16:0_16:0)_M+NH3_feature4	3																					
+	C20:4 LPC	3																					
+	"N2,N2-dimethylguanosine"	3																					
+	Car(20:2)_feature1	3																					
+	"Car(4:0,3-CH3)"	3																					
+	Carnosine	3																					
+	Cer(d38:1)_M+H2CO2_feature1	3																					
+	CoA(6:1)	3																					
+	SM(d36:0)_feature1	3																					
+	TG(51:3)>TG(15:0_18:1_18:2)_and_TG(16:0_17:1_18:2)_and_TG(16:1_17:1_18:1)_M+NH3_feature3	3																					
+	C14:2 carnitine	3																					
+	C18:1-OH carnitine	3																					
+	SM(d41:0)_feature1	3																					
+	PC(39:4)_feature5	3																					
+	PC(O-34:1)_feature2	3																					
+	PI(38:3)>PI(18:0_20:3)_feature4	3																					
+	CL(70:7)_feature1	3																					
+	CMP	3																					
+	FAD	3																					
+	PC(40:6)	3																					
+	PC(42:8)_feature2	3																					
+	PC(O-38:5)_feature3	3																					
+	CoA(6:0)	3																					
+	PC(33:2)	3																					
+	PE(40:7)>PE(18:1_22:6)_and_PE(18:0_22:7)_feature3	3																					
+	PE(O-38:2)>PE(O-18:1/20:1)_feature4	3																					
+	PG(36:2)>PG(18:0_18:2)_feature2	3																					
+	SM(d34:2)	3																					
+	SM(d38:2)_feature2	3																					
+	TG(49:1)>TG(15:0_16:0_18:0)_and_TG(16:0_16:0_17:1)_and_>TG(16:0_16:1_17:0)_M+NH3_feature1	3																					
+	PE(O-38:7)>PE(O-18:3/20:4)_feature1	3																					
+	TG(54:8)_M+NH3_feature1	3																					
+	NAD+	3																					
+	pyruvate	3																					
+	uracil	3																					
+	C20:0 LPE	3																					
+	Car(12:0)_feature2	3																					
+	N-acetylalanine	3																					
+	PC(O-40:7)_feature3	3																					
+	PE(40:8)>PE(18:2_22:6)_feature1	3																					
+	PG(34:2)>PG(16:0_18:2)_feature1	3																					
+	PG(40:8)>PG(18:2_22:6)_feature1	3																					
+	PS(40:4)>PS(18:0_22:4)_feature1	3																					
+	Phenylalanine	3																					
+	Sphingosine 1-phosphate	3																					
+	TG(54:6)>TG(16:0_18:2_20:4)_M+NH3_feature5	3																					
+	TG(60:10)>TG(18:0_20:4_22:6)_M+NH3_feature3	3																					
+	Tyrosine	3																					
+	glycoursodeoxycholate	3																					
+	PC(O-38:4)_feature6	3																					
+	cystine	3																					
+	PS(40:5)>PS(18:0_22:5)_feature2	3																					
+	Car(18:1)_feature1	3																					
+	PC(38:6)>PC(16:0_22:6)_and_PC(18:0_20:6)_M+H2CO2_feature2	3																					
+	SM(d42:2)_feature2	3																					
+	1-methylhistamine	3																					
+	5-methylcytidine	3																					
+	C14:1 carnitine	3																					
+	C16:0 Ceramide (d18:1)	3																					
+	C16:0 SM	3																					
+	C16:1 SM	3																					
+	C20:4 carnitine	3																					
+	C24:0 LPC	3																					
+	C3 carnitine	3																					
+	C36:2 PC	3																					
+	C38:6 PC plasmalogen	3																					
+	C5:1 carnitine	3																					
+	L-alpha-glutamyl-L-Lysine	3																					
+	N1-acetylspermidine	3																					
+	2-aminoisobutyrate	3																					
+	ATP	3																					
+	C16:0 LPE	3																					
+	Cystathionine 1	3																					
+	PC(38:4)_feature4	3																					
+	PC(O-36:3)_feature1	3																					
+	PG(38:4)>PG(18:0_20:4)_feature3	3																					
+	SM(d32:1)	3																					
+	C34:0 PE	3																					
+	2-acetylpyrrolidine	3																					
+	C16:0 LPC	3																					
+	Car(14:1-OH)_feature1	3																					
+	CoA(18:0)	3																					
+	PC(35:1)_feature1	3																					
+	PC(36:3)>PC(18:1_18:2)_M+H2CO2_feature2	3																					
+	PC(37:3)_feature1	3																					
+	PC(38:6)	3																					
+	PC(38:7)_feature1	3																					
+	PC(38:7)_feature2	3																					
+	PC(40:6)_feature3	3																					
+	PC(40:7)_feature3	3																					
+	PS(40:5)>PS(18:0_22:5)_feature5	3																					
+	Proline	3																					
+	TG(49:2)_M+NH3_feature3	3																					
+	TG(54:6)>TG(18:2/18:2/18:2)_and_TG(18:1_18:2_18:3)_M+NH3_feature4	3																					
+	TG(56:8)>TG(16:0_18:2_22:6)_M+NH3_feature5	3																					
+	FA(22:5)	3																					
+	PC(39:5)_feature1	3																					
+	PS(36:1)>PS(18:0_18:1)_feature1	3																					
+	TG(56:7)>TG(16:0_18:1_22:6)_M+NH3_feature6	3																					
+	urocanate	3																					
+	C18:3 LPE	3																					
+	CE(20:5)_M+NH3_feature1	3																					
+	PE(36:5)_feature3	3																					
+	SM(d44:2)_M+H2CO2_feature1	3																					
+	CoA(4:1-CH3)	3																					
+	N-acetylmethionine	3																					
+	PC(30:1)_feature1	3																					
+	PI(38:4)>PI(18:0_20:4)_feature2	3																					
+	TG(48:2)>TG(14:0_16:0_18:2)_and_TG(14:0_16:1_18:1)_M+NH3_feature3	3																					
+	TG(52:4)>TG(16:1_18:1_18:2)_M+NH3_feature5	3																					
+	DG(36:3)>DG(18:1_18:2_0:0)_M+NH3_feature3	3																					
+	PC(32:1)>PC(14:0_18:1)_and_PC(16:0_16:1) M+ H2CO2_feature2	3																					
+	PC(36:3)	3																					
+	PC(O-38:5)_feature2	3																					
+	PE(36:2)>PE(18:2_18:0)_feature2	3																					
+	PE(40:5)_feature3	3																					
+	PE(O-34:3)>PE(O-16:1/18:2)_feature1	3																					
+	Palmitoleic acid	3																					
+	Pantothenic acid	3																					
+	sedoheptulose-7-phosphate	3																					
+	PC(37:1)_feature3	3																					
+	PC(37:6)_feature1	3																					
+	PC(38:5)_feature2	3																					
+	PC(38:6)_feature2	3																					
+	PC(40:5)>PC(18:0_22:5)_M+H2CO2_feature4	3																					
+	PC(40:7)>PC(18:1_22:6) _M+H2CO2_feature3	3																					
+	PE(36:3)>PE(18:1_18:2)_feature1	3																					
+	PE(O-38:6)>PE(O-18:2/20:4)_and_PE(O-16:1/22:5)_feature4	3																					
+	PE(O-40:7)>PE(O-18:1/22:6)_feature7	3																					
+	SM(d34:1-OH)_feature1	3																					
+	SM(d38:1)	3																					
+	SM(d40:1)_M+H2CO2_feature2	3																					
+	SM(d40:2)_M+H2CO2_feature2	3																					
+	TG(52:2)>TG(16:0_18:1_18:1)_and_TG(16:0_18:0_18:2)_M+NH3_feature5	3																					
+	TG(54:5)>TG(18:1_18:2_18:2)_M+NH3_feature4	3																					
+	Car(16:2)	3																					
+	"FA(20:5(5Z,8Z,11Z,14Z,17Z)))"	3																					
+	PC(34:4)	3																					
+	S-adenosylhomocysteine	3																					
+	SM(d36:1)	3																					
+	SM(d36:2)	3																					
+	C14 carnitine	3																					
+	PE(36:5)>PE(16:0_20:5)_M+H2CO2_feature3	3																					
+	PE(38:5)>PE(18:0_20:5)_feature6	3																					
+	CoA(22:1)	3																					
+	PS(40:6)>PS(18:0_22:6)_feature3	3																					
+	SM(d38:1)_M+H2CO2_feature2	3																					
+	Kynurenic acid	3																					
+	LPC(20:4)>LPC(20:4/0:0)_and_LPC(0:0/20:4)_feature1and2	3																					
+	PC(30:0)>PC(14:0_16:0)_M+H2CO2_feature1	3																					
+	Succinate	3																					
+	TG(55:4)>TG(18:1_18:2_19:1)_and_TG(18:2_18:2_19:0)_and_TG(18:1_18:1_19:2)_M+NH3_feature1	3																					
+	TG(56:10)>TG(18:2_18:3_20:5)_M+NH3_feature1	3																					
+	TG(57:1)>TG(16:0_18:1_23:0)_and_TG(18:0_18:1_21:0)_M+NH3_feature1	3																					
+	guanine	3																					
+	pantothenate	3																					
+	FA(24:0)	3																					
+	FA(24:1)	3																					
+	PC(35:3)_feature1	3																					
+	PC(41:7)_feature1	3																					
+	PE(34:2)>PE(16:0_18:2)_feature2	3																					
+	PE(36:4)>PE(18:2/18:2)_feature1	3																					
+	SM(d41:1)_feature1	3																					
+	SM(d44:2)_feature1	3																					
+	TG(50:1)>TG(16:0_16:0_18:1)_feature4	3																					
+	TG(51:4)>TG(16:1_17:1_18:2)_and_TG(15:0_18:2_18:2)_and_TG(15:1_18:1_18:2)_M+NH3_feature1	3																					
+	TG(53:3)>TG(17:0_18:1_18:2)_and_TG(17:1_18:1_18:1)_and_TG(16:1_18:1_19:1)_and_TG(16:0_18:1_19:2)_M+NH3_feature5	3																					
+	TG(58:4)_M+NH3_feature5	3																					
+	alpha-Aminoadipic-acid	3																					
+	sphinganine (C16)	3																					
+	C38:6 PE plasmalogen	3																					
+	Car(16:3)	3																					
+	FA(20:3)	3																					
+	DG(34:1)>DG(16:0_18:1_0:0)_M+NH3_feature2	3																					
+	PC(38:6)>PC(18:2_20:4)_M+H2CO2_feature1	3																					
+	taurodeoxycholate	3																					
+	PC(O-36:4)_feature4	3																					
+	UDP-N-acetylglucosamine	3																					
+	kynurenine	3																					
+	N-acetylhistamine	3																					
+	Car(5:0-OH)	2																					
+	TG(46:1)>TG(12:0_16:0_18:1)_and_TG(10:0_18:0_18:1)_and_TG(14:0_16:0_16:1)_M+NH3_feature2	2																					
+	CE(18:2)_M+NH3_feature1	2																					
+	C38:4 PE	2																					
+	CoA(10:2)	2																					
+	DG(36:1)>DG(18:0_18:1_0:0)_M+NH3_feature1	2																					
+	PS(O-40:7)>PS(O-20:3/20:4)_feature2	2																					
+	vitamin A	2																					
+	CE(22:6)_M+NH3_feature2	2																					
+	SM(d42:1)_feature1	2																					
+	TG(58:5)_M+NH3_feature4	2																					
+	CL(74:10)_feature1	2																					
+	DG(40:4)>DG(18:0_22:4_0:0)_feature3	2																					
+	MG(18:1)_rp_b	2																					
+	2'-O-methyladenosine	2																					
+	PC(36:4)>PC(16:0_20:4)_M+H2CO2_feature3	2																					
+	Car(17:1)_feature1	2																					
+	Leu-Ile	2																					
+	PS(38:3)_feature3	2																					
+	LPC(17:0)_rp_a_b	2																					
+	TG(34:0)>TG(4:0_14:0_16:0)_M+NH3_feature3	2																					
+	uridine	2																					
+	DG(38:5)>DG(18:1_20:4_0:0)_M+NH3_feature2	2																					
+	PC(39:6)_feature3	2																					
+	DG(36:3)	2																					
+	PI(38:6)>PI(16:0_22:6)_feature1	2																					
+	LPE(O-15:0)_feature1	2																					
+	PE(36:4)>PE(16:0_20:4)_feature5	2																					
+	CoA(9:0)	2																					
+	DG(32:0)	2																					
+	LPE(18:0)>LPE(18:0/0:0)_feature2	2																					
+	MG(16:0)	2																					
+	PC(34:3)_feature1	2																					
+	PC(O-38:7)_feature7	2																					
+	TG(52:3)>TG(16:0_18:1_18:2)_and_TG(16:1_18:1_18:1)_M+NH3_feature3	2																					
+	CoA(20:2)	2																					
+	FA(22:3)	2																					
+	PC(37:1)_feature2	2																					
+	PC(O-40:4)_feature1	2																					
+	TG(54:7)>TG(16:0_16:1_22:6)_and_TG(16:0_18:2_20:5)_M+NH3_feature4	2																					
+	TG(58:7)>TG(18:0_18:1_22:6)_M+NH3_feature5	2																					
+	valine-d8	2																					
+	FA(18:4)	2																					
+	PC(32:2)>PC(14:0_18:2)_M+H2CO2_feature1	2																					
+	C12 carnitine	2																					
+	FA(22:6)_feature1	2																					
+	PC(34:3)>PC(16:1_18:2)_M+H2CO2_feature1	2																					
+	PC(O-34:2)_feature1	2																					
+	methionine sulfoxide	2																					
+	Cer(d41:1)_M+H2CO2_feature1	2																					
+	CoA(8:1)	2																					
+	DG(40:6)>DG(18:0_22:6_0:0)_M+NH3_feature6	2																					
+	PC(38:4)>PC(16:0_22:4)_M+H2CO2_feature3	2																					
+	PE(32:0)>PE(16:0/16:0)_feature1	2																					
+	PE(40:8)_feature1	2																					
+	PE(42:10)_feature2	2																					
+	PE(O-39:5)_feature3	2																					
+	PG(36:4)>PG(16:0_20:4)_feature3	2																					
+	SM(d41:2)_feature1	2																					
+	SM(d43:1)_feature2	2																					
+	TG(48:0)>TG(16:0/16:0/16:0)_and_TG(14:0_16:0_18:0)_M+NH3_feature1	2																					
+	TG(56:6)>TG(18:1_18:1_20:4)_and_TG(16:0_18:1_22:5)_and_TG(18:1_18:2_20:3)_M+NH3_feature3	2																					
+	TG(54:6)>TG(16:0_16:0_22:6)_M+NH3_feature6	2																					
+	Cer(d42:0)_M+H2CO2_feature1	2																					
+	CoA(4:0-CH3)	2																					
+	PC(38:5)_feature3	2																					
+	PC(40:2)_feature3	2																					
+	PE(O-40:5)>PE(O-18:1/22:4)_feature3	2																					
+	UMP	2																					
+	DG(38:4)>DG(18:0_20:4_0:0)_feature6	2																					
+	LPE(18:2)_b	2																					
+	PE(O-40:4)>PE(O-18:0/22:4)_feature4	2																					
+	TG(56:1)_M+NH3_feature1	2																					
+	kynurenate	2																					
+	PC(O-38:6)_feature2	2																					
+	TG(48:1)>TG(16:0_16:0_16:1)_and_TG(14:0_16:0_18:1)_M+NH3_feature2	2																					
+	PC(37:4)_feature3	2																					
+	PC(39:4)_feature4	2																					
+	PE(38:7)>PE(16:1_22:6)_feature1	2																					
+	Citrate	2																					
+	CoA(21:3)	2																					
+	CoA(4:1)	2																					
+	LPC(17:0)>LPC(17:0/0:0)_and_LPC(0:0/17:0)_feature1and2	2																					
+	LPC(24:0)>LPC(24:0/0:0)_feature2	2																					
+	PC(30:0)_feature1	2																					
+	PC(31:0)_feature2	2																					
+	PC(34:4)>PC(14:0_20:4)_M+H2CO2_feature2	2																					
+	PC(O-38:7)_feature2	2																					
+	PE(40:7)>PE(18:2_22:5)_feature1	2																					
+	SM(d42:2)	2																					
+	TG(50:4)>TG(16:1_16:1_18:2)_and_TG(16:1_16:1_18:2)_M+NH3_feature3	2																					
+	TG(54:2)>TG(16:0_18:1_20:1)_and_TG(18:0_18:1_18:1)_M+NH3_feature3	2																					
+	DG(32:1)>DG(16:0_16:1_0:0)_M+NH3_feature1	2																					
+	NADH	2																					
+	acetylcysteine	2																					
+	gamma-Aminobutyric acid	2																					
+	CoA(21:1)	2																					
+	FA(22:0)	2																					
+	PC(34:1)>PC(16:0_18:1)_M+H2CO2_feature2	2																					
+	PC(36:6)_feature2	2																					
+	PI(36:3)_feature2	2																					
+	TG(56:4)>TG(18:0_18:0_20:4)_M+NH3_feature6	2																					
+	Ubiquinol Q9_feature1	2																					
+	deoxyuridine	2																					
+	EA(17:0)_feature1	2																					
+	SM(d42:3)_M+H2CO2_feature1	2																					
+	TG(56:4)>TG(18:0_18:0_20:4)_M+NH3_feature5	2																					
+	TG(58:6)_M+NH3_feature4	2																					
+	LPC(18:1/0:0)_feature2	2																					
+	PC(30:0)_feature2	2																					
+	PC(39:4)_feature3	2																					
+	SM(d38:1)_feature2	2																					
+	TG(51:0)>TG(16:0_17:0_18:0)_and_TG(16:0_16:0_19:0)_and_TG(15:0_17:0_19:0)_M+NH3_feature1	2																					
+	TG(52:4)>TG(16:1_18:1_18:2)_M+NH3_feature1	2																					
+	CL(72:7)_feature1	2																					
+	MG(18:1)_rp_a_b	2																					
+	PE(40:6)_feature3	2																					
+	TG(42:2)_M+NH3_feature2	2																					
+	TG(44:1)>TG(10:0_16:0_18:1)_M+NH3_feature1	2																					
+	alpha-tocopherol	2																					
+	C18:0 SM	2																					
+	LPC(18:0)>LPC(18:0/0:0)_M+H2CO2_feature2	2																					
+	NMMA	2																					
+	PC(36:2)_feature2	2																					
+	SM(d33:1)_feature1	2																					
+	SM(d37:1)_feature1	2																					
+	TG(51:2)_M+NH3_feature2	2																					
+	TG(60:10)>TG(18:0_20:4_22:6)_M+NH3_feature4	2																					
+	TG(60:4)_M+NH3_feature1	2																					
+	LPE(18:0)_b	2																					
+	Succinic acid	2																					
+	6-phosphogluconate	2																					
+	PE(39:4)>PE(19:0_20:4)_feature3	2																					
+	SM(d42:2)_M+H2CO2_feature1	2																					
+	Car(13:0)_feature1	2																					
+	"CoA(3:0, 3-OH)"	2																					
+	PC(35:3)	2																					
+	PE(34:1)>PE(16:0_18:1)_feature1	2																					
+	pyroglutamate	2																					
+	C20:4 LPC B	2																					
+	PC(O-36:4)>PC(O-16:0/20:4) M+ H2CO2_feature4	2																					
+	PC(O-40:6)_feature1	2																					
+	PS(40:6)>PS(18:0_22:6)_feature2	2																					
+	SM(d34:0)	2																					
+	omega-muricholate	2																					
+	CL(72:6)_feature1	2																					
+	Ile-Pro	2																					
+	LPC(16:0)>LPC(16:0/0:0)_and_LPC(0:0/16:0)_M+H2CO2_feature1and2	2																					
+	PC(37:4)_feature2	2																					
+	PE(38:3)>PE(18:0_20:3)_feature4	2																					
+	PE(40:6)_feature1	2																					
+	PE(42:8)>PE(20:4_22:4)_feature2	2																					
+	TG(42:1)_M+NH3_feature1	2																					
+	oleamide	2																					
+	oxidized glutathione	2																					
+	phosphocreatine	2																					
+	5-hydroxytryptophol	2																					
+	3-Methyl-2-oxovaleric acid	2																					
+	ADMA	2																					
+	Cer(d44:2)>Cer(d18:1/26:1)_feature1	2																					
+	Lactic acid	2																					
+	PC(36:3)_feature1	2																					
+	PC(36:6)_feature3	2																					
+	PC(38:5)>PC(16:0_22:5)_and_PC(18:1_20:4)_M+H2CO2_feature5	2																					
+	PE(40:7)_feature3	2																					
+	PE(O-36:4)_feature1	2																					
+	PS(40:4)_feature1	2																					
+	SM(d34:0)_feature1	2																					
+	SM(d39:1)_M+H2CO2_feature1	2																					
+	SM(d39:1)_feature2	2																					
+	TG(53:2)_M+NH3_feature4	2																					
+	TG(57:3)_M+NH3_feature1	2																					
+	TG(58:6)_M+NH3_feature3	2																					
+	UDP-galactose	2																					
+	C36:3 PE plasmalogen	2																					
+	Car(16:1)	2																					
+	LPC(20:3)_b	2																					
+	PC(28:0)	2																					
+	cAMP	2																					
+	1-Methylhistidine	2																					
+	4-acetamidobutanoate	2																					
+	Hydroxylysine	2																					
+	PE(O-34:5)>PE(O-17:1/20:4)_feature2	2																					
+	TG(60:3)_M+NH3_feature1	2																					
+	Car(16:1)_feature1	2																					
+	Car(16:2)_feature1	2																					
+	CoA(14:1)	2																					
+	CoA(20:4)	2																					
+	CoA(22:4)	2																					
+	CoA(9:1)	2																					
+	LPE(18:0)>LPE(18:0/0:0)_and_LPE(0:0/18:0)_feature1and2	2																					
+	PC(31:0)_feature1	2																					
+	PC(32:1)_feature3	2																					
+	PC(42:6)_feature2	2																					
+	PC(42:8)_feature3	2																					
+	PC(O-36:5)_feature5	2																					
+	PE(36:1)>PE(18:0_18:1)_feature3	2																					
+	PE(38:5)>PE(18:1_20:4)_feature3	2																					
+	PE(38:5)_feature2	2																					
+	S-AMP	2																					
+	SM(d43:1)_feature1	2																					
+	TG(48:3)_M+NH3_feature2	2																					
+	TG(51:2)>TG(15:0_18:1_18:1)_and_TG(16:0_17:1_18:1)_and_TG(16:1_17:0_18:1)_M+NH3_feature2	2																					
+	TG(52:7)_M+NH3_feature2	2																					
+	phenylalanine-d8	2																					
+	Car(8:0-OH)	2																					
+	Glucose	2																					
+	PE(O-38:7)>PE(O-16:1/22:6)_and_PE(O-20:7/18:0)_feature2	2																					
+	SM(d38:2)_feature1	2																					
+	LPC(20:5)_feature1and2	2																					
+	Pipecolic acid	2																					
+	SM(d42:1)_feature2	2																					
+	TG(54:5)>TG(18:1_18:2_18:2)_M+NH3_feature1	2																					
+	C8 carnitine	2																					
+	C20:3 LPC	2																					
+	2-aminoheptanoate	2																					
+	C16 carnitine	2																					
+	C18:2 carnitine	2																					
+	C20 carnitine	2																					
+	C20:1 LPE	2																					
+	C34:1 DAG	2																					
+	C4-OH carnitine	2																					
+	allantoin	2																					
+	argininosuccinate	2																					
+	butyrobetaine	2																					
+	glutamate	2																					
+	histamine	2																					
+	phenylacetylglycine	2																					
+	phosphocholine	2																					
+	2-Hydroxyglutarate	2																					
+	C18:2 LPC A	2																					
+	Cer(d18:1/16:0)	2																					
+	NADP+	2																					
+	PC(40:5)>PC(18:0_22:5)_M+H2CO2_feature3	2																					
+	PS(40:5)_feature2	2																					
+	TG(38:1)>TG(4:0_16:0_18:1)_feature3	2																					
+	TG(44:1)>TG(10:0_16:0_18:1)_feature3	2																					
+	TG(48:1)>TG(16:0_16:0_16:1)_and_TG(14:0_16:0_18:1)_feature3	2																					
+	TG(48:3)_M+NH3_feature1	2																					
+	TG(51:3)>TG(15:0_18:1_18:2)_and_TG(16:0_17:1_18:2)_and_TG(16:1_17:1_18:1)_feature3	2																					
+	UDP	2																					
+	UTP	2																					
+	citrate+isocitrate	2																					
+	erythrose 4-phosphate	2																					
+	phosphoserine	2																					
+	C2 carnitine	2																					
+	alpha-glycerophosphocholine	2																					
+	homocysteine	2																					
+	C30:0 PC	2																					
+	CAR(3:0)	2																					
+	Cer(d40:1)_M+H2CO2_feature1	2																					
+	Cer(d42:3)_feature2	2																					
+	CoA(10:3)	2																					
+	GTP	2																					
+	PC(39:4)>PC(19:0_20:4)_M+H2CO2_feature5	2																					
+	PE(38:5)>PE(16:0_22:5)_and_PE(18:1_20:4)_feature3	2																					
+	PE(38:5)>PE(16:0_22:5)_and_PE(38:5)>PE(18:1_20:4)_feature3	2																					
+	PE(38:5)_feature5	2																					
+	PE(38:6)_feature3	2																					
+	PE(O-40:7)>PE(O-18:1/22:6)_feature6	2																					
+	PS(O-40:7)>PS(O-18:3/22:4)_feature1	2																					
+	SM(d44:1)_feature1	2																					
+	TG(53:3)>TG(17:0_18:1_18:2)_and_TG(17:1_18:1_18:1)_and_TG(16:1_18:1_19:1)_and_TG(16:0_18:1_19:2)_M+NH3_feature4	2																					
+	TG(54:3)>TG(18:1/18:1/18:1)_M+NH3_feature8	2																					
+	TG(56:4)>TG(18:1_18:2_20:1)_and_TG(18:1_18:1_20:2)_M+NH3_feature4	2																					
+	TG(56:5)>TG(16:0_18:1_22:4)_M+NH3_feature4	2																					
+	TG(56:7)_M+NH3_feature5	2																					
+	dTTP	2																					
+	m-hydroxybenzoate	2																					
+	LPC(20:0)	2																					
+	Leucine/Isoleucine	2																					
+	PE(O-16:1/16:0)	2																					
+	PE(O-38:6)>PE(O-18:2/20:4)_and_PE(O-16:1/22:5)_feature3	2																					
+	cis-Aconitic acid	2																					
+	deoxyguanosine	2																					
+	imidazole propionate	2																					
+	spermidine	2																					
+	DG(34:2)>DG(16:0_18:2_0:0)_M+NH3_feature3	2																					
+	DG(36:2)>DG(18:1_18:1_0:0)_feature3	2																					
+	LPC(16:0/0:0)_and_LPC(0:0/16:0)_feature1and2	2																					
+	PE(36:5)>PE(16:1_20:4)_feature2	2																					
+	PG(44:12)>PG(22:6/22:6)_feature1	2																					
+	AMP	2																					
+	C34:2 PE plasmalogen	2																					
+	C34:3 PC	2																					
+	Cer(d44:1)>Cer(d18:1/26:0)_feature1	2																					
+	N-acetylgalactosamine	2																					
+	Octadecadienoic acid	2																					
+	PC(34:3)>PC(16:0_18:3)_M+H2CO2_feature3	2																					
+	PC(36:5)_feature2	2																					
+	PC(36:5)_feature4	2																					
+	PC(38:5)>PC(16:0_22:5)_and_PC(18:1_20:4)_M+H2CO2_feature3	2																					
+	PE(42:8)>PE(20:4_22:4)_feature4	2																					
+	PS(40:7)_feature1	2																					
+	TG(54:8)_M+NH3_feature2	2																					
+	coenzyme A	2																					
+	PC(34:4)>PC(14:0_20:4)_M+H2CO2_feature3	2																					
+	PC(42:9)_feature2	2																					
+	PC(36:4)_feature3	2																					
+	PC(O-38:5)_feature1	2																					
+	PC(O-38:7)_feature1	2																					
+	PS(36:2)_feature4	2																					
+	SM(d35:1)	2																					
+	SM(d42:3)_feature1	2																					
+	TG(57:2)_M+NH3_feature1	2																					
+	C22:5 LPC	2																					
+	PE(38:5)_feature4	2																					
+	PGE2	2																					
+	TG(48:2)>TG(14:0_16:0_18:2)_and_TG(14:0_16:1_18:1)_M+NH3_feature2	2																					
+	XMP	2																					
+	C10 carnitine	2																					
+	C12:1 carnitine	2																					
+	PC(40:5)_feature3	2																					
+	PE(40:7)_feature1	2																					
+	TG(38:0)>TG(10:0_12:0_16:0)_and_TG(10:0_10:0_18:0)_and_TG(8:0_12:0_18:0)_M+NH3_feature2	2																					
+	TG(38:0)>TG(10:0_12:0_16:0)_and_TG(10:0_10:0_18:0)_and_TG(8:0_12:0_18:0)_M+NH3_feature3	2																					
+	TG(49:3)_M+NH3_feature2	2																					
+	TG(50:2)>TG(16:0_16:1_18:1)_and_TG(14:0_18:1_18:1)_M+NH3_feature2	2																					
+	TG(50:4)>TG(16:1_16:1_18:2)_M+NH3_feature2	2																					
+	TG(50:5)_feature2	2																					
+	TG(52:5)>TG(16:0_18:2_18:3)_M+NH3_feature5	2																					
+	TG(58:11)_M+NH3_feature1	2																					
+	gamma-glutamyltyrosine	2																					
+	gluconate	2																					
+	Cer(d41:2)>Cer(d18:2/23:0)_feature2	2																					
+	Isoleucine	2																					
+	Oxoglutaric acid	2																					
+	PC(35:4)_feature2	2																					
+	PC(36:3)_feature2	2																					
+	PC(38:5)_feature1	2																					
+	PC(40:6)>PC(18:0_22:6) _M+H2CO2_feature3	2																					
+	PC(40:7)>PC(18:2_22:5)_M+H2CO2_feature1	2																					
+	PC(40:8)_feature1	2																					
+	PC(42:10)>PC(20:4_22:6) _M+H2CO2_feature1	2																					
+	PC(42:2)_feature2	2																					
+	PC(42:3)_feature1	2																					
+	PC(42:7)_feature4	2																					
+	PC(O-34:2)_feature2	2																					
+	PE(36:4)>(16:0_20:4)_feature3	2																					
+	PE(38:5)>PE(16:0_22:5)_and_PE(18:1_20:4)_feature5	2																					
+	PE(O-36:2)>PE(O-18:1/18:1)_feature2	2																					
+	PE(O-40:8)>PE(O-18:2/22:6)_feature2	2																					
+	PS(36:2)>PS(18:0_18:2)_feature4	2																					
+	SM(d44:3)_feature1	2																					
+	TG(50:0)>TG(16:0_16:0_18:0)_M+NH3_feature3	2																					
+	TG(52:1)>TG(16:0_18:0_18:1)_and_TG(16:0_16:0_20:1)_feature3	2																					
+	TG(52:5)>TG(16:1_18:2_18:2)_M+NH3_feature3	2																					
+	TG(56:7)_M+NH3_feature3	2																					
+	TG(58:2)_M+NH3_feature3	2																					
+	TG(58:5)_M+NH3_feature6	2																					
+	TG(58:6)_M+NH3_feature5	2																					
+	TG(58:7)>TG(18:0_18:1_22:6)_M+NH3_feature3	2																					
+	dCTP	2																					
+	phenylacetate	2																					
+	proline-betaine	2																					
+	N1-methyl-2-pyridone-5-carboxamide	2																					
+	PC(O-36:4)_feature2	2																					
+	Cortisol	2																					
+	DG(36:2)>DG(18:0_18:2_0:0)_M+NH3_feature2	2																					
+	DG(36:5)>DG(18:2_18:3_0:0)_M+NH3_feature1	2																					
+	LPC(18:1)	2																					
+	N-acetylglutamine	2																					
+	PC(40:7)_feature2	2																					
+	PC(42:10)>PC(20:4_22:6)_M+H2CO2_feature1	2																					
+	PC(42:9)_feature1	2																					
+	PC(O-36:1)_feature3	2																					
+	PE(35:2)>PE(17:0_18:2)_feature1	2																					
+	PE(O-38:6)>PE(O-18:2/20:4)_and_PE(O-16:1/22:5)_feature2	2																					
+	PG(38:6)>PG(18:2_20:4)_feature1	2																					
+	C40:7 PE plasmalogen	2																					
+	CE(20:4)_M+NH3_feature1	2																					
+	Car(18:0-OH)_feature1	2																					
+	Car(20:1)_feature1	2																					
+	Car(24:0)_feature1	2																					
+	Car(24:1)_feature1	2																					
+	Car(26:1)_feature1	2																					
+	PC(38:6)_feature1	2																					
+	PE(O-40:7)>PE(O-18:1/22:6)_and_PE(O-22:7/18:0)_feature10	2																					
+	SM(d40:1)_feature1	2																					
+	indoleacetate	2																					
+	linoleoyl ethanolamide	2																					
+	Car(22:4)_feature1	2																					
+	Aspartate	2																					
+	C16:1 LPC plasmalogen	2																					
+	Citric acid	2																					
+	"GTInternalStandard_PE(33:1(d7))>PE(15:0/18:1(9z,d7))_feature1"	2																					
+	PE(O-40:7)>PE(O-18:2/22:5)_feature4	2																					
+	TG(40:1)_M+NH3_feature1	2																					
+	TG(40:4)>TG(4:0_18:2_18:2)_M+NH3_feature1	2																					
+	FA(16:0)	1																					
+	CoA(18:3)	1																					
+	TG(58:9)_M+NH3_feature1	1																					
+	PC(44:4)_feature2	1																					
+	PE(O-34:1)>PE(O-18:1_16:0)_feature2	1																					
+	PE(O-38:5)>PE(O-18:1/20:4)_feature3	1																					
+	TG(40:3)>TG(4:0_18:1_18:2)_M+NH3_feature1	1																					
+	PI(40:6)>PI(18:0_22:6)_feature1	1																					
+	TG(54:7)>TG(18:2_18:2_18:3)_M+NH3_feature3	1																					
+	MG(18:1)_a_b	1																					
+	Cer(d40:2)>Cer(d18:2/22:0)_feature2	1																					
+	DG(38:6)>DG(18:2_20:4_0:0)_M+NH3_feature1	1																					
+	CoA(21:2)	1																					
+	SM(d40:0)_feature1	1																					
+	TG(51:5)>TG(15:0_18:2_18:3)_and_TG(51:5)>TG(15:1_18:2_18:2)_M+NH3_feature2	1																					
+	TG(56:3)>TG(18:1_18:1_20:1)_and_TG(18:1_18:2_20:0)_and_TG(18:0_18:2_20:1)_and_TG(16:0_18:1_22:2)_M+NH3_feature3	1																					
+	C18:2 LPC B	1																					
+	TG(54:3)>TG(18:0_18:1_18:2)_and_TG(18:1/18:1/18:1)_and_TG(16:0_18:2_20:1)_M+NH3_feature8	1																					
+	TG(55:5)>TG(18:2_18:2_19:1)_and_TG(18:1_18:2_19:2)_M+NH3_feature3	1																					
+	FA(14:0-OH)	1																					
+	Car(19:0)_feature1	1																					
+	PC(38:3)_feature2	1																					
+	PS(38:4)>PS(18:0_20:4)_feature4	1																					
+	TG(54:6)>TG(18:2/18:2/18:2)_M+NH3_feature1	1																					
+	TG(58:10)_M+NH3_feature1	1																					
+	PC(33:0)_feature1	1																					
+	PC(40:4)>PC(20:0_20:4)_M+H2CO2_feature3	1																					
+	TG(40:3)>TG(4:0_18:1_18:2)_feature2	1																					
+	DG(32:1)>DG(16:0_16:1_0:0)_feature1	1																					
+	PE(34:0)>PE(16:0_18:0)_feature2	1																					
+	LPE(16:0)>LPE(16:0/0:0)_and_LPE(0:0/16:0)_feature1and2	1																					
+	PC(35:4)_feature4	1																					
+	PC(36:0)>PC(18:0/18:0)_M+H2CO2_feature3	1																					
+	TG(57:4)_M+NH3_feature2	1																					
+	DG(32:0)>DG(16:0_16:0_0:0)_M+NH3_feature2	1																					
+	PC(41:2)_feature3	1																					
+	PC(46:5)_feature2	1																					
+	PC(32:1)>PC(14:0_18:1)_and_PC(16:0_16:1)_M+H2CO2_feature1	1																					
+	PC(39:4)>PC(19:0_20:4)_M+H2CO2_feature3	1																					
+	TG(53:3)>TG(17:0_18:1_18:2)_and_TG(17:1_18:1_18:1)_and_TG(16:1_18:1_19:1)_and_TG(16:0_18:1_19:2)_M+NH3_feature1	1																					
+	Cholesterol	1																					
+	PC(O-32:1)>PC(O-16:1/16:0)_M+H2CO2_feature2	1																					
+	LPC(19:0)>LPC(0:0/19:0)_feature1	1																					
+	LPC(20:1/0:0)_and_LPC(0:0/20:1)_feature3	1																					
+	TG(36:0)>TG(10:0_12:0_14:0)_and_TG(10:0_10:0_16:0)_M+NH3_feature2	1																					
+	TG(36:0)>TG(4:0_16:0_16:0)_M+NH3_feature1	1																					
+	FA(17:0)	1																					
+	N-undecanoylglycine	1																					
+	PE(O-38:5)>PE(O-16:0/22:5)_feature3	1																					
+	alanine-13C3	1																					
+	Eicosanoyl-EA	1																					
+	DG(36:2)>DG(18:1_18:1_0:0)_M+NH3_feature3	1																					
+	MG(14:0_0:0_0:0)	1																					
+	PC(32:3)_feature1	1																					
+	PI(38:5)>PI(18:1_20:4)_feature1	1																					
+	TG(60:10)>TG(18:0_20:4_22:6)_M+NH3_feature5	1																					
+	2-deoxyglucose	1																					
+	LPE(O-18:2)_feature1	1																					
+	PE(O-39:5)_feature2	1																					
+	DG(34:1)>DG(16:0_18:1_0:0)_feature2	1																					
+	SM(d35:2)_feature1	1																					
+	SM(d38:3)_feature1	1																					
+	FA(12:0-OH)	1																					
+	LPC(20:4)_rp_a_b	1																					
+	PE(O-40:7)_feature10	1																					
+	2-hydroxybutyrate	1																					
+	ADP-ribose	1																					
+	Cer(d39:1)>Cer(d18:1/21:0)_feature1	1																					
+	Cer(d42:1)_M+H2CO2_feature3	1																					
+	LPC(20:1)>LPC(20:1/0:0)_feature2	1																					
+	PC(39:6)>PC(17:0_22:6)_M+H2CO2_feature3	1																					
+	PC(O-40:6)_feature5	1																					
+	homocysteate	1																					
+	tryptophan-15N2	1																					
+	CoA(8:0)	1																					
+	LPC(20:4)>LPC(20:4/0:0)_and_LPC(0:0/20:4)_M+H2CO2_feature1and2	1																					
+	TG(55:2)>TG(18:1_18:1_19:0)_M+NH3_feature2	1																					
+	pterin	1																					
+	"trans-cyclohexane-1,2-diol"	1																					
+	CAR(16:0(OH))	1																					
+	PC(34:0)>PC(16:0_18:0) M+ H2CO2_feature4	1																					
+	GTInternalStandard_DG(33:1(d7))>DG(15:0/18:1(d7)/0:0)_feature1	1																					
+	PC(40:7)>PC(18:1_22:6)_M+H2CO2_feature3	1																					
+	PC(O-36:0)_feature1	1																					
+	PC(O-40:4)_feature2	1																					
+	PC(O-40:6)_feature4	1																					
+	PE(O-40:4)>PE(O-20:0/20:4)_feature2	1																					
+	PE(O-42:5)>PE(O-20:1/22:4)_feature1	1																					
+	PI(38:4)>PI(18:0_20:4)_feature3	1																					
+	SM(d18:1/18:0)	1																					
+	SM(d42:1)_M+H2CO2_feature1	1																					
+	SM(d42:2)_feature1	1																					
+	TG(53:4)>TG(17:0_18:2_18:2)_and_TG(17:1_18:1_18:2)_M+NH3_feature1	1																					
+	TG(54:3)>TG(18:1/18:1/18:1)_M+NH3_feature7	1																					
+	FA(8:0-OH)	1																					
+	TG(38:4)>TG(2:0_18:2_18:2)_feature1	1																					
+	Linoleoyl-EA	1																					
+	PI(36:2)>PI(18:0_18:2)_feature2	1																					
+	TG(39:1)_M+NH3_feature2	1																					
+	TG(42:1)_M+NH3_feature2	1																					
+	N1-acetylspermine	1																					
+	C18:0 LPE	1																					
+	2-hydroxy-3-methylbutyrate	1																					
+	ADP	1																					
+	CTP	1																					
+	LPE(20:0/0:0)_feature2	1																					
+	MG(14:0)_rp_a	1																					
+	PC(O-40:6)_feature6	1																					
+	PE(41:6)>PE(19:0_22:6)_feature2	1																					
+	PE(42:10)>PE(20:4_22:6)_feature1	1																					
+	TG(54:3)>TG(18:0_18:1_18:2)_and_TG(18:1/18:1/18:1)_and_TG(16:0_18:2_20:1)_M+NH3_feature9	1																					
+	TG(54:4)>TG(18:1_18:1_18:2)_feature4	1																					
+	TG(56:8)>TG(18:2_18:2_20:4)_M+NH3_feature3	1																					
+	PC(35:2)	1																					
+	Car(15:0)_feature2	1																					
+	Car(17:0)_feature2	1																					
+	CoA(22:6)	1																					
+	PC(34:4)_feature5	1																					
+	PE(36:4)_feature3	1																					
+	SM(d42:1)_M+H2CO2_feature2	1																					
+	SM(d44:1)	1																					
+	TG(49:2)_M+NH3_feature4	1																					
+	TG(51:1)_M+NH3_feature3	1																					
+	TG(52:3)>TG(16:0_18:1_18:2)_and_TG(16:1_18:1_18:1)_M+NH3_feature4	1																					
+	TG(54:6)>TG(16:0_16:0_22:6)_M+NH5_feature6	1																					
+	TG(54:7)>TG(18:2_18:2_18:3)_M+NH3_feature2	1																					
+	TG(56:4)>TG(18:0_18:0_20:4)_M+NH3_feature3	1																					
+	TG(56:8)>TG(18:2_18:2_20:4)_M+NH3_feature4	1																					
+	TG(58:8)_M+NH3_feature3	1																					
+	urobilin	1																					
+	PC(34:3)>PC(16:1_18:2)_M+H2CO2_feature2	1																					
+	PE(O-36:3)>PE(O-18:2/18:1)_feature3	1																					
+	PE(O-36:4)>PE(O-16:1/20:3)_feature2	1																					
+	PE(O-36:4)>PE(O-18:2/18:2)_feature1	1																					
+	Phe-Trp	1																					
+	SiE(20:4)_feature3	1																					
+	TG(46:1)>TG(12:0_16:0_18:1)_and_TG(10:0_18:0_18:1)_and_TG(14:0_16:0_16:1)_M+NH3_feature1	1																					
+	TG(51:0)>TG(16:0_17:0_18:0)_and_TG(16:0_16:0_19:0)_and_TG(15:0_17:0_19:0) M + NH3_feature2	1																					
+	C20:3 LPC B	1																					
+	"GTInternalStandard_PC(18:1(d7))>PC(18:1(9z,d7)/0:0)_and_PC(18:1(d7))>PC(0:0/18:1(9z,d7))_feature1"	1																					
+	LPC(0:0/20:2)_feature1	1																					
+	LPC(15:0/0:0)_and_LPC(0:0/15:0)_feature1and2	1																					
+	LPC(16:1/0:0)_and_LPC(0:0/16:1)_feature1and2	1																					
+	LPC(18:0)_feature2	1																					
+	LPC(19:1/0:0)_and_LPC(0:0/19:1)_feature1and2	1																					
+	LPC(20:4)_feature2	1																					
+	LPE(18:1/0:0)_and_LPE(0:0/18:1)_feature1and2	1																					
+	PC(37:5)_feature4	1																					
+	PC(46:5)_feature1	1																					
+	PE(O-40:4)_feature4	1																					
+	SM(d40:1)_feature2	1																					
+	TG(50:2)>TG(16:0_16:1_18:1)_and_TG(14:0_18:1_18:1)_M+NH3_feature1	1																					
+	TG(51:5)>TG(15:0_18:2_18:3)_and_TG(15:1_18:2_18:2)_M+NH3_feature2	1																					
+	DG(40:6)>DG(18:0_22:6_0:0)_feature6	1																					
+	HexCer(d40:1-OH)>HexCer(d18:1/22:0-OH)_feature2	1																					
+	LPC(17:0/0:0)_and_LPC(0:0/17:0)_feature1and2	1																					
+	LPC(18:1)>LPC(18:1/0:0)_and_LPC(0:0/18:1)_feature1and2	1																					
+	TG(38:2)>TG(4:0_16:1_18:1)_and_TG(4:0_16:0_18:2)_M+NH3_feature1	1																					
+	TG(38:3)>TG(4:0_16:1_18:2)_M+NH3_feature1	1																					
+	TG(40:1)_feature2	1																					
+	TG(40:5)>TG(4:0_18:2_18:3)_M+NH3_feature1	1																					
+	TG(46:5)>TG(10:0_18:2_18:3)_feature1	1																					
+	TG(55:2)_M+NH3_feature2	1																					
+	oxypurinol	1																					
+	TG(39:1)_M+NH3_feature1	1																					
+	CL(76:12)_feature1	1																					
+	Car(14:2-OH)_feature1	1																					
+	Cer(d40:1)>Cer(d18:1/22:0)_feature2	1																					
+	Cer(d40:2)_M+H2CO2_feature2	1																					
+	DG(36:1)>DG(18:0_18:1_0:0)_M+NH3_feature2	1																					
+	FA(14:1)	1																					
+	LPC(18:1)_rp_b	1																					
+	PC(34:0)>PC(16:0_18:0)_M+H2CO2_feature3	1																					
+	PC(O-40:7)_feature2	1																					
+	PE(O-42:7)>PE(O-20:1/22:6)_feature3	1																					
+	PG(40:6)>PG(18:0_22:6)_feature4	1																					
+	PS(40:8)>PS(20:4/20:4)_feature2	1																					
+	TG(55:1)>TG(18:0_18:1_19:0)_and_TG(16:0_18:1_21:0)_M+NH3_feature2	1																					
+	TG(58:8)>TG(18:2_18:2_22:4)_M+NH3_feature1	1																					
+	PC(30:0)	1																					
+	Sulfatide(d42:2-OH)_feature1	1																					
+	Car(18:3)_feature1	1																					
+	CoA(20:5)	1																					
+	CoA(3:0)	1																					
+	DG(36:4)>DG(16:0_20:4_0:0)_feature2	1																					
+	DG(40:4)>DG(18:0_22:4_0:0)_M+NH3_feature3	1																					
+	FA(16:1)	1																					
+	HexCer(d42:0-OH)_M+H2CO2_feature1	1																					
+	PC(39:6)_feature7	1																					
+	PG(42:10)>PG(20:4_22:6)_feature1	1																					
+	TG(50:4)>TG(16:1_16:1_18:2)_and_TG(16:1_16:1_18:2)_M+NH3_feature2	1																					
+	TG(52:6)_M+NH3_feature4	1																					
+	TG(54:5)>TG(18:1_18:2_18:2)_M+NH3_feature5	1																					
+	TG(54:6)>TG(18:2/18:2/18:2)_and_TG(18:1_18:2_18:3)_M+NH3_feature2	1																					
+	TG(58:5)_M+NH3_feature2	1																					
+	UDP-glucose	1																					
+	trimethylbenzene	1																					
+	C14:0 SM	1																					
+	LPE(20:0)>LPE(20:0/0:0)_feature2	1																					
+	PE(O-35:3)>PE(O-18:2/17:1)_and_PE(O-17:2/18:1)_feature1	1																					
+	PG(36:5)>PG(16:0_20:5)_feature2	1																					
+	"11,12-EpETrE"	1																					
+	4-pyridoxate	1																					
+	LPC(23:0/0:0)_feature2	1																					
+	LPE(18:0/0:0)_and_LPE(0:0/18:0)_feature1and2	1																					
+	LPE(20:0)_feature2	1																					
+	PC(O-38:4)_feature2	1																					
+	PC(O-40:4)>PC(O-20:0/20:4)_M+H2CO2_feature2	1																					
+	PC(O-42:6)_feature4	1																					
+	PI(36:2)_feature2	1																					
+	SM(d36:3)	1																					
+	SiE(20:4)_M+NH3_feature2	1																					
+	SiE(22:6)_M+NH3_feature1	1																					
+	TG(52:2)>TG(16:0_18:1_18:1)_and_TG(16:0_18:0_18:2)_M+NH3_feature4	1																					
+	TG(52:6)>TG(16:1_18:2_18:3)_and_TG(52:6)>TG(16:2_18:2_18:2)_M+NH3_feature4	1																					
+	TG(54:1)>TG(18:0_18:0_18:1)_and_TG(16:1_18:0_20:0)_and_TG(16:0_18:0_20:1)_M+NH3_feature3	1																					
+	Ethanolamine	1																					
+	Ile-Val	1																					
+	TG(36:1)>TG(8:0_10:0_18:1)_and_TG(10:0_10:0_16:1)_feature3	1																					
+	TG(38:1)>TG(10:0_10:0_18:1)_and_TG(10:0_12:0_16:1)_and_TG(8:0_12:0_18:1)_feature2	1																					
+	TG(38:2)>TG(4:0_16:1_18:1)_and_TG(4:0_16:0_18:2)_feature3	1																					
+	TG(46:3)>TG(10:0_18:1_18:2)_and_TG(12:0_16:1_18:2)_feature1	1																					
+	TG(46:6)>TG(8:0_16:0_22:6)_M+NH3_feature1	1																					
+	TG(50:7)>TG(10:0_18:2_22:5)_M+NH3_feature1	1																					
+	TG(54:8)_M+NH3_feature3	1																					
+	TG(58:2)_feature3	1																					
+	indole lactate	1																					
+	DG(36:3)>DG(18:1_18:2_0:0)_M+NH3_feature2	1																					
+	PC(35:4)_feature3	1																					
+	PE(O-38:4)_feature3	1																					
+	PI(36:1)>PI(18:0_18:1)_feature1	1																					
+	TG(40:1)_M+NH3_feature2	1																					
+	TG(42:0)>TG(10:0_16:0_16:0)_and_TG(12:0_14:0_16:0)_M+NH3_feature1	1																					
+	CDP	1																					
+	DG(36:2)>DG(18:0_18:2_0:0)_M+NH3_feature4	1																					
+	FA(12:0)	1																					
+	FA(14:2)	1																					
+	FA(15:0)	1																					
+	LPE(16:0)>LPE(16:0/0:0)_feature2	1																					
+	PA(34:1)_M+NH3_feature1	1																					
+	PC(32:0)	1																					
+	PC(38:6)>PC(16:0_22:6)_and_PC(38:6)>PC(18:0_20:6)_M+H2CO2_feature2	1																					
+	PC(40:1)_feature1	1																					
+	PC(O-38:7)_feature6	1																					
+	PE(36:0)>PE(18:0/18:0)_feature1	1																					
+	PE(44:10)>PE(22:4_22:6)_feature2	1																					
+	PE(O-40:8)>PE(O-22:8/18:0)_and_PE(O-18:2/22:6)_feature2	1																					
+	PS(36:2)>PS(18:1_18:1)_feature3	1																					
+	S-adenosylmethionine	1																					
+	SM(d42:2)_M+H2CO2_feature1and2	1																					
+	TG(56:1)_M+NH3_feature2	1																					
+	epibrassinolide+HCOOH	1																					
+	"fructose 1,6-biphosphate"	1																					
+	glycerol 3-phosphate	1																					
+	Car(11:0)	1																					
+	"9,10-DiHOME"	1																					
+	PC(35:2)_feature1	1																					
+	PE(38:5)>PE(18:1_20:4)_feature8	1																					
+	tryptamine	1																					
+	C36:3 PS plasmalogen	1																					
+	CoA(15:1)	1																					
+	CoA(17:1)	1																					
+	MG(18:1_0:0_0:0)	1																					
+	PE(36:3)>PE(16:0_20:3)_and_PE(36:3)>PE(18:1_18:2)_feature2	1																					
+	SM(d41:1)	1																					
+	TG(54:5)>TG(18:1_18:2_18:2)_M+NH3_feature2	1																					
+	TG(55:2)>TG(18:1_18:1_19:0)_M+NH3_feature1	1																					
+	TG(55:3)>TG(18:1_18:1_19:1)_and_TG(18:1_18:2_19:0)_M+NH3_feature3	1																					
+	TG(58:11)_M+NH3_feature2	1																					
+	TG(58:8)>TG(18:0_20:4_20:4)_and_TG(18:0_18:2_22:6)_M+NH3_feature6	1																					
+	TG(58:8)_M+NH3_feature5	1																					
+	Oleic acid	1																					
+	PE(40:4)>PE(18:0_22:4)_feature4	1																					
+	PE(42:4)>PE(20:4_22:0)_feature1	1																					
+	PG(38:5)>PG(18:1_20:4)_M+NH3_feature2	1																					
+	PG(40:7)>PG(18:1_22:6)_feature1	1																					
+	TG(50:2)>TG(16:0_16:1_18:1)_and_TG(14:0_18:1_18:1)_feature3	1																					
+	TG(52:0)>TG(16:0_16:0_20:0)_M+NH3_feature3	1																					
+	CE(18:3)_M+NH3_feature1	1																					
+	Cer(d36:1)>Cer(d18:1/18:0)_feature1	1																					
+	Cer(d40:1)>Cer(d18:1/22:0)_feature1	1																					
+	Cer(d40:2)>Cer(d18:1/22:1)_feature1	1																					
+	Cer(d42:1)>Cer(d18:1/24:0)_feature2	1																					
+	FA(20:5)_feature1	1																					
+	"GTInternalStandard_SM(d36:2(d9))>SM(d18:1/18:1(9z,d9))_feature1"	1																					
+	Indolelactic acid	1																					
+	LPC(17:1/0:0)_feature2	1																					
+	LPC(18:0/0:0)_feature2	1																					
+	LPC(18:2/0:0)_feature2	1																					
+	LPC(20:3)_feature1and2	1																					
+	LPC(24:1/0:0)_feature1and2	1																					
+	PC(35:0)_feature3	1																					
+	PC(39:3)_feature2	1																					
+	PC(42:5)_feature6	1																					
+	PC(43:4)_feature1	1																					
+	PC(O-40:3)_feature1	1																					
+	PI(38:5)>PI(18:1_20:4)_feature2	1																					
+	SM(d40:1)_M+H2CO2_feature1	1																					
+	SM(d43:2)_M+H2CO2_feature1	1																					
+	SiE(20:4)_M+NH3_feature1	1																					
+	StE(20:4)_and_SiE(20:5)_feature1	1																					
+	TG(52:5)>TG(16:1_18:2_18:2)_M+NH3_feature1	1																					
+	TG(53:1)>TG(16:0_18:1_19:0)_and_TG(17:0_18:0_18:1)_M+NH3_feature1	1																					
+	TG(53:1)>TG(16:0_18:1_19:0)_and_TG(17:0_18:0_18:1)_M+NH3_feature3	1																					
+	TG(56:9)_M+NH3_feature1	1																					
+	TG(58:8)_M+NH3_feature1	1																					
+	"FA(22:6(4Z,7Z,10Z,16Z,19Z))"	1																					
+	HexCer(d42:2)>HexCer(d18:1/24:1)_feature3	1																					
+	LPC(18:0)>LPC(18:0/0:0)_and_LPC(0:0/18:0)_feature1and2	1																					
+	LPC(20:3)	1																					
+	PC(O-32:1)>PC(O-16:0/16:1)_M+H2CO2_feature2	1																					
+	PC(O-34:0)_feature1	1																					
+	TG(44:4)>TG(8:0_18:2_18:2)_feature1	1																					
+	TG(45:2)_M+NH3_feature1	1																					
+	TG(48:4)>TG(12:0_18:2_18:2)_M+NH3_feature1	1																					
+	TG(50:2)>TG(16:0_16:0_18:2)_and_TG(16:0_16:1_18:1)_M+NH3_feature1	1																					
+	TG(50:3)_M+NH3_feature4	1																					
+	TG(51:4)>TG(16:1_17:1_18:2)_and_TG(15:0_18:2_18:2)_and_TG(15:1_18:1_18:2)_feature1	1																					
+	TG(52:3)>TG(16:0_18:1_18:2)_and_TG(16:1_18:1_18:1)_feature3	1																					
+	TG(52:4)>TG(16:1_18:1_18:2)_M+NH3_feature4	1																					
+	TG(54:5)>TG(18:1_18:2_18:2)_M+NH3_feature3	1																					
+	TG(55:3)>TG(18:1_18:1_19:1)_and_TG(18:1_18:2_19:0)_feature3	1																					
+	GDP	1																					
+	TG(36:2)_M+NH3_feature2	1																					
+	TG(40:0)_M+NH3_feature1	1																					
+	TG(40:0)_M+NH3_feature2	1																					
+	TG(44:1)>TG(10:0_16:0_18:1)_M+NH3_feature2	1																					
+	TG(46:1)>TG(12:0_16:0_18:1)_and_TG(10:0_18:0_18:1)_and_TG(14:0_16:0_16:1)_feature2	1																					
+	5-hydroxy-L-tryptophan	1																					
+	CAR(10:0(OH))	1																					
+	FA(18:0)	1																					
+	FA(20:1)	1																					
+	LPC(16:0)>LPC(16:0/0:0)_feature2	1																					
+	LPC(18:2)_rp_a_b	1																					
+	LPC(18:2)_rp_b	1																					
+	PC(36:4)	1																					
+	PC(44:5)_feature2	1																					
+	PC(O-32:1)_feature2	1																					
+	PE(40:5)_feature5	1																					
+	PE(O-40:7)>PE(O-18:1/22:6)_and_PE(O-22:7/18:0)_feature9	1																					
+	TG(52:4)>TG(16:1_18:1_18:2)_feature5	1																					
+	TG(53:2)_M+NH3_feature1	1																					
+	TG(53:3)>TG(17:0_18:1_18:2)_and_TG(17:1_18:1_18:1)_and_TG(16:1_18:1_19:1)_and_TG(16:0_18:1_19:2)_M+NH3_feature3	1																					
+	TG(54:4)>TG(18:1_18:1_18:2)_M+NH3_feature2	1																					
+	TG(54:5)>TG(18:1_18:2_18:2)_and_TG(16:0_16:0_22:5)_and_TG(16:0_18:1_20:4)_M+NH3_feature1	1																					
+	TG(56:2)_M+NH3_feature3	1																					
+	TG(58:8)>TG(18:2_18:2_22:4)_M+NH3_feature4	1																					
+	TG(60:3)_M+NH3_feature2	1																					
+	isoleucine-13C6	1																					
+	lysine-13C6	1																					
+	sphinganine (C18)	1																					
+	HexCer(d42:2-OH)>HexCer(d18:1/24:1-OH)_feature2	1																					
+	LPC(17:0)_a_b	1																					
+	PA(34:1)>PA(16:0_18:1)_feature1	1																					
+	PC(40:5)>PC(18:0_22:5) _M+H2CO2_feature4	1																					
+	PS(38:2)>PS(20:1_18:1)_feature1	1																					
+	SM(d32:2)	1																					
+	SM(d36:0)	1																					
+	Sulfatide(d43:2)_feature1	1																					
+	20-HETE	1																					
+	CL(74:9)_feature1	1																					
+	PC(18:2)PC(18:2_0:0)	1																					
+	PC(36:3)>PC(18:1_18:2)_M+H2CO2_feature3	1																					
+	PC(38:2)>PC(18:1_20:1)_M+H2CO2_feature3	1																					
+	TG(54:1)>TG(18:0_18:0_18:1)_and_TG(16:1_18:0_20:0)_and_TG(16:0_18:0_20:1)_M+NH3_feature2	1																					
+	CoA(12:3)	1																					
+	CoA(22:2)	1																					
+	DG(38:4)>DG(18:0_20:4_0:0)_M+NH3_feature6	1																					
+	LPC(16:0)>LPC(16:0/0:0)_and_LPC(0:0/16:0)_feature1and2	1																					
+	LPC(18:0)>LPC(18:0/0:0)_and_LPC(0:0/18:0)_M+H2CO2_feature1and2	1																					
+	LPC(18:0)>LPC(18:0/0:0)_feature2	1																					
+	LPC(20:4)	1																					
+	LPE(18:1)>LPE(18:1/0:0)_and_LPE(0:0/18:1)_feature1and2	1																					
+	N-methylaspartate	1																					
+	PC(31:1)_feature1	1																					
+	PC(38:2)_feature6	1																					
+	PC(O-38:4)_feature3	1																					
+	PE(36:1)_feature3	1																					
+	PE(36:5)_feature1	1																					
+	PE(36:5)_feature2	1																					
+	PE(38:4)>PE(18:0_20:4)_feature1	1																					
+	PE(38:6)_feature5	1																					
+	PE(40:7)_feature2	1																					
+	SiE(20:4)_M+NH3_feature3	1																					
+	TG(52:4)>TG(16:1_18:1_18:2)_M+NH3_feature2	1																					
+	TG(52:5)>TG(16:0_18:2_18:3)_feature5	1																					
+	TG(53:2)_M+NH3_feature3	1																					
+	TG(60:10)>TG(18:0_20:4_22:6)_M+NH3_feature1	1																					
+	ketoisovalerate	1																					
+	CE(20:2)_M+NH3_feature1	1																					
+	Cholesterol sulfate_feature1	1																					
+	LPC(18:2)_a_b	1																					
+	PG(38:4)>PG(16:0_22:4)_feature2	1																					
+	chenodeoxycholate	1																					
+	pseudouridine	1																					
+	retinoate	1																					
+	Car(22:2)_feature1	1																					
+	Cer(d41:0)>Cer(d18:0/23:0)_feature1	1																					
+	Cer(d42:1)_feature1	1																					
+	Cer(d42:2)>Cer(d18:1/24:1)_feature3	1																					
+	Cer(d43:1)>Cer(d18:1/25:0)_feature1	1																					
+	DG(40:7)>DG(18:1_22:6_0:0)_M+NH3_feature3	1																					
+	"GTInternalStandard_PE(18:1(d7))>PE(18:1(9z,d7)/0:0)_and_PE(0:0/18:1(9z,d7))_[iSTD]"	1																					
+	"GTInternalStandard_PG(33:1(d7))>PG(15:0/18:1(9z,d7))_[iSTD]"	1																					
+	HexCer(d42:0-OH)_M+H2CO2_feature2	1																					
+	LPC(16:1)_feature2	1																					
+	LPC(18:3/0:0)_and_LPC(0:0/18:3)_feature1and2	1																					
+	LPC(20:4)_a_b	1																					
+	LPC(22:0/0:0)_feature1and2	1																					
+	MG(18:1)_b	1																					
+	Oxaloacetate	1																					
+	PC(38:5)>PC(16:0_22:5)_M+H2CO2_feature2	1																					
+	PC(39:3)_feature1	1																					
+	PC(40:8)>PC(20:4_20:4)_M+H2CO2_feature1	1																					
+	PC(42:4)_feature2	1																					
+	PC(O-38:4)>PC(O-18:0/20:4)_M+H2CO2_feature6	1																					
+	PC(O-40:4)_feature3	1																					
+	PC(O-40:7)_feature1	1																					
+	PE(O-40:5)>PE(O-18:1/22:4)_feature5	1																					
+	PE(O-40:7)>PE(O-18:1/22:6)_and_PE(O-22:7/18:0)_feature6	1																					
+	SM(d40:1-OH)_feature2	1																					
+	TG(56:2)_M+NH3_feature1	1																					
+	TG(58:3)>TG(18:1_20:1_20:1)_and_TG(18:1_18:1_22:1)_M+NH3_feature2	1																					
+	oleamide_feature1	1																					
+	3-methylhistamine	1																					
+	Coenzyme Q9_feature1	1																					
+	Deoxycytidine	1																					
+	Sulfatide(d41:1)_feature1	1																					
+	TG(51:1)_M+NH3_feature1	1																					
+	maleate	1																					
+	phenyllactate	1																					
+	1-methylguanosine	1																					
+	C34:4 PC	1																					
+	CoA(12:1)	1																					
+	CoA(16:2)	1																					
+	CoA(2:0)	1																					
+	CoA(3:0-COOH)	1																					
+	DG(35:4)_feature1	1																					
+	"GTInternalStandard_CE(18:1(9z,d7))_2M_feature1"	1																					
+	PE(38:5)>PE(18:1_20:4)_feature7	1																					
+	TG(36:0)>TG(10:0_10:0_16:0)_M+NH3_feature2	1																					
+	TG(38:2)>TG(10:0_10:0_18:2)_and_TG(8:0_12:0_18:2)_feature2	1																					
+	TG(42:4)>TG(6:0_18:2_18:2)_feature1	1																					
+	TG(42:5)_M+NH3_feature1	1																					
+	TG(45:3)>TG(10:0_17:1_18:2)_and_TG(9:0_18:1_18:2)_M+NH3_feature1	1																					
+	TG(48:4)>TG(12:0_18:2_18:2)_feature2	1																					
+	TG(50:4)>TG(16:1_16:1_18:2)_feature2	1																					
+	TG(52:2)>TG(16:0_18:1_18:1)_and_TG(16:0_18:0_18:2)_M+NH3_feature7	1																					
+	TG(52:6)_feature4	1																					
+	TG(58:3)_M+NH3_feature1	1																					
+	Cer(d43:1)>Cer(d18:1/25:0)_feature2	1																					
+	Leu-Pro	1																					
+	N-acetyl-D-glucosamine-1-phosphate	1																					
+	PC(42:9)_feature3	1																					
+	PE(36:2)>PE(18:1/18:1)_feature2	1																					
+	PE(44:12)_feature1	1																					
+	TG(49:1)>TG(15:0_16:0_18:0)_and_TG(16:0_16:0_17:1)_and_TG(16:0_16:1_17:0)_feature1	1																					
+	TG(50:6)_M+NH3_feature1	1																					
+	TG(52:3)>TG(16:0_18:1_18:2)_M+NH3_feature1	1																					
+	TG(52:6)>TG(16:1_18:2_18:3)_and_TG(16:2_18:2_18:2)_feature3	1																					
+	ribose 5-phosphate	1																					
+	3-methoxytyramine	1																					
+	leu-gly	1																					
+	C16:1 LPE	1																					
+	2-phosphoglycerate+3-phosphoglycerate	1																					
+	CE(20:4)_feature1	1																					
+	CoA(21:0)	1																					
+	FA(14:0)	1																					
+	FA(20:0)	1																					
+	LPC(22:0)>LPC(22:0/0:0)_feature2	1																					
+	PC(34:2)	1																					
+	PC(35:4)>PC(15:0_20:4)_M+H2CO2_feature2	1																					
+	PC(36:4)_feature1	1																					
+	PC(38:2)_feature5	1																					
+	PC(38:4)_feature3	1																					
+	PC(38:5)>PC(16:0_22:5)_and_PC(18:1_20:4)_M+H2CO2_feature4	1																					
+	PC(39:5)_feature10	1																					
+	PC(O-38:6)_feature5	1																					
+	PC(P-38:5)>PC(P-18:1/20:4)_M+H2CO2_feature2	1																					
+	PE(38:6)_feature2	1																					
+	PE(39:4)>PE(19:0_20:4)_feature2	1																					
+	PE(O-39:7)>PE(O-21:7/18:0)_and_PE(O-17:1/22:6)_feature1	1																					
+	PS(40:6)>PS(18:0_22:6)_feature1	1																					
+	TG(51:2)_M+NH3_feature3	1																					
+	TG(52:3)>TG(16:0_18:1_18:2)_M+NH3_feature3	1																					
+	TG(53:4)>TG(17:0_18:2_18:2)_and_TG(17:1_18:1_18:2)_M+NH3_feature3	1																					
+	TG(54:6)>TG(16:0_16:0_22:6)_M+NH6_feature6	1																					
+	TG(55:5)>TG(18:2_18:2_19:1)_and_TG(18:1_18:2_19:2)_M+NH3_feature2	1																					
+	TG(56:3)>TG(18:1_18:1_20:1)_M+NH3_feature3	1																					
+	TG(56:4)>TG(18:1_18:2_20:1)_and_TG(18:1_18:1_20:2)_M+NH3_feature2	1																					
+	TG(58:3)>TG(18:1_20:1_20:1)_and_TG(18:1_18:1_22:1)_M+NH3_feature3	1																					
+	TG(58:6)_M+NH3_feature6	1																					
+	anthranilic acid-15N	1																					
+	aspartate-13C4	1																					
+	glutamate-13C5	1																					
+	indoleacrylate	1																					
+	isoleucine-13C6+leucine-13C6	1																					
+	leucine-13C6	1																					
+	phosphoenolpyruvate	1																					
+	valine-13C5	1																					
+	Glu-Phe	1																					
+	PA(34:1)_feature2	1																					
+	SM(d43:1)_feature1and2	1																					
+	3-methylxanthine	1																					
+	9-HODE	1																					
+	Ala-Leu	1																					
+	CE(22:6)_feature1	1																					
+	EA(18:0)_feature1	1																					
+	LPC(18:2)>LPC(0:0/18:2)_feature1	1																					
+	PC(42:5)_feature4	1																					
+	PC(O-36:4)>PC(O-16:0/20:4)_M+H2CO2_feature4	1																					
+	PC(O-38:5)>PC(O-18:1/20:4)_M+H2CO2_feature5	1																					
+	PE(42:10)_feature1	1																					
+	PE(O-36:4)>PE(O-18:3/18:1)_feature6	1																					
+	PE(O-39:5)>PE(O-16:1_20:4)_feature4	1																					
+	Sebacic acid	1																					
+	Sulfatide(d41:1-OH)_feature1	1																					
+	TG(58:4)_M+NH3_feature4	1																					
+	gamma-Glutamylisoleucine	1																					
+	CE(18:2)_feature1	1																					
+	Cer(d40:2)_M+H2CO2_feature1	1																					
+	Cer(d44:2)_M+H2CO2_feature2	1																					
+	CoA(10:1)	1																					
+	CoA(11:2)	1																					
+	CoA(19:2)	1																					
+	DG(36:4)>DG18:2_18:2_0:0)_feature1	1																					
+	LPC(15:0)>LPC(15:0/0:0)_and_LPC(0:0/15:0)_feature1and2	1																					
+	LPC(18:1)>LPC(18:1/0:0)_and_LPC(0:0/18:1)_M+H2CO2_feature1and2	1																					
+	LPC(22:0)>LPC(22:0/0:0)_and_LPC(0:0/22:0)_feature1and2	1																					
+	PC(36:3)>PC(16:0_20:3)_M+H2CO2_feature3	1																					
+	PC(36:6)_feature1	1																					
+	PC(37:6)_feature5	1																					
+	PC(39:4)>PC(19:0_20:4)_M+H2CO2_feature4	1																					
+	PC(44:10)_feature1	1																					
+	PC(O-38:4)_feature1	1																					
+	PE(32:1)>PE(16:0_16:1)_feature1	1																					
+	PE(34:3)>PE(16:0_18:3)_feature2	1																					
+	PE(O-40:6)>PE(O-18:1/22:5)_feature3	1																					
+	PI(34:2)_feature1	1																					
+	SM(d42:0)_feature2	1																					
+	Ser-Leu	1																					
+	TG(56:8)>TG(18:2_18:2_20:4)_M+NH3_feature1	1																					
+	Tauroursodeoxycholic acid	1																					
+	guanidinosuccinate	1																					
+	DG(36:2)>DG(18:0_18:2_0:0)_feature4	1																					
+	DG(36:4)>DG(16:0_20:4_0:0)_M+NH3_feature2	1																					
+	EA(15:0)_feature1	1																					
+	Fumaric acid	1																					
+	LPC(18:1)>LPC(18:1/0:0)_M+H2CO2_feature2	1																					
+	LPC(18:2)>LPC(18:2/0:0)_and_LPC(0:0/18:2)_M+H2CO2_feature1and2	1																					
+	LPC(18:2)_b	1																					
+	PC(O-36:1)_feature2	1																					
+	PE(O-35:2)>PE(O-16:1/19:1)_and_PE(O-35:2)>PE(O-17:1/18:1)_feature3	1																					
+	PG(36:4)>PG(18:2_18:2)_feature1	1																					
+	thiamine	1																					
+	3-methoxytyrosine	1																					
+	"5-henicosylbenzene-1,3-diol_feature1"	1																					
+	C20:3 LPC A	1																					
+	CE(16:1)_M+NH3_feature1	1																					
+	Car(20:1-OH)_feature1	1																					
+	Cer(d36:1)_M+H2CO2_feature1	1																					
+	Cer(d42:2)_feature1	1																					
+	"GTInternalStandard_CE(18:1(9z,d7))_M+NH3_feature1"	1																					
+	"GTInternalStandard_PC(33:1(d7))>PC(15:0/18:1(9z,d7))_[iSTD]_M+H2CO2"	1																					
+	"GTInternalStandard_PS(33:1(d7))>PS(15:0/18:1(9z,d7))_[iSTD]"	1																					
+	"GTInternalStandard_TG(48:1(d7))>TG(15:0/18:1(9z,d7)/15:0)_feature1"	1																					
+	LPC(14:0)_feature1and2	1																					
+	LPC(14:0/0:0)_and_LPC(0:0/14:0)_feature1and2	1																					
+	LPC(20:3)_feature2	1																					
+	LPC(22:6/0:0)_and_LPC(0:0/22:6)_feature1and2	1																					
+	LPE(18:0)_feature2	1																					
+	LPE(20:4)_feature2	1																					
+	PC(35:0)_feature1	1																					
+	PC(36:0)>PC(18:0/18:0)_M+H2CO2_feature2	1																					
+	PC(40:6)>PC(18:0_22:6)_M+H2CO2_feature3	1																					
+	PC(O-32:1)_feature3	1																					
+	PE(O-36:3)_feature2	1																					
+	SM(d34:0-OH)_feature1	1																					
+	TG(55:7)_M+NH3_feature1	1																					
+	TG(56:2)_M+NH3_feature2	1																					
+	TG(56:4)>TG(18:1_18:2_20:1)_and_TG(18:1_18:1_20:2)_M+NH3_feature3	1																					
+	TG(56:6)>TG(18:1_18:1_20:4)_and_TG(16:0_18:1_22:5)_and_TG(18:1_18:2_20:3)_M+NH3_feature2	1																					
+	TG(56:8)_M+NH3_feature5	1																					
+	TG(58:2)_M+NH3_feature2	1																					
+	TG(58:4)_M+NH3_feature3	1																					
+	corticosterone_feature1	1																					
+	octadecanamine_feature1	1																					
+	3-(1-pyrazolyl)-alanine_feature1	1																					
+	Cer(d36:2)_M+H2CO2_feature1	1																					
+	Cer(d42:2)_M+H2CO2_feature4	1																					
+	"GTInternalStandard_PC(33:1(d7))>PC(15:0/18:1(9z,d7))_M+H2CO2_feature1"	1																					
+	HexCer(d43:1-OH)>HexCer(d18:1/25:0-OH)_feature1	1																					
+	PC(34:0)_feature2	1																					
+	PE(38:3)>PE(18:0_20:3)_feature2	1																					
+	TG(40:2)>TG(4:0_18:1_18:1)_M+NH3_feature2	1																					
+	TG(40:3)>TG(4:0_18:1_18:2)_M+NH3_feature2	1																					
+	TG(46:0)>TG(14:0_16:0_16:0)_and_TG(12:0_16:0_18:0)_M+NH3_feature1	1																					
+	TG(53:5)>TG(17:1_18:2_18:2)_M+NH3_feature2	1																					
+	TG(56:8)>TG(16:0_18:2_22:6)_M+NH3_feature4	1																					
+	deoxycholate	1																					
+	arachidoyl ethanolamide	1																					
+	C18:1 LPC A	1																					
+	oleoyl glycine	1																					
+	AICAR	1																					
+	Cer(d44:2)>Cer(d18:1/26:1)_feature2	1																					
+	CoA(18:1)	1																					
+	CoA(20:1)	1																					
+	Deoxycholic acid	1																					
+	NaMN	1																					
+	PC(36:2)_M+Na_feature2	1																					
+	PE(O-36:5)>PE(O-16:1/20:4)_feature2	1																					
+	PE(O-37:5)>PE(O-17:1/20:4)_feature2	1																					
+	PE(O-38:4)_feature4	1																					
+	SM(d40:2)_feature2	1																					
+	SM(d41:2)_feature3	1																					
+	TG(38:1)>TG(10:0_10:0_18:1)_and_TG(10:0_12:0_16:1)_and_TG(8:0_12:0_18:1)_M+NH3_feature1	1																					
+	TG(41:3)>TG(5:0_18:1_18:2)_M+NH3_feature1	1																					
+	TG(42:1)_feature1	1																					
+	TG(42:4)_feature2	1																					
+	TG(42:5)_M+NH3_feature2	1																					
+	TG(46:4)>TG(10:0_18:2_18:2)_feature1	1																					
+	TG(49:3)_feature2	1																					
+	TG(50:5)_M+NH3_feature1	1																					
+	TG(50:6)_feature2	1																					
+	TG(50:8)>TG(10:0_18:2_22:6)_and_TG(50:8)>TG(10:0_20:4_20:4)_M+NH3_feature1	1																					
+	TG(52:5)>TG(16:1_18:2_18:2)_feature3	1																					
+	TG(53:1)>TG(16:0_18:1_19:0)_and_TG(17:0_18:0_18:1)_M+NH3_feature4	1																					
+	TG(57:3)_M+NH3_feature2	1																					
+	Urocanic acid	1																					
+	C18 carnitine	1																					
+	C18:1 carnitine	1																					
+	2-piperidinone	1																					
+	3-hydroxybutyrate	1																					
+	3-methyl-2-oxovalerate	1																					
+	ADMA/SDMA	1																					
+	DG(38:4)>DG(16:0_22:4_0:0)_feature4	1																					
+	HexCer(d34:1)>HexCer(d18:1/16:0)_feature1	1																					
+	PA(34:1)_M+NH3_feature2	1																					
+	TG(36:1)>TG(4:0_16:0_16:1)_and_TG(2:0_16:0_18:1)_M+NH3_feature1	1																					
+	TG(44:2)>TG(10:0_16:1_18:1)_feature2	1																					
+	TG(44:2)_M+NH3_feature1	1																					
+	TG(46:2)_feature2	1																					
+	TG(47:3)_feature2	1																					
+	TG(50:1)_M+NH3_feature2	1																					
+	TG(51:3)>TG(15:0_18:1_18:2)_and_TG(16:0_17:1_18:2)_and_TG(16:1_17:1_18:1)_M+NH3_feature2	1																					
+	TG(53:4)>TG(17:0_18:2_18:2)_and_TG(17:1_18:1_18:2)_feature2	1																					
+	UDP-glucuronate	1																					
+	ribothymidine	1																					
+	CL(72:8) M-2H_feature1	1																					
+	Cer(d41:2)_M+H2CO2_feature2	1																					
+	FA(26:0)	1																					
+	LPC(15:0)_rp_a	1																					
+	PC(37:0)_feature2	1																					
+	PC(37:0)_feature5	1																					
+	PC(38:1)_feature1	1																					
+	PC(38:2)>PC(18:0_20:2)_M+H2CO2_feature4	1																					
+	PC(40:8)>PC(20:4_20:4) _M+H2CO2_feature1	1																					
+	PC(42:5)_feature3	1																					
+	PC(42:6)_feature4	1																					
+	PE(38:4)>PE(16:0_22:4)_feature4	1																					
+	PE(38:5)_feature1	1																					
+	PE(38:6)_feature1	1																					
+	PE(O-40:4)>PE(O-18:0/22:4)_feature3	1																					
+	PS(38:3)_feature2	1																					
+	TG(53:4)>TG(17:0_18:2_18:2)_and_TG(17:1_18:1_18:2)_M+NH3_feature2	1																					
+	TG(53:5)>TG(17:1_18:2_18:2)_M+NH3_feature1	1																					
+	TG(55:4)>TG(18:1_18:2_19:1)_and_TG(18:2_18:2_19:0)_and_TG(18:1_18:1_19:2)_M+NH3_feature2	1																					
+	TG(56:5)>TG(16:0_18:1_22:4)_M+NH3_feature1	1																					
+	TG(56:5)>TG(16:0_18:1_22:4)_M+NH3_feature3	1																					
+	TG(56:7)_M+NH3_feature2	1																					
+	TG(58:6)>TG(18:0_18:0_22:6)_M+NH3_feature7	1																					
+	gamma-Glutamylleucine	1																					
+	gibberellic acid	1																					
+	monoethylhexyl phthalate	1																					
+	Cer(d18:1/18:0)	1																					
+	Hex2Cer(d42:1)>Hex2Cer(d18:1/24:0)_feature1	1																					
+	HexCer(d18:1/25:1-OH)	1																					
+	LPC(20:3)_a_b	1																					
+	N-nitroso-pyrrolidine	1																					
+	PC(34:1)	1																					
+	PC(34:3)_feature4	1																					
+	glycocholate	1																					
+	Aminoisobutyric acid	1																					
+	IMP	1																					
+	LPC(16:0)>LPC(16:0/0:0)_and_LPC(0:0/16:0)_2M+H2CO2_feature1and2	1																					
+	LPE(18:2)	1																					
+	PC(35:1)>PC(17:0_18:1) M+ H2CO2_feature1	1																					
+	PC(38:5)>PC(16:0_22:5)_M+H2CO2_feature5	1																					
+	PC(39:6)_feature1	1																					
+	PC(40:0)_feature1	1																					
+	PC(42:2)_feature1	1																					
+	PE(38:1)>PE(18:1_20:0)_and_PE(18:0_20:1)_feature2	1																					
+	PE(O-34:1)>PE(O-18:1_16:0)_feature1	1																					
+	PS(38:3)>PS(18:0_20:3)_feature3	1																					
+	Sulfatide(d40:1-OH)_feature1	1																					
+	beta-muricholate	1																					
+	C9 carnitine	1																					
+	CE(18:1)_feature1	1																					
+	Car(13:1)_feature1	1																					
+	Car(21:2)_feature1	1																					
+	Cer(d42:2)>Cer(d18:2/24:0)_feature4	1																					
+	Cer(t42:1)>Cer(t18:0/24:1)_feature1	1																					
+	CoA(14:2)	1																					
+	CoA(19:0)	1																					
+	CoA(19:1)	1																					
+	"FA(8:0, 2-NH2)"	1																					
+	LPE(20:4)>LPE(20:4/0:0)_and_LPE(0:0/20:4)_feature1and2	1																					
+	PC(15:0)PC(15:0_0:0)	1																					
+	PC(32:2)>PC(14:0_18:2) M+ H2CO2_feature3	1																					
+	PC(32:3)_feature2	1																					
+	PC(33:0)_feature2	1																					
+	PC(33:3)_feature3	1																					
+	PC(36:0)_feature3	1																					
+	PC(36:3)_feature5	1																					
+	PC(37:2)>PC(18:2_19:0)_M+H2CO2_feature1	1																					
+	PC(38:5)_feature5	1																					
+	PC(39:6)_feature5	1																					
+	PC(41:6)_feature1	1																					
+	PC(42:4)_feature3	1																					
+	PC(42:7)_feature1	1																					
+	PE(36:2)>PE(18:2_18:0)_feature1	1																					
+	PE(37:4)>PE(17:0_20:4)_feature2	1																					
+	PE(38:4)>PE(18:0_20:4)_feature4	1																					
+	PE(42:8)>PE(20:4_22:4)_feature5	1																					
+	cis-aconitate	1																					
+	hexose	1																					
+	Cer(d40:1)_M+H2CO2_feature2	1																					
+	LPC(26:0)>LPC(26:0/0:0)_and_LPC(0:0/26:0)_feature1and2	1																					
+	PC(41:1)_feature1	1																					
+	PC(42:6)_feature3	1																					
+	PC(O-36:5)_feature2	1																					
+	PE(40:2)>PE(18:1_22:1)_feature1	1																					
+	PG(36:4)>PG(18:2_18:2)_feature2	1																					
+	PG(40:6)>PG(18:0_22:6)_feature2	1																					
+	PI(36:2)>PI(18:1_18:1)_feature1	1																					
+	SM(d41:2)_M+H2CO2_feature2and3	1																					
+	TG(58:5)_M+NH3_feature5	1																					
+	TG(58:8)_M+NH3_feature2	1																					
+	sphingosine (C18)	1																					
+	sphingosine (C18)_feature1	1																					
+	CE(18:1)_M+NH3_feature1	1																					
+	Car(17:0)_feature1	1																					
+	DMGV	1																					
+	"GTInternalStandard_PE(33:1(d7))>PE(15:0/18:1(9z,d7))_[iSTD]"	1																					
+	"GTInternalStandard_SM(d36:2(d9))>SM(d18:1/18:1(9z,d9))_[iSTD]_M+H2CO2"	1																					
+	HexCer(d42:1)>HexCer(d18:1/24:0)_feature2	1																					
+	LPC(16:0/0:0)_feature2	1																					
+	LPC(20:4/0:0)_feature2	1																					
+	LPC(22:1/0:0)_and_LPC(0:0/22:1)_feature1and2	1																					
+	LPC(22:4)_feature1and2	1																					
+	LPC(22:6)_feature2	1																					
+	LPC(24:0/0:0)_feature2	1																					
+	LPE(16:0/0:0)_feature1and2	1																					
+	PC(33:3)_feature2	1																					
+	PC(36:0)_feature2	1																					
+	PC(44:5)_feature1	1																					
+	PE(O-38:7)>PE(O-16:1/22:6)_feature2	1																					
+	SM(d40:0-OH)_M+H2CO2_feature1	1																					
+	SiE(18:2)_M+NH3_feature1	1																					
+	TG(55:1)>TG(18:0_18:1_19:0)_and_TG(16:0_18:1_21:0)_M+NH3_feature1	1																					
+	TG(55:3)_M+NH3_feature3	1																					
+	TG(58:1)>TG(16:0_18:1_24:0)_and_TG(16:0_16:0_26:1)_and_TG(18:0_18:1_22:0)_M+NH3_feature2	1																					
+	TG(58:2)_M+NH3_feature1	1																					
+	biotin	1																					
+	taurocholate	1																					
+	thyroxine	1																					
+	Acetyl-CoA	1																					
+	FA(18:1)	1																					
+	LPC(15:0)	1																					
+	PC(37:6)_feature6	1																					
+	PC(39:5)_feature7	1																					
+	PE(36:5)_feature5	1																					
+	PE(40:6)_feature2	1																					
+	PI(40:4)>PI(18:0_22:4)_feature1	1																					
+	PS(38:6)>PS(16:0_22:6)_feature1	1																					
+	PS(40:6)_feature3	1																					
+	TG(36:1)>TG(4:0_16:0_16:1)_and_TG(2:0_16:0_18:1)_M+NH3_feature3	1																					
+	TG(38:1)>TG(4:0_16:0_18:1)_M+NH3_feature2	1																					
+	TG(40:1)_M+NH3_feature3	1																					
+	TG(46:2)_M+NH3_feature2	1																					
+	TG(52:5)>TG(16:1_18:2_18:2)_M+NH3_feature4	1																					
+	TG(54:4)>TG(18:1_18:1_18:2)_and_TG(18:0_18:2_18:2)_M+NH3_feature4	1																					
+	TG(54:6)>TG(18:2/18:2/18:2)_M+NH3_feature3	1																					
+	C18:1 LPC B	1																					
+	agmatine	1																					
+	homocitrulline	1																					
+	"14,15-EpETrE"	1																					
+	Cer(d43:1)>Cer(d18:1/25:0)_feature1and2	1																					
+	CoA(10:0)	1																					
+	DG(40:4)>DG(18:0_22:4_0:0)_M+NH3_feature2	1																					
+	HexCer(d40:1)>HexCer(d18:1/22:0)_feature3	1																					
+	LPC(20:0/0:0)_and_LPC(0:0/20:0)_feature1and2	1																					
+	LPC(20:1)>LPC(20:1/0:0)_and_LPC(0:0/20:1)_feature1and2	1																					
+	PC(32:0)_feature2	1																					
+	PC(35:3)_feature3	1																					
+	PC(O-32:0)	1																					
+	PC(O-36:2)_feature1	1																					
+	PC(O-38:5)>PC(O-18:1/20:4)_M+H2CO2_feature2	1																					
+	PE(O-34:1)_feature1	1																					
+	PE(O-37:5)>PE(O-17:1/20:4)_feature1	1																					
+	PRPP	1																					
+	PS(40:6)_feature2	1																					
+	TG(30:0)>TG(10:0/10:0/10:0)_and_TG(8:0_10:0_12:0)_M+NH3_feature1	1																					
+	TG(34:0)>TG(10:0_10:0_14:0)_and_TG(10:0_12:0_12:0)_M+NH3_feature1	1																					
+	TG(40:2)>TG(4:0_18:1_18:1)_feature2	1																					
+	TG(42:3)_M+NH3_feature1	1																					
+	TG(44:2)>TG(10:0_16:1_18:1)_M+NH3_feature1	1																					
+	TG(46:5)>TG(10:0_18:2_18:3)_feature2	1																					
+	TG(46:6)>TG(8:0_18:2_20:4)_M+NH3_feature2	1																					
+	TG(47:3)_M+NH3_feature2	1																					
+	TG(48:2)>TG(14:0_16:0_18:2)_and_TG(14:0_16:1_18:1)_feature3	1																					
+	TG(48:6)>TG(10:0_18:2_20:4)_M+NH3_feature1	1																					
+	TG(52:1)_M+NH3_feature3	1																					
+	TG(54:4)>TG(18:1_18:1_18:2)_M+NH3_feature4	1																					
+	TG(54:4)>TG(18:1_18:1_18:2)_M+NH3_feature5	1																					
+	TG(54:4)>TG(18:1_18:1_18:2)_and_TG(18:0_18:2_18:2)_M+NH3_feature3	1																					
+	TG(58:4)_feature6	1																					
+	dATP	1																					
