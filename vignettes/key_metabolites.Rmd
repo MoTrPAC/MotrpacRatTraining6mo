@@ -3,7 +3,7 @@ title: "Key metabolites"
 output: 
   rmarkdown::html_document:
     toc: true
-    code_folding: hide 
+    code_folding: hide
     toc_float:
       collapsed: false
       smooth_scroll: false
@@ -20,8 +20,7 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  fig.align = 'center'
+  comment = "#>"
 )
 ```
 
@@ -39,7 +38,7 @@ knitr::opts_chunk$set(
 
 ## Motivation 
 
-This report was motivated by this reviewer comment:
+This report was motivated by this reviewer comment regarding the [preprint](https://www.biorxiv.org/content/10.1101/2022.09.21.508770v2):
 
 **Reviewer 1:** Given the extensive collection of metabolomics data (targeted and untargeted) for so many tissues and temporal timepoints (Figure 1C) it will be interesting to explore the changes of several key cellular metabolites in addition to the KEGG pathways. For example, it will be interesting to see sex- and time-specific changes in the plasma, muscles, heart of such metabolites as glucose, pyruvate, lactate, acetate, perhaps key intermediates of glycolysis and the TCA cycle. If the data is available, it will be also interesting to characterize the changes in the energy and redox ratios, i.e. ATP/ADP, NADH/NAD+ (or individual concentrations, such as ATP). Given the central roles of these metabolites in cellular physiology/health and multiple changes in the corresponding metabolic pathways (Figure 7), it will be good to present and discuss the observed metabolic changes.
 
@@ -47,12 +46,11 @@ This report was motivated by this reviewer comment:
 library(MotrpacRatTraining6mo)
 library(data.table)
 library(ggplot2)
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
 ## Metabolites manually selected for biological relevance 
 
-First, let's look at metabolites selected for physiological relevance in the plasma, liver, and skeletal muscle. 
+First, let's look at metabolites selected for physiological relevance in the plasma, liver, and skeletal muscle. Heart is excluded because it is the focus of a companion paper.
 Just for this section, **we will plot the metabolites whether or not they are training-regulated**. 
 For each metabolite, the trajectory of the normalized sample-level data is shown on the left, 
 and the log fold-changes from the timewise differential analysis are shown on the right. 
@@ -646,5 +644,9 @@ for(f in featureIDs){
                      breaks=c('control','1w','2w','4w','8w'))
   print(g)
 }
+```
+
+```{r}
+sessionInfo()
 ```
 
