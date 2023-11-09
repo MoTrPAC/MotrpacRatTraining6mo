@@ -66,7 +66,7 @@ Suggests:
     MotrpacBicQC (>= 0.6.9),
     multcomp,
     parallel,
-    RCy3,
+    RCy3 (>= 2.23.2),
     repfdr,
     RMariaDB,
     rmarkdown,
