@@ -66,7 +66,7 @@ Suggests:
     MotrpacBicQC (>= 0.6.9),
     multcomp,
     parallel,
-    RCy3 (>= 2.22.1),
+    RCy3 (>= 2.23.2),
     repfdr,
     RMariaDB,
     rmarkdown,
@@ -89,7 +89,8 @@ Remotes:
     MoTrPAC/MotrpacRatTraining6moData,
     MoTrPAC/MotrpacBicQC,
     YuLab-SMU/ggtree,
-    nicolerg/ssGSEA2
+    nicolerg/ssGSEA2,
+    cytoscape/RCy3
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
