@@ -24,7 +24,7 @@ jobs:
           
       - name: install specific version of RCy3
         run: |
-          BiocManager::install("RCy3", version = "3.18")
+          Rscript -e "BiocManager::install('RCy3', version = '3.18')"
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
