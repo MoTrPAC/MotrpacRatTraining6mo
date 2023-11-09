@@ -22,6 +22,10 @@ jobs:
         with:
           use-public-rspm: true
           
+      - name: install BiocManager
+        run: |
+          Rscript -e "install.packages('BiocManager')"
+          
       - name: install specific version of RCy3
         run: |
           Rscript -e "BiocManager::install('RCy3', version = '3.18')"
