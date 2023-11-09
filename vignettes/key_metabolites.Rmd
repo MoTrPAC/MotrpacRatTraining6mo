@@ -11,7 +11,7 @@ output:
     highlight: tango
 
 vignette: >
-  %\VignetteIndexEntry{Tutorial for MotrpacRatTraining6mo R package}
+  %\VignetteIndexEntry{Key metabolites}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
   %\usepackage[utf8]{inputenc}

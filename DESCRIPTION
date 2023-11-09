@@ -36,6 +36,7 @@ Imports:
     magrittr,
     metap,
     methods,
+    plotrix,
     purrr,
     r2r,
     RColorBrewer,
@@ -90,7 +91,8 @@ Remotes:
     MoTrPAC/MotrpacBicQC,
     YuLab-SMU/ggtree,
     nicolerg/ssGSEA2,
-    cytoscape/RCy3
+    cytoscape/RCy3,
+    plotrix/plotrix
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
