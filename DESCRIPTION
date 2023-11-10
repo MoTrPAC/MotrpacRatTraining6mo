@@ -2,7 +2,7 @@ Type: Package
 Package: MotrpacRatTraining6mo
 Title: Analysis of the MoTrPAC endurance exercise training data in
     6-month-old rats
-Version: 1.6.4
+Version: 1.6.5
 Authors@R: c(
     person("Nicole", "Gay", , "nicole.r.gay@gmail.com", role = c("cre", "aut")),
     person("David", "Amar", , "ddam.am@gmail.com", role = "aut"),
@@ -66,7 +66,8 @@ Suggests:
     MotrpacBicQC (>= 0.6.9),
     multcomp,
     parallel,
-    RCy3,
+    plotrix,
+    RCy3 (>= 2.23.2),
     repfdr,
     RMariaDB,
     rmarkdown,
@@ -89,12 +90,14 @@ Remotes:
     MoTrPAC/MotrpacRatTraining6moData,
     MoTrPAC/MotrpacBicQC,
     YuLab-SMU/ggtree,
-    nicolerg/ssGSEA2
+    nicolerg/ssGSEA2,
+    cytoscape/RCy3,
+    plotrix/plotrix
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Depends: 
-    MotrpacRatTraining6moData (>= 1.8.0),
+    MotrpacRatTraining6moData (>= 2.0.0),
     R (>= 2.10)
 LazyData: true
