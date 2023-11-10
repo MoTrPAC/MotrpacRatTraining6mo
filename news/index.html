@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,6 +53,12 @@
       <small>Source: <a href="https://github.com/MoTrPAC/MotrpacRatTraining6mo/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.6.5" id="motrpacrattraining6mo-165-2023-11-08">MotrpacRatTraining6mo 1.6.5 (2023-11-08)<a class="anchor" aria-label="anchor" href="#motrpacrattraining6mo-165-2023-11-08"></a></h2>
+<ul><li>Point to development version of <code>RCy3</code> from GitHub to avoid <code>R-CMD check</code> error <code>RCy3: Can't install dependency uchardet</code>.</li>
+<li>Install <code>plotrix</code> from GitHub instead of CRAN to avoid <code>R-CMD check</code> warning <code>Requires (indirectly) orphaned package: ‘plotrix’</code>. CRAN has marked <code>plotrix</code> as orphaned. <code>plotrix</code> is a dependency for <code>mutoss</code>, which is a dependency for <code>metap</code>.</li>
+<li>Increment required <code>MotrpacRatTraining6moData</code> version.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.6.4" id="motrpacrattraining6mo-164-2023-06-02">MotrpacRatTraining6mo 1.6.4 (2023-06-02)<a class="anchor" aria-label="anchor" href="#motrpacrattraining6mo-164-2023-06-02"></a></h2>
 <ul><li>Bug fix in <code><a href="../reference/transcript_timewise_da.html">transcript_timewise_da()</a></code> to run with limited contrasts when <code>tissue="VENACV"</code>.</li>

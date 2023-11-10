@@ -12,7 +12,7 @@ Wrapper for gprofiler2::gost()."><!-- mathjax --><script src="https://cdnjs.clou
     
     <a class="navbar-brand me-2" href="../index.html">MotrpacRatTraining6mo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -190,54 +190,47 @@ computed from the <code><a href="https://rdrr.io/pkg/gprofiler2/man/gost.html" c
 <span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">gene_pathway_enrichment</span><span class="op">(</span><span class="va">input</span>, <span class="va">background</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     query significant term_size query_size intersection_size  precision</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 query_1        TRUE        18        266                 8 0.03007519</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 query_1        TRUE        17        266                 8 0.03007519</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 query_1        TRUE       126        266                15 0.05639098</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 query_1        TRUE        18        266                 6 0.02255639</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 query_1        TRUE        70        266                10 0.03759398</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 query_1        TRUE        44        266                 8 0.03007519</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      recall            term_id source</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4444444         KEGG:00100   KEGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.4705882           WP:WP632     WP</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.1190476  REAC:R-RNO-211859   REAC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.3333333  REAC:R-RNO-191273   REAC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.1428571 REAC:R-RNO-8957322   REAC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.1818182          WP:WP2562     WP</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                    term_name effective_domain_size source_order</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                       Steroid biosynthesis                 13653           13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                     Cholesterol metabolism                 13653           60</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                      Biological oxidations                 13653          169</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                   Cholesterol biosynthesis                 13653          272</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                     Metabolism of steroids                 13653          816</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 Relationship between glutathione and NADPH                 13653          128</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              parents</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         KEGG:00000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          WP:000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 REAC:R-RNO-1430728</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 REAC:R-RNO-8957322</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  REAC:R-RNO-556833</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6          WP:000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                               evidence_codes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                    KEGG,KEGG,KEGG,KEGG,KEGG,KEGG,KEGG,KEGG</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                    WP,WP,WP,WP,WP,WP,WP,WP</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                              REAC,REAC,REAC,REAC,REAC,REAC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                          REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                                                    WP,WP,WP,WP,WP,WP,WP,WP</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                              intersection</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                         Hsd17b7,Cyp51,Sqle,Dhcr7,Tm7sf2,Fdft1,Msmo1,Lss</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                               Idi1,Apoc2,Dhcr7,Fdft1,Msmo1,Fdps,Mvk,Lss</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 Tpst1,Ugt2a3,Nnmt,Cyp51,Ugp2,Cyb5r3,Cyp7b1,Glyat,Gclm,Slc26a2,Hsp90ab1,Cyp2a1,Cyp2a2,Cyp4f39,AC123346.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                                                     Cyp51,Sqle,Dhcr7,Tm7sf2,Fdft1,Msmo1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                      Cyp51,Serpina6,Sqle,Cyp7b1,Slc27a5,Stard4,Dhcr7,Tm7sf2,Fdft1,Msmo1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                                                                Ltc4s,Ugp2,Txn1,Gclm,Ptgr1,Fas,Ftl1,G6pd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 query_1        TRUE        18        253                 8 0.03162055</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 query_1        TRUE        17        253                 8 0.03162055</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 query_1        TRUE        17        253                 6 0.02371542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 query_1        TRUE        62        253                 9 0.03557312</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 query_1        TRUE        13        253                 5 0.01976285</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 query_1        TRUE       104        253                11 0.04347826</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      recall            term_id source                      term_name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4444444         KEGG:00100   KEGG           Steroid biosynthesis</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.4705882           WP:WP632     WP         Cholesterol metabolism</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.3529412  REAC:R-RNO-191273   REAC       Cholesterol biosynthesis</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.1451613 REAC:R-RNO-8957322   REAC         Metabolism of steroids</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.3846154 REAC:R-RNO-3371571   REAC HSF1-dependent transactivation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.1057692  REAC:R-RNO-211859   REAC          Biological oxidations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   effective_domain_size source_order            parents</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                 13525           13         KEGG:00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                 13525           60          WP:000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                 13525          273 REAC:R-RNO-8957322</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                 13525          819  REAC:R-RNO-556833</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                 13525          621 REAC:R-RNO-3371556</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                 13525          170 REAC:R-RNO-1430728</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                           evidence_codes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                KEGG,KEGG,KEGG,KEGG,KEGG,KEGG,KEGG,KEGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                WP,WP,WP,WP,WP,WP,WP,WP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                          REAC,REAC,REAC,REAC,REAC,REAC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4           REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                               REAC,REAC,REAC,REAC,REAC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC,REAC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                              intersection</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                         Hsd17b7,Cyp51,Sqle,Dhcr7,Tm7sf2,Fdft1,Msmo1,Lss</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                               Idi1,Apoc2,Dhcr7,Fdft1,Msmo1,Fdps,Mvk,Lss</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                     Cyp51,Sqle,Dhcr7,Tm7sf2,Fdft1,Msmo1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4             Cyp51,Serpina6,Sqle,Slc27a5,Stard4,Dhcr7,Tm7sf2,Fdft1,Msmo1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                        Fkbp4,Cryab,Hsp90ab1,Hspb8,Hspa8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 Tpst1,Nnmt,Cyp51,Ugp2,Cyb5r3,Glyat,Gclm,Slc26a2,Hsp90ab1,Cyp2a1,Cyp4f39</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   gost_adj_p_value computed_p_value BH_adj_p_value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     8.913588e-08     6.909758e-10   2.152390e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     2.576828e-08     3.904285e-10   2.152390e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     4.970778e-06     2.224062e-08   4.618635e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     1.054690e-04     7.883838e-07   1.175967e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     1.054690e-04     9.437938e-07   1.175967e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6     3.968764e-05     1.803984e-06   1.873137e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1.284439e-07     4.997818e-10   1.526833e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1.806063e-08     2.821974e-10   1.526833e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     9.186971e-05     4.204563e-07   8.563294e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     2.738559e-04     2.078412e-06   3.063176e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5     2.738559e-04     2.506691e-06   3.063176e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6     3.319231e-04     3.797747e-06   3.867372e-04</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
