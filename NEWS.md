@@ -3,6 +3,7 @@
 * Point to development version of `RCy3` from GitHub to avoid `R-CMD check` error `RCy3: Can't install dependency uchardet`. 
 * Install `plotrix` from GitHub instead of CRAN to avoid `R-CMD check` warning `Requires (indirectly) orphaned package: ‘plotrix’`. 
   CRAN has marked `plotrix` as orphaned. `plotrix` is a dependency for `mutoss`, which is a dependency for `metap`.
+* Increment required `MotrpacRatTraining6moData` version.
 
 # MotrpacRatTraining6mo 1.6.4 (2023-06-02)
 
