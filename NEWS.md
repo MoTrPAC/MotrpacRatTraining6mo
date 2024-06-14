@@ -1,3 +1,7 @@
+# MotrpacRatTraining6mo 1.6.6 (2024-06-14)
+
+* Fix bug due to backwards incompatibility between `ggraph` 2.1.0 and 2.2.0. Require `ggraph >= 2.2.0`.
+
 # MotrpacRatTraining6mo 1.6.5 (2023-11-08)
 
 * Point to development version of `RCy3` from GitHub to avoid `R-CMD check` error `RCy3: Can't install dependency uchardet`. 

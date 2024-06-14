@@ -922,7 +922,7 @@ get_tree_plot_for_tissue <- function(
     d_g_our_layout[grepl(n,d_g_our_layout$name),"y"] = l_y_lim[1] + (j-1)*yjump
   }
   # make sure that the 0w node is in the same line as of the no response
-  d_g_our_layout[d_g_our_layout$name == "0w","y"] = d_g_our_layout[grepl("F0_M0",d_g_our_layout$name),"y"][1]
+  d_g_our_layout[d_g_our_layout$name == "0w","y"] = d_g_our_layout[grepl("F0_M0",d_g_our_layout$name),"y"][1,1]
   # set node sizes and other features
   igraph::V(d_g)$setsize = d_nodes[V(d_g)$name,"size"]
   igraph::V(d_g)$setsize[V(d_g)$name == "0w"] = stats::median(igraph::V(d_g)$setsize)
