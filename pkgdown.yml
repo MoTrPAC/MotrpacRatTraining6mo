@@ -1,11 +1,10 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  MotrpacRatTraining6mo: MotrpacRatTraining6mo.html
   key_metabolites: key_metabolites.html
-last_built: 2023-11-10T07:06Z
+  MotrpacRatTraining6mo: MotrpacRatTraining6mo.html
+last_built: 2024-09-30T06:44Z
 urls:
   reference: https://motrpac.github.io/MotrpacRatTraining6mo/reference
   article: https://motrpac.github.io/MotrpacRatTraining6mo/articles
-
