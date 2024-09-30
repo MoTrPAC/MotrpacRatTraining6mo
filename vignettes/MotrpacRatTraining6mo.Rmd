@@ -74,8 +74,8 @@ This package provides functions to fetch, explore, and reproduce the processed
 data and downstream analysis results presented in the main paper for the first 
 large-scale multi-omic multi-tissue endurance exercise training study conducted 
 in young adult rats by the Molecular Transducers of Physical Activity Consortium 
-(MoTrPAC). Find the [preprint on bioRxiv](https://www.biorxiv.org/content/10.1101/2022.09.21.508770v2).
-**We highly recommend skimming the preprint 
+(MoTrPAC). See our publication in [*Nature*](https://www.nature.com/articles/s41586-023-06877-w).
+**We highly recommend skimming the paper
 before using this package as it provides important context and much greater detail
 than we can provide here.**
 
@@ -151,7 +151,7 @@ e.g., [`?METAB_FEATURE_ID_MAP`](https://motrpac.github.io/MotrpacRatTraining6moD
 </div>
 
 ## Study design 
-Details of the experimental design can be found in the [supplementary methods of the bioRxiv preprint](https://www.biorxiv.org/content/biorxiv/early/2022/10/05/2022.09.21.508770/DC1/embed/media-1.pdf?download=true). 
+Details of the experimental design can be found in the [supplementary information of our *Nature* publication](https://www.nature.com/articles/s41586-023-06877-w#Sec14). 
 Briefly, 6-month-old young adult rats 
 were subjected to progressive endurance exercise training
 for 1, 2, 4, or 8 weeks, with tissues collected 48 hours after the last training bout. 
@@ -355,7 +355,7 @@ and you can load data objects into your environment using `data()`, e.g.,
 
 ## Differential analysis 
 More details about the differential analysis methods are available in the 
-[supplementary methods of the bioRxiv preprint](https://www.biorxiv.org/content/biorxiv/early/2022/10/05/2022.09.21.508770/DC1/embed/media-1.pdf?download=true). 
+[supplementary information of our *Nature* publication](https://www.nature.com/articles/s41586-023-06877-w#Sec14).
 Simply put, the *training* differential 
 analysis considers all training groups for each sex (sedentary controls and 4
 training time points) to determine if the analyte significantly changes in either 
@@ -501,7 +501,7 @@ run `repfdr` on your own data, and explore and visualize the nodes, edges, and p
 (collectively referred to as clusters) in the resulting graph. 
 For additional details and advantages of this approach over traditional clustering methods, 
 see the 
-[supplementary methods of the bioRxiv preprint](https://www.biorxiv.org/content/biorxiv/early/2022/10/05/2022.09.21.508770/DC1/embed/media-1.pdf?download=true). 
+[supplementary information of our *Nature* publication](https://www.nature.com/articles/s41586-023-06877-w#Sec14).
 If you are more interested in exploring the existing pathway enrichment results, skip to 
 [Visualization of pathway enrichment results](#vizEnrich). 
 
@@ -582,7 +582,7 @@ hist(unlist(lapply(paths, length)), breaks=100)
 ```
 
 `extract_main_clusters()` returns the subset of graphical clusters for which pathway 
-enrichment was performed for the [preprint](https://www.biorxiv.org/content/10.1101/2022.09.21.508770v2), 
+enrichment was performed for the [*Nature* publication](https://www.nature.com/articles/s41586-023-06877-w), 
 namely the 2 largest nodes, 2 largest edges, 10 largest non-null paths, and all 8-week nodes from the graphical 
 representation of training-regulated features in each tissue.  
 ```{r extract main clusters}
@@ -753,8 +753,8 @@ artificially small p-values.
 Pathway enrichment results were adjusted over *all* tests using 
 [IHW](https://www.nature.com/articles/nmeth.3885) with tissue as a covariate. 
 
-Pathway enrichment results for graphical clusters of interest presented in the 
-[preprint](https://www.biorxiv.org/content/10.1101/2022.09.21.508770v2) are provided in `GRAPH_PW_ENRICH`. 
+Pathway enrichment results for graphical clusters of interest presented in our 
+[publication](https://www.nature.com/articles/s41586-023-06877-w) are provided in `GRAPH_PW_ENRICH`. 
 
 ### Enrichment with standard PWs 
 `cluster_pathway_enrichment()` is a wrapper for 

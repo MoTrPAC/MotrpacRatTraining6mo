@@ -1,7 +1,11 @@
+# MotrpacRatTraining6mo 1.6.6 (2024-09-29)
+
+* Fix bug due to backwards incompatibility between `ggraph` 2.1.0 and 2.2.0. Require `ggraph >= 2.2.0`.
+
 # MotrpacRatTraining6mo 1.6.5 (2023-11-08)
 
 * Point to development version of `RCy3` from GitHub to avoid `R-CMD check` error `RCy3: Can't install dependency uchardet`. 
-* Install `plotrix` from GitHub instead of CRAN to avoid `R-CMD check` warning `Requires (indirectly) orphaned package: ‘plotrix’`. 
+* Install `plotrix` from GitHub instead of CRAN to avoid `R-CMD check` warning `Requires (indirectly) orphaned package: 'plotrix'`. 
   CRAN has marked `plotrix` as orphaned. `plotrix` is a dependency for `mutoss`, which is a dependency for `metap`.
 * Increment required `MotrpacRatTraining6moData` version.
 

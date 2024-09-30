@@ -2,7 +2,7 @@ Type: Package
 Package: MotrpacRatTraining6mo
 Title: Analysis of the MoTrPAC endurance exercise training data in
     6-month-old rats
-Version: 1.6.5
+Version: 1.6.6
 Authors@R: c(
     person("Nicole", "Gay", , "nicole.r.gay@gmail.com", role = c("cre", "aut")),
     person("David", "Amar", , "ddam.am@gmail.com", role = "aut"),
@@ -29,7 +29,7 @@ Imports:
     dplyr,
     edgeR,
     ggplot2,
-    ggraph,
+    ggraph (>= 2.2.0),
     grid,
     igraph,
     limma,

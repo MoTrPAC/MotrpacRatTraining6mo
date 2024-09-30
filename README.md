@@ -32,7 +32,7 @@ This package provides functions to fetch, explore, and reproduce the processed d
 analysis results presented in the main paper for the first 
 large-scale multi-omic multi-tissue endurance exercise training study conducted 
 in young adult rats by the Molecular Transducers of Physical Activity Consortium 
-(MoTrPAC). Find the [preprint on bioRxiv](https://www.biorxiv.org/content/10.1101/2022.09.21.508770v2).
+(MoTrPAC). See our publication in [*Nature*](https://www.nature.com/articles/s41586-023-06877-w).
 **See the [vignette](https://motrpac.github.io/MotrpacRatTraining6mo/articles/MotrpacRatTraining6mo.html) for examples of how to use this package.**
 
 While some of the functions in this package can be used by themselves, they
@@ -104,6 +104,5 @@ Specific datasets used are [version numbers].
 * Data used in the preparation of this article were obtained from the Molecular Transducers of Physical Activity 
 Consortium (MoTrPAC) MotrpacRatTraining6moData R package [version number]. 
 
-## Citing MoTrPAC data 
-MoTrPAC Study Group. 2022. Temporal dynamics of the multi-omic response to endurance exercise training across tissues. 
-bioRxiv doi: 10.1101/2022.09.21.508770
+## Citing MoTrPAC data
+MoTrPAC Study Group. Temporal dynamics of the multi-omic response to endurance exercise training. *Nature* **629**, 174–183 (2024). https://doi.org/10.1038/s41586-023-06877-w
