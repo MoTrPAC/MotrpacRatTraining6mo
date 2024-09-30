@@ -11,7 +11,7 @@ home:
 reference:
 
 - title: Load data  
-  desc: Load data and analysis results used in the preprint 
+  desc: Load data and analysis results used in the publication
   contents:
     - list_available_data
 

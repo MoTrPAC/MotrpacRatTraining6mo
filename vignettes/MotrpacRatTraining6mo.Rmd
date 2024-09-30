@@ -75,7 +75,7 @@ data and downstream analysis results presented in the main paper for the first
 large-scale multi-omic multi-tissue endurance exercise training study conducted 
 in young adult rats by the Molecular Transducers of Physical Activity Consortium 
 (MoTrPAC). See our publication in [*Nature*](https://www.nature.com/articles/s41586-023-06877-w).
-**We highly recommend skimming the preprint 
+**We highly recommend skimming the paper
 before using this package as it provides important context and much greater detail
 than we can provide here.**
 
